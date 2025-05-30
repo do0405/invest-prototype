@@ -25,40 +25,73 @@
 
 invest_prototype/
 ├── main.py                     # 메인 실행 파일
+
 ├── config.py                   # 전역 설정
+
 ├── utils.py                    # 공통 유틸리티
+
 ├── data_collector.py           # 데이터 수집
+
 ├── fill_business_days.py       # 영업일 데이터 채우기
+
 ├──
+
 ├── Markminervini/              # Mark Minervini 기법
+
 │   ├── filter_stock.py         # 기술적 스크리닝
+
 │   ├── advanced_financial.py   # 재무제표 스크리닝
+
 │   ├── ticker_tracker.py       # 종목 추적
+
 │   ├── pattern_detection.py    # 패턴 감지
+
 │   └── filter_tickers.py       # 종목 필터링
 ├──
 ├── long_short_portfolio/       # 포트폴리오 관리
+
 │   ├── strategy1.py ~ strategy6.py  # 6가지 투자 전략
+
 │   ├── portfolio_integration.py     # 포트폴리오 통합 관리
+
 │   └── run_screener.py             # 스크리너 실행
+
 ├──
+
 ├── portfolio_management/       # 포트폴리오 핵심 기능
+
 │   ├── portfolio_manager.py    # 포트폴리오 매니저
+
 │   └── core/
+
 │       └── performance_analyzer.py  # 성과 분석
+
 ├──
+
 ├── option_data_based_strategy/ # 옵션 기반 전략
+
 │   └── volatility_skew_screener.py  # 변동성 스큐 스크리너
+
 ├──
+
 ├── backend/                    # 백엔드 API
+
 │   ├── api_server.py          # Flask API 서버
+
 │   ├── api_utils.py           # API 유틸리티
+
 │   └── json_backend_wrapper.py # 백엔드 래퍼
+
 ├──
+
 ├── data/                      # 데이터 저장소
+
 │   └── us/                    # 미국 주식 데이터
+
 └── results/                   # 분석 결과
+
 └── ver2/                  # 포트폴리오 결과
+
 
 
 ## 🚀 실행 방법
@@ -102,16 +135,7 @@ python api_server.py
 # GET http://localhost:5000/api/portfolio-performance
 # GET http://localhost:5000/api/strategy-results
 
-Trae
-
-사용자가 README.md와 HANDOVER_GUIDE.md 파일을 최신화하고 싶어하며, 이전에 대화에서 제공된 내용이 실제 파일에 제대로 적용되지 않았다고 합니다. 먼저 현재 파일들의 상태를 확인하겠습니다.
-
-README.md :( 2 - 100 )
-
-HANDOVER_GUIDE.md :( 2 - 100 )
-
-현재 README.md와 HANDOVER_GUIDE.md 파일을 확인했습니다. README.md는 24줄로 매우 짧고 불완전하며, HANDOVER_GUIDE.md는 225줄이지만 구식 내용을 담고 있습니다. 최신 시스템 구조에 맞게 두 파일을 완전히 업데이트하겠습니다.
-
+-------------------------
 ## README.md 완전 업데이트
 ```
 # 투자 스크리닝 및 포트폴리오 
