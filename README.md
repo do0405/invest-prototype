@@ -24,6 +24,7 @@
 ## 🏗️ 시스템 아키텍처
 
 invest_prototype/
+
 ├── main.py                     # 메인 실행 파일
 
 ├── config.py                   # 전역 설정
