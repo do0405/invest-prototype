@@ -604,7 +604,7 @@ class StrategyPortfolioIntegrator:
                 # 초기 실행 시 빈 DataFrame 생성
                 results_df = pd.DataFrame(columns=[
                     '종목명', '매수일', '시장 진입가', '비중(%)', '수익률(%)',
-                    '차익실현', '손절매', '수익보호', '롱여부', '현재가', '최고가', '최저가', '트레일링 손절가'
+                    '차익실현', '손절매', '수익보호', '롱여부'
                 ])
                 self._ensure_directory(result_file)
                 results_df.to_csv(result_file, index=False, encoding='utf-8-sig')
@@ -696,10 +696,7 @@ class StrategyPortfolioIntegrator:
                         '손절매': screening_row.get('손절매', '없음'),
                         '수익보호': screening_row.get('수익보호', '없음'),
                         '롱여부': str(is_long_strategy),
-                        '현재가': current_price,
-                        '최고가': pos_info['highest_price'],
-                        '최저가': pos_info['lowest_price'],
-                        '트레일링 손절가': pos_info.get('trailing_stop_price')
+                        
                     })
                     current_symbols_in_file.discard(symbol)
 
@@ -768,10 +765,7 @@ class StrategyPortfolioIntegrator:
                         '손절매': screening_row.get('손절매', '없음'),
                         '수익보호': screening_row.get('수익보호', '없음'),
                         '롱여부': str(is_long_strategy),
-                        '현재가': current_price,
-                        '최고가': current_price,
-                        '최저가': current_price,
-                        '트레일링 손절가': new_pos_info.get('trailing_stop_price')
+                        
                     })
                     current_symbols_in_file.discard(symbol)
 

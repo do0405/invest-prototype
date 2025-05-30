@@ -39,8 +39,9 @@ def main():
 
     # 필요한 디렉토리 생성
     ensure_dir(RESULTS_VER2_DIR)
-    ensure_dir(os.path.join(RESULTS_VER2_DIR, 'pattern_analysis_results'))
-    ensure_dir(os.path.join(RESULTS_VER2_DIR, 'option_volatility'))  # 새 디렉토리 추가
+    # 다음 두 줄 제거
+    # ensure_dir(os.path.join(RESULTS_VER2_DIR, 'pattern_analysis_results'))
+    # ensure_dir(os.path.join(RESULTS_VER2_DIR, 'option_volatility'))  # 새 디렉토리 추가
     
     if args.run_all:
         print("🚀 전체 프로세스 실행: 데이터 수집, 스크리닝, 포트폴리오 관리")

@@ -16,6 +16,15 @@ warnings.filterwarnings('ignore')
 
 class ContractionAnalyzer:
     @staticmethod
+    def calculate_atr(high, low, close, period=14):
+        """ATR (Average True Range) 계산"""
+        tr1 = high - low
+        tr2 = abs(high - close.shift(1))
+        tr3 = abs(low - close.shift(1))
+        tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+        return tr.rolling(window=period).mean()
+    
+    @staticmethod
     def analyze_contraction_signals(df):
         """5가지 수축 신호 분석"""
         try:
@@ -23,62 +32,41 @@ class ContractionAnalyzer:
             high, low = df['high'], df['low']
             close = df['close']
             
-            # ① VDU (Volume Dry-Up) - 데이터 충분성 확인
+            # ① VDU (Volume Dry-Up) - 데이터 충분성 확인 유지
             v10 = vol.tail(10).mean()
             
             if len(vol) >= 50:
                 v50 = vol.ewm(span=50).mean().iloc[-1]
                 vdu = v10 < 0.4 * v50
             else:
-                # 데이터 부족 시 이 조건만 False (점수 추가 안함)
                 vdu = False
             
-            # ② 가격 범위 수축 - 데이터 충분성 확인
-            if len(high) >= 10 and len(low) >= 10:
-                range_now = (high - low).tail(5).mean()
-                range_prev = (high - low).tail(10).head(5).mean()
-                pr_contr = range_now < 0.8 * range_prev
-            else:
-                # 데이터 부족 시 이 조건만 False (점수 추가 안함)
-                pr_contr = False
+            # ② 가격 범위 수축 - 데이터 충분성 확인 제거
+            range_now = (high - low).tail(5).mean()
+            range_prev = (high - low).tail(10).head(5).mean()
+            pr_contr = range_now < 0.8 * range_prev
             
-            # ③ ATR 수축 - 데이터 충분성 확인
-            if len(close) >= 15:
-                atr = self.calculate_atr(high, low, close)
-                if len(atr) >= 15:
-                    atr_contr = atr.iloc[-1] < 0.8 * atr.iloc[-15]
-                else:
-                    atr_contr = False
-            else:
-                # 데이터 부족 시 이 조건만 False (점수 추가 안함)
-                atr_contr = False
+            # ③ ATR 수축 - 데이터 충분성 확인 제거
+            atr = ContractionAnalyzer.calculate_atr(high, low, close)
+            atr_contr = atr.iloc[-1] < 0.8 * atr.iloc[-15]
         
-            # ④ 거래량 하락 추세 - 데이터 충분성 확인
-            if len(vol) >= 20:
-                y = np.log1p(vol.tail(20).values)
-                slope, _ = np.polyfit(np.arange(20), y, 1)
-                std_ratio = y.std() / y.mean()
-                vol_down = (slope < -0.001) and (std_ratio < 0.2)
-            else:
-                # 데이터 부족 시 이 조건만 False (점수 추가 안함)
-                vol_down = False
+            # ④ 거래량 하락 추세 - 데이터 충분성 확인 제거
+            y = np.log1p(vol.tail(20).values)
+            slope, _ = np.polyfit(np.arange(20), y, 1)
+            std_ratio = y.std() / y.mean()
+            vol_down = (slope < -0.001) and (std_ratio < 0.2)
             
-            # ⑤ Higher Lows - 데이터 충분성 확인
-            if len(low) >= 3:
-                lows = low.tail(3).values
-                higher_lows = lows[0] < lows[1] < lows[2]
-            else:
-                # 데이터 부족 시 이 조건만 False (점수 추가 안함)
-                higher_lows = False
+            # ⑤ Higher Lows - 데이터 충분성 확인 제거
+            lows = low.tail(3).values
+            higher_lows = lows[0] < lows[1] < lows[2]
             
             # 점수 계산 (30점 만점)
-            # 각 조건별로 데이터가 충분한 경우에만 점수 추가
             score = (
-                5 * vdu +           # 데이터 부족하면 False이므로 0점
-                5 * pr_contr +      # 데이터 부족하면 False이므로 0점
-                5 * atr_contr +     # 데이터 부족하면 False이므로 0점
-                10 * vol_down +     # 데이터 부족하면 False이므로 0점
-                5 * higher_lows     # 데이터 부족하면 False이므로 0점
+                5 * vdu +
+                5 * pr_contr +
+                5 * atr_contr +
+                10 * vol_down +
+                5 * higher_lows
             )
             
             return {
@@ -161,10 +149,10 @@ def analyze_tickers_from_results(results_dir, data_dir, output_dir='../results2'
                 
                 # 컬럼명 매핑 (대소문자 구분 없이)
                 column_mapping = {
-                    'high': ['high', 'high', '고가'],
-                    'low': ['low', 'low', '저가'],
-                    'close': ['close', 'close', '종가'],
-                    'volume': ['volume', 'volume', '거래량']
+                    'high': ['high', 'High', '고가'],
+                    'low': ['low', 'Low', '저가'],
+                    'close': ['close', 'Close', '종가'],
+                    'volume': ['volume', 'Volume', '거래량']
                 }
                 
                 # 컬럼명 찾기
@@ -217,7 +205,6 @@ def analyze_tickers_from_results(results_dir, data_dir, output_dir='../results2'
         
         # 결과 저장
         output_file = os.path.join(output_dir, 'pattern_analysis_results.csv')
-        # 결과 저장
         results_df.to_csv(output_file, index=False, encoding='utf-8-sig')
         # JSON 파일 생성 추가
         json_file = output_file.replace('.csv', '.json')
@@ -230,20 +217,3 @@ def analyze_tickers_from_results(results_dir, data_dir, output_dir='../results2'
         print(f"❌ 패턴 분석 중 오류 발생: {e}")
         print(traceback.format_exc())
         return pd.DataFrame()
-
-# 중복 실행 방지를 위해 main 함수와 직접 실행 코드 제거
-# def main():
-#     """메인 실행 함수"""
-#     try:
-#         results_dir = '../results'
-#         data_dir = '../data_us'
-#         output_dir = '../results2'
-#         
-#         analyze_tickers_from_results(results_dir, data_dir, output_dir)
-#         
-#     except Exception as e:
-#         print(f"❌ 메인 실행 중 오류 발생: {e}")
-#         print(traceback.format_exc())
-
-# if __name__ == "__main__":
-#     main()

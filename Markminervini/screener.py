@@ -543,11 +543,11 @@ def run_us_screening():
                 result_df['rs_score'] = rs_values
             else:
                 # RS 점수가 없는 경우 기본값 할당
-                result_df['rs_score'] = 50
+                result_df['rs_score'] = 0
         except Exception as e:
             print(f"⚠️ RS 점수 병합 오류: {e}")
             # 기본값으로 채우기
-            result_df['rs_score'] = 50
+            result_df['rs_score'] = 0
             
         # 조건 8 및 총 충족 조건 수 계산
         try:
@@ -555,7 +555,7 @@ def run_us_screening():
             result_df['rs_score'] = pd.to_numeric(result_df['rs_score'], errors='coerce').fillna(50)
             
             # RS 점수 80 이상인 경우 조건 8 충족
-            result_df['cond8'] = result_df['rs_score'] >= 80
+            result_df['cond8'] = result_df['rs_score'] >= 85
             
             # 조건 컬럼 확인
             condition_cols = [f'cond{i}' for i in range(1, 9) if f'cond{i}' in result_df.columns]
