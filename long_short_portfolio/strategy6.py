@@ -26,51 +26,13 @@ from utils import (
 )
 
 
-def run_strategy(total_capital=100000, update_existing=False):
-    """
-    전략 6: 평균회귀 6일 급등 숏 (Mean Reversion 6-Day Surge Short)
-
-    필터:
-    - 최소 주가: $5 이상
-    - 최근 50일 기준 일평균 거래금액 ≥ 1,000만 달러
-
-    설정:
-    - 최근 6거래일 동안 20% 이상 상승한 종목
-    - 최근 2거래일 연속 상승한 종목
-
-    순위:
-    - 6일간 상승률이 가장 높은 순서로 정렬하여 공매도 우선순위 부여
-
-    시장 진입:
-    - 직전 종가보다 최대 5% 높은 가격에 지정가 공매도
-    → 일중에서 5% 이상 상승 중인 종목 대상으로 진입
-
-    손절매:
-    - 체결가 기준 최근 10일 ATR의 3배 위에 손절가 설정
-
-    시장 재진입:
-    - 조건 충족 시 재진입 가능
-
-    수익 보호:
-    - 없음 (단기 매매 특성상 추격 역지정가 설정 안 함)
-
-    차익 실현:
-    - 수익률이 5% 도달하면, 다음 날 장 마감 시 시장가 청산
-    - 또는 3거래일 후 장 마감 시점에 무조건 청산
-
-    포지션 크기:
-    - 포지션당 총자산 대비 2% 리스크
-    - 시스템 전체 자산 대비 최대 10% 배분
-
-    Args:
-        total_capital: 총 자산 (기본값: 100000)
-        update_existing: 기존 포트폴리오 업데이트 여부 (기본값: False)
-    """
+def run_strategy6_screening():
     print("\n🔍 전략 6: 평균회귀 6일 급등 숏 스크리닝 시작...")
 
-    # 결과 파일 경로
-    ensure_dir(RESULTS_DIR)
-    result_file = os.path.join(RESULTS_DIR, 'strategy6_results.csv')
+    # 결과 파일 경로 - sell 폴더로 변경
+    sell_dir = os.path.join(RESULTS_VER2_DIR, 'sell')
+    ensure_dir(sell_dir)
+    result_file = os.path.join(sell_dir, 'strategy6_results.csv')
 
     try:
         # S&P 500 조건 확인 (이 전략에서는 S&P500 조건이 명시되지 않았으므로 생략)
@@ -184,8 +146,13 @@ def run_strategy(total_capital=100000, update_existing=False):
         result_df_to_save = result_df[strategy_result_columns]
 
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')
+        
+        # JSON 파일도 저장
+        json_file = result_file.replace('.csv', '.json')
+        result_df_to_save.to_json(json_file, orient='records', force_ascii=False, indent=2)
+        
         print(f"✅ 전략 6 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
-
+        
         print("\n🏆 전략 6 상위 종목 (스크리닝 결과):")
         print(result_df_to_save)
 
@@ -256,3 +223,8 @@ if __name__ == '__main__':
         print(traceback.format_exc())
 
     print("\n🎉 전략 6 실행 완료.")
+
+
+def run_strategy(total_capital=100000):
+    """Wrapper function for main.py compatibility"""
+    return run_strategy6_screening()

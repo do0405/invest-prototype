@@ -221,18 +221,21 @@ def calculate_trend_template(df) -> pd.Series:
     
     return result
 
-# 상대 강도 계산 함수
-def calculate_rs_score(df, price_col='close', window=126):
-    """종목별 상대 강도(RS) 점수를 계산하는 함수
+# 상대 강도 계산 함수 (고도화된 버전)
+def calculate_rs_score_enhanced(df, price_col='close', benchmark_symbol='SPY'):
+    """Fred6724의 TradingView 기반 RS Rating 알고리즘을 구현한 고도화된 RS 점수 계산
     
     Args:
         df: 가격 데이터가 포함된 DataFrame (MultiIndex 또는 일반 DataFrame)
         price_col: 가격 데이터 컬럼명 (기본값: 'close')
-        window: 수익률 계산 기간 (기본값: 126일)
+        benchmark_symbol: 벤치마크 심볼 (기본값: 'SPY')
         
     Returns:
-        pd.Series: 각 종목의 RS 점수 (0-100 범위)
+        pd.Series: 각 종목의 RS Rating (0-100 범위)
     """
+    import numpy as np
+    from scipy.stats import percentileofscore
+    
     try:
         # 인덱스가 MultiIndex인지 확인
         if not isinstance(df.index, pd.MultiIndex):
@@ -254,75 +257,159 @@ def calculate_rs_score(df, price_col='close', window=126):
             print(f"⚠️ 인덱스 레벨이 2가 아닙니다: {df.index.nlevels}")
             return pd.Series(dtype=float)
         
-        # 수익률 계산
+        # 벤치마크 데이터 추출
         try:
-            # 각 심볼별 데이터 길이 확인
-            grouped = df.groupby(level=1)[price_col]
-            symbol_counts = grouped.count()
-            valid_symbols = symbol_counts[symbol_counts >= window].index
-            
-            if len(valid_symbols) == 0:
-                print("⚠️ 충분한 데이터가 있는 심볼이 없습니다.")
+            benchmark_data = df.xs(benchmark_symbol, level=1)[price_col]
+            if len(benchmark_data) < 252:
+                print(f"⚠️ {benchmark_symbol} 벤치마크 데이터가 부족합니다 (필요: 252일, 현재: {len(benchmark_data)}일)")
                 return pd.Series(dtype=float)
-            
-            # 각 심볼별로 수익률 계산
-            returns = {}
-            for symbol in valid_symbols:
-                try:
-                    symbol_data = df.xs(symbol, level=1)[price_col]
-                    if len(symbol_data) >= window:
-                        recent_data = symbol_data.iloc[-window:]
-                        first_price = recent_data.iloc[0]
-                        last_price = recent_data.iloc[-1]
-                        if first_price > 0:  # 0으로 나누기 방지
-                            symbol_str = str(symbol)
-                            returns[symbol_str] = (last_price / first_price) - 1
-                except Exception:
-                    continue
-            
-            # 수익률 시리즈로 변환
-            returns_series = pd.Series(returns)
-            
-            # 상대 강도 순위 계산 (0-100 스케일)
-            if len(returns_series) > 0:
-                ranks = rankdata(returns_series.values)
-                rs_scores = (ranks / len(ranks)) * 100
-                result = pd.Series(rs_scores, index=returns_series.index)
-                return result
-            else:
-                return pd.Series(dtype=float)
+        except KeyError:
+            print(f"⚠️ {benchmark_symbol} 벤치마크 데이터를 찾을 수 없습니다.")
+            return pd.Series(dtype=float)
+        
+        # 각 심볼별 RS Score 계산
+        rs_scores = {}
+        valid_symbols = []
+        
+        for symbol in df.index.get_level_values(1).unique():
+            if symbol == benchmark_symbol:
+                continue
                 
-        except Exception as e:
-            print(f"❌ 수익률 계산 오류: {e}")
-            
-            # 대체 방법으로 시도
             try:
-                # 각 심볼별로 수익률 직접 계산
-                all_returns = {}
-                for symbol in df.index.get_level_values(1).unique():
+                symbol_data = df.xs(symbol, level=1)[price_col]
+                if len(symbol_data) < 252:
+                    continue
+                
+                # 최근 252일 데이터 사용
+                close = symbol_data.tail(252).values
+                bench = benchmark_data.tail(252).values
+                
+                # 수익률 계산 (3/6/9/12개월)
+                p3  = (close[-1] - close[-63])  / close[-63]  * 100
+                p6  = (close[-1] - close[-126]) / close[-126] * 100
+                p9  = (close[-1] - close[-189]) / close[-189] * 100
+                p12 = (close[-1] - close[-252]) / close[-252] * 100
+                
+                b3  = (bench[-1] - bench[-63])  / bench[-63]  * 100
+                b6  = (bench[-1] - bench[-126]) / bench[-126] * 100
+                b9  = (bench[-1] - bench[-189]) / bench[-189] * 100
+                b12 = (bench[-1] - bench[-252]) / bench[-252] * 100
+                
+                # 가중 평균 성과 계산
+                stock_score = 0.4 * p3 + 0.2 * p6 + 0.2 * p9 + 0.2 * p12
+                bench_score = 0.4 * b3 + 0.2 * b6 + 0.2 * b9 + 0.2 * b12
+                
+                # RS Score 계산
+                if bench_score != 0:
+                    rs_score = stock_score / bench_score * 100
+                    rs_scores[str(symbol)] = rs_score
+                    valid_symbols.append(str(symbol))
+                    
+            except Exception as e:
+                continue
+        
+        if not rs_scores:
+            print("⚠️ RS Score를 계산할 수 있는 종목이 없습니다.")
+            return pd.Series(dtype=float)
+        
+        # 전체 universe에서 백분위 계산 (RS Rating)
+        rs_score_values = list(rs_scores.values())
+        rs_ratings = {}
+        
+        for symbol, rs_score in rs_scores.items():
+            rs_rating = round(percentileofscore(rs_score_values, rs_score, kind='rank'), 2)
+            rs_ratings[symbol] = rs_rating
+        
+        return pd.Series(rs_ratings)
+        
+    except Exception as e:
+        print(f"❌ 고도화된 RS Score 계산 오류: {e}")
+        return pd.Series(dtype=float)
+
+# 기존 함수와의 호환성을 위한 래퍼 함수
+def calculate_rs_score(df, price_col='close', window=126, use_enhanced=True):
+    """RS 점수 계산 함수 (기존 호환성 유지)
+    
+    Args:
+        df: 가격 데이터가 포함된 DataFrame
+        price_col: 가격 데이터 컬럼명
+        window: 수익률 계산 기간 (고도화 버전에서는 무시됨)
+        use_enhanced: 고도화된 알고리즘 사용 여부
+        
+    Returns:
+        pd.Series: 각 종목의 RS 점수
+    """
+    if use_enhanced:
+        return calculate_rs_score_enhanced(df, price_col)
+    else:
+        # 기존 구현 유지
+        try:
+            # 인덱스가 MultiIndex인지 확인
+            if not isinstance(df.index, pd.MultiIndex):
+                # 날짜와 심볼 컬럼 찾기
+                date_col = next((col for col in ['date', 'time'] if col in df.columns), None)
+                symbol_col = next((col for col in ['symbol', 'pair'] if col in df.columns), None)
+                
+                if date_col and symbol_col:
+                    # 날짜 컬럼이 datetime 타입인지 확인
+                    if not pd.api.types.is_datetime64_dtype(df[date_col]):
+                        df[date_col] = pd.to_datetime(df[date_col], utc=True)
+                    df = df.set_index([date_col, symbol_col])
+                else:
+                    print(f"❌ 날짜/심볼 컬럼을 찾을 수 없습니다.")
+                    return pd.Series(dtype=float)
+            
+            # 인덱스 레벨 확인
+            if df.index.nlevels != 2:
+                print(f"⚠️ 인덱스 레벨이 2가 아닙니다: {df.index.nlevels}")
+                return pd.Series(dtype=float)
+            
+            # 수익률 계산
+            try:
+                # 각 심볼별 데이터 길이 확인
+                grouped = df.groupby(level=1)[price_col]
+                symbol_counts = grouped.count()
+                valid_symbols = symbol_counts[symbol_counts >= window].index
+                
+                if len(valid_symbols) == 0:
+                    print("⚠️ 충분한 데이터가 있는 심볼이 없습니다.")
+                    return pd.Series(dtype=float)
+                
+                # 각 심볼별로 수익률 계산
+                returns = {}
+                for symbol in valid_symbols:
                     try:
-                        symbol_str = str(symbol)
                         symbol_data = df.xs(symbol, level=1)[price_col]
-                        if len(symbol_data) >= 2:
-                            pct_change = symbol_data.pct_change(periods=min(window, len(symbol_data)-1)).iloc[-1]
-                            all_returns[symbol_str] = pct_change
+                        if len(symbol_data) >= window:
+                            recent_data = symbol_data.iloc[-window:]
+                            first_price = recent_data.iloc[0]
+                            last_price = recent_data.iloc[-1]
+                            if first_price > 0:  # 0으로 나누기 방지
+                                symbol_str = str(symbol)
+                                returns[symbol_str] = (last_price / first_price) - 1
                     except Exception:
                         continue
                 
-                returns_series = pd.Series(all_returns).dropna()
+                # 수익률 시리즈로 변환
+                returns_series = pd.Series(returns)
                 
+                # 상대 강도 순위 계산 (0-100 스케일)
                 if len(returns_series) > 0:
+                    from scipy.stats import rankdata
                     ranks = rankdata(returns_series.values)
                     rs_scores = (ranks / len(ranks)) * 100
                     result = pd.Series(rs_scores, index=returns_series.index)
                     return result
                 else:
                     return pd.Series(dtype=float)
-            except Exception:
+                    
+            except Exception as e:
+                print(f"❌ 수익률 계산 오류: {e}")
                 return pd.Series(dtype=float)
-    except Exception as e:
-        print(f"❌ RS 점수 계산 오류: {e}")
-        return pd.Series(dtype=float)
+                
+        except Exception as e:
+            print(f"❌ RS Score 계산 오류: {e}")
+            return pd.Series(dtype=float)
 
 # 미국 주식 스크리닝 실행 함수
 def run_us_screening():
@@ -430,8 +517,9 @@ def run_us_screening():
                 # 인덱스 설정
                 combined_df = combined_df.set_index(['date', 'symbol'])
                 
-                # RS 점수 계산
-                rs_scores = calculate_rs_score(combined_df, price_col='close', window=126)
+                # RS 점수 계산 (고도화된 버전 사용)
+                print("📊 고도화된 RS 점수 계산 중...")
+                rs_scores = calculate_rs_score(combined_df, price_col='close', use_enhanced=True)
                 print(f"✅ RS 점수 계산 완료: {len(rs_scores)}개 종목")
         except Exception as e:
             print(f"❌ RS 점수 계산 오류: {e}")
@@ -481,6 +569,9 @@ def run_us_screening():
         # 결과 저장
         ensure_dir(os.path.dirname(US_WITH_RS_PATH))
         result_df.to_csv(US_WITH_RS_PATH)
+        # JSON 파일 생성 추가
+        json_path = US_WITH_RS_PATH.replace('.csv', '.json')
+        result_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
         print(f"✅ 결과 저장 완료: {len(result_df)}개 종목, 경로: {US_WITH_RS_PATH}")
         
         # 상위 10개 종목 출력

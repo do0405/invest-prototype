@@ -25,52 +25,13 @@ from utils import (
 )
 
 
-def run_strategy(total_capital=100000, update_existing=False):
-    """
-    전략 5: 평균회귀 하이 ADX 리버설 롱
-
-    필터:
-    - 50일 기준: 평균 거래량 ≥ 50만 주
-    - 50일 기준: 평균 거래금액 ≥ 250만 달러
-    - ATR ≥ 4: 단기 변동성 충분한 종목만 거래 (최근 10일 ATR 기준)
-
-    설정 조건:
-    - 종가 > 100일 이동평균, 최근 10일 1ATR보다 높을 것 (해석: 종가가 (100일 MA + 10일 ATR) 보다 높아야 함)
-    - 7일 ADX ≥ 55: 추세 강도 매우 강함을 의미
-    - 3일 RSI ≤ 50: 중간 강도의 일시적 과매도 상태를 의미
-
-    순위:
-    - 7일 ADX가 높은 순 → 추세 강한 종목 중 단기 하락에 진입
-
-    시장 진입:
-    - 직전 종가보다 최대 3% 낮은 가격에 지정가 매수
-
-    손절매:
-    - 체결가 기준 10일 ATR의 3배 아래에 손절매 설정
-
-    시장 재진입:
-    - 동일 조건 발생 시 재진입 가능
-
-    수익 보호:
-    - 없음
-
-    차익 실현:
-    - 조건 1: 종가 > 최근 10일 ATR 상단 (해석: 종가 > (현재가 + 10일 ATR)) → 다음날 장 시작에 시장가 매도
-    - 조건 2: 6거래일 이내 목표 미달성 시, 7일차 장 시작에 시장가 매도
-
-    포지션 크기:
-    - 포지션별 총자산 대비 2% 리스크
-    - 최대 자산 10%까지 배분
-    - 최대 10개 포지션 (명시되어 있진 않지만 일반적인 규칙 적용)
-
-    Args:
-        total_capital: 총 자산 (기본값: 100000)
-        update_existing: 기존 포트폴리오 업데이트 여부 (기본값: False)
-    """
+def run_strategy5_screening():
     print("\n🔍 전략 5: 평균회귀 하이 ADX 리버설 롱 스크리닝 시작...")
 
-    ensure_dir(RESULTS_DIR)
-    result_file = os.path.join(RESULTS_DIR, 'strategy5_results.csv')
+    # 결과 파일 경로 - buy 폴더로 변경
+    buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
+    ensure_dir(buy_dir)
+    result_file = os.path.join(buy_dir, 'strategy5_results.csv')
 
     try:
         # S&P500 조건은 명시되어 있지 않으므로, 개별 종목 조건만 확인
@@ -112,7 +73,7 @@ def run_strategy(total_capital=100000, update_existing=False):
                 continue
             atr_10d = atr_10d_series.iloc[-1]
 
-            # 설정 조건 1: 종가 > 100일 이동평균, 최근 10일 1ATR보다 높을 것
+            # 설정 조건 1: 종가 > 100일 이동평균, 최근 10일 1ATR보다 높은 것
             # (해석: 종가가 (100일 MA + 10일 ATR) 보다 높아야 함)
             ma_100d = recent_data['close'].rolling(window=100).mean().iloc[-1]
             if pd.isna(ma_100d) or latest_close <= (ma_100d + atr_10d):
@@ -187,8 +148,12 @@ def run_strategy(total_capital=100000, update_existing=False):
         result_df_to_save = result_df[strategy_result_columns]
 
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')
-        print(f"✅ 전략 5 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
-
+        
+        # JSON 파일도 저장
+        json_file = result_file.replace('.csv', '.json')
+        result_df_to_save.to_json(json_file, orient='records', force_ascii=False, indent=2)
+        
+        print(f"✅ 전략 4 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
         print("\n🏆 전략 5 상위 종목 (스크리닝 결과):")
         print(result_df_to_save)
 
@@ -247,4 +212,6 @@ if __name__ == "__main__":
     ensure_dir(RESULTS_VER2_DIR) # RESULTS_DIR 대신 RESULTS_VER2_DIR 사용
     ensure_dir(os.path.join(RESULTS_VER2_DIR, 'results')) # 통합 results 디렉토리
     print("\n📊 전략 5 스크리닝을 실행합니다. 포트폴리오 관리는 run_integrated_portfolio.py를 이용해주세요.")
-    run_strategy()
+    def run_strategy(total_capital=100000):
+        """Wrapper function for main.py compatibility"""
+        return run_strategy5_screening()

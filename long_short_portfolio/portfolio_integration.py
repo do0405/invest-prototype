@@ -48,35 +48,35 @@ class StrategyPortfolioIntegrator:
         
         # 전략별 설정
         self.strategies = {
-            'strategy1': {
+                        'strategy1': {
                 'module': strategy1,
                 'is_long': True,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'strategy1_results.csv')
+                'result_file': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy1_results.csv')
             },
             'strategy2': {
                 'module': strategy2,
                 'is_long': False,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'strategy2_results.csv')
+                'result_file': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy2_results.csv')
             },
             'strategy3': {
                 'module': strategy3,
                 'is_long': True,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'strategy3_results.csv')
+                'result_file': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy3_results.csv')
             },
             'strategy4': {
                 'module': strategy4,
                 'is_long': True, # Strategy 4 results are now in results/strategy4_results.csv (was buy)
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'strategy4_results.csv')
+                'result_file': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy4_results.csv')
             },
             'strategy5': {
                 'module': strategy5,
                 'is_long': True,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'strategy5_results.csv')
+                'result_file': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy5_results.csv')
             },
             'strategy6': {
                 'module': strategy6,
                 'is_long': False,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'strategy6_results.csv')
+                'result_file': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy6_results.csv')
             }
         }
         

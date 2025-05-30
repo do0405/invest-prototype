@@ -17,11 +17,13 @@ from config import (
     DATA_US_DIR, RESULTS_DIR, RESULTS_VER2_DIR,
     US_WITH_RS_PATH, ADVANCED_FINANCIAL_RESULTS_PATH
 )
+# ticker_tracker import 추가
+from Markminervini.ticker_tracker import track_new_tickers
 
 # 모듈 임포트
 from long_short_portfolio.portfolio_integration import StrategyPortfolioIntegrator
 # 변동성 스큐 스크리너 임포트
-from volatility_skew_screener import VolatilitySkewScreener
+from option_data_based_strategy.volatility_skew_screener import VolatilitySkewScreener
 
 
 def main():
@@ -44,8 +46,8 @@ def main():
         print("🚀 전체 프로세스 실행: 데이터 수집, 스크리닝, 포트폴리오 관리")
         collect_data_main()
         run_all_screening_processes()
-        run_pattern_analysis()
-        run_volatility_skew_screening()  # 새로운 스크리닝 추가
+        run_pattern_analysis()  # 이제 정의된 함수 호출
+        run_volatility_skew_screening()
         run_portfolio_management_main()
     elif args.skip_data_collection:
         print("🚀 데이터 수집 제외 실행: 스크리닝, 포트폴리오 관리")
@@ -124,24 +126,22 @@ def ensure_directories():
     for directory in directories:
         ensure_dir(directory)
 
-# run_pattern_analysis 함수 제거 (중복 기능)
-# def run_pattern_analysis():
-#     """VCP 및 Cup-with-Handle 패턴 분석을 실행합니다."""
-#     try:
-#         print("\n🔍 VCP 및 Cup-with-Handle 패턴 분석을 실행합니다...")
-#         output_dir = os.path.join(RESULTS_VER2_DIR, 'pattern_analysis_results')
-#         os.makedirs(output_dir, exist_ok=True)
-#         
-#         analyze_tickers_from_results(
-#             results_dir=RESULTS_DIR,
-#             data_dir=DATA_US_DIR,
-#             output_dir=output_dir
-#         )
-#         
-#         print("✅ 패턴 분석이 완료되었습니다.")
-#     except Exception as e:
-#         print(f"❌ 패턴 분석 중 오류 발생: {e}")
-#         print(traceback.format_exc())
+def run_pattern_analysis():
+    try:
+        print("\n📊 패턴 분석 시작...")
+        
+        results_dir = RESULTS_DIR
+        data_dir = DATA_US_DIR
+        output_dir = os.path.join(RESULTS_DIR, 'results2')  # 경로 변경: results_ver2/pattern_analysis_results → results/results2
+        
+        # 패턴 분석 실행
+        analyze_tickers_from_results(results_dir, data_dir, output_dir)
+        
+        print("✅ 패턴 분석 완료.")
+        
+    except Exception as e:
+        print(f"❌ 패턴 분석 중 오류 발생: {e}")
+        print(traceback.format_exc())
 
 
 def collect_data_main():
@@ -161,13 +161,18 @@ def run_all_screening_processes():
     try:
         # 1. 기본 스크리닝
         print("\n⏳ 1단계: 통합 스크리닝 실행 중...")
-        run_integrated_screening(market_type='us', filter_type='all')
+        run_integrated_screening()
         print("✅ 1단계: 통합 스크리닝 완료.")
 
-        # 2. 고급 재무 스크리닝
+        # 2. 고급 재무 스크리닝 - 매개변수 제거
         print("\n⏳ 2단계: 고급 재무 스크리닝 실행 중...")
-        run_advanced_financial_screening(US_WITH_RS_PATH, ADVANCED_FINANCIAL_RESULTS_PATH)
+        run_advanced_financial_screening()  # 매개변수 제거
         print("✅ 2단계: 고급 재무 스크리닝 완료.")
+
+        # 3. 새로운 티커 추적
+        print("\n⏳ 3단계: 새로운 티커 추적 실행 중...")
+        track_new_tickers(ADVANCED_FINANCIAL_RESULTS_PATH)
+        print("✅ 3단계: 새로운 티커 추적 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:

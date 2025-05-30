@@ -25,42 +25,9 @@ from utils import (
 )
 
 
-def run_strategy(total_capital=100000, update_existing=False):
+def run_strategy1_screening(total_capital=100000, update_existing=False):
     """
-    전략 1: 트렌드 하이 모멘텀 롱 (Long Trend High Momentum)
-    
-    필터:
-    - 최근 20일 일평균 거래금액 5천만 달러 초과
-    - 최소 주가 $5 ($5 미만 주식은 제외. $5~10는 일부 투자 가치 있다고 판단)
-    
-    설정:
-    - S&P500 지수가 100일 이동평균 위에 있어야 전체 시장이 상승 추세임
-    - 25일 이동평균 > 50일 이동평균이어야 함
-    
-    순위:
-    - 보유 포지션 초과 시 최근 200거래일 중 변동성 가장 높은 순서
-    - 변동성이 같다면 최근 200거래일 중 상승률 높은 순서
-    
-    시장 진입:
-    - 매수는 시장가 주문
-    
-    손절매:
-    - 매수 당일, 체결가 기준 20일 ATR의 5배 위 지점에 추격 역지정가 주문 설정
-    
-    시장 재진입:
-    - 손절매 후 다음 날 매수 신호 재발생 시 재매수
-    
-    수익 보호:
-    - 최초 손절매와 동시에 25%의 추격 역지정가 주문 설정
-    - 주가 상승 시 손절가보다 높은 곳으로 자동 이동
-    
-    차익 실현:
-    - 목표 수익 없음. 최대 상승할 때까지 보유
-    
-    포지션 크기:
-    - 최대 10개 포지션
-    - 포지션당 총자산의 2% 리스크
-    - 포지션별 최대 총자산의 10% 자산 배분
+    전략 1: 트렌드 하이 모멘텀 롱 스크리닝
     
     Args:
         total_capital: 총 자본금 (기본값: 10만 달러)
@@ -68,10 +35,10 @@ def run_strategy(total_capital=100000, update_existing=False):
     """
     print("\n🔍 전략 1: 트렌드 하이 모멘텀 롱 스크리닝 시작...")
     
-    # 결과 파일 경로
-    results_output_dir = os.path.join(RESULTS_VER2_DIR, 'results') # 통합 results 디렉토리
-    ensure_dir(results_output_dir)
-    result_file = os.path.join(results_output_dir, 'strategy1_results.csv')
+    # 결과 파일 경로 - buy 폴더로 변경
+    buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
+    ensure_dir(buy_dir)
+    result_file = os.path.join(buy_dir, 'strategy1_results.csv')
     
     try:
         # SPY 데이터 로드 및 조건 확인
@@ -189,6 +156,11 @@ def run_strategy(total_capital=100000, update_existing=False):
 
         # 결과 저장
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')
+        
+        # JSON 파일도 저장
+        json_file = result_file.replace('.csv', '.json')
+        result_df_to_save.to_json(json_file, orient='records', force_ascii=False, indent=2)
+        
         print(f"✅ 전략 1 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
         
         # 상위 종목 출력
@@ -255,3 +227,8 @@ if __name__ == "__main__":
     print("\n📊 전략 1 스크리닝을 실행합니다. (결과 파일 생성)")
     run_strategy(total_capital=100000, update_existing=False) 
     print("\n💡 포트폴리오 통합 관리는 'run_integrated_portfolio.py'를 사용하세요.")
+
+
+def run_strategy(total_capital=100000):
+    """Wrapper function for main.py compatibility"""
+    return run_strategy1_screening(total_capital=total_capital, update_existing=False)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# 전략 3: 평균회귀 셀오프 롱 (Long Mean Reversion Selloff)
+# 전랙 3: 평균회귀 셀오프 롱 (Long Mean Reversion Selloff)
 
 import os
 import traceback
@@ -25,52 +25,20 @@ from utils import (
 )
 
 
-def run_strategy(total_capital=100000, update_existing=False):
+def run_strategy3_screening(total_capital=100000, update_existing=False):
     """
-    전략 3: 평균회귀 셀오프 롱 스크리닝 시작...
-    
-    필터:
-    - 주가 최소 $1 이상.
-    - 최근 50일 평균 거래량 100만 주 이상.
-    - 최근 10일 ATR ≥ 5% (변동성 확보 필수).
-    
-    설정:
-    - 종가가 150일 이동평균선 위.
-    - 최근 3일간 12.5% 이상 하락했을 것.
-    
-    순위:
-    - 최근 3일간 가장 큰 하락폭을 보인 종목 순으로 정렬.
-    
-    시장 진입:
-    - 직전 종가보다 7% 낮은 가격에 지정가 매수.
-    
-    손절매:
-    - 체결가 기준, 최근 10일 ATR의 2.5배 아래에 손절 지정가 설정.
-    
-    시장 재진입:
-    - 손절 후에도 동일 신호 발생 시 재진입 가능.
-    
-    수익 보호:
-    - 없음. 초단기 전략이며, 추격 역지정가 없음.
-    
-    차익 실현:
-    - 수익률 4% 이상 발생 시 다음 날 종가에 매도.
-    - 3일 이내 목표 미도달 시, 장 마감 시 종가로 강제 매도.
-    
-    포지션 크기:
-    - 최대 10개 포지션.
-    - 포지션당 자산 대비 2% 리스크, 최대 10% 자산 배분.
+    전랙 3: 평균회귀 셀오프 롱 스크리닝
     
     Args:
-        total_capital: 총 자산 (기본값: 100000)
+        total_capital: 총 자본금 (기본값: 10만 달러)
         update_existing: 기존 포트폴리오 업데이트 여부 (기본값: False)
     """
-    print("\n🔍 전략 3: 평균회귀 셀오프 롱 스크리닝 시작...")
+    print("\n🔍 전랙 3: 평균회귀 셀오프 롱 스크리닝 시작...")
     
-    # 결과 파일 경로
-    results_output_dir = os.path.join(RESULTS_VER2_DIR, 'results') # 통합 results 디렉토리
-    ensure_dir(results_output_dir)
-    result_file = os.path.join(results_output_dir, 'strategy3_results.csv')
+    # 결과 파일 경로 - buy 폴더로 변경
+    buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
+    ensure_dir(buy_dir)
+    result_file = os.path.join(buy_dir, 'strategy3_results.csv')
     
     try:
         # strategy3.md에는 S&P500 조건이 명시되어 있지 않으므로 개별 종목 조건만 확인
@@ -152,7 +120,7 @@ def run_strategy(total_capital=100000, update_existing=False):
                 '수익률': 0.0, # 초기 수익률
                 '차익실현': f'{round(entry_price * 1.04, 2)} (4% 수익) 또는 3일 후 청산',
                 '손절매': round(stop_loss_price, 2), # 계산된 손절매 가격
-                '수익보호': '없음', # 이 전략에서는 수익보호 없음
+                '수익보호': '없음', # 이 전랙에서는 수익보호 없음
                 '롱여부': True,
                 'price_drop_3d': price_change_3d # 정렬용
             })
@@ -175,23 +143,31 @@ def run_strategy(total_capital=100000, update_existing=False):
         result_df_to_save = result_df[strategy_result_columns]
 
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')
-        print(f"✅ 전략 3 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
         
-        print("\n🏆 전략 3 상위 종목 (스크리닝 결과):")
+        # JSON 파일도 저장
+        json_file = result_file.replace('.csv', '.json')
+        result_df_to_save.to_json(json_file, orient='records', force_ascii=False, indent=2)
+        
+        print(f"✅ 전랙 3 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
+        print("\n🏆 전랙 3 상위 종목 (스크리닝 결과):")
         print(result_df_to_save)
         
         
     except Exception as e:
-        print(f"❌ 전략 3 스크리닝 오류: {e}")
+        print(f"❌ 전랙 3 스크리닝 오류: {e}")
         print(traceback.format_exc())
 
 
 
 
 
+def run_strategy(total_capital=100000):
+    """Wrapper function for main.py compatibility"""
+    return run_strategy3_screening(total_capital=total_capital, update_existing=False)
+
 if __name__ == "__main__":
     ensure_dir(RESULTS_VER2_DIR)
     ensure_dir(os.path.join(RESULTS_VER2_DIR, 'results')) # 통합 results 디렉토리
     
-    print("\n📊 전략 3 스크리닝을 실행합니다. 포트폴리오 관리는 run_integrated_portfolio.py를 이용해주세요.")
+    print("\n📊 전랙 3 스크리닝을 실행합니다. 포트폴리오 관리는 run_integrated_portfolio.py를 이용해주세요.")
     run_strategy()

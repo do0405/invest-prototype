@@ -25,49 +25,13 @@ from utils import (
 )
 
 
-def run_strategy(total_capital=100000, update_existing=False):
-    """
-    전략 4: 트렌드 저변동성 롱 (Long Trend Low Volatility)
-
-    필터:
-    - 최근 50일 평균 일일 거래 금액이 1억 달러 이상.
-    - 최근 120일간의 종가를 기준으로 계산한 연환산 변동성이 10%에서 40% 사이에 있는 종목만 선별
-
-    설정:
-    - S&P500 지수가 200일 이동평균 위에 있을 것 (시장 전체가 상승장일 때만 투자).
-    - 개별 주가 역시 200일 이동평균 위에 있어야 함.
-
-    순위:
-    - 최근 4일간 RSI가 가장 낮은 순서
-
-    시장 진입:
-    - 장 시작 시 시장가 매수 (슬리피지와 상관없이 반드시 매수).
-
-    손절매:
-    - 최근 40일 ATR의 1.5배 아래에 손절라인 설정.
-
-    시장 재진입:
-    - 가능. 같은 조건 다시 충족되면 재진입.
-
-    수익 보호:
-    - 20%의 추격 역지정가 주문 설정 → 상승 지속 시 수익 확보.
-
-    차익 실현:
-    - 추세가 지속되는 한 차익 실현 없음, 계속 보유.
-
-    포지션 크기:
-    - 포지션별 자산 대비 2% 리스크.
-    - 포지션당 최대 10% 자산 배분, 최대 10개 포지션.
-
-    Args:
-        total_capital: 총 자산 (기본값: 100000)
-        update_existing: 기존 포트폴리오 업데이트 여부 (기본값: False)
-    """
+def run_strategy4_screening():
     print("\n🔍 전략 4: 트렌드 저변동성 롱 스크리닝 시작...")
 
-    # 결과 파일 경로
-    ensure_dir(RESULTS_DIR)
-    result_file = os.path.join(RESULTS_DIR, 'strategy4_results.csv')
+    # 결과 파일 경로 - buy 폴더로 변경
+    buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
+    ensure_dir(buy_dir)
+    result_file = os.path.join(buy_dir, 'strategy4_results.csv')
 
     try:
         # 설정 1: S&P 500 지수가 200일 이동평균 위에 있을 것
@@ -181,8 +145,12 @@ def run_strategy(total_capital=100000, update_existing=False):
         result_df_to_save = result_df[strategy_result_columns]
 
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')
+        
+        # JSON 파일도 저장
+        json_file = result_file.replace('.csv', '.json')
+        result_df_to_save.to_json(json_file, orient='records', force_ascii=False, indent=2)
+        
         print(f"✅ 전략 4 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
-
         print("\n🏆 전략 4 상위 종목 (스크리닝 결과):")
         print(result_df_to_save)
 
@@ -236,6 +204,10 @@ def get_latest_price_data_high(symbol):
         print(f"❌ {symbol} 가격 데이터 가져오기 오류: {e}")
         return None, None
 
+
+def run_strategy(total_capital=100000):
+    """Wrapper function for main.py compatibility"""
+    return run_strategy4_screening()
 
 if __name__ == "__main__":
     ensure_dir(RESULTS_VER2_DIR) # RESULTS_DIR 대신 RESULTS_VER2_DIR 사용
