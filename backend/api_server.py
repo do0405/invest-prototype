@@ -1,9 +1,15 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pandas as pd
 import os
-from config import RESULTS_DIR, RESULTS_VER2_DIR
+import sys
 import glob
+
+# 프로젝트 루트 디렉토리를 Python 경로에 추가
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from config import RESULTS_DIR, RESULTS_VER2_DIR
 
 app = Flask(__name__)
 CORS(app)  # CORS 허용

@@ -1,7 +1,13 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import os
+import sys
 import glob
 from typing import Dict, List, Optional
+
+# 프로젝트 루트 디렉토리를 Python 경로에 추가
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from config import RESULTS_DIR, RESULTS_VER2_DIR
 
 class DataManager:

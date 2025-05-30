@@ -1,6 +1,9 @@
 # Xing et al.(2010) 기반 변동성 스큐 역전 전략 종목 스크리너
 
+# -*- coding: utf-8 -*-
+
 import os
+import sys
 import pandas as pd
 import numpy as np
 import yfinance as yf
@@ -8,9 +11,12 @@ import requests
 import traceback
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Any
-from config import RESULTS_VER2_DIR
+
+# 프로젝트 루트 디렉토리를 Python 경로에 추가
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from config import RESULTS_VER2_DIR, OPTION_VOLATILITY_DIR
 from utils import ensure_dir
-from config import OPTION_VOLATILITY_DIR
 
 class VolatilitySkewScreener:
     """Xing et al.(2010) 논문 기반 변동성 스큐 역전 전략 스크리너"""

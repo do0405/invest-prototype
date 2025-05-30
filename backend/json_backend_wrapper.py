@@ -1,7 +1,13 @@
-"""기존 코드를 백엔드 형태로 래핑하는 모듈"""
+# -*- coding: utf-8 -*-
 
 import pandas as pd
+import os
+import sys
 from typing import Dict, Any, List
+
+# 프로젝트 루트 디렉토리를 Python 경로에 추가
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from api_utils import DataManager
 
 class BackendWrapper:
