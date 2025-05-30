@@ -1,0 +1,14 @@
+# VCP 및 Cup-with-Handle 패턴 탐지 모듈 의존성
+
+# 기본 데이터 분석 라이브러리
+pandas>=1.3.0
+numpy>=1.21.0
+scipy>=1.7.0
+
+# 패턴 탐지 라이브러리
+cookstock>=0.1.0
+canslimTechnical>=0.1.0
+
+# 시각화 (선택사항)
+matplotlib>=3.5.0
+plotly>=5.0.0
