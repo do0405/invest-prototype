@@ -626,7 +626,15 @@ class StrategyPortfolioIntegrator:
                 symbol = screening_row['종목명']
                 
                 # 시장 진입가 처리
-                entry_price_str = screening_row['매수가'] # '시장 진입가' -> '매수가'
+                #entry_price_str = screening_row['매수가'] # '시장 진입가' -> '매수가'
+                if '매수가' in screening_row:
+                    entry_price_str = screening_row['매수가']
+                elif '시장 진입가' in screening_row: # '시장 진입가' 컬럼 확인
+                    entry_price_str = screening_row['시장 진입가']
+                    print(f"INFO: {strategy_name} - {symbol} 종목의 '매수가'가 없어 '시장 진입가' 컬럼을 사용합니다.")
+                else:
+                    print(f"⚠️ {strategy_name} - {symbol}: '매수가' 또는 '시장 진입가' 컬럼을 찾을 수 없습니다. 해당 종목을 건너<0xEB><0><0x81>니다.")
+                    continue
                 if str(entry_price_str).lower() == '시장가': # Ensure robust comparison
                     current_price = self._get_current_price(symbol)
                     if current_price is None:
