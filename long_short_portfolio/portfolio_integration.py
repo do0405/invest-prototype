@@ -549,6 +549,9 @@ class StrategyPortfolioIntegrator:
             if report_data:
                 report_df = pd.DataFrame(report_data)
                 report_df.to_csv(report_file, index=False, encoding='utf-8-sig')
+# JSON 파일 생성 추가
+                json_file = report_file.replace('.csv', '.json')
+                report_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
                 print(f"✅ 일일 리포트 생성 완료: {report_file}")
             else:
                 print("ℹ️ 리포트할 데이터가 없습니다.")
@@ -605,6 +608,9 @@ class StrategyPortfolioIntegrator:
                 ])
                 self._ensure_directory(result_file)
                 results_df.to_csv(result_file, index=False, encoding='utf-8-sig')
+# JSON 파일 생성 추가
+                json_file = result_file.replace('.csv', '.json')
+                results_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
                 print(f"📝 {strategy_name}: 초기 결과 파일 생성됨")
             else:
                 print(f"⚠️ {strategy_name}: 결과 파일 없음 또는 비어있음 ({result_file}). 업데이트를 건너뜁니다.")
@@ -776,6 +782,9 @@ class StrategyPortfolioIntegrator:
                 results_df = pd.DataFrame(updated_positions)
                 self._ensure_directory(result_file)
                 results_df.to_csv(result_file, index=False, encoding='utf-8-sig')
+# JSON 파일 생성 추가
+                json_file = result_file.replace('.csv', '.json')
+                results_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
                 print(f"✅ {strategy_name} 포트폴리오 업데이트 완료")
 
         except Exception as e:
@@ -933,6 +942,9 @@ class StrategyPortfolioIntegrator:
             
             portfolio_df = pd.DataFrame(portfolio_entries)
             portfolio_df.to_csv(portfolio_file, index=False, encoding='utf-8-sig')
+# JSON 파일 생성 추가
+            json_file = portfolio_file.replace('.csv', '.json')
+            portfolio_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
             
         except Exception as e:
             print(f"❌ 포트폴리오 저장 오류: {e}")

@@ -144,7 +144,12 @@ def track_new_tickers(advanced_financial_results_path):
         
     # 현재 us_with_rs.csv를 이전 파일로 백업
     try:
+        # 이전 결과 백업
         current_us_with_rs.to_csv(PREVIOUS_US_WITH_RS_PATH, index=False)
+        # JSON 파일 생성 추가
+        json_path = PREVIOUS_US_WITH_RS_PATH.replace('.csv', '.json')
+        current_us_with_rs.to_json(json_path, orient='records', indent=2, force_ascii=False)
+        
     except Exception as e:
         print(f"경고: 현재 us_with_rs.csv 파일을 백업하는 중 오류가 발생했습니다: {e}")
     
@@ -159,6 +164,8 @@ def track_new_tickers(advanced_financial_results_path):
     # 결과 저장
     try:
         new_tickers_df.to_csv(NEW_TICKERS_PATH, index=False)
+        json_path = NEW_TICKERS_PATH.replace('.csv', '.json')
+        new_tickers_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
         print(f"새로 추가된 티커 정보를 {NEW_TICKERS_PATH}에 저장했습니다.")
         print(f"현재 추적 중인 티커 수: {len(new_tickers_df)}")
     except Exception as e:

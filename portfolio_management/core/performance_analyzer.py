@@ -242,14 +242,14 @@ class PerformanceAnalyzer:
             return 1.0
             
     def calculate_strategy_performance(self, positions_df: pd.DataFrame) -> Dict[str, Dict]:
-        """전략별 성과 분석"""
+        """전랙별 성과 분석"""
         try:
             if positions_df.empty:
                 return {}
                 
             strategy_performance = {}
             
-            # 전략별 그룹화
+            # 전랙별 그룹화
             for strategy in positions_df['strategy'].unique():
                 strategy_positions = positions_df[positions_df['strategy'] == strategy]
                 
@@ -259,7 +259,7 @@ class PerformanceAnalyzer:
                 if closed_positions.empty:
                     continue
                     
-                # 전략별 성과 계산
+                # 전랙별 성과 계산
                 total_trades = len(closed_positions)
                 winning_trades = len(closed_positions[closed_positions['realized_pnl'] > 0])
                 win_rate = (winning_trades / total_trades) * 100
@@ -304,7 +304,7 @@ class PerformanceAnalyzer:
             return strategy_performance
             
         except Exception as e:
-            print(f"❌ 전략별 성과 분석 오류: {e}")
+            print(f"❌ 전랙별 성과 분석 오류: {e}")
             return {}
             
     def _calculate_consecutive_trades(self, returns: pd.Series) -> Tuple[int, int]:
@@ -377,7 +377,11 @@ class PerformanceAnalyzer:
         """일별 성과 데이터 저장"""
         try:
             file_path = os.path.join(self.performance_dir, 'daily_performance.csv')
+            # 일일 성과 저장
             self.daily_performance.to_csv(file_path, index=False)
+            # JSON 파일 생성 추가
+            json_path = file_path.replace('.csv', '.json')
+            self.daily_performance.to_json(json_path, orient='records', indent=2, force_ascii=False)
             
         except Exception as e:
             print(f"❌ 일별 성과 저장 오류: {e}")
@@ -410,7 +414,7 @@ class PerformanceAnalyzer:
                 daily_returns = self.daily_performance['daily_return']
                 risk_metrics = self.calculate_risk_metrics(daily_returns)
                 
-            # 전략별 성과
+            # 전랙별 성과
             strategy_metrics = self.calculate_strategy_performance(positions_df)
             
             # 월별 성과 (일별 데이터가 있는 경우)
@@ -512,3 +516,4 @@ class PerformanceAnalyzer:
             
         except Exception as e:
             print(f"❌ 성과 리포트 저장 오류: {e}")
+            return {}

@@ -30,7 +30,11 @@ def filter_new_tickers():
     print(f"4. 필터링 후 데이터: {len(filtered_df)} 행 (제거됨: {len(new_tickers_df) - len(filtered_df)} 행)")
     
     # 결과를 원래 파일에 저장
+    # 필터링된 결과 저장
     filtered_df.to_csv(new_tickers_path, index=False)
+    # JSON 파일 생성 추가
+    json_path = new_tickers_path.replace('.csv', '.json')
+    filtered_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
     print(f"5. 필터링된 데이터를 {new_tickers_path}에 저장했습니다.")
     
     # 제거된 심볼 목록 출력

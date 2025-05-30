@@ -404,7 +404,11 @@ class PortfolioManager:
             positions_df = self.position_tracker.get_positions_dataframe()
             if not positions_df.empty:
                 positions_file = os.path.join(export_dir, f'positions_{timestamp}.csv')
+                # 포지션 저장
                 positions_df.to_csv(positions_file, index=False, encoding='utf-8-sig')
+                # JSON 파일 생성 추가
+                json_file = positions_file.replace('.csv', '.json')
+                positions_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
                 exported_files['positions'] = positions_file
                 
             # 성과 데이터

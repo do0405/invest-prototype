@@ -608,8 +608,10 @@ def run_advanced_financial_screening(force_update=False):
                     final_df = final_df.drop('is_perfect', axis=1)  # 임시 컬럼 제거
                     
                     # 결과 저장 (간소화된 컬럼만)
-                    final_df.to_csv(ADVANCED_FINANCIAL_RESULTS_PATH, index=False, mode='w')  # mode='w'로 변경하여 덮어쓰기
-                    print(f"✅ RS 점수가 포함된 최종 결과 저장 완료: {len(final_df)}개 종목")
+                    final_df.to_csv(ADVANCED_FINANCIAL_RESULTS_PATH, index=False, mode='w')
+                    # JSON 파일 생성 추가
+                    json_path = ADVANCED_FINANCIAL_RESULTS_PATH.replace('.csv', '.json')
+                    final_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
                     
                     # 에러가 있는 종목 출력
                     error_df = final_df[final_df['has_error'] == True]
@@ -624,8 +626,10 @@ def run_advanced_financial_screening(force_update=False):
                     print(top_10[['symbol', 'fin_met_count', 'rs_score', 'total_percentile', 'has_error']])
                 else:
                     # RS 점수가 없는 경우
-                    result_df.to_csv(ADVANCED_FINANCIAL_RESULTS_PATH, index=False, mode='w')  # mode='w'로 변경하여 덮어쓰기
-                    print(f"✅ 재무제표 스크리닝 결과 저장 완료: {len(result_df)}개 종목")
+                    result_df.to_csv(ADVANCED_FINANCIAL_RESULTS_PATH, index=False, mode='w')
+                    # JSON 파일 생성 추가
+                    json_path = ADVANCED_FINANCIAL_RESULTS_PATH.replace('.csv', '.json')
+                    result_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
                     
                     # 에러가 있는 종목 출력
                     error_df = result_df[result_df['has_error'] == True]

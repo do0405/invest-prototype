@@ -674,6 +674,9 @@ class VolatilitySkewScreener:
         
         # CSV 저장
         df.to_csv(filepath, index=False, encoding='utf-8-sig')
+        # JSON 파일 생성 추가
+        json_filepath = filepath.replace('.csv', '.json')
+        df.to_json(json_filepath, orient='records', indent=2, force_ascii=False)
         
         print(f"\n💾 결과 저장 완료: {filepath}")
         return filepath

@@ -200,7 +200,11 @@ def analyze_tickers_from_results(results_dir, data_dir, output_dir='../results2'
         
         # 결과 저장
         output_file = os.path.join(output_dir, 'pattern_analysis_results.csv')
+        # 결과 저장
         results_df.to_csv(output_file, index=False, encoding='utf-8-sig')
+        # JSON 파일 생성 추가
+        json_file = output_file.replace('.csv', '.json')
+        results_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
         print(f"✅ 분석 결과 저장 완료: {output_file}")
         
         return results_df

@@ -170,7 +170,11 @@ def fill_missing_business_days_with_yfinance(csv_file, output_file=None):
             if output_file is None:
                 output_file = csv_file
                 
+            # 결합된 데이터 저장
             df_combined.to_csv(output_file, index=False)
+            # JSON 파일 생성 추가
+            json_file = output_file.replace('.csv', '.json')
+            df_combined.to_json(json_file, orient='records', indent=2, force_ascii=False)
             print(f"✅ 영업일 데이터 채움 완료: {os.path.basename(csv_file)} ({len(df)} → {len(df_combined)} 행)")
             return True
         else:

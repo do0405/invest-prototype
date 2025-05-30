@@ -96,6 +96,9 @@ def filter_us():
     
     # 결과를 원본 파일에 덮어쓰기
     sorted_df.to_csv(input_file, index=False)
+    # JSON 파일 생성 추가
+    json_file = input_file.replace('.csv', '.json')
+    sorted_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
     
     # 필터링 결과 출력
     print(f'[US] 총 {len(df)}개 중 {len(filtered_df)}개 종목이 모든 조건을 만족함')
@@ -171,6 +174,10 @@ def run_integrated_screening():
         
         ensure_dir(RESULTS_DIR)
         filtered_df.to_csv(INTEGRATED_RESULTS_PATH, index=False)
+        # JSON 파일 생성 추가
+        json_path = INTEGRATED_RESULTS_PATH.replace('.csv', '.json')
+        filtered_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
+        
         print(f"✅ 통합 스크리닝 결과 저장 완료: {INTEGRATED_RESULTS_PATH}")
         print(f"✅ 저장된 컬럼: {', '.join(selected_columns)}")
         

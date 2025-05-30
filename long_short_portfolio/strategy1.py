@@ -80,6 +80,10 @@ def run_strategy(total_capital=100000, update_existing=False):
             print("❌ SPY 조건을 충족하지 않습니다. 스크리닝을 중단합니다.")
             # 빈 결과 파일 생성
             pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, mode='w', encoding='utf-8-sig')
+            # JSON 파일 생성 추가
+            json_file = result_file.replace('.csv', '.json')
+            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_json(json_file, orient='records', indent=2, force_ascii=False)
+            
             return
         
         # 개별 CSV 파일 로드
