@@ -12,9 +12,12 @@ const inter = Inter({ subsets: ['latin'] });
 
 // 예시 데이터 (실제로는 API 등에서 가져와야 함)
 const strategies = [
-  { id: 'strategy-1', name: 'Strategy Alpha' },
-  { id: 'strategy-2', name: 'Strategy Beta' },
-  { id: 'strategy-3', name: 'Strategy Gamma' },
+  { id: 'strategy1', name: 'Strategy Alpha' },
+  { id: 'strategy2', name: 'Strategy Beta' },
+  { id: 'strategy3', name: 'Strategy Gamma' },
+  { id: 'strategy4', name: 'Strategy Delta' },
+  { id: 'strategy5', name: 'Strategy Epsilon' },
+  { id: 'strategy6', name: 'Strategy Zeta' },
 ];
 
 export default function RootLayout({

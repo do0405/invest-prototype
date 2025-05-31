@@ -5,6 +5,7 @@ import pandas as pd
 import os
 import sys
 import glob
+import json  # 추가된 import
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -70,7 +71,12 @@ def get_integrated_results():
 def get_portfolio_by_strategy(strategy_name):
     """전략별 포트폴리오 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, f'{strategy_name}_results.json')
+        # Check in buy directory first
+        json_file = os.path.join(RESULTS_VER2_DIR, 'buy', f'{strategy_name}_results.json')
+        if not os.path.exists(json_file):
+            # Check in sell directory
+            json_file = os.path.join(RESULTS_VER2_DIR, 'sell', f'{strategy_name}_results.json')
+        
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
             return jsonify({
@@ -125,6 +131,32 @@ def run_screening():
         })
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/markminervini/<screener_name>', methods=['GET'])
+def get_markminervini_results(screener_name):
+    """Markminervini 스크리너 결과 반환"""
+    try:
+        # Check main results directory
+        results_path = 'c:/Users/HOME/Desktop/invest_prototype/results'
+        json_file = os.path.join(results_path, f'{screener_name}.json')
+        
+        # Check results2 subdirectory for pattern analysis
+        if not os.path.exists(json_file) and screener_name == 'pattern_analysis_results':
+            json_file = os.path.join(results_path, 'results2', f'{screener_name}.json')
+        
+        if os.path.exists(json_file):
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({
+                'success': True,
+                'data': data,
+                'total_count': len(data) if isinstance(data, list) else 0
+            })
+        else:
+            return jsonify({'success': False, 'error': f'File not found: {screener_name}'}), 404
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
