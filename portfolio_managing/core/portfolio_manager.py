@@ -151,47 +151,57 @@ class PortfolioManager:
             print(f"❌ {strategy_name} 결과 로드 실패: {e}")
             return None
     
-    def process_strategy_signals(self, strategy_name: str) -> bool:
-        """전략 신호를 포트폴리오에 적용"""
-        try:
-            # 전략 결과 로드
-            strategy_df = self.load_strategy_results(strategy_name)
-            if strategy_df is None:
-                return False
-            
-            strategy_config = self.strategy_configs[strategy_name]
-            position_type = strategy_config['type']
-            
-            print(f"\n📊 {strategy_config['name']} 신호 처리 중...")
-            
-            added_count = 0
-            current_portfolio_value = self.get_portfolio_value()
-            
-            for _, row in strategy_df.iterrows():
-                symbol = row['종목명']
-                weight_pct = row['비중(%)'] / 100.0  # 퍼센트를 소수로 변환
+    def process_strategy_signals(self, strategy_name: str, results_df: pd.DataFrame) -> int:
+        """전략 신호 처리 및 포지션 추가"""
+        added_count = 0
+        current_portfolio_value = self.get_current_portfolio_value()
+        
+        print(f"📊 {self.strategy_configs[strategy_name]['name']} 신호 처리 중...")
+        
+        for _, row in results_df.iterrows():
+            try:
+                symbol = str(row['종목명']).strip()
+                if not symbol or symbol == 'nan':
+                    continue
                 
-                # 매수가 처리 (시장가인 경우 현재가 사용)
-                if row['매수가'] == '시장가':
-                    current_price = self.position_tracker.get_current_price(symbol)
-                    if current_price is None:
-                        print(f"⚠️ {symbol} 현재가를 가져올 수 없습니다")
-                        continue
-                    entry_price = current_price
+                # 현재가 가져오기
+                current_price = self.get_current_price(symbol)
+                if current_price is None:
+                    continue
+                
+                # 포지션 타입 결정
+                position_type = 'LONG' if row.get('롱여부', True) else 'SHORT'
+                
+                # 진입가 설정
+                if '매수가' in row and pd.notna(row['매수가']):
+                    entry_price = float(row['매수가'])
                 else:
-                    try:
-                        entry_price = float(row['매수가'])
-                    except:
-                        print(f"⚠️ {symbol} 매수가 형식 오류: {row['매수가']}")
-                        continue
+                    entry_price = current_price
                 
-                # 포지션 크기 계산
-                position_value = current_portfolio_value * weight_pct
-                quantity = position_value / entry_price
+                # 비중 계산
+                if '비중(%)' in row and pd.notna(row['비중(%)']):
+                    weight_pct = float(row['비중(%)']) / 100.0
+                else:
+                    weight_pct = self.strategy_configs[strategy_name]['position_limit'] / 100.0
+                    
+                    # 최대 포지션 크기 제한
+                    max_position_size = self.strategy_configs[strategy_name]['max_position_size']
+                    if weight_pct > max_position_size:
+                        weight_pct = max_position_size
+                        
+                        if weight_pct <= 0:
+                            continue
                 
-                # 포지션 추가
-                if self.position_tracker.add_position(
-                    symbol, position_type, quantity, entry_price, strategy_name, weight_pct
+                # ATR 값 계산 (리스크 관리용)
+                atr_value = self.calculate_atr(symbol)
+                
+                # 포지션 추가 (기존 add_position 대신 add_position_with_strategy 사용)
+                if self.position_tracker.add_position_with_strategy(
+                    symbol=symbol, 
+                    strategy_name=strategy_name, 
+                    current_price=current_price, 
+                    weight=weight_pct,
+                    atr_value=atr_value
                 ):
                     # 손절매 설정
                     if '손절매' in row and pd.notna(row['손절매']):
@@ -208,19 +218,37 @@ class PortfolioManager:
                         )
                     
                     added_count += 1
-                    print(f"✅ {symbol} {position_type} 포지션 추가: {quantity:.2f}주 @ ${entry_price:.2f}")
             
-            # 전략을 설정에 추가
-            if strategy_name not in self.config['strategies']:
-                self.config['strategies'].append(strategy_name)
-                self.save_portfolio_config()
+            except Exception as e:
+                print(f"⚠️ {symbol} 신호 처리 중 오류: {e}")
+                continue
+        
+        print(f"✅ {strategy_name}: {added_count}개 포지션 추가 완료")
+        return added_count
+
+    def calculate_atr(self, symbol: str, period: int = 14) -> float:
+        """ATR(Average True Range) 계산"""
+        try:
+            import yfinance as yf
+            ticker = yf.Ticker(symbol)
+            hist = ticker.history(period=f"{period + 5}d")
             
-            print(f"✅ {strategy_config['name']} 처리 완료: {added_count}/{len(strategy_df)}개 포지션")
-            return True
+            if len(hist) < period:
+                return None
+            
+            # True Range 계산
+            high_low = hist['High'] - hist['Low']
+            high_close = abs(hist['High'] - hist['Close'].shift(1))
+            low_close = abs(hist['Low'] - hist['Close'].shift(1))
+            
+            true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
+            atr = true_range.rolling(window=period).mean().iloc[-1]
+            
+            return float(atr) if pd.notna(atr) else None
             
         except Exception as e:
-            print(f"❌ {strategy_name} 신호 처리 실패: {e}")
-            return False
+            print(f"⚠️ {symbol} ATR 계산 실패: {e}")
+            return None
     
     def process_all_strategies(self) -> bool:
         """모든 전략 신호를 일괄 처리"""

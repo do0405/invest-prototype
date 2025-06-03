@@ -198,13 +198,13 @@
     "HigherLows":true
   },
   {
-    "symbol":"NCL",
-    "rs_score":99.1865733114,
+    "symbol":"DUOL",
+    "rs_score":97.0345963756,
     "contraction_score":15,
-    "fin_met_count":5,
-    "VDU":true,
+    "fin_met_count":8,
+    "VDU":false,
     "PriceRange":false,
-    "ATRContract":false,
+    "ATRContract":true,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -242,13 +242,13 @@
     "HigherLows":false
   },
   {
-    "symbol":"DUOL",
-    "rs_score":97.0345963756,
+    "symbol":"TDUP",
+    "rs_score":99.7631795717,
     "contraction_score":15,
-    "fin_met_count":8,
+    "fin_met_count":6,
     "VDU":false,
-    "PriceRange":false,
-    "ATRContract":true,
+    "PriceRange":true,
+    "ATRContract":false,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -319,13 +319,13 @@
     "HigherLows":true
   },
   {
-    "symbol":"UTI",
-    "rs_score":97.6009060956,
+    "symbol":"NFLX",
+    "rs_score":94.8929159802,
     "contraction_score":15,
-    "fin_met_count":5,
+    "fin_met_count":8,
     "VDU":false,
-    "PriceRange":true,
-    "ATRContract":false,
+    "PriceRange":false,
+    "ATRContract":true,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -363,10 +363,10 @@
     "HigherLows":false
   },
   {
-    "symbol":"BROS",
-    "rs_score":94.9958813839,
+    "symbol":"UTI",
+    "rs_score":97.6009060956,
     "contraction_score":15,
-    "fin_met_count":8,
+    "fin_met_count":5,
     "VDU":false,
     "PriceRange":true,
     "ATRContract":false,
@@ -374,13 +374,13 @@
     "HigherLows":false
   },
   {
-    "symbol":"AVPT",
-    "rs_score":83.3504942339,
+    "symbol":"BROS",
+    "rs_score":94.9958813839,
     "contraction_score":15,
-    "fin_met_count":6,
+    "fin_met_count":8,
     "VDU":false,
-    "PriceRange":false,
-    "ATRContract":true,
+    "PriceRange":true,
+    "ATRContract":false,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -528,13 +528,13 @@
     "HigherLows":false
   },
   {
-    "symbol":"NFLX",
-    "rs_score":94.8929159802,
+    "symbol":"NCL",
+    "rs_score":99.1865733114,
     "contraction_score":15,
-    "fin_met_count":8,
-    "VDU":false,
+    "fin_met_count":5,
+    "VDU":true,
     "PriceRange":false,
-    "ATRContract":true,
+    "ATRContract":false,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -594,15 +594,15 @@
     "HigherLows":true
   },
   {
-    "symbol":"TDUP",
-    "rs_score":99.7631795717,
+    "symbol":"PLTR",
+    "rs_score":98.2084019769,
     "contraction_score":15,
-    "fin_met_count":6,
+    "fin_met_count":9,
     "VDU":false,
-    "PriceRange":true,
+    "PriceRange":false,
     "ATRContract":false,
     "VolDowntrend":true,
-    "HigherLows":false
+    "HigherLows":true
   },
   {
     "symbol":"CPRX",
@@ -649,13 +649,13 @@
     "HigherLows":false
   },
   {
-    "symbol":"FSEA",
-    "rs_score":92.9571663921,
+    "symbol":"AVPT",
+    "rs_score":83.3504942339,
     "contraction_score":15,
-    "fin_met_count":5,
+    "fin_met_count":6,
     "VDU":false,
-    "PriceRange":true,
-    "ATRContract":false,
+    "PriceRange":false,
+    "ATRContract":true,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -737,13 +737,13 @@
     "HigherLows":false
   },
   {
-    "symbol":"BSAC",
-    "rs_score":93.5543657331,
+    "symbol":"FSEA",
+    "rs_score":92.9571663921,
     "contraction_score":15,
     "fin_met_count":5,
     "VDU":false,
-    "PriceRange":false,
-    "ATRContract":true,
+    "PriceRange":true,
+    "ATRContract":false,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -759,13 +759,13 @@
     "HigherLows":false
   },
   {
-    "symbol":"OLO",
-    "rs_score":94.7693574959,
-    "contraction_score":10,
-    "fin_met_count":6,
+    "symbol":"BSAC",
+    "rs_score":93.5543657331,
+    "contraction_score":15,
+    "fin_met_count":5,
     "VDU":false,
     "PriceRange":false,
-    "ATRContract":false,
+    "ATRContract":true,
     "VolDowntrend":true,
     "HigherLows":false
   },
@@ -792,21 +792,10 @@
     "HigherLows":false
   },
   {
-    "symbol":"ATRO",
-    "rs_score":97.9098023064,
+    "symbol":"ODD",
+    "rs_score":97.4876441516,
     "contraction_score":10,
-    "fin_met_count":8,
-    "VDU":false,
-    "PriceRange":false,
-    "ATRContract":false,
-    "VolDowntrend":true,
-    "HigherLows":false
-  },
-  {
-    "symbol":"PLTR",
-    "rs_score":98.2084019769,
-    "contraction_score":10,
-    "fin_met_count":9,
+    "fin_met_count":7,
     "VDU":false,
     "PriceRange":false,
     "ATRContract":false,
@@ -825,10 +814,21 @@
     "HigherLows":false
   },
   {
-    "symbol":"ODD",
-    "rs_score":97.4876441516,
+    "symbol":"ATRO",
+    "rs_score":97.9098023064,
     "contraction_score":10,
-    "fin_met_count":7,
+    "fin_met_count":8,
+    "VDU":false,
+    "PriceRange":false,
+    "ATRContract":false,
+    "VolDowntrend":true,
+    "HigherLows":false
+  },
+  {
+    "symbol":"OLO",
+    "rs_score":94.7693574959,
+    "contraction_score":10,
+    "fin_met_count":6,
     "VDU":false,
     "PriceRange":false,
     "ATRContract":false,
