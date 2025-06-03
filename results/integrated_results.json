@@ -140,13 +140,6 @@
     "rs_score":95.3562602965
   },
   {
-    "symbol":"KD",
-    "met_count":8,
-    "fin_met_count":8,
-    "total_met_count":16,
-    "rs_score":95.3459637562
-  },
-  {
     "symbol":"BROS",
     "met_count":8,
     "fin_met_count":8,
@@ -180,13 +173,6 @@
     "fin_met_count":8,
     "total_met_count":16,
     "rs_score":92.2055189456
-  },
-  {
-    "symbol":"ZS",
-    "met_count":8,
-    "fin_met_count":8,
-    "total_met_count":16,
-    "rs_score":91.9995881384
   },
   {
     "symbol":"COMM",
@@ -1092,13 +1078,6 @@
     "rs_score":93.523476112
   },
   {
-    "symbol":"FUTU",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":93.3587314662
-  },
-  {
     "symbol":"PBI",
     "met_count":8,
     "fin_met_count":5,
@@ -1160,6 +1139,13 @@
     "fin_met_count":5,
     "total_met_count":13,
     "rs_score":92.1643327842
+  },
+  {
+    "symbol":"ZS",
+    "met_count":8,
+    "fin_met_count":5,
+    "total_met_count":13,
+    "rs_score":91.9995881384
   },
   {
     "symbol":"PODD",
@@ -1624,13 +1610,6 @@
     "rs_score":96.447693575
   },
   {
-    "symbol":"ASA",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":96.3962108731
-  },
-  {
     "symbol":"SNT",
     "met_count":8,
     "fin_met_count":4,
@@ -1916,13 +1895,6 @@
     "fin_met_count":4,
     "total_met_count":12,
     "rs_score":90.6507413509
-  },
-  {
-    "symbol":"ULTA",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":90.5992586491
   },
   {
     "symbol":"MGYR",
@@ -2331,6 +2303,13 @@
     "rs_score":93.410214168
   },
   {
+    "symbol":"FUTU",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":93.3587314662
+  },
+  {
     "symbol":"SII",
     "met_count":8,
     "fin_met_count":3,
@@ -2371,13 +2350,6 @@
     "fin_met_count":3,
     "total_met_count":11,
     "rs_score":92.6791598023
-  },
-  {
-    "symbol":"LI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.9584019769
   },
   {
     "symbol":"CKPT",
@@ -2483,13 +2455,6 @@
     "fin_met_count":3,
     "total_met_count":11,
     "rs_score":88.1486820428
-  },
-  {
-    "symbol":"BMA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.0354200988
   },
   {
     "symbol":"BK",
@@ -3143,6 +3108,13 @@
     "rs_score":96.4373970346
   },
   {
+    "symbol":"ASA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":96.3962108731
+  },
+  {
     "symbol":"DGP",
     "met_count":8,
     "fin_met_count":1,
@@ -3232,6 +3204,13 @@
     "fin_met_count":1,
     "total_met_count":9,
     "rs_score":95.397446458
+  },
+  {
+    "symbol":"KD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.3459637562
   },
   {
     "symbol":"SBSW",
@@ -3577,6 +3556,13 @@
     "rs_score":92.0098846787
   },
   {
+    "symbol":"LI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.9584019769
+  },
+  {
     "symbol":"HERO",
     "met_count":8,
     "fin_met_count":1,
@@ -3708,6 +3694,13 @@
     "fin_met_count":1,
     "total_met_count":9,
     "rs_score":90.6301482702
+  },
+  {
+    "symbol":"ULTA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.5992586491
   },
   {
     "symbol":"EZBC",
@@ -3925,6 +3918,13 @@
     "fin_met_count":1,
     "total_met_count":9,
     "rs_score":88.210461285
+  },
+  {
+    "symbol":"BMA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.0354200988
   },
   {
     "symbol":"EIS",

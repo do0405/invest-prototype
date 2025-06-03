@@ -145,7 +145,7 @@ class StrategyPortfolioIntegrator:
                     symbol = row['종목명']
                     # '매수가' 컬럼 값 확인
                     entry_price_str = str(row['매수가']).strip()
-                    weight_pct = float(row['비중']) # '비중(%)' -> '비중'
+                    weight_pct = float(row['비중(%)']) # 컬럼명 통일
 
                     order_type_to_use = OrderType.LIMIT
                     price_to_use = None
@@ -230,7 +230,7 @@ class StrategyPortfolioIntegrator:
                                 'entry_price': actual_entry_price_for_position, # 주문 시점의 가격 (시장가는 예상가)
                                 'quantity': quantity,
                                 'stop_loss': self._parse_stop_loss(row.get('손절매', '')),
-                                'profit_target': self._parse_profit_target(row.get('차익실현', '')),
+                                'profit_target': self._parse_profit_target(row.get('차익실현', ''), actual_entry_price_for_position),
                                 'trailing_stop': row.get('수익보호', '') != '없음',
                                 'entry_date': datetime.now(),
                                 'order_id': order_id
@@ -247,7 +247,45 @@ class StrategyPortfolioIntegrator:
                     traceback.print_exc() # 상세 오류 출력
         
         print(f"\n✅ 총 {total_orders}개 주문 생성 완료")
+    def _calculate_holding_days(self, entry_date: datetime) -> int:
+        """매수일부터 현재까지의 영업일 수 계산"""
+        try:
+            import pandas as pd
+            from pandas.tseries.offsets import BDay
+        
+            current_date = datetime.now().date()
+            entry_date_only = entry_date.date()
+        
+        # 영업일 기준으로 계산
+            business_days = pd.bdate_range(start=entry_date_only, end=current_date)
+            return len(business_days) - 1  # 시작일 제외
+        
+        except Exception as e:
+            print(f"⚠️ 영업일 계산 오류: {e}")
+            # 일반 날짜 차이로 대체
+            return (datetime.now().date() - entry_date.date()).days
+
+def _check_time_based_exit(self, position_info: dict, holding_days: int) -> bool:
+    """시간 경과에 따른 청산 조건 체크"""
+    strategy = position_info['strategy']
     
+    # 전략별 최대 보유 기간 설정
+    max_holding_days = {
+        'strategy1': 30,  # 30 영업일
+        'strategy2': 25,  # 25 영업일
+        'strategy3': 20,  # 20 영업일
+        'strategy4': 15,  # 15 영업일
+        'strategy5': 10,  # 10 영업일
+        'strategy6': 5    # 5 영업일
+    }
+    
+    max_days = max_holding_days.get(strategy, 30)
+    
+    if holding_days >= max_days:
+        print(f"⏰ 시간 경과 청산: {position_info['symbol']} ({strategy}) - {holding_days}일 경과")
+        return True
+        
+    return False    
     def _parse_stop_loss(self, stop_loss_str: str) -> Optional[float]:
         """손절매 문자열에서 가격 추출"""
         try:
@@ -263,20 +301,34 @@ class StrategyPortfolioIntegrator:
             print(f"⚠️ 손절매 가격 파싱 실패: {stop_loss_str}")
         return None
     
-    def _parse_profit_target(self, profit_target_str: str) -> Optional[float]:
-        """차익실현 문자열에서 가격 추출"""
+    def _parse_profit_target(self, profit_target_str: str, entry_price: float = None) -> Optional[float]:
+        """차익실현 문자열에서 가격 추출 - 5%/4% 수익 기준 지원"""
         try:
             if pd.isna(profit_target_str) or profit_target_str == '없음':
                 return None
-            
-            # 숫자 부분만 추출
+        
+            profit_target_str = str(profit_target_str).lower()
+        
+        # 5% 수익 기준
+            if '5%' in profit_target_str or '5퍼센트' in profit_target_str:
+                if entry_price:
+                    return entry_price * 1.05
+        
+        # 4% 수익 기준
+            if '4%' in profit_target_str or '4퍼센트' in profit_target_str:
+                if entry_price:
+                    return entry_price * 1.04
+        
+        # 숫자 부분만 추출 (기존 로직)
             import re
             numbers = re.findall(r'\d+\.?\d*', str(profit_target_str))
             if numbers:
                 return float(numbers[0])
+            
         except (ValueError, TypeError):
             print(f"⚠️ 차익실현 가격 파싱 실패: {profit_target_str}")
         return None
+        
     
     def _parse_trailing_stop(self, trailing_stop_str: str) -> bool:
         """수익보호 문자열을 boolean으로 변환"""
@@ -303,31 +355,39 @@ class StrategyPortfolioIntegrator:
         except (ValueError, TypeError):
             print(f"⚠️ 비중 파싱 실패: {weight_str}")
             return 0.0
-    
+
     def update_positions(self):
         """포지션 업데이트 및 손절매/차익실현 체크"""
         print("\n🔄 포지션 업데이트 중...")
-        
+    
         positions_to_close = []
-        
+    
         for position_key, position_info in self.active_positions.items():
             try:
                 symbol = position_info['symbol']
                 strategy = position_info['strategy']
-                
-                # 현재 가격 조회
+            
+            # 현재 가격 조회 (최신 종가)
                 current_price = self._get_current_price(symbol)
                 if current_price is None:
                     continue
-                
-                # 수익률 계산
-                entry_price = position_info['entry_price']
+            
+            # 수익률 계산 (시장 진입가 vs 최신 종가)
+                entry_price = position_info['entry_price']  # 시장 진입가
                 is_long = position_info['is_long']
-                
+            
                 if is_long:
                     pnl_pct = ((current_price - entry_price) / entry_price) * 100
                 else:
                     pnl_pct = ((entry_price - current_price) / entry_price) * 100
+            
+            # 영업일 수 계산
+                holding_days = self._calculate_holding_days(position_info['entry_date'])
+            
+            # 시간 경과에 따른 청산 체크
+                if self._check_time_based_exit(position_info, holding_days):
+                    positions_to_close.append((position_key, 'time_based'))
+                    continue
                 
                 # 손절매 체크
                 if position_info['stop_loss'] is not None:
@@ -339,36 +399,41 @@ class StrategyPortfolioIntegrator:
                         print(f"🛑 손절매 발동: {symbol} ({strategy}) - 현재가: ${current_price:.2f}, 손절가: ${position_info['stop_loss']:.2f}")
                         positions_to_close.append((position_key, 'stop_loss'))
                         continue
-                
-                # 차익실현 체크
+            
+            # 차익실현 체크 (5%/4% 수익 기준)
                 if position_info['profit_target'] is not None:
                     if is_long and current_price >= position_info['profit_target']:
-                        print(f"💰 차익실현: {symbol} ({strategy}) - 현재가: ${current_price:.2f}, 목표가: ${position_info['profit_target']:.2f}")
+                        profit_pct = ((current_price - entry_price) / entry_price) * 100
+                        print(f"💰 차익실현: {symbol} ({strategy}) - 현재가: ${current_price:.2f}, 목표가: ${position_info['profit_target']:.2f} ({profit_pct:.2f}% 수익)")
                         positions_to_close.append((position_key, 'profit_target'))
                         continue
                     elif not is_long and current_price <= position_info['profit_target']:
-                        print(f"💰 차익실현: {symbol} ({strategy}) - 현재가: ${current_price:.2f}, 목표가: ${position_info['profit_target']:.2f}")
+                        profit_pct = ((entry_price - current_price) / entry_price) * 100
+                        print(f"💰 차익실현: {symbol} ({strategy}) - 현재가: ${current_price:.2f}, 목표가: ${position_info['profit_target']:.2f} ({profit_pct:.2f}% 수익)")
                         positions_to_close.append((position_key, 'profit_target'))
                         continue
-                
-                # 트레일링 스톱 업데이트 (수익보호가 있는 경우)
+            
+            # 트레일링 스톱 업데이트 (수익보호가 있는 경우)
                 if position_info['trailing_stop']:
                     self._update_trailing_stop(position_key, current_price)
-                
-                # 포지션 정보 업데이트
+            
+            # 포지션 정보 업데이트
                 position_info['current_price'] = current_price
                 position_info['pnl_pct'] = pnl_pct
+                position_info['holding_days'] = holding_days
                 position_info['last_update'] = datetime.now()
-                
-                print(f"📊 {symbol} ({strategy}): ${current_price:.2f} ({pnl_pct:+.2f}%)")
-                
+            
+                print(f"📊 {symbol} ({strategy}): ${current_price:.2f} ({pnl_pct:+.2f}%) - {holding_days}일 보유")
+            
             except Exception as e:
                 print(f"❌ 포지션 업데이트 오류 ({position_key}): {e}")
-        
-        # 청산할 포지션 처리
+    
+    # 청산할 포지션 처리
         for position_key, reason in positions_to_close:
             self._close_position(position_key, reason)
-    
+
+
+
     def _get_current_price(self, symbol: str) -> Optional[float]:
         """현재 가격 조회"""
         try:
@@ -648,7 +713,7 @@ class StrategyPortfolioIntegrator:
                         print(f"⚠️ {symbol}: 유효하지 않은 진입가 ({entry_price_str})")
                         continue
 
-                weight_pct = self._parse_weight_pct(screening_row['비중']) # '비중(%)' -> '비중'
+                weight_pct = self._parse_weight_pct(screening_row['비중(%)']) # 컬럼명 통일
                 stop_loss_price = self._parse_stop_loss(screening_row.get('손절매', ''))
                 profit_target_price = self._parse_profit_target(screening_row.get('차익실현', ''))
                 use_trailing_stop = True if strategy_name == 'strategy1' else self._parse_trailing_stop(screening_row.get('수익보호', '없음'))

@@ -1,0 +1,19 @@
+﻿symbol,company_name,skew_index,expected_return,confidence_score,base_confidence,data_source,data_quality_grade,confidence_numeric,quality_description
+FOX,Fox Corporation,-44.2378388671875,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
+INVH,Invitation Homes Inc.,-23.144299804687506,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
+NEM,Newmont Corporation,-5.322212402343752,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+PLTR,Palantir Technologies Inc.,-4.5409702148437425,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+GEV,GE Vernova Inc.,-4.370073486328129,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+DXCM,"DexCom, Inc.",-4.1991767578125,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+KMI,"Kinder Morgan, Inc.",-2.832002929687505,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+VST,Vistra Corp.,-2.5878647460937487,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+MPC,Marathon Petroleum Corporation,-2.343726562499998,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+PWR,"Quanta Services, Inc.",-2.0690711059570264,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+PODD,Insulet Corporation,-1.7150707397461051,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+RL,Ralph Lauren Corporation,-1.263415100097659,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+FOXA,Fox Corporation,-0.5859316406249926,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+META,"Meta Platforms, Inc.",-0.4333452758789047,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CVS,CVS Health Corporation,-0.3417934570312475,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+HAS,"Hasbro, Inc.",-0.2441381835937506,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+EVRG,"Evergy, Inc.",-0.17089672851562376,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CRWD,"CrowdStrike Holdings, Inc.",-0.04272418212890594,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
