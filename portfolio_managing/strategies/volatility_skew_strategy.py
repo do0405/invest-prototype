@@ -24,18 +24,10 @@ class VolatilitySkewPortfolioStrategy:
     def __init__(self, alpha_vantage_key: Optional[str] = None):
         self.screener = VolatilitySkewScreener(alpha_vantage_key=alpha_vantage_key)
         self.strategy_name = "volatility_skew"
-        self.strategy_type = "LONG"  # 낮은 스큐 종목을 매수
-        
-        # 포트폴리오 설정
-        self.max_positions = 10
-        self.risk_per_position = 0.02  # 2% 리스크
-        self.max_position_size = 0.10  # 최대 10% 할당
-        self.rebalance_frequency = 30  # 30일마다 리밸런싱
         
         # 결과 저장 경로
         ensure_dir(OPTION_VOLATILITY_DIR)
         self.portfolio_file = os.path.join(OPTION_VOLATILITY_DIR, 'portfolio_signals.csv')
-        self.performance_file = os.path.join(OPTION_VOLATILITY_DIR, 'performance_tracking.csv')
     
     def run_screening_and_portfolio_creation(self) -> Tuple[List[Dict], str]:
         """
@@ -51,15 +43,13 @@ class VolatilitySkewPortfolioStrategy:
                 print("⚠️ 스크리닝 결과가 없습니다.")
                 return [], ""
             
-            # 포트폴리오 신호 생성
+            # 포트폴리오 신호 생성 (간소화)
             portfolio_signals = self._create_portfolio_signals(screening_results)
             
             # 신호 저장
             signals_file = self._save_portfolio_signals(portfolio_signals)
             
             print(f"✅ 변동성 스큐 포트폴리오 신호 생성 완료: {len(portfolio_signals)}개")
-            print(f"📁 신호 파일: {signals_file}")
-            
             return portfolio_signals, signals_file
             
         except Exception as e:

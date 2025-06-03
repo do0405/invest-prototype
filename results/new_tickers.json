@@ -8,19 +8,27 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"SSNC",
-    "fin_met_count":5,
-    "rs_score":82.3620263591,
+    "symbol":"TGS",
+    "fin_met_count":8,
+    "rs_score":82.9592257002,
     "met_count":8,
-    "total_met_count":13,
+    "total_met_count":16,
     "added_date":1747958400000
   },
   {
-    "symbol":"GGAL",
-    "fin_met_count":5,
-    "rs_score":83.3401976936,
+    "symbol":"MNSO",
+    "fin_met_count":7,
+    "rs_score":92.8233113674,
     "met_count":8,
-    "total_met_count":13,
+    "total_met_count":15,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"EAT",
+    "fin_met_count":4,
+    "rs_score":91.5465403624,
+    "met_count":8,
+    "total_met_count":12,
     "added_date":1747958400000
   },
   {
@@ -64,14 +72,6 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"TGS",
-    "fin_met_count":8,
-    "rs_score":82.9592257002,
-    "met_count":8,
-    "total_met_count":16,
-    "added_date":1747958400000
-  },
-  {
     "symbol":"USAS",
     "fin_met_count":1,
     "rs_score":96.6330313015,
@@ -88,14 +88,6 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"MNSO",
-    "fin_met_count":7,
-    "rs_score":92.8233113674,
-    "met_count":8,
-    "total_met_count":15,
-    "added_date":1747958400000
-  },
-  {
     "symbol":"FDRV",
     "fin_met_count":1,
     "rs_score":81.733937397,
@@ -104,9 +96,65 @@
     "added_date":1747958400000
   },
   {
+    "symbol":"BROS",
+    "fin_met_count":8,
+    "rs_score":94.9958813839,
+    "met_count":8,
+    "total_met_count":16,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"DMYY",
+    "fin_met_count":1,
+    "rs_score":94.2648270181,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"TOI",
+    "fin_met_count":5,
+    "rs_score":99.9176276771,
+    "met_count":8,
+    "total_met_count":13,
+    "added_date":1747958400000
+  },
+  {
     "symbol":"LANV",
     "fin_met_count":1,
     "rs_score":96.2520593081,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"BKNG",
+    "fin_met_count":4,
+    "rs_score":81.4971169687,
+    "met_count":8,
+    "total_met_count":12,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"NEU",
+    "fin_met_count":4,
+    "rs_score":91.1758649094,
+    "met_count":8,
+    "total_met_count":12,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"GGAL",
+    "fin_met_count":5,
+    "rs_score":83.3401976936,
+    "met_count":8,
+    "total_met_count":13,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"BH",
+    "fin_met_count":1,
+    "rs_score":89.6004942339,
     "met_count":8,
     "total_met_count":9,
     "added_date":1747958400000
@@ -120,59 +168,11 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"CYBR",
-    "fin_met_count":7,
-    "rs_score":90.0432454695,
+    "symbol":"COE",
+    "fin_met_count":6,
+    "rs_score":92.6173805601,
     "met_count":8,
-    "total_met_count":15,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"BH",
-    "fin_met_count":1,
-    "rs_score":89.6004942339,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"DMYY",
-    "fin_met_count":1,
-    "rs_score":94.2648270181,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"NEU",
-    "fin_met_count":4,
-    "rs_score":91.1758649094,
-    "met_count":8,
-    "total_met_count":12,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"BKNG",
-    "fin_met_count":4,
-    "rs_score":81.4971169687,
-    "met_count":8,
-    "total_met_count":12,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"TOI",
-    "fin_met_count":5,
-    "rs_score":99.9176276771,
-    "met_count":8,
-    "total_met_count":13,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"EAT",
-    "fin_met_count":4,
-    "rs_score":91.5465403624,
-    "met_count":8,
-    "total_met_count":12,
+    "total_met_count":14,
     "added_date":1747958400000
   },
   {
@@ -184,11 +184,11 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"BUG",
-    "fin_met_count":1,
-    "rs_score":80.4674629325,
+    "symbol":"CYBR",
+    "fin_met_count":7,
+    "rs_score":90.0432454695,
     "met_count":8,
-    "total_met_count":9,
+    "total_met_count":15,
     "added_date":1747958400000
   },
   {
@@ -200,19 +200,27 @@
     "added_date":1747958400000
   },
   {
+    "symbol":"ATAI",
+    "fin_met_count":6,
+    "rs_score":88.8694398682,
+    "met_count":8,
+    "total_met_count":14,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"SSNC",
+    "fin_met_count":5,
+    "rs_score":82.3620263591,
+    "met_count":8,
+    "total_met_count":13,
+    "added_date":1747958400000
+  },
+  {
     "symbol":"IONQ",
     "fin_met_count":4,
     "rs_score":97.2611202636,
     "met_count":8,
     "total_met_count":12,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"GTX",
-    "fin_met_count":2,
-    "rs_score":95.8401976936,
-    "met_count":8,
-    "total_met_count":10,
     "added_date":1747958400000
   },
   {
@@ -272,19 +280,27 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"COE",
-    "fin_met_count":6,
-    "rs_score":92.6173805601,
+    "symbol":"GTX",
+    "fin_met_count":2,
+    "rs_score":95.8401976936,
     "met_count":8,
-    "total_met_count":14,
+    "total_met_count":10,
     "added_date":1747958400000
   },
   {
-    "symbol":"ATAI",
-    "fin_met_count":6,
-    "rs_score":88.8694398682,
+    "symbol":"BUG",
+    "fin_met_count":1,
+    "rs_score":80.4674629325,
     "met_count":8,
-    "total_met_count":14,
+    "total_met_count":9,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"FSEA",
+    "fin_met_count":5,
+    "rs_score":92.9571663921,
+    "met_count":8,
+    "total_met_count":13,
     "added_date":1747958400000
   },
   {
@@ -296,9 +312,33 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"MO",
+    "symbol":"KTOS",
+    "fin_met_count":2,
+    "rs_score":95.3768533773,
+    "met_count":8,
+    "total_met_count":10,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"DOMO",
+    "fin_met_count":1,
+    "rs_score":92.0098846787,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"ONLN",
+    "fin_met_count":1,
+    "rs_score":80.0247116969,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747958400000
+  },
+  {
+    "symbol":"NEUE",
     "fin_met_count":5,
-    "rs_score":80.0967874794,
+    "rs_score":95.2121087315,
     "met_count":8,
     "total_met_count":13,
     "added_date":1747958400000
@@ -312,51 +352,11 @@
     "added_date":1747958400000
   },
   {
-    "symbol":"NEUE",
+    "symbol":"MO",
     "fin_met_count":5,
-    "rs_score":95.2121087315,
+    "rs_score":80.0967874794,
     "met_count":8,
     "total_met_count":13,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"FSEA",
-    "fin_met_count":5,
-    "rs_score":92.9571663921,
-    "met_count":8,
-    "total_met_count":13,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"DOMO",
-    "fin_met_count":1,
-    "rs_score":92.0098846787,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"KTOS",
-    "fin_met_count":2,
-    "rs_score":95.3768533773,
-    "met_count":8,
-    "total_met_count":10,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"ONLN",
-    "fin_met_count":1,
-    "rs_score":80.0247116969,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747958400000
-  },
-  {
-    "symbol":"BROS",
-    "fin_met_count":8,
-    "rs_score":94.9958813839,
-    "met_count":8,
-    "total_met_count":16,
     "added_date":1747958400000
   },
   {
@@ -368,11 +368,11 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"CHKP",
-    "fin_met_count":1,
-    "rs_score":93.0963420917,
+    "symbol":"SOLV",
+    "fin_met_count":5,
+    "rs_score":82.2359608449,
     "met_count":8,
-    "total_met_count":9,
+    "total_met_count":13,
     "added_date":1747872000000
   },
   {
@@ -424,33 +424,9 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"SGDJ",
+    "symbol":"CHKP",
     "fin_met_count":1,
-    "rs_score":92.849046883,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"CEF",
-    "fin_met_count":6,
-    "rs_score":90.7573415765,
-    "met_count":8,
-    "total_met_count":14,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"GPI",
-    "fin_met_count":5,
-    "rs_score":81.0200927357,
-    "met_count":8,
-    "total_met_count":13,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"MAXI",
-    "fin_met_count":1,
-    "rs_score":84.533745492,
+    "rs_score":93.0963420917,
     "met_count":8,
     "total_met_count":9,
     "added_date":1747872000000
@@ -459,6 +435,30 @@
     "symbol":"RING",
     "fin_met_count":1,
     "rs_score":94.8686244204,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"SGDJ",
+    "fin_met_count":1,
+    "rs_score":92.849046883,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"MFG",
+    "fin_met_count":3,
+    "rs_score":85.5744461618,
+    "met_count":8,
+    "total_met_count":11,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"MAXI",
+    "fin_met_count":1,
+    "rs_score":84.533745492,
     "met_count":8,
     "total_met_count":9,
     "added_date":1747872000000
@@ -504,6 +504,14 @@
     "added_date":1747872000000
   },
   {
+    "symbol":"CEF",
+    "fin_met_count":6,
+    "rs_score":90.7573415765,
+    "met_count":8,
+    "total_met_count":14,
+    "added_date":1747872000000
+  },
+  {
     "symbol":"AUMI",
     "fin_met_count":1,
     "rs_score":95.9299330242,
@@ -512,65 +520,33 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"SOLV",
+    "symbol":"NUGT",
+    "fin_met_count":1,
+    "rs_score":97.1664090675,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"GPI",
     "fin_met_count":5,
-    "rs_score":82.2359608449,
+    "rs_score":81.0200927357,
     "met_count":8,
     "total_met_count":13,
     "added_date":1747872000000
   },
   {
-    "symbol":"GDMN",
+    "symbol":"ATYR",
     "fin_met_count":1,
-    "rs_score":96.9397217929,
+    "rs_score":92.1792890263,
     "met_count":8,
     "total_met_count":9,
     "added_date":1747872000000
   },
   {
-    "symbol":"GDXJ",
+    "symbol":"IAU",
     "fin_met_count":1,
-    "rs_score":94.2606903658,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"AU",
-    "fin_met_count":6,
-    "rs_score":97.6816074189,
-    "met_count":8,
-    "total_met_count":14,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"GILD",
-    "fin_met_count":3,
-    "rs_score":91.303451829,
-    "met_count":8,
-    "total_met_count":11,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"CHTR",
-    "fin_met_count":2,
-    "rs_score":81.7104585265,
-    "met_count":8,
-    "total_met_count":10,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"NRSN",
-    "fin_met_count":2,
-    "rs_score":93.0242143225,
-    "met_count":8,
-    "total_met_count":10,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"DRD",
-    "fin_met_count":1,
-    "rs_score":96.7027305513,
+    "rs_score":92.9417825863,
     "met_count":8,
     "total_met_count":9,
     "added_date":1747872000000
@@ -584,11 +560,35 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"AEM",
-    "fin_met_count":7,
-    "rs_score":95.847501288,
+    "symbol":"DRD",
+    "fin_met_count":1,
+    "rs_score":96.7027305513,
     "met_count":8,
-    "total_met_count":15,
+    "total_met_count":9,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"AU",
+    "fin_met_count":6,
+    "rs_score":97.6816074189,
+    "met_count":8,
+    "total_met_count":14,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"CHTR",
+    "fin_met_count":2,
+    "rs_score":81.7104585265,
+    "met_count":8,
+    "total_met_count":10,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"GILD",
+    "fin_met_count":3,
+    "rs_score":91.303451829,
+    "met_count":8,
+    "total_met_count":11,
     "added_date":1747872000000
   },
   {
@@ -600,43 +600,11 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"IAU",
-    "fin_met_count":1,
-    "rs_score":92.9417825863,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"ATYR",
-    "fin_met_count":1,
-    "rs_score":92.1792890263,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"NTCT",
+    "symbol":"NRSN",
     "fin_met_count":2,
-    "rs_score":81.3498196806,
+    "rs_score":93.0242143225,
     "met_count":8,
     "total_met_count":10,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"NXT",
-    "fin_met_count":7,
-    "rs_score":96.6615146832,
-    "met_count":8,
-    "total_met_count":15,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"NUGT",
-    "fin_met_count":1,
-    "rs_score":97.1664090675,
-    "met_count":8,
-    "total_met_count":9,
     "added_date":1747872000000
   },
   {
@@ -645,6 +613,22 @@
     "rs_score":81.0097887687,
     "met_count":8,
     "total_met_count":13,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"GDMN",
+    "fin_met_count":1,
+    "rs_score":96.9397217929,
+    "met_count":8,
+    "total_met_count":9,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"NXT",
+    "fin_met_count":7,
+    "rs_score":96.6615146832,
+    "met_count":8,
+    "total_met_count":15,
     "added_date":1747872000000
   },
   {
@@ -688,11 +672,19 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"MFG",
-    "fin_met_count":3,
-    "rs_score":85.5744461618,
+    "symbol":"GDXJ",
+    "fin_met_count":1,
+    "rs_score":94.2606903658,
     "met_count":8,
-    "total_met_count":11,
+    "total_met_count":9,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"NTCT",
+    "fin_met_count":2,
+    "rs_score":81.3498196806,
+    "met_count":8,
+    "total_met_count":10,
     "added_date":1747872000000
   },
   {
@@ -704,11 +696,11 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"PHYS",
-    "fin_met_count":6,
-    "rs_score":92.7563111798,
+    "symbol":"THM",
+    "fin_met_count":2,
+    "rs_score":97.722823287,
     "met_count":8,
-    "total_met_count":14,
+    "total_met_count":10,
     "added_date":1747872000000
   },
   {
@@ -720,9 +712,9 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"SLVP",
+    "symbol":"JNUG",
     "fin_met_count":1,
-    "rs_score":89.4693456981,
+    "rs_score":97.1354971664,
     "met_count":8,
     "total_met_count":9,
     "added_date":1747872000000
@@ -792,19 +784,27 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"JNUG",
+    "symbol":"SLVP",
     "fin_met_count":1,
-    "rs_score":97.1354971664,
+    "rs_score":89.4693456981,
     "met_count":8,
     "total_met_count":9,
     "added_date":1747872000000
   },
   {
-    "symbol":"FEUZ",
-    "fin_met_count":1,
-    "rs_score":93.209685729,
+    "symbol":"CFSB",
+    "fin_met_count":4,
+    "rs_score":98.2895414735,
     "met_count":8,
-    "total_met_count":9,
+    "total_met_count":12,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"BZ",
+    "fin_met_count":5,
+    "rs_score":93.570324575,
+    "met_count":8,
+    "total_met_count":13,
     "added_date":1747872000000
   },
   {
@@ -856,19 +856,11 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"BZ",
-    "fin_met_count":5,
-    "rs_score":93.570324575,
+    "symbol":"FEUZ",
+    "fin_met_count":1,
+    "rs_score":93.209685729,
     "met_count":8,
-    "total_met_count":13,
-    "added_date":1747872000000
-  },
-  {
-    "symbol":"CFSB",
-    "fin_met_count":4,
-    "rs_score":98.2895414735,
-    "met_count":8,
-    "total_met_count":12,
+    "total_met_count":9,
     "added_date":1747872000000
   },
   {
@@ -888,19 +880,19 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"GDX",
-    "fin_met_count":1,
-    "rs_score":94.2812982998,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747872000000
-  },
-  {
     "symbol":"KEYS",
     "fin_met_count":4,
     "rs_score":81.0716125708,
     "met_count":8,
     "total_met_count":12,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"RGC",
+    "fin_met_count":1,
+    "rs_score":100.0,
+    "met_count":8,
+    "total_met_count":9,
     "added_date":1747872000000
   },
   {
@@ -952,14 +944,6 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"THM",
-    "fin_met_count":2,
-    "rs_score":97.722823287,
-    "met_count":8,
-    "total_met_count":10,
-    "added_date":1747872000000
-  },
-  {
     "symbol":"OUNZ",
     "fin_met_count":1,
     "rs_score":92.8902627512,
@@ -976,19 +960,19 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"RGC",
-    "fin_met_count":1,
-    "rs_score":100.0,
-    "met_count":8,
-    "total_met_count":9,
-    "added_date":1747872000000
-  },
-  {
     "symbol":"KGC",
     "fin_met_count":7,
     "rs_score":96.3214837713,
     "met_count":8,
     "total_met_count":15,
+    "added_date":1747872000000
+  },
+  {
+    "symbol":"GDX",
+    "fin_met_count":1,
+    "rs_score":94.2812982998,
+    "met_count":8,
+    "total_met_count":9,
     "added_date":1747872000000
   },
   {
@@ -1048,163 +1032,19 @@
     "added_date":1747872000000
   },
   {
-    "symbol":"BITU",
-    "fin_met_count":1,
-    "rs_score":85.2330795703,
-    "met_count":0,
-    "total_met_count":1,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"ZLAB",
-    "fin_met_count":9,
-    "rs_score":91.5945354052,
-    "met_count":0,
-    "total_met_count":9,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"CART",
-    "fin_met_count":3,
-    "rs_score":80.3003441443,
-    "met_count":0,
-    "total_met_count":3,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"ADP",
+    "symbol":"PHYS",
     "fin_met_count":6,
-    "rs_score":80.185629367,
-    "met_count":0,
-    "total_met_count":6,
-    "added_date":1747785600000
+    "rs_score":92.7563111798,
+    "met_count":8,
+    "total_met_count":14,
+    "added_date":1747872000000
   },
   {
-    "symbol":"ECNS",
-    "fin_met_count":1,
-    "rs_score":83.7313588487,
-    "met_count":0,
-    "total_met_count":1,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"BROG",
-    "fin_met_count":1,
-    "rs_score":93.023255814,
-    "met_count":0,
-    "total_met_count":1,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"QURE",
-    "fin_met_count":6,
-    "rs_score":98.550422359,
-    "met_count":0,
-    "total_met_count":6,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"VGZ",
-    "fin_met_count":2,
-    "rs_score":98.1958494108,
-    "met_count":0,
-    "total_met_count":2,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"HFFG",
-    "fin_met_count":4,
-    "rs_score":90.0876003754,
-    "met_count":0,
-    "total_met_count":4,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"NVCT",
-    "fin_met_count":2,
-    "rs_score":98.0915632496,
-    "met_count":0,
-    "total_met_count":2,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"OR",
-    "fin_met_count":5,
-    "rs_score":92.8981124205,
-    "met_count":0,
-    "total_met_count":5,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"HSAI",
-    "fin_met_count":6,
-    "rs_score":99.5098550422,
-    "met_count":0,
-    "total_met_count":6,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"TENX",
-    "fin_met_count":2,
-    "rs_score":90.9583898217,
-    "met_count":0,
-    "total_met_count":2,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"LARK",
-    "fin_met_count":4,
-    "rs_score":95.4621322762,
-    "met_count":0,
-    "total_met_count":4,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"TXNM",
-    "fin_met_count":4,
-    "rs_score":91.7796786981,
-    "met_count":0,
-    "total_met_count":4,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"JOF",
-    "fin_met_count":1,
-    "rs_score":89.623526958,
-    "met_count":0,
-    "total_met_count":1,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"GROY",
+    "symbol":"AEM",
     "fin_met_count":7,
-    "rs_score":91.7092501825,
-    "met_count":0,
-    "total_met_count":7,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"ZK",
-    "fin_met_count":8,
-    "rs_score":93.2401418736,
-    "met_count":0,
-    "total_met_count":8,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"ECBK",
-    "fin_met_count":1,
-    "rs_score":83.7835019293,
-    "met_count":0,
-    "total_met_count":1,
-    "added_date":1747785600000
-  },
-  {
-    "symbol":"PRPO",
-    "fin_met_count":5,
-    "rs_score":93.3361142976,
-    "met_count":0,
-    "total_met_count":5,
-    "added_date":1747785600000
+    "rs_score":95.847501288,
+    "met_count":8,
+    "total_met_count":15,
+    "added_date":1747872000000
   }
 ]

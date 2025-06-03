@@ -18,8 +18,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..',
 
 from .position_tracker import PositionTracker
 from .risk_manager import RiskManager
+from .portfolio_utils import PortfolioUtils
+from .portfolio_reporter import PortfolioReporter
 from config import RESULTS_VER2_DIR
 from utils import ensure_dir
+from .strategy_config import StrategyConfig
 
 class PortfolioManager:
     """통합 포트폴리오 관리 클래스 - 6개 전략 통합 지원"""
@@ -31,6 +34,8 @@ class PortfolioManager:
         # 핵심 모듈 초기화
         self.position_tracker = PositionTracker(portfolio_name)
         self.risk_manager = RiskManager(portfolio_name)
+        self.utils = PortfolioUtils(self)
+        self.reporter = PortfolioReporter(self)
         
         # 포트폴리오 디렉토리 설정
         self.portfolio_dir = os.path.join(RESULTS_VER2_DIR, 'portfolio_management')
@@ -39,88 +44,33 @@ class PortfolioManager:
         # 포트폴리오 설정 파일
         self.config_file = os.path.join(self.portfolio_dir, f'{portfolio_name}_config.json')
         
-        # 전략별 설정 정의
-        self.strategy_configs = {
-            'strategy1': {
-                'name': '트렌드 하이 모멘텀 롱',
-                'type': 'LONG',
-                'max_positions': 10,
-                'risk_per_position': 0.02,  # 2%
-                'max_position_size': 0.10,  # 10%
-                'trailing_stop_pct': 0.25,  # 25%
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy1_results.csv')
-            },
-            'strategy2': {
-                'name': '평균회귀 단일 숏',
-                'type': 'SHORT',
-                'max_positions': 10,
-                'risk_per_position': 0.02,  # 2%
-                'max_position_size': 0.10,  # 10%
-                'profit_target': 0.04,  # 4%
-                'max_holding_days': 2,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy2_results.csv')
-            },
-            'strategy3': {
-                'name': '전략3',
-                'type': 'LONG',
-                'max_positions': 10,
-                'risk_per_position': 0.02,
-                'max_position_size': 0.10,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy3_results.csv')
-            },
-            'strategy4': {
-                'name': '전략4',
-                'type': 'SHORT',
-                'max_positions': 10,
-                'risk_per_position': 0.02,
-                'max_position_size': 0.10,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy4_results.csv')
-            },
-            'strategy5': {
-                'name': '전략5',
-                'type': 'LONG',
-                'max_positions': 10,
-                'risk_per_position': 0.02,
-                'max_position_size': 0.10,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy5_results.csv')
-            },
-            'strategy6': {
-                'name': '전략6',
-                'type': 'SHORT',
-                'max_positions': 10,
-                'risk_per_position': 0.02,
-                'max_position_size': 0.10,
-                'result_file': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy6_results.csv')
-            }
-        }
-        
+        # 설정 로드
         self.load_portfolio_config()
     
     def load_portfolio_config(self):
         """포트폴리오 설정 로드"""
-        default_config = {
-            'initial_capital': self.initial_capital,
-            'created_date': datetime.now().strftime('%Y-%m-%d'),
-            'strategies': [],
-            'rebalance_frequency': 'daily',
-            'auto_trailing_stop': True,
-            'max_positions_per_strategy': 10,
-            'strategy_weights': {}
-        }
-        
-        if os.path.exists(self.config_file):
-            try:
+        try:
+            if os.path.exists(self.config_file):
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     self.config = json.load(f)
-            except Exception:
-                self.config = default_config
-        else:
-            self.config = default_config
-            self.save_portfolio_config()
+            else:
+                # 기본 설정
+                self.config = {
+                    'portfolio_name': self.portfolio_name,
+                    'initial_capital': self.initial_capital,
+                    'strategies': list(StrategyConfig.get_all_strategy_names()),
+                    'created_date': datetime.now().strftime('%Y-%m-%d'),
+                    'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                }
+                self.save_portfolio_config()
+        except Exception as e:
+            print(f"⚠️ 포트폴리오 설정 로드 실패: {e}")
+            self.config = {}
     
     def save_portfolio_config(self):
         """포트폴리오 설정 저장"""
         try:
+            self.config['last_updated'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 json.dump(self.config, f, indent=2, ensure_ascii=False)
         except Exception as e:
@@ -129,393 +79,551 @@ class PortfolioManager:
     def load_strategy_results(self, strategy_name: str) -> Optional[pd.DataFrame]:
         """전략 결과 파일 로드"""
         try:
-            if strategy_name not in self.strategy_configs:
-                print(f"❌ 알 수 없는 전략: {strategy_name}")
-                return None
-            
-            result_file = self.strategy_configs[strategy_name]['result_file']
-            
-            if not os.path.exists(result_file):
-                print(f"⚠️ 전략 결과 파일이 없습니다: {result_file}")
-                return None
-            
-            df = pd.read_csv(result_file, encoding='utf-8-sig')
-            
-            if df.empty:
-                print(f"⚠️ {strategy_name} 결과가 비어있습니다")
-                return None
-            
-            return df
-            
+            result_file = StrategyConfig.get_result_file_path(strategy_name)
+            if result_file and os.path.exists(result_file):
+                return pd.read_csv(result_file)
+            return None
         except Exception as e:
-            print(f"❌ {strategy_name} 결과 로드 실패: {e}")
+            print(f"⚠️ {strategy_name} 결과 로드 실패: {e}")
             return None
     
-    def process_strategy_signals(self, strategy_name: str, results_df: pd.DataFrame) -> int:
-        """전략 신호 처리 및 포지션 추가"""
-        added_count = 0
-        current_portfolio_value = self.get_current_portfolio_value()
-        
-        print(f"📊 {self.strategy_configs[strategy_name]['name']} 신호 처리 중...")
-        
-        for _, row in results_df.iterrows():
-            try:
-                symbol = str(row['종목명']).strip()
-                if not symbol or symbol == 'nan':
-                    continue
-                
-                # 현재가 가져오기
-                current_price = self.get_current_price(symbol)
-                if current_price is None:
-                    continue
-                
-                # 포지션 타입 결정
-                position_type = 'LONG' if row.get('롱여부', True) else 'SHORT'
-                
-                # 진입가 설정
-                if '매수가' in row and pd.notna(row['매수가']):
-                    entry_price = float(row['매수가'])
-                else:
-                    entry_price = current_price
-                
-                # 비중 계산
-                if '비중(%)' in row and pd.notna(row['비중(%)']):
-                    weight_pct = float(row['비중(%)']) / 100.0
-                else:
-                    weight_pct = self.strategy_configs[strategy_name]['position_limit'] / 100.0
-                    
-                    # 최대 포지션 크기 제한
-                    max_position_size = self.strategy_configs[strategy_name]['max_position_size']
-                    if weight_pct > max_position_size:
-                        weight_pct = max_position_size
-                        
-                        if weight_pct <= 0:
-                            continue
-                
-                # ATR 값 계산 (리스크 관리용)
-                atr_value = self.calculate_atr(symbol)
-                
-                # 포지션 추가 (기존 add_position 대신 add_position_with_strategy 사용)
-                if self.position_tracker.add_position_with_strategy(
-                    symbol=symbol, 
-                    strategy_name=strategy_name, 
-                    current_price=current_price, 
-                    weight=weight_pct,
-                    atr_value=atr_value
-                ):
-                    # 손절매 설정
-                    if '손절매' in row and pd.notna(row['손절매']):
-                        stop_price = float(row['손절매'])
-                        self.risk_manager.set_trailing_stop(
-                            symbol, position_type, strategy_name, entry_price, stop_price
-                        )
-                    
-                    # 수익보호 설정 (strategy1의 경우)
-                    if strategy_name == 'strategy1' and '수익보호' in row and pd.notna(row['수익보호']):
-                        trailing_stop_price = float(row['수익보호'])
-                        self.risk_manager.set_trailing_stop(
-                            symbol, position_type, strategy_name, entry_price, trailing_stop_price, is_trailing=True
-                        )
-                    
+    def process_strategy_signals(self, strategy_name: str, signals_df: pd.DataFrame) -> int:
+        """전략 신호 처리"""
+        try:
+            strategy_config = StrategyConfig.get_strategy_config(strategy_name)
+            if not strategy_config:
+                print(f"⚠️ {strategy_name} 설정을 찾을 수 없습니다")
+                return 0
+            
+            added_count = 0
+            max_positions = strategy_config.get('max_positions', 5)
+            
+            # 현재 해당 전략의 포지션 수 확인
+            current_positions = len(self.position_tracker.get_strategy_positions(strategy_name))
+            available_slots = max_positions - current_positions
+            
+            if available_slots <= 0:
+                print(f"⚠️ {strategy_name}: 최대 포지션 수 도달 ({current_positions}/{max_positions})")
+                return 0
+            
+            # 상위 신호들만 처리
+            top_signals = signals_df.head(available_slots)
+            
+            for _, signal in top_signals.iterrows():
+                if self.utils.add_position_from_signal(strategy_name, signal, strategy_config):
                     added_count += 1
             
-            except Exception as e:
-                print(f"⚠️ {symbol} 신호 처리 중 오류: {e}")
-                continue
-        
-        print(f"✅ {strategy_name}: {added_count}개 포지션 추가 완료")
-        return added_count
-
-    def calculate_atr(self, symbol: str, period: int = 14) -> float:
-        """ATR(Average True Range) 계산"""
+            return added_count
+            
+        except Exception as e:
+            print(f"❌ {strategy_name} 신호 처리 실패: {e}")
+            return 0
+    
+    def process_and_update_strategy_files(self):
+        """전략 결과 파일들을 처리하고 업데이트합니다."""
+        try:
+            print("\n🔄 전략 결과 파일 처리 및 업데이트 시작...")
+            
+            buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
+            sell_dir = os.path.join(RESULTS_VER2_DIR, 'sell')
+            
+            # buy 디렉토리 처리
+            if os.path.exists(buy_dir):
+                for file_name in os.listdir(buy_dir):
+                    if file_name.endswith('_results.csv'):
+                        file_path = os.path.join(buy_dir, file_name)
+                        self._process_strategy_file(file_path, 'buy')
+            
+            # sell 디렉토리 처리
+            if os.path.exists(sell_dir):
+                for file_name in os.listdir(sell_dir):
+                    if file_name.endswith('_results.csv'):
+                        file_path = os.path.join(sell_dir, file_name)
+                        self._process_strategy_file(file_path, 'sell')
+            
+            print("✅ 전략 결과 파일 처리 완료")
+            
+        except Exception as e:
+            print(f"❌ 전략 결과 파일 처리 실패: {e}")
+    
+    def _process_strategy_file(self, file_path: str, position_type: str):
+        """개별 전략 파일을 처리합니다."""
+        try:
+            if not os.path.exists(file_path):
+                return
+            
+            df = pd.read_csv(file_path)
+            if df.empty:
+                return
+            
+            print(f"📊 처리 중: {os.path.basename(file_path)}")
+            
+            updated = False
+            rows_to_remove = []
+            
+            for idx, row in df.iterrows():
+                # 2-1. '시장가'를 다음날 시가로 변경
+                if row['매수가'] == '시장가':
+                    next_day_open = self._get_next_day_open_price(row['종목명'], row['매수일'])
+                    if next_day_open:
+                        df.loc[idx, '매수가'] = next_day_open
+                        updated = True
+                        print(f"  📈 {row['종목명']}: 시장가 → ${next_day_open:.2f}")
+                
+                # n% 수익 목표가 계산
+                if 'n% 수익' in str(row['차익실현']):
+                    target_price = self._calculate_profit_target_price(row)
+                    if target_price:
+                        df.loc[idx, '차익실현'] = str(row['차익실현']).replace('n% 수익', f'{target_price:.2f}')
+                        updated = True
+                
+                # 2-2. n일 후 청산/강제매도 처리
+                if 'n일 후' in str(row['차익실현']):
+                    remaining_days = self._calculate_remaining_days(row['매수일'], row['차익실현'])
+                    
+                    if remaining_days == -1:  # 삭제 조건
+                        rows_to_remove.append(idx)
+                        print(f"  🗑️ {row['종목명']}: 보유기간 만료로 삭제")
+                    elif remaining_days >= 0:  # 일수 업데이트
+                        updated_condition = self._update_days_condition(row['차익실현'], remaining_days)
+                        df.loc[idx, '차익실현'] = updated_condition
+                        updated = True
+                        print(f"  ⏰ {row['종목명']}: {remaining_days}일 남음")
+            
+            # 만료된 행 제거
+            if rows_to_remove:
+                df = df.drop(rows_to_remove).reset_index(drop=True)
+                updated = True
+            
+            # 파일 저장
+            if updated:
+                df.to_csv(file_path, index=False)
+                print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
+            
+        except Exception as e:
+            print(f"❌ 파일 처리 실패 ({file_path}): {e}")
+    
+    def _get_next_day_open_price(self, symbol: str, purchase_date: str) -> Optional[float]:
+        """매수일 다음날의 시가를 가져옵니다."""
         try:
             import yfinance as yf
-            ticker = yf.Ticker(symbol)
-            hist = ticker.history(period=f"{period + 5}d")
+            from datetime import datetime, timedelta
             
-            if len(hist) < period:
-                return None
+            # 매수일 다음날 계산
+            purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
+            next_day = purchase_dt + timedelta(days=1)
             
-            # True Range 계산
-            high_low = hist['High'] - hist['Low']
-            high_close = abs(hist['High'] - hist['Close'].shift(1))
-            low_close = abs(hist['Low'] - hist['Close'].shift(1))
+            # 주말/공휴일 고려하여 최대 5일까지 확인
+            for i in range(5):
+                check_date = next_day + timedelta(days=i)
+                end_date = check_date + timedelta(days=1)
+                
+                ticker = yf.Ticker(symbol)
+                hist = ticker.history(start=check_date.strftime('%Y-%m-%d'), 
+                                    end=end_date.strftime('%Y-%m-%d'))
+                
+                if not hist.empty:
+                    return float(hist['Open'].iloc[0])
             
-            true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
-            atr = true_range.rolling(window=period).mean().iloc[-1]
-            
-            return float(atr) if pd.notna(atr) else None
+            return None
             
         except Exception as e:
-            print(f"⚠️ {symbol} ATR 계산 실패: {e}")
+            print(f"⚠️ {symbol} 다음날 시가 조회 실패: {e}")
             return None
     
-    def process_all_strategies(self) -> bool:
-        """모든 전략 신호를 일괄 처리"""
+    def _calculate_profit_target_price(self, row) -> Optional[float]:
+        """n% 수익 목표가를 계산합니다."""
         try:
-            print("\n🔄 모든 전략 신호 일괄 처리 시작...")
+            import re
             
-            success_count = 0
-            for strategy_name in self.strategy_configs.keys():
-                if self.process_strategy_signals(strategy_name):
-                    success_count += 1
+            # 매수가 확인
+            if row['매수가'] == '시장가':
+                return None  # 시장가는 먼저 처리되어야 함
             
-            print(f"\n✅ 전략 처리 완료: {success_count}/{len(self.strategy_configs)}개 성공")
-            return success_count > 0
+            purchase_price = float(row['매수가'])
+            
+            # 차익실현 조건에서 수익률 추출
+            condition = str(row['차익실현'])
+            
+            # "4% 수익" 같은 패턴 찾기
+            profit_match = re.search(r'(\d+)% 수익', condition)
+            if profit_match:
+                profit_pct = float(profit_match.group(1)) / 100
+                target_price = purchase_price * (1 + profit_pct)
+                return target_price
+            
+            return None
             
         except Exception as e:
-            print(f"❌ 전략 일괄 처리 실패: {e}")
-            return False
+            print(f"⚠️ 수익 목표가 계산 실패: {e}")
+            return None
     
-    def update_portfolio(self) -> bool:
-        """포트폴리오 전체 업데이트"""
+    def _calculate_remaining_days(self, purchase_date: str, exit_condition: str) -> int:
+        """남은 보유일을 계산합니다."""
         try:
-            print("\n🔄 포트폴리오 업데이트 시작...")
+            import re
+            from datetime import datetime
             
-            # 1. 포지션 현재가 업데이트
-            self.position_tracker.update_positions()
+            # 현재 날짜와 매수일 차이 계산
+            purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
+            current_dt = datetime.now()
+            days_held = (current_dt - purchase_dt).days
             
-            # 2. Trailing Stop 업데이트
-            positions = self.position_tracker.positions
-            stop_signals = self.risk_manager.update_trailing_stops(positions)
+            # 조건에서 원래 보유일 추출
+            condition = str(exit_condition)
             
-            # 3. 스탑 신호 처리
-            for signal in stop_signals:
-                self.position_tracker.close_position(
-                    signal['symbol'], signal['position_type'], signal['strategy']
-                )
-                self.risk_manager.remove_stop_order(
-                    signal['symbol'], signal['position_type'], signal['strategy']
-                )
-                print(f"🛑 {signal['reason']}: {signal['symbol']} {signal['position_type']}")
+            # "6일 후 강제매도" 또는 "3일 후 청산" 패턴 찾기
+            days_match = re.search(r'(\d+)일 후', condition)
+            if days_match:
+                original_days = int(days_match.group(1))
+                remaining_days = original_days - days_held
+                return remaining_days
             
-            # 4. 전략별 특수 규칙 적용
-            self.apply_strategy_specific_rules()
-            
-            # 5. 리스크 체크
-            risk_warnings = self.risk_manager.check_risk_limits(positions)
-            for warning in risk_warnings:
-                print(f"⚠️ {warning['message']}")
-            
-            print("✅ 포트폴리오 업데이트 완료")
-            return True
+            return 0
             
         except Exception as e:
-            print(f"❌ 포트폴리오 업데이트 실패: {e}")
-            return False
+            print(f"⚠️ 남은 일수 계산 실패: {e}")
+            return 0
     
-    def apply_strategy_specific_rules(self):
-        """전략별 특수 규칙 적용"""
+    def _update_days_condition(self, original_condition: str, remaining_days: int) -> str:
+        """일수 조건을 업데이트합니다."""
         try:
-            positions = self.position_tracker.positions
+            import re
             
-            for _, position in positions.iterrows():
-                strategy_name = position['strategy']
-                symbol = position['symbol']
-                
-                # Strategy2: 수익 4% 이상 또는 2일 후 청산
-                if strategy_name == 'strategy2':
-                    pnl_pct = (position['current_price'] - position['entry_price']) / position['entry_price']
-                    entry_date = pd.to_datetime(position['entry_date'])
-                    days_held = (datetime.now() - entry_date).days
-                    
-                    # 수익 4% 이상 또는 2일 경과시 청산
-                    if pnl_pct >= 0.04 or days_held >= 2:
-                        self.position_tracker.close_position(
-                            symbol, position['position_type'], strategy_name
-                        )
-                        reason = "수익목표 달성" if pnl_pct >= 0.04 else "시간 기반 청산"
-                        print(f"📈 {reason}: {symbol} 청산 (수익률: {pnl_pct:.2%})")
-                
-                # 다른 전략별 규칙도 여기에 추가 가능
-                
+            # 원래 조건에서 일수 부분만 업데이트
+            condition = str(original_condition)
+            
+            # "6일 후" → "5일 후" 형태로 변경
+            updated_condition = re.sub(r'\d+일 후', f'{remaining_days}일 후', condition)
+            
+            return updated_condition
+            
         except Exception as e:
-            print(f"⚠️ 전략별 규칙 적용 중 오류: {e}")
+            print(f"⚠️ 일수 조건 업데이트 실패: {e}")
+            return original_condition
+    
+    def get_current_price(self, symbol: str) -> float:
+        """현재가 조회"""
+        return self.utils.get_current_price(symbol)
     
     def get_portfolio_value(self) -> float:
         """현재 포트폴리오 총 가치 계산"""
-        try:
-            positions = self.position_tracker.positions
-            if positions.empty:
-                return self.initial_capital
-            
-            return positions['market_value'].sum()
-            
-        except Exception:
-            return self.initial_capital
+        return self.utils.get_portfolio_value()
     
     def get_strategy_summary(self) -> Dict:
         """전략별 포트폴리오 요약"""
-        try:
-            positions = self.position_tracker.positions
-            
-            if positions.empty:
-                return {}
-            
-            strategy_summary = {}
-            
-            for strategy_name in positions['strategy'].unique():
-                strategy_positions = positions[positions['strategy'] == strategy_name]
-                strategy_config = self.strategy_configs.get(strategy_name, {})
-                
-                total_value = strategy_positions['market_value'].sum()
-                total_pnl = strategy_positions['unrealized_pnl'].sum()
-                position_count = len(strategy_positions)
-                
-                strategy_summary[strategy_name] = {
-                    'name': strategy_config.get('name', strategy_name),
-                    'type': strategy_config.get('type', 'UNKNOWN'),
-                    'position_count': position_count,
-                    'total_value': total_value,
-                    'total_pnl': total_pnl,
-                    'weight': total_value / self.get_portfolio_value() if self.get_portfolio_value() > 0 else 0,
-                    'avg_pnl_pct': (total_pnl / (total_value - total_pnl)) * 100 if (total_value - total_pnl) > 0 else 0
-                }
-            
-            return strategy_summary
-            
-        except Exception as e:
-            print(f"⚠️ 전략별 요약 생성 실패: {e}")
-            return {}
+        return self.utils.get_strategy_summary()
     
     def get_portfolio_summary(self) -> Dict:
         """포트폴리오 종합 요약"""
-        try:
-            # 포지션 요약
-            position_summary = self.position_tracker.get_portfolio_summary()
-            
-            # 리스크 요약
-            positions = self.position_tracker.positions
-            risk_summary = self.risk_manager.get_risk_summary(positions)
-            
-            # 성과 지표
-            performance = self.position_tracker.get_performance_metrics()
-            
-            # 전략별 요약
-            strategy_summary = self.get_strategy_summary()
-            
-            # 통합 요약
-            summary = {
-                'portfolio_name': self.portfolio_name,
-                'initial_capital': self.initial_capital,
-                'current_value': self.get_portfolio_value(),
-                'total_return': self.get_portfolio_value() - self.initial_capital,
-                'total_return_pct': (self.get_portfolio_value() / self.initial_capital - 1) * 100,
-                'positions': position_summary,
-                'risk': risk_summary,
-                'performance': performance,
-                'strategies': strategy_summary,
-                'active_strategies': self.config['strategies'],
-                'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            }
-            
-            return summary
-            
-        except Exception as e:
-            print(f"⚠️ 포트폴리오 요약 생성 실패: {e}")
-            return {}
+        return self.utils.get_portfolio_summary()
     
     def generate_report(self, save_to_file: bool = True) -> str:
         """포트폴리오 리포트 생성"""
-        try:
-            summary = self.get_portfolio_summary()
-            strategy_summary = summary.get('strategies', {})
-            
-            report = f"""
-# 포트폴리오 리포트: {self.portfolio_name}
-생성일시: {summary.get('last_updated', 'N/A')}
+        return self.reporter.generate_report(save_to_file)
 
-## 📊 포트폴리오 개요
-- 초기 자본: ${summary.get('initial_capital', 0):,.2f}
-- 현재 가치: ${summary.get('current_value', 0):,.2f}
-- 총 수익: ${summary.get('total_return', 0):,.2f} ({summary.get('total_return_pct', 0):.2f}%)
-
-## 📈 포지션 현황
-- 총 포지션: {summary.get('positions', {}).get('total_positions', 0)}개
-- 롱 포지션: {summary.get('positions', {}).get('long_positions', 0)}개
-- 숏 포지션: {summary.get('positions', {}).get('short_positions', 0)}개
-- 미실현 손익: ${summary.get('positions', {}).get('total_unrealized_pnl', 0):,.2f}
-
-## 🎯 전략별 현황
-"""
-            
-            for strategy_name, strategy_data in strategy_summary.items():
-                report += f"""
-### {strategy_data['name']} ({strategy_name})
-- 타입: {strategy_data['type']}
-- 포지션 수: {strategy_data['position_count']}개
-- 총 가치: ${strategy_data['total_value']:,.2f}
-- 포트폴리오 비중: {strategy_data['weight']:.1%}
-- 평균 수익률: {strategy_data['avg_pnl_pct']:.2f}%
-- 미실현 손익: ${strategy_data['total_pnl']:,.2f}
-"""
-            
-            report += f"""
-
-## ⚠️ 리스크 관리
-- 포트폴리오 VaR: {summary.get('risk', {}).get('var_percentage', 0):.2f}%
-- 활성 스탑 오더: {summary.get('risk', {}).get('active_stop_orders', 0)}개
-- 리스크 경고: {summary.get('risk', {}).get('risk_warnings', 0)}개
-
-## 📊 성과 지표
-- 총 거래: {summary.get('performance', {}).get('total_trades', 0)}회
-- 승률: {summary.get('performance', {}).get('win_rate', 0):.1f}%
-- 평균 보유일: {summary.get('performance', {}).get('avg_holding_days', 0):.1f}일
-- 최고 수익: ${summary.get('performance', {}).get('best_trade', 0):,.2f}
-- 최대 손실: ${summary.get('performance', {}).get('worst_trade', 0):,.2f}
-"""
-            
-            if save_to_file:
-                report_file = os.path.join(self.portfolio_dir, f'{self.portfolio_name}_report.md')
-                with open(report_file, 'w', encoding='utf-8') as f:
-                    f.write(report)
-                print(f"📄 리포트 저장: {report_file}")
-            
-            return report
-            
-        except Exception as e:
-            print(f"❌ 리포트 생성 실패: {e}")
-            return ""
-    
-    # ... existing code ...
-
-# 포트폴리오 관리 함수들
-def create_portfolio_manager(portfolio_name: str = "main_portfolio", 
-                           initial_capital: float = 100000) -> PortfolioManager:
-    """포트폴리오 매니저 생성"""
-    return PortfolioManager(portfolio_name, initial_capital)
-
-def run_integrated_portfolio_management(portfolio_name: str = "main_portfolio"):
+# 통합 실행 함수들
+def run_integrated_portfolio_management():
     """통합 포트폴리오 관리 실행"""
     try:
-        print(f"\n🚀 {portfolio_name} 통합 포트폴리오 관리 시작...")
+        print("🚀 통합 포트폴리오 관리 시작")
         
-        pm = PortfolioManager(portfolio_name)
+        # 포트폴리오 매니저 초기화
+        portfolio_manager = PortfolioManager()
         
-        # 1. 모든 전략 신호 처리
-        pm.process_all_strategies()
+        # 모든 전략 처리
+        for strategy_name in StrategyConfig.get_all_strategy_names():
+            print(f"\n📊 {strategy_name} 처리 중...")
+            portfolio_manager.process_single_strategy(strategy_name)
         
-        # 2. 포트폴리오 업데이트
-        pm.update_portfolio()
+        # 청산 조건 확인
+        portfolio_manager.check_and_process_exit_conditions()
         
-        # 3. 요약 출력
-        summary = pm.get_portfolio_summary()
+        # 포트폴리오 업데이트
+        portfolio_manager.position_tracker.update_positions()
         
-        print(f"\n📊 {portfolio_name} 포트폴리오 현황:")
-        print(f"현재 가치: ${summary.get('current_value', 0):,.2f}")
-        print(f"총 수익률: {summary.get('total_return_pct', 0):.2f}%")
-        print(f"활성 포지션: {summary.get('positions', {}).get('total_positions', 0)}개")
-        print(f"활성 전략: {len(summary.get('strategies', {}))}개")
+        # 요약 출력
+        summary = portfolio_manager.get_portfolio_summary()
+        print(f"\n📈 포트폴리오 현황:")
+        print(f"   총 가치: ${summary.get('current_value', 0):,.2f}")
+        print(f"   총 수익: ${summary.get('total_return', 0):,.2f} ({summary.get('total_return_pct', 0):.2f}%)")
+        print(f"   활성 포지션: {summary.get('positions', {}).get('total_positions', 0)}개")
         
-        # 4. 리포트 생성
-        pm.generate_report()
+        # 리포트 생성
+        portfolio_manager.generate_report()
         
-        return True
+        print("✅ 통합 포트폴리오 관리 완료")
         
     except Exception as e:
         print(f"❌ 통합 포트폴리오 관리 실패: {e}")
-        return False
 
-if __name__ == "__main__":
-    # 테스트 실행
-    run_integrated_portfolio_management("test_portfolio")
+def run_individual_strategy_portfolios():
+    """개별 전략 포트폴리오 관리"""
+    try:
+        print("🚀 개별 전략 포트폴리오 관리 시작")
+        
+        for strategy_name in StrategyConfig.get_all_strategy_names():
+            print(f"\n📊 {strategy_name} 개별 처리 중...")
+            
+            # 개별 전략용 포트폴리오 매니저
+            portfolio_manager = PortfolioManager(f"{strategy_name}_portfolio")
+            
+            # 해당 전략만 처리
+            success = portfolio_manager.process_single_strategy(strategy_name)
+            
+            if success:
+                # 청산 조건 확인
+                portfolio_manager.check_and_process_exit_conditions()
+                
+                # 포트폴리오 업데이트
+                portfolio_manager.position_tracker.update_positions()
+                
+                # 개별 리포트 생성
+                portfolio_manager.generate_report()
+        
+        print("✅ 개별 전략 포트폴리오 관리 완료")
+        
+    except Exception as e:
+        print(f"❌ 개별 전략 포트폴리오 관리 실패: {e}")
+    
+    def monitor_and_process_trading_signals(self):
+        """매매 신호를 모니터링하고 조건 충족 시 데이터를 처리합니다."""
+        try:
+            print("\n🔍 매매 신호 모니터링 시작...")
+            
+            buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
+            sell_dir = os.path.join(RESULTS_VER2_DIR, 'sell')
+            
+            # Buy 폴더 처리
+            if os.path.exists(buy_dir):
+                self._process_buy_signals(buy_dir)
+            
+            # Sell 폴더 처리
+            if os.path.exists(sell_dir):
+                self._process_sell_signals(sell_dir)
+            
+            print("✅ 매매 신호 모니터링 완료")
+            
+        except Exception as e:
+            print(f"❌ 매매 신호 모니터링 실패: {e}")
+    
+    def _process_buy_signals(self, buy_dir: str):
+        """Buy 폴더의 매매 신호를 처리합니다."""
+        try:
+            for file_name in os.listdir(buy_dir):
+                if file_name.endswith('_results.csv'):
+                    file_path = os.path.join(buy_dir, file_name)
+                    self._check_buy_exit_conditions(file_path)
+                    
+        except Exception as e:
+            print(f"❌ Buy 신호 처리 실패: {e}")
+    
+    def _process_sell_signals(self, sell_dir: str):
+        """Sell 폴더의 매매 신호를 처리합니다."""
+        try:
+            for file_name in os.listdir(sell_dir):
+                if file_name.endswith('_results.csv'):
+                    file_path = os.path.join(sell_dir, file_name)
+                    self._check_sell_exit_conditions(file_path)
+                    
+        except Exception as e:
+            print(f"❌ Sell 신호 처리 실패: {e}")
+    
+    def _check_buy_exit_conditions(self, file_path: str):
+        """Buy 포지션의 청산 조건을 확인합니다."""
+        try:
+            if not os.path.exists(file_path):
+                return
+            
+            df = pd.read_csv(file_path)
+            if df.empty:
+                return
+            
+            print(f"📊 Buy 신호 확인 중: {os.path.basename(file_path)}")
+            
+            rows_to_remove = []
+            updated = False
+            
+            for idx, row in df.iterrows():
+                symbol = row['종목명']
+                purchase_price = self._parse_price(row['매수가'])
+                stop_loss = self._parse_price(row['손절매'])
+                profit_protection = self._parse_price(row['수익보호'])
+                profit_taking = self._parse_price(row['차익실현'])
+                
+                if purchase_price is None:
+                    continue
+                
+                # 최근 가격 데이터 가져오기
+                recent_data = self._get_recent_price_data(symbol)
+                if recent_data is None:
+                    continue
+                
+                recent_high = recent_data.get('high')
+                recent_low = recent_data.get('low')
+                recent_close = recent_data.get('close')
+                
+                # 수익률 업데이트
+                if recent_close and purchase_price:
+                    return_pct = ((recent_close - purchase_price) / purchase_price) * 100
+                    df.loc[idx, '수익률'] = return_pct
+                    updated = True
+                
+                # Buy 포지션 청산 조건 확인
+                should_exit = False
+                exit_reason = ""
+                
+                # 1. 최근 저가가 손절매가 아래로 떨어진 경우
+                if stop_loss and recent_low and recent_low <= stop_loss:
+                    should_exit = True
+                    exit_reason = f"손절매 조건 (저가 {recent_low:.2f} <= 손절매 {stop_loss:.2f})"
+                
+                # 2. 최근 저가가 수익보호가 아래로 떨어진 경우
+                elif profit_protection and recent_low and recent_low <= profit_protection:
+                    should_exit = True
+                    exit_reason = f"수익보호 조건 (저가 {recent_low:.2f} <= 수익보호 {profit_protection:.2f})"
+                
+                # 3. 최근 고가가 차익실현가를 넘어간 경우
+                elif profit_taking and recent_high and recent_high >= profit_taking:
+                    should_exit = True
+                    exit_reason = f"차익실현 조건 (고가 {recent_high:.2f} >= 차익실현 {profit_taking:.2f})"
+                
+                if should_exit:
+                    rows_to_remove.append(idx)
+                    print(f"  🔄 {symbol}: {exit_reason} - 데이터 삭제")
+            
+            # 조건 충족 행 제거
+            if rows_to_remove:
+                df = df.drop(rows_to_remove).reset_index(drop=True)
+                updated = True
+            
+            # 파일 저장
+            if updated:
+                df.to_csv(file_path, index=False)
+                print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
+                
+        except Exception as e:
+            print(f"❌ Buy 청산 조건 확인 실패 ({file_path}): {e}")
+    
+    def _check_sell_exit_conditions(self, file_path: str):
+        """Sell 포지션의 청산 조건을 확인합니다."""
+        try:
+            if not os.path.exists(file_path):
+                return
+            
+            df = pd.read_csv(file_path)
+            if df.empty:
+                return
+            
+            print(f"📊 Sell 신호 확인 중: {os.path.basename(file_path)}")
+            
+            rows_to_remove = []
+            updated = False
+            
+            for idx, row in df.iterrows():
+                symbol = row['종목명']
+                sell_price = self._parse_price(row['매도가'] if '매도가' in row else row['매수가'])  # Sell 파일의 경우
+                stop_loss = self._parse_price(row['손절매'])
+                profit_protection = self._parse_price(row['수익보호'])
+                profit_taking = self._parse_price(row['차익실현'])
+                
+                if sell_price is None:
+                    continue
+                
+                # 최근 가격 데이터 가져오기
+                recent_data = self._get_recent_price_data(symbol)
+                if recent_data is None:
+                    continue
+                
+                recent_high = recent_data.get('high')
+                recent_low = recent_data.get('low')
+                recent_close = recent_data.get('close')
+                
+                # 수익률 업데이트 (Sell 포지션은 가격 하락 시 수익)
+                if recent_close and sell_price:
+                    return_pct = ((sell_price - recent_close) / sell_price) * 100
+                    df.loc[idx, '수익률'] = return_pct
+                    updated = True
+                
+                # Sell 포지션 청산 조건 확인
+                should_exit = False
+                exit_reason = ""
+                
+                # 1. 최근 고가가 손절매가 위로 올라간 경우
+                if stop_loss and recent_high and recent_high >= stop_loss:
+                    should_exit = True
+                    exit_reason = f"손절매 조건 (고가 {recent_high:.2f} >= 손절매 {stop_loss:.2f})"
+                
+                # 2. 최근 고가가 수익보호가 위로 올라간 경우
+                elif profit_protection and recent_high and recent_high >= profit_protection:
+                    should_exit = True
+                    exit_reason = f"수익보호 조건 (고가 {recent_high:.2f} >= 수익보호 {profit_protection:.2f})"
+                
+                # 3. 최근 저가가 차익실현가보다 떨어진 경우
+                elif profit_taking and recent_low and recent_low <= profit_taking:
+                    should_exit = True
+                    exit_reason = f"차익실현 조건 (저가 {recent_low:.2f} <= 차익실현 {profit_taking:.2f})"
+                
+                if should_exit:
+                    rows_to_remove.append(idx)
+                    print(f"  🔄 {symbol}: {exit_reason} - 데이터 삭제")
+            
+            # 조건 충족 행 제거
+            if rows_to_remove:
+                df = df.drop(rows_to_remove).reset_index(drop=True)
+                updated = True
+            
+            # 파일 저장
+            if updated:
+                df.to_csv(file_path, index=False)
+                print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
+                
+        except Exception as e:
+            print(f"❌ Sell 청산 조건 확인 실패 ({file_path}): {e}")
+    
+    def _parse_price(self, price_str) -> Optional[float]:
+        """가격 문자열을 파싱합니다."""
+        try:
+            if pd.isna(price_str) or price_str == '없음' or price_str == '시장가':
+                return None
+            
+            # 숫자가 아닌 문자 제거 후 파싱
+            import re
+            price_clean = re.sub(r'[^0-9.-]', '', str(price_str))
+            if price_clean:
+                return float(price_clean)
+            return None
+            
+        except (ValueError, TypeError):
+            return None
+    
+    def _get_recent_price_data(self, symbol: str) -> Optional[Dict]:
+        """최근 가격 데이터를 가져옵니다."""
+        try:
+            import yfinance as yf
+            from datetime import datetime, timedelta
+            
+            # 최근 5일간 데이터 가져오기
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=5)
+            
+            ticker = yf.Ticker(symbol)
+            hist = ticker.history(start=start_date.strftime('%Y-%m-%d'), 
+                                end=end_date.strftime('%Y-%m-%d'))
+            
+            if hist.empty:
+                return None
+            
+            # 가장 최근 데이터 반환
+            latest = hist.iloc[-1]
+            return {
+                'high': float(latest['High']),
+                'low': float(latest['Low']),
+                'close': float(latest['Close']),
+                'open': float(latest['Open']),
+                'volume': float(latest['Volume'])
+            }
+            
+        except Exception as e:
+            print(f"⚠️ {symbol} 가격 데이터 조회 실패: {e}")
+            return None

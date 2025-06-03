@@ -30,6 +30,7 @@ class StrategyConfig:
         "strategy1": {
             "name": "트렌드 하이 모멘텀 롱",
             "position_type": PositionType.LONG,
+            "result_file": "buy/strategy1_results.csv",
             "entry": {
                 "order_type": OrderType.MARKET,
                 "price_offset_pct": 0.0  # 시장가
@@ -55,6 +56,7 @@ class StrategyConfig:
         "strategy2": {
             "name": "평균회귀 단일 숏",
             "position_type": PositionType.SHORT,
+            "result_file": "sell/strategy2_results.csv",
             "entry": {
                 "order_type": OrderType.LIMIT,
                 "price_offset_pct": 0.04  # 전일 종가 +4%
@@ -215,3 +217,11 @@ class StrategyConfig:
         """숏 전략 여부 확인"""
         config = cls.get_strategy_config(strategy_name)
         return config.get('position_type') == PositionType.SHORT
+
+    @classmethod
+    def get_result_file_path(cls, strategy_name: str, base_dir: str) -> str:
+        """전략별 결과 파일 경로 반환"""
+        config = cls.get_strategy_config(strategy_name)
+        if config and 'result_file' in config:
+            return os.path.join(base_dir, config['result_file'])
+        return ""
