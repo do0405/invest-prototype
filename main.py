@@ -2,9 +2,13 @@
 # 투자 스크리너 - 메인 실행 파일
 
 import os
+import sys
 import argparse
 import pandas as pd
 import traceback
+
+# 프로젝트 루트 디렉토리를 Python 경로에 추가 (최우선)
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 # 데이터 수집 및 스크리닝 모듈 임포트
 from data_collector import collect_data
@@ -20,10 +24,33 @@ from config import (
 # ticker_tracker import 추가
 from Markminervini.ticker_tracker import track_new_tickers
 
-# 모듈 임포트
-from long_short_portfolio.portfolio_integration import StrategyPortfolioIntegrator
+# 모듈 임포트 - try-except로 안전하게 처리
+try:
+    from long_short_portfolio.portfolio_integration import StrategyPortfolioIntegrator
+except ImportError as e:
+    print(f"⚠️ StrategyPortfolioIntegrator import 오류: {e}")
+    print("📝 대체 import 시도 중...")
+    try:
+        # 대체 import 방법
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "portfolio_integration", 
+            os.path.join(os.path.dirname(__file__), "long_short_portfolio", "portfolio_integration.py")
+        )
+        portfolio_integration = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(portfolio_integration)
+        StrategyPortfolioIntegrator = portfolio_integration.StrategyPortfolioIntegrator
+        print("✅ 대체 import 성공")
+    except Exception as e2:
+        print(f"❌ 대체 import도 실패: {e2}")
+        StrategyPortfolioIntegrator = None
+
 # 변동성 스큐 스크리너 임포트
-from option_data_based_strategy.volatility_skew_screener import VolatilitySkewScreener
+try:
+    from option_data_based_strategy.volatility_skew_screener import VolatilitySkewScreener
+except ImportError:
+    VolatilitySkewScreener = None
+    print("⚠️ VolatilitySkewScreener import 실패 - 옵션 전략 기능 비활성화")
 
 
 def main():
@@ -64,7 +91,7 @@ def main():
         run_volatility_skew_screening()
     else:
         # 기본 실행
-        print("🚀 전략 포트폴리오 통합 시스템 시작 (기본 실행)")
+        print("� 전략 포트폴리오 통합 시스템 시작 (기본 실행)")
         integrator = StrategyPortfolioIntegrator(initial_capital=100000)
         integrator.run_daily_cycle()
 
@@ -208,8 +235,26 @@ def run_portfolio_management_main():
     """포트폴리오 관리 실행"""
     print("\n📊 포트폴리오 관리 시작")
     
+    if StrategyPortfolioIntegrator is None:
+        print("❌ StrategyPortfolioIntegrator를 import할 수 없어 포트폴리오 관리를 실행할 수 없습니다.")
+        return
+    
     try:
+        # 객체 생성 전에 필요한 디렉토리 확인
+        ensure_dir(RESULTS_VER2_DIR)
+        ensure_dir(os.path.join(RESULTS_VER2_DIR, 'buy'))
+        ensure_dir(os.path.join(RESULTS_VER2_DIR, 'sell'))
+        
+        print("🔄 StrategyPortfolioIntegrator 객체 생성 중...")
         integrator = StrategyPortfolioIntegrator(initial_capital=100000)
+        
+        # 객체가 제대로 생성되었는지 확인
+        if not hasattr(integrator, 'manage_strategy_portfolio'):
+            print("❌ manage_strategy_portfolio 메서드가 없습니다.")
+            print(f"📝 사용 가능한 메서드: {[method for method in dir(integrator) if not method.startswith('_')]}")
+            return
+            
+        print("✅ StrategyPortfolioIntegrator 객체 생성 완료")
         
         # 전략 실행 필요 여부 확인 및 실행
         run_strategies_if_needed(integrator)

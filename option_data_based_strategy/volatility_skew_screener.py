@@ -353,7 +353,7 @@ class VolatilitySkewScreener:
                         atm_call_iv = iv
                 
                 # OTM 풋옵션 찾기
-                elif opt_type == 'put' and 0.80 <= moneyness <= 0.95:
+                elif opt_type == 'put' and 0.80 < moneyness < 0.95:
                     distance = abs(moneyness - 0.95)
                     if distance < min_put_distance:
                         min_put_distance = distance
@@ -719,17 +719,17 @@ def run_volatility_skew_screening(alpha_vantage_key: Optional[str] = None) -> Tu
 
 if __name__ == "__main__":
     # 직접 실행 시 테스트
-    print("🚀 변동성 스큐 스크리너 테스트 실행")
+    print("🚀 변동성 스큐 역전 전략 테스트 실행")
     
     # Alpha Vantage API 키가 있다면 여기에 입력
-    # API_KEY = "YOUR_ALPHA_VANTAGE_KEY"
-    API_KEY = None
+    API_KEY = None  # "YOUR_ALPHA_VANTAGE_KEY"
     
     screener = VolatilitySkewScreener(alpha_vantage_key=API_KEY)
-    results, filepath = screener.run_screening()
+    portfolios, signals, portfolio_file, signals_file = screener.run_screening()
     
-    if results:
-        print(f"\n✅ 스크리닝 완료: {len(results)}개 종목 발견")
-        print(f"📁 결과 파일: {filepath}")
+    if portfolios:
+        print(f"\n✅ 포트폴리오 구성 완료")
+        print(f"📁 포트폴리오 파일: {portfolio_file}")
+        print(f"📁 신호 파일: {signals_file}")
     else:
-        print("\n❌ 조건을 만족하는 종목을 찾지 못했습니다.")
+        print("\n❌ 포트폴리오 구성에 실패했습니다.")

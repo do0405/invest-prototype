@@ -11,6 +11,12 @@ from datetime import datetime, timedelta
 from scipy.stats import rankdata
 from pytz import timezone
 
+# config import를 상단으로 이동
+from config import (
+    DATA_DIR, DATA_US_DIR, RESULTS_DIR,
+    RESULTS_VER2_DIR, BACKUP_DIR, MARKMINERVINI_DIR
+)
+
 # 디렉토리 생성 함수
 def ensure_dir(directory):
     """디렉토리가 없으면 생성하는 함수"""
@@ -23,17 +29,8 @@ ensure_directory_exists = ensure_dir
 
 # 필요한 디렉토리 생성 함수
 def create_required_dirs(directories=None):
-    """필요한 모든 디렉토리를 생성하는 함수
-    
-    Args:
-        directories: 생성할 디렉토리 목록 (기본값: None, 이 경우 config.py에서 정의된 디렉토리 사용)
-    """
+    """필요한 모든 디렉토리를 생성하는 함수"""
     if directories is None:
-        # config.py에서 정의된 디렉토리 가져오기
-        from config import (
-            DATA_DIR, DATA_US_DIR, RESULTS_DIR,
-            RESULTS_VER2_DIR, BACKUP_DIR, MARKMINERVINI_DIR
-        )
         directories = [
             DATA_DIR, DATA_US_DIR, RESULTS_DIR,
             RESULTS_VER2_DIR, BACKUP_DIR, MARKMINERVINI_DIR

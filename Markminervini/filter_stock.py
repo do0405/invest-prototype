@@ -11,6 +11,9 @@ from config import (
     ADVANCED_FINANCIAL_RESULTS_PATH
 )
 
+# utils에서 함수 import
+from utils import ensure_dir, load_csvs_parallel
+
 def ensure_dir(path):
     """디렉토리가 존재하지 않으면 생성하는 함수"""
     os.makedirs(path, exist_ok=True)
