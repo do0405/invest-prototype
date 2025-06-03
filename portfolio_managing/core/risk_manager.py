@@ -52,15 +52,37 @@ class RiskManager:
         ])
     
     def calculate_position_size(self, symbol: str, strategy: str, 
-                              portfolio_value: float, volatility: float = None) -> float:
-        """포지션 사이즈 계산"""
+                              portfolio_value: float, 
+                              strategy_config: Dict = None,
+                              signal: pd.Series = None,
+                              volatility: float = None) -> float:
+        """통합 포지션 사이즈 계산"""
         try:
-            # 기본 포지션 사이즈 (포트폴리오의 5%)
+            # Strategy config based calculation (from PortfolioUtils)
+            if strategy_config and signal is not None:
+                risk_per_position = strategy_config.get('risk_per_position', 0.02)
+                max_position_size = strategy_config.get('max_position_size', 0.10)
+                
+                risk_amount = portfolio_value * risk_per_position
+                price = signal.get('price', 0)
+                
+                if price <= 0:
+                    return 0
+                
+                max_amount = portfolio_value * max_position_size
+                position_amount = min(risk_amount, max_amount)
+                
+                # Apply volatility adjustment if available
+                if volatility is not None:
+                    volatility_adjustment = min(1.0, 0.2 / max(volatility, 0.1))
+                    position_amount *= volatility_adjustment
+                
+                return position_amount / price
+            
+            # Default risk-based calculation
             base_size = portfolio_value * self.risk_limits['max_position_size']
             
-            # 변동성 기반 조정
             if volatility is not None:
-                # 변동성이 높을수록 포지션 사이즈 감소
                 volatility_adjustment = min(1.0, 0.2 / max(volatility, 0.1))
                 base_size *= volatility_adjustment
             

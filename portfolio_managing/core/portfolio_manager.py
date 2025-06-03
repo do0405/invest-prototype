@@ -302,26 +302,6 @@ class PortfolioManager:
             print(f"⚠️ 일수 조건 업데이트 실패: {e}")
             return original_condition
     
-    def get_current_price(self, symbol: str) -> float:
-        """현재가 조회"""
-        return self.utils.get_current_price(symbol)
-    
-    def get_portfolio_value(self) -> float:
-        """현재 포트폴리오 총 가치 계산"""
-        return self.utils.get_portfolio_value()
-    
-    def get_strategy_summary(self) -> Dict:
-        """전략별 포트폴리오 요약"""
-        return self.utils.get_strategy_summary()
-    
-    def get_portfolio_summary(self) -> Dict:
-        """포트폴리오 종합 요약"""
-        return self.utils.get_portfolio_summary()
-    
-    def generate_report(self, save_to_file: bool = True) -> str:
-        """포트폴리오 리포트 생성"""
-        return self.reporter.generate_report(save_to_file)
-
 # 통합 실행 함수들
 def run_integrated_portfolio_management():
     """통합 포트폴리오 관리 실행"""
@@ -504,83 +484,7 @@ def run_individual_strategy_portfolios():
                 
         except Exception as e:
             print(f"❌ Buy 청산 조건 확인 실패 ({file_path}): {e}")
-    
-    def _check_sell_exit_conditions(self, file_path: str):
-        """Sell 포지션의 청산 조건을 확인합니다."""
-        try:
-            if not os.path.exists(file_path):
-                return
-            
-            df = pd.read_csv(file_path)
-            if df.empty:
-                return
-            
-            print(f"📊 Sell 신호 확인 중: {os.path.basename(file_path)}")
-            
-            rows_to_remove = []
-            updated = False
-            
-            for idx, row in df.iterrows():
-                symbol = row['종목명']
-                sell_price = self._parse_price(row['매도가'] if '매도가' in row else row['매수가'])  # Sell 파일의 경우
-                stop_loss = self._parse_price(row['손절매'])
-                profit_protection = self._parse_price(row['수익보호'])
-                profit_taking = self._parse_price(row['차익실현'])
-                
-                if sell_price is None:
-                    continue
-                
-                # 최근 가격 데이터 가져오기
-                recent_data = self._get_recent_price_data(symbol)
-                if recent_data is None:
-                    continue
-                
-                recent_high = recent_data.get('high')
-                recent_low = recent_data.get('low')
-                recent_close = recent_data.get('close')
-                
-                # 수익률 업데이트 (Sell 포지션은 가격 하락 시 수익)
-                if recent_close and sell_price:
-                    return_pct = ((sell_price - recent_close) / sell_price) * 100
-                    df.loc[idx, '수익률'] = return_pct
-                    updated = True
-                
-                # Sell 포지션 청산 조건 확인
-                should_exit = False
-                exit_reason = ""
-                
-                # 1. 최근 고가가 손절매가 위로 올라간 경우
-                if stop_loss and recent_high and recent_high >= stop_loss:
-                    should_exit = True
-                    exit_reason = f"손절매 조건 (고가 {recent_high:.2f} >= 손절매 {stop_loss:.2f})"
-                
-                # 2. 최근 고가가 수익보호가 위로 올라간 경우
-                elif profit_protection and recent_high and recent_high >= profit_protection:
-                    should_exit = True
-                    exit_reason = f"수익보호 조건 (고가 {recent_high:.2f} >= 수익보호 {profit_protection:.2f})"
-                
-                # 3. 최근 저가가 차익실현가보다 떨어진 경우
-                elif profit_taking and recent_low and recent_low <= profit_taking:
-                    should_exit = True
-                    exit_reason = f"차익실현 조건 (저가 {recent_low:.2f} <= 차익실현 {profit_taking:.2f})"
-                
-                if should_exit:
-                    rows_to_remove.append(idx)
-                    print(f"  🔄 {symbol}: {exit_reason} - 데이터 삭제")
-            
-            # 조건 충족 행 제거
-            if rows_to_remove:
-                df = df.drop(rows_to_remove).reset_index(drop=True)
-                updated = True
-            
-            # 파일 저장
-            if updated:
-                df.to_csv(file_path, index=False)
-                print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
-                
-        except Exception as e:
-            print(f"❌ Sell 청산 조건 확인 실패 ({file_path}): {e}")
-    
+
     def _parse_price(self, price_str) -> Optional[float]:
         """가격 문자열을 파싱합니다."""
         try:

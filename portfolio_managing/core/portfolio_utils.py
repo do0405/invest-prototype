@@ -24,49 +24,8 @@ class PortfolioUtils:
         except Exception as e:
             print(f"⚠️ {symbol} 현재가 조회 실패: {e}")
             return None
-    
-    def get_portfolio_value(self) -> float:
-        """현재 포트폴리오 총 가치 계산"""
-        try:
-            positions = self.pm.position_tracker.positions
-            if positions.empty:
-                return self.pm.initial_capital
-            return positions['market_value'].sum()
-        except Exception:
-            return self.pm.initial_capital
-    
-    def get_strategy_summary(self) -> Dict:
-        """전략별 포트폴리오 요약"""
-        try:
-            positions = self.pm.position_tracker.positions
-            if positions.empty:
-                return {}
-            
-            strategy_summary = {}
-            for strategy_name in positions['strategy'].unique():
-                strategy_positions = positions[positions['strategy'] == strategy_name]
-                # StrategyConfig 사용으로 변경
-                strategy_config = StrategyConfig.get_strategy_config(strategy_name)
-                
-                total_value = strategy_positions['market_value'].sum()
-                total_pnl = strategy_positions['unrealized_pnl'].sum()
-                position_count = len(strategy_positions)
-                
-                strategy_summary[strategy_name] = {
-                    'name': strategy_config.get('name', strategy_name),
-                    'type': strategy_config.get('type', 'UNKNOWN'),
-                    'position_count': position_count,
-                    'total_value': total_value,
-                    'total_pnl': total_pnl,
-                    'weight': total_value / self.get_portfolio_value() if self.get_portfolio_value() > 0 else 0,
-                    'avg_pnl_pct': (total_pnl / (total_value - total_pnl)) * 100 if (total_value - total_pnl) > 0 else 0
-                }
-            
-            return strategy_summary
-        except Exception as e:
-            print(f"⚠️ 전략별 요약 생성 실패: {e}")
-            return {}
-    
+
+   
     def get_portfolio_summary(self) -> Dict:
         """포트폴리오 종합 요약"""
         try:
@@ -74,14 +33,16 @@ class PortfolioUtils:
             positions = self.pm.position_tracker.positions
             risk_summary = self.pm.risk_manager.get_risk_summary(positions)
             performance = self.pm.position_tracker.get_performance_metrics()
-            strategy_summary = self.get_strategy_summary()
+            strategy_summary = self.pm.position_tracker.get_strategy_summary()
             
             summary = {
                 'portfolio_name': self.pm.portfolio_name,
                 'initial_capital': self.pm.initial_capital,
-                'current_value': self.get_portfolio_value(),
-                'total_return': self.get_portfolio_value() - self.pm.initial_capital,
-                'total_return_pct': (self.get_portfolio_value() / self.pm.initial_capital - 1) * 100,
+
+                'current_value': self.pm.position_tracker.get_portfolio_value(),
+                'total_return': self.pm.position_tracker.get_portfolio_value() - self.pm.initial_capital,
+                'total_return_pct': (self.pm.position_tracker.get_portfolio_value() / self.pm.initial_capital - 1) * 100,
+
                 'positions': position_summary,
                 'risk': risk_summary,
                 'performance': performance,
@@ -107,7 +68,12 @@ class PortfolioUtils:
                 return False
             
             # 포지션 크기 계산
-            position_size = self.calculate_position_size(signal, strategy_config)
+            portfolio_value = self.pm.position_tracker.get_portfolio_value()
+            position_size = self.pm.risk_manager.calculate_position_size(
+                portfolio_value=portfolio_value,
+                strategy_config=strategy_config,
+                signal=signal
+            )
             if position_size <= 0:
                 return False
             
@@ -128,29 +94,9 @@ class PortfolioUtils:
         except Exception as e:
             print(f"⚠️ 포지션 추가 실패: {e}")
             return False
-    
-    def calculate_position_size(self, signal: pd.Series, strategy_config: Dict) -> float:
-        """포지션 크기 계산"""
-        try:
-            risk_per_position = strategy_config.get('risk_per_position', 0.02)
-            max_position_size = strategy_config.get('max_position_size', 0.10)
-            
-            # 리스크 기반 포지션 크기
-            risk_amount = self.get_portfolio_value() * risk_per_position
-            price = signal.get('price', 0)
-            
-            if price <= 0:
-                return 0
-            
-            # 최대 포지션 크기 제한
-            max_amount = self.get_portfolio_value() * max_position_size
-            position_amount = min(risk_amount, max_amount)
-            
-            return position_amount / price
-            
-        except Exception:
-            return 0
-    
+
+
+
     def calculate_stop_loss(self, signal: pd.Series, strategy_config: Dict) -> float:
         """손절가 계산"""
         try:
@@ -180,11 +126,10 @@ class PortfolioUtils:
     def check_and_process_exit_conditions(self):
         """청산 조건 확인 및 처리"""
         try:
-            positions = self.pm.position_tracker.positions
+            positions = self.pm.position_tracker.get_positions()
             if positions.empty:
                 return
             
-            print("🔍 청산 조건 확인 중...")
             positions_to_close = []
             
             for idx, position in positions.iterrows():
@@ -204,10 +149,20 @@ class PortfolioUtils:
                     return_pct = self.calculate_return_pct(position, current_price)
                     positions_to_close.append((idx, symbol, position['strategy'], reason, return_pct))
             
-            # 청산 처리
+            # 청산 처리 - PositionTracker의 close_position 메서드 사용
             for idx, symbol, strategy, reason, return_pct in positions_to_close:
-                self.close_position(idx, symbol, strategy, reason, return_pct)
-            
+                position = positions.iloc[idx]
+                position_type = position['position_type']
+                current_price = self.get_current_price(symbol)
+    
+                success, trade_record = self.pm.position_tracker.close_position(
+                    symbol=symbol,
+                    position_type=position_type,
+                    strategy=strategy,
+                    close_price=current_price,
+                    exit_reason=reason
+                )
+
             # 포지션 파일 저장
             self.pm.position_tracker.save_positions()
             
@@ -267,37 +222,7 @@ class PortfolioUtils:
         except Exception:
             return 0.0
     
-    def close_position(self, idx: int, symbol: str, strategy: str, reason: str, return_pct: float):
-        """포지션 청산"""
-        try:
-            position = self.pm.position_tracker.positions.loc[idx]
-            
-            print(f"🔄 포지션 청산: {symbol} ({strategy}) - {reason} (수익률: {return_pct:.2f}%)")
-            
-            # 거래 기록 저장
-            trade_record = {
-                'symbol': symbol,
-                'strategy': strategy,
-                'entry_date': position['entry_date'],
-                'exit_date': datetime.now().strftime('%Y-%m-%d'),
-                'entry_price': position['entry_price'],
-                'exit_price': position['current_price'],
-                'quantity': position['quantity'],
-                'return_pct': return_pct,
-                'exit_reason': reason,
-                'holding_days': position.get('holding_days', 0)
-            }
-            
-            # 거래 기록을 히스토리에 추가
-            self.add_trade_to_history(trade_record)
-            
-            # 포지션 제거
-            self.pm.position_tracker.positions = self.pm.position_tracker.positions.drop(idx).reset_index(drop=True)
-            
-        except Exception as e:
-            print(f"❌ 포지션 청산 처리 실패: {e}")
-    
-    def add_trade_to_history(self, trade_record: Dict):
+    def record_trade(self, trade_record: Dict):
         """거래 기록을 히스토리에 추가"""
         try:
             history_file = os.path.join(self.pm.portfolio_dir, f'{self.pm.portfolio_name}_trade_history.csv')

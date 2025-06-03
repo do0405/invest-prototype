@@ -105,12 +105,12 @@ class PositionTracker:
             # 리스크 기반 수량 계산
             if stop_loss_price:
                 risk_per_share = abs(entry_price - stop_loss_price)
-                portfolio_value = self.get_total_portfolio_value()
+                portfolio_value = self.get_portfolio_value() 
                 risk_amount = portfolio_value * risk_pct
                 quantity = risk_amount / risk_per_share if risk_per_share > 0 else 0
             else:
                 # 기본 수량 계산
-                portfolio_value = self.get_total_portfolio_value()
+                portfolio_value = self.get_portfolio_value()
                 position_value = portfolio_value * weight
                 quantity = position_value / entry_price
             
@@ -269,8 +269,9 @@ class PositionTracker:
         return self.positions['market_value'].sum()
     
     def close_position(self, symbol: str, position_type: str, strategy: str, 
-                      close_price: Optional[float] = None) -> bool:
-        """포지션 청산"""
+                      close_price: Optional[float] = None, 
+                      exit_reason: str = "manual") -> Tuple[bool, Dict]:
+        """포지션 청산 및 거래 기록 반환"""
         try:
             mask = (self.positions['symbol'] == symbol) & \
                    (self.positions['position_type'] == position_type) & \
@@ -278,40 +279,53 @@ class PositionTracker:
             
             if not mask.any():
                 print(f"⚠️ 청산할 포지션을 찾을 수 없습니다: {symbol} {position_type} {strategy}")
-                return False
+                return False, {}
             
-            # 현재가 가져오기
             if close_price is None:
                 close_price = self.get_current_price(symbol)
                 if close_price is None:
                     print(f"⚠️ {symbol} 현재가를 가져올 수 없습니다")
-                    return False
+                    return False, {}
             
-            # 포지션 정보 가져오기
             position = self.positions[mask].iloc[0]
             
             # 실현 손익 계산
             if position_type == 'LONG':
                 realized_pnl = (close_price - position['entry_price']) * position['quantity']
-            else:  # SHORT
+            else:
                 realized_pnl = (position['entry_price'] - close_price) * position['quantity']
             
             realized_pnl_pct = realized_pnl / (position['entry_price'] * position['quantity']) * 100
             
-            # 히스토리에 기록
-            self.record_closed_position(position, close_price, realized_pnl, realized_pnl_pct)
+            # 거래 기록 생성
+            trade_record = {
+                'symbol': symbol,
+                'strategy': strategy,
+                'entry_date': position['entry_date'],
+                'exit_date': datetime.now().strftime('%Y-%m-%d'),
+                'entry_price': position['entry_price'],
+                'exit_price': close_price,
+                'quantity': position['quantity'],
+                'return_pct': realized_pnl_pct,
+                'exit_reason': exit_reason,
+                'holding_days': (datetime.now() - pd.to_datetime(position['entry_date'])).days
+            }
             
             # 포지션 제거
-            self.positions = self.positions[~mask]
+            self.positions = self.positions[~mask].reset_index(drop=True)
             self.save_positions()
             
-            print(f"✅ 포지션 청산 완료: {symbol} {position_type} "
-                  f"(실현손익: ${realized_pnl:.2f}, {realized_pnl_pct:.2f}%)")
-            return True
+            # 거래 기록 저장 (새로 추가)
+            if hasattr(self, 'portfolio_manager') and self.portfolio_manager:
+                self.portfolio_manager.portfolio_utils.record_trade(trade_record)
+            
+            print(f"✅ 포지션 청산 완료: {symbol} ({strategy}) - {exit_reason} (수익률: {realized_pnl_pct:.2f}%)")
+            
+            return True, trade_record
             
         except Exception as e:
-            print(f"❌ 포지션 청산 실패 ({symbol}): {e}")
-            return False
+            print(f"❌ 포지션 청산 실패: {e}")
+            return False, {}
     
     def update_positions(self) -> bool:
         """모든 포지션의 현재가 및 손익 업데이트"""
@@ -465,4 +479,3 @@ class PositionTracker:
             
         except Exception as e:
             print(f"⚠️ 성과 지표 계산 실패: {e}")
-            return {}
