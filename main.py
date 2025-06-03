@@ -145,18 +145,15 @@ def execute_strategies(strategy_list=None):
 
 
 def run_portfolio_management_main():
-    """포트폴리오 관리 메인 함수 - 기존 리소스 활용"""
+    """포트폴리오 관리 메인 함수"""
     try:
-        print("\n🚀 포트폴리오 관리 시작")
+        print("\n📈 포트폴리오 관리 시작...")
         
-        # 포트폴리오 매니저 생성 (기존 함수 활용)
-        portfolio_manager = create_portfolio_manager()
+        # 포트폴리오 매니저 초기화
+        portfolio_manager = PortfolioManager()
         
-        # 1. 전략 결과 파일 처리 및 업데이트 (기존 메서드 활용)
-        portfolio_manager.process_and_update_strategy_files()
-        
-        # 2. 매매 신호 모니터링 및 처리 (기존 메서드 활용)
-        portfolio_manager.monitor_and_process_trading_signals()
+        # 전략 결과 파일 상태 확인 및 필요시 스크리닝 실행
+        screening_needed = check_strategy_files_and_run_screening()
         
         # 3. 모든 전략에 대한 포트폴리오 처리
         if hasattr(StrategyConfig, 'get_all_strategies'):
@@ -172,15 +169,18 @@ def run_portfolio_management_main():
                     print(f"✅ {strategy_name}: {added_count}개 포지션 추가")
                 else:
                     print(f"⚠️ {strategy_name}: 처리할 결과 없음")
+                    # 결과가 없으면 해당 전략만 스크리닝 실행
+                    print(f"🔄 {strategy_name} 스크리닝 실행 중...")
+                    execute_strategies([strategy_name])
         
         # 4. 포지션 업데이트 및 리스크 체크
         portfolio_manager.position_tracker.update_positions()
         
         # 5. 청산 조건 확인 및 처리
-        portfolio_manager.check_and_process_exit_conditions()
+        portfolio_manager.utils.check_and_process_exit_conditions()
         
         # 6. 포트폴리오 리포트 생성
-        portfolio_manager.generate_report()
+        portfolio_manager.reporter.generate_report()
         
         print("✅ 포트폴리오 관리 완료")
         

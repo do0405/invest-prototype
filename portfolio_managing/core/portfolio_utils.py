@@ -27,22 +27,33 @@ class PortfolioUtils:
 
    
     def get_portfolio_summary(self) -> Dict:
-        """포트폴리오 종합 요약"""
+        """포트폴리오 요약 정보 반환"""
         try:
             position_summary = self.pm.position_tracker.get_portfolio_summary()
             positions = self.pm.position_tracker.positions
             risk_summary = self.pm.risk_manager.get_risk_summary(positions)
             performance = self.pm.position_tracker.get_performance_metrics()
-            strategy_summary = self.pm.position_tracker.get_strategy_summary()
+            
+            # get_strategy_summary() 대신 기존 데이터로 전략 요약 생성
+            strategy_summary = {}
+            if not positions.empty:
+                for strategy in positions['strategy'].unique():
+                    strategy_positions = positions[positions['strategy'] == strategy]
+                    strategy_summary[strategy] = {
+                        'positions': len(strategy_positions),
+                        'market_value': strategy_positions['market_value'].sum(),
+                        'unrealized_pnl': strategy_positions['unrealized_pnl'].sum()
+                    }
+            
+            # get_portfolio_value() 대신 기존 데이터 활용
+            current_value = position_summary.get('total_market_value', self.pm.initial_capital)
             
             summary = {
                 'portfolio_name': self.pm.portfolio_name,
                 'initial_capital': self.pm.initial_capital,
-
-                'current_value': self.pm.position_tracker.get_portfolio_value(),
-                'total_return': self.pm.position_tracker.get_portfolio_value() - self.pm.initial_capital,
-                'total_return_pct': (self.pm.position_tracker.get_portfolio_value() / self.pm.initial_capital - 1) * 100,
-
+                'current_value': current_value,
+                'total_return': current_value - self.pm.initial_capital,
+                'total_return_pct': (current_value / self.pm.initial_capital - 1) * 100,
                 'positions': position_summary,
                 'risk': risk_summary,
                 'performance': performance,
@@ -126,7 +137,8 @@ class PortfolioUtils:
     def check_and_process_exit_conditions(self):
         """청산 조건 확인 및 처리"""
         try:
-            positions = self.pm.position_tracker.get_positions()
+            # self.pm.position_tracker.get_positions() 대신 positions 속성 직접 접근
+            positions = self.pm.position_tracker.positions
             if positions.empty:
                 return
             

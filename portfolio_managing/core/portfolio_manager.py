@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import json
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Dict, Optional
 
 # 프로젝트 루트 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -79,7 +79,7 @@ class PortfolioManager:
     def load_strategy_results(self, strategy_name: str) -> Optional[pd.DataFrame]:
         """전략 결과 파일 로드"""
         try:
-            result_file = StrategyConfig.get_result_file_path(strategy_name)
+            result_file = StrategyConfig.get_result_file_path(strategy_name, RESULTS_VER2_DIR)
             if result_file and os.path.exists(result_file):
                 return pd.read_csv(result_file)
             return None
@@ -302,69 +302,69 @@ class PortfolioManager:
             print(f"⚠️ 일수 조건 업데이트 실패: {e}")
             return original_condition
     
-# 통합 실행 함수들
-def run_integrated_portfolio_management():
-    """통합 포트폴리오 관리 실행"""
-    try:
-        print("🚀 통합 포트폴리오 관리 시작")
+
+    def run_integrated_portfolio_management():
+        """통합 포트폴리오 관리 실행"""
+        try:
+            print("🚀 통합 포트폴리오 관리 시작")
         
         # 포트폴리오 매니저 초기화
-        portfolio_manager = PortfolioManager()
+            portfolio_manager = PortfolioManager()
         
         # 모든 전략 처리
-        for strategy_name in StrategyConfig.get_all_strategy_names():
-            print(f"\n📊 {strategy_name} 처리 중...")
-            portfolio_manager.process_single_strategy(strategy_name)
+            for strategy_name in StrategyConfig.get_all_strategy_names():
+                print(f"\n📊 {strategy_name} 처리 중...")
+                portfolio_manager.process_single_strategy(strategy_name)
         
         # 청산 조건 확인
-        portfolio_manager.check_and_process_exit_conditions()
+            portfolio_manager.check_and_process_exit_conditions()
         
         # 포트폴리오 업데이트
-        portfolio_manager.position_tracker.update_positions()
+            portfolio_manager.position_tracker.update_positions()
         
         # 요약 출력
-        summary = portfolio_manager.get_portfolio_summary()
-        print(f"\n📈 포트폴리오 현황:")
-        print(f"   총 가치: ${summary.get('current_value', 0):,.2f}")
-        print(f"   총 수익: ${summary.get('total_return', 0):,.2f} ({summary.get('total_return_pct', 0):.2f}%)")
-        print(f"   활성 포지션: {summary.get('positions', {}).get('total_positions', 0)}개")
+            summary = portfolio_manager.get_portfolio_summary()
+            print(f"\n📈 포트폴리오 현황:")
+            print(f"   총 가치: ${summary.get('current_value', 0):,.2f}")
+            print(f"   총 수익: ${summary.get('total_return', 0):,.2f} ({summary.get('total_return_pct', 0):.2f}%)")
+            print(f"   활성 포지션: {summary.get('positions', {}).get('total_positions', 0)}개")
         
         # 리포트 생성
-        portfolio_manager.generate_report()
+            portfolio_manager.generate_report()
         
-        print("✅ 통합 포트폴리오 관리 완료")
+            print("✅ 통합 포트폴리오 관리 완료")
         
-    except Exception as e:
-        print(f"❌ 통합 포트폴리오 관리 실패: {e}")
+        except Exception as e:
+            print(f"❌ 통합 포트폴리오 관리 실패: {e}")
 
-def run_individual_strategy_portfolios():
-    """개별 전략 포트폴리오 관리"""
-    try:
-        print("🚀 개별 전략 포트폴리오 관리 시작")
+    def run_individual_strategy_portfolios():
+        """개별 전략 포트폴리오 관리"""
+        try:
+            print("🚀 개별 전략 포트폴리오 관리 시작")
         
-        for strategy_name in StrategyConfig.get_all_strategy_names():
-            print(f"\n📊 {strategy_name} 개별 처리 중...")
-            
+            for strategy_name in StrategyConfig.get_all_strategy_names():
+                print(f"\n📊 {strategy_name} 개별 처리 중...")
+
             # 개별 전략용 포트폴리오 매니저
-            portfolio_manager = PortfolioManager(f"{strategy_name}_portfolio")
+                portfolio_manager = PortfolioManager(f"{strategy_name}_portfolio")
             
             # 해당 전략만 처리
-            success = portfolio_manager.process_single_strategy(strategy_name)
+                success = portfolio_manager.process_single_strategy(strategy_name)
             
-            if success:
+                if success:
                 # 청산 조건 확인
-                portfolio_manager.check_and_process_exit_conditions()
+                    portfolio_manager.check_and_process_exit_conditions()
                 
                 # 포트폴리오 업데이트
-                portfolio_manager.position_tracker.update_positions()
+                    portfolio_manager.position_tracker.update_positions()
                 
                 # 개별 리포트 생성
-                portfolio_manager.generate_report()
+                    portfolio_manager.generate_report()
         
-        print("✅ 개별 전략 포트폴리오 관리 완료")
+            print("✅ 개별 전략 포트폴리오 관리 완료")
         
-    except Exception as e:
-        print(f"❌ 개별 전략 포트폴리오 관리 실패: {e}")
+        except Exception as e:
+            print(f"❌ 개별 전략 포트폴리오 관리 실패: {e}")
     
     def monitor_and_process_trading_signals(self):
         """매매 신호를 모니터링하고 조건 충족 시 데이터를 처리합니다."""
@@ -382,7 +382,7 @@ def run_individual_strategy_portfolios():
             if os.path.exists(sell_dir):
                 self._process_sell_signals(sell_dir)
             
-            print("✅ 매매 신호 모니터링 완료")
+            print("✅ 매매 신고 모니터링 완료")
             
         except Exception as e:
             print(f"❌ 매매 신호 모니터링 실패: {e}")
