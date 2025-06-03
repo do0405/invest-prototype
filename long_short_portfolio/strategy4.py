@@ -38,7 +38,7 @@ def run_strategy4_screening():
         sp500_ok = check_sp500_condition(DATA_US_DIR, ma_days=200)
         if not sp500_ok:
             print("❌ S&P 500 조건을 충족하지 않습니다 (200일 MA 하회). 스크리닝을 중단합니다.")
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
+            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
             return
 
         us_files = [f for f in os.listdir(DATA_US_DIR) if f.endswith('.csv')]
@@ -118,7 +118,7 @@ def run_strategy4_screening():
                 '종목명': symbol,
                 '매수일': datetime.now().strftime('%Y-%m-%d'),
                 '매수가': round(entry_price, 2), # 시장가, 추후 다음날 시가로 업데이트될 수 있음
-                '비중': round(position_allocation * 100, 2), # % 기호 없이 숫자만 저장
+                '비중(%)': round(position_allocation * 100, 2), # % 기호 없이 숫자만 저장
                 '수익률': 0.0, # 초기 수익률
                 '차익실현': '없음 (추세 지속 시 보유)', # 조건부 문자열 유지
                 '손절매': round(stop_loss_price, 2), # 계산된 손절매 가격
@@ -130,10 +130,10 @@ def run_strategy4_screening():
         if not results:
             print("❌ 스크리닝 결과가 없습니다.")
             # 빈 결과 파일 생성
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
+            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
             # JSON 파일 생성 추가
             json_file = result_file.replace('.csv', '.json')
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_json(json_file, orient='records', indent=2, force_ascii=False)
+            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_json(json_file, orient='records', indent=2, force_ascii=False)
             
             return
 
@@ -141,7 +141,7 @@ def run_strategy4_screening():
         result_df = result_df.sort_values('rsi_4d_avg', ascending=True) # RSI 낮은 순
         result_df = result_df.head(10) # 최대 10개 포지션
 
-        strategy_result_columns = ['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
+        strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
         result_df_to_save = result_df[strategy_result_columns]
 
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')

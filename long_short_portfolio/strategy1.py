@@ -46,10 +46,10 @@ def run_strategy1_screening(total_capital=100000, update_existing=False):
         if not spy_condition:
             print("❌ SPY 조건을 충족하지 않습니다. 스크리닝을 중단합니다.")
             # 빈 결과 파일 생성
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, mode='w', encoding='utf-8-sig')
+            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, mode='w', encoding='utf-8-sig')
             # JSON 파일 생성 추가
             json_file = result_file.replace('.csv', '.json')
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_json(json_file, orient='records', indent=2, force_ascii=False)
+            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_json(json_file, orient='records', indent=2, force_ascii=False)
             
             return
         
@@ -125,7 +125,7 @@ def run_strategy1_screening(total_capital=100000, update_existing=False):
                 '종목명': symbol,
                 '매수일': datetime.now().strftime('%Y-%m-%d'),
                 '매수가': '시장가',  # 시장가 매수, 추후 다음날 시가로 업데이트
-                '비중': round(position_size * 100, 2), # % 기호 없이 숫자만 저장
+                '비중(%)': round(position_size * 100, 2), # % 기호 없이 숫자만 저장
                 '수익률': 0.0, # 초기 수익률
                 '차익실현': '없음',  # 목표 수익 없음
                 '손절매': round(stop_loss, 2), # 계산된 손절매 가격
@@ -138,7 +138,7 @@ def run_strategy1_screening(total_capital=100000, update_existing=False):
         if not results:
             print("❌ 스크리닝 결과가 없습니다.")
             # 빈 결과 파일 생성
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
+            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
             return
         
         # 결과 데이터프레임 생성
@@ -151,7 +151,7 @@ def run_strategy1_screening(total_capital=100000, update_existing=False):
         result_df = result_df.head(10)
         
         # 결과 CSV에 포함할 컬럼 선택
-        strategy_result_columns = ['종목명', '매수일', '매수가', '비중', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
+        strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
         result_df_to_save = result_df[strategy_result_columns]
 
         # 결과 저장
