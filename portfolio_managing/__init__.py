@@ -10,7 +10,8 @@
 - RiskManager: 리스크 관리
 - StrategyConfig: 전략 설정 관리
 """
-
+import traceback
+import pandas as pd
 from .core.portfolio_manager import PortfolioManager
 from .core.position_tracker import PositionTracker
 from .core.risk_manager import RiskManager
@@ -41,12 +42,47 @@ def create_portfolio_manager(portfolio_name: str = "main_portfolio", initial_cap
     Returns:
         PortfolioManager: 초기화된 포트폴리오 매니저
     """
-    # PortfolioManager는 내부에서 자체적으로 position_tracker와 risk_manager를 생성합니다
-    return PortfolioManager(
-        portfolio_name=portfolio_name,
-        initial_capital=initial_capital
-        # **kwargs는 제거 - PortfolioManager가 받지 않는 매개변수들이 포함될 수 있음
-    )
+    print(f"\n🏦 포트폴리오 매니저 생성 시작...")
+    print(f"📊 포트폴리오 이름: {portfolio_name}")
+    print(f"💰 초기 자본금: ${initial_capital:,.2f}")
+    print(f"⏰ 생성 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    
+    try:
+        # PortfolioManager는 내부에서 자체적으로 position_tracker와 risk_manager를 생성합니다
+        print(f"🔧 PortfolioManager 인스턴스 생성 중...")
+        manager = PortfolioManager(
+            portfolio_name=portfolio_name,
+            initial_capital=initial_capital
+            # **kwargs는 제거 - PortfolioManager가 받지 않는 매개변수들이 포함될 수 있음
+        )
+        print(f"✅ 포트폴리오 매니저 생성 완료")
+        
+        # 포트폴리오 매니저 실행
+        print(f"\n🚀 포트폴리오 관리 프로세스 시작...")
+        
+        # 통합 포트폴리오 관리 실행 - Static method로 호출
+        print(f"📊 통합 포트폴리오 관리 실행 중...")
+        PortfolioManager.run_integrated_portfolio_management()
+        print(f"✅ 통합 포트폴리오 관리 완료")
+        
+        # 개별 전략 포트폴리오 관리 실행 - Static method로 호출
+        print(f"📊 개별 전략 포트폴리오 관리 실행 중...")
+        PortfolioManager.run_individual_strategy_portfolios()
+        print(f"✅ 개별 전략 포트폴리오 관리 완료")
+        
+        # 트레이딩 신호 모니터링 및 처리 - Instance method로 호출
+        print(f"📊 트레이딩 신호 모니터링 시작...")
+        manager.monitor_and_process_trading_signals()
+        print(f"✅ 트레이딩 신호 모니터링 완료")
+        
+        print(f"\n🎉 포트폴리오 관리 프로세스 모든 단계 완료!")
+        return manager
+        
+    except Exception as e:
+        print(f"❌ 포트폴리오 매니저 생성/실행 중 오류: {e}")
+        print(f"🔍 오류 발생 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(traceback.format_exc())
+        return None
 
 def create_strategy_config(name: str, strategy_type: str = "LONG", **kwargs):
     """

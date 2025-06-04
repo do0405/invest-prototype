@@ -58,27 +58,39 @@ def execute_strategies(strategy_list=None, monitoring_only=False, screening_mode
             action_type = "실행"
             
         print(f"\n📊 전략 {action_type} 시작: {strategy_list}")
+        print(f"🔍 총 {len(strategy_list)}개 전략을 처리합니다.")
         
         # 전략 모듈들 동적 로드
         strategy_modules = {}
-        for strategy_name in strategy_list:
+        print(f"\n📦 전략 모듈 로딩 시작...")
+        for i, strategy_name in enumerate(strategy_list, 1):
+            print(f"  [{i}/{len(strategy_list)}] {strategy_name} 모듈 로딩 중...")
             module = load_strategy_module(strategy_name)
             if module:
                 strategy_modules[strategy_name] = module
+                print(f"  ✅ {strategy_name} 모듈 로딩 성공")
+            else:
+                print(f"  ❌ {strategy_name} 모듈 로딩 실패")
+        
+        print(f"\n📊 로딩된 모듈: {len(strategy_modules)}/{len(strategy_list)}개")
         
         # 각 전략 실행
         success_count = 0
-        for strategy_name, module in strategy_modules.items():
+        for i, (strategy_name, module) in enumerate(strategy_modules.items(), 1):
             try:
-                print(f"\n🔄 {strategy_name} {action_type} 중...")
+                print(f"\n🔄 [{i}/{len(strategy_modules)}] {strategy_name} {action_type} 시작...")
+                print(f"⏰ 현재 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
                 
                 if monitoring_only:
                     # 모니터링 전용: 기존 포지션 추적/업데이트만
                     if hasattr(module, 'monitor_positions'):
+                        print(f"  📊 {strategy_name}: monitor_positions() 실행 중...")
                         module.monitor_positions()
                     elif hasattr(module, 'update_positions'):
+                        print(f"  📊 {strategy_name}: update_positions() 실행 중...")
                         module.update_positions()
                     elif hasattr(module, 'track_existing_positions'):
+                        print(f"  📊 {strategy_name}: track_existing_positions() 실행 중...")
                         module.track_existing_positions()
                     else:
                         print(f"⚠️ {strategy_name}: 모니터링 함수를 찾을 수 없습니다. 스킵합니다.")
@@ -86,10 +98,13 @@ def execute_strategies(strategy_list=None, monitoring_only=False, screening_mode
                 else:
                     # 스크리닝 또는 일반 실행 모드
                     if hasattr(module, 'run_strategy'):
+                        print(f"  🚀 {strategy_name}: run_strategy() 실행 중...")
                         module.run_strategy()
                     elif hasattr(module, f'run_{strategy_name}_screening'):
+                        print(f"  🚀 {strategy_name}: run_{strategy_name}_screening() 실행 중...")
                         getattr(module, f'run_{strategy_name}_screening')()
                     elif hasattr(module, 'main'):
+                        print(f"  🚀 {strategy_name}: main() 실행 중...")
                         module.main()
                     else:
                         print(f"⚠️ {strategy_name}: 실행 함수를 찾을 수 없습니다.")
@@ -97,18 +112,22 @@ def execute_strategies(strategy_list=None, monitoring_only=False, screening_mode
                 
                 print(f"✅ {strategy_name} {action_type} 완료")
                 success_count += 1
+                print(f"📈 진행률: {success_count}/{len(strategy_modules)} ({success_count/len(strategy_modules)*100:.1f}%)")
                 
             except Exception as e:
                 print(f"❌ {strategy_name} {action_type} 중 오류: {e}")
+                print(f"🔍 오류 발생 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
                 # os 관련 오류는 상세 정보 출력하지 않음
                 if "name 'os' is not defined" not in str(e):
                     print(traceback.format_exc())
         
         print(f"\n✅ 전략 {action_type} 완료: {success_count}/{len(strategy_list)}개 성공")
+        print(f"📊 성공률: {success_count/len(strategy_list)*100:.1f}%")
         return success_count > 0
         
     except Exception as e:
         print(f"❌ 전략 {action_type} 중 오류 발생: {e}")
+        print(f"🔍 오류 발생 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print(traceback.format_exc())
 
 def check_strategy_file_status():
@@ -276,57 +295,80 @@ def main():
     
     try:
         print("🚀 투자 스크리너 및 포트폴리오 관리 시스템 시작")
+        print(f"⏰ 시작 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"🔧 실행 옵션: {vars(args)}")
         
         # 필요한 디렉토리 생성
+        print(f"\n📁 디렉토리 생성 중...")
         ensure_directories()
+        print(f"✅ 디렉토리 생성 완료")
         
         # 변동성 스큐 역전 전략만 실행
         if args.volatility_skew:
+            print(f"\n🎯 변동성 스큐 역전 전략 전용 모드")
             run_volatility_skew_screening()
             return
         
         # 6개 전략 스크리닝만 실행
         if args.strategies:
+            print(f"\n🎯 6개 전략 스크리닝 전용 모드")
             execute_strategies()
             return
         
         # 포트폴리오 관리만 실행
         if args.portfolio_only:
+            print(f"\n🎯 포트폴리오 관리 전용 모드")
             create_portfolio_manager()
             return
         
         # 전체 프로세스 실행
+        print(f"\n🎯 전체 프로세스 실행 모드")
+        
         if not args.skip_data:
+            print(f"\n📊 1단계: 데이터 수집")
             collect_data_main()
+        else:
+            print(f"\n⏭️ 데이터 수집 건너뛰기")
         
         # 강제 스크리닝 또는 전략 파일 상태 확인
         if args.force_screening:
-            print("\n🔄 강제 스크리닝 모드...")
+            print("\n🔄 2단계: 강제 스크리닝 모드...")
+            print("  📊 2-1: 모든 스크리닝 프로세스 실행")
             run_all_screening_processes()
+            print("  📊 2-2: 패턴 분석 실행")
             run_pattern_analysis()
+            print("  📊 2-3: 전략 실행")
             execute_strategies()
+            print("  📊 2-4: 변동성 스큐 스크리닝 실행")
             run_volatility_skew_screening()
         else:
-    # 전략 파일 상태 확인 및 필요시 스크리닝
+            print("\n🔍 2단계: 전략 파일 상태 확인 및 조건부 스크리닝")
+            # 전략 파일 상태 확인 및 필요시 스크리닝
             strategies_need_screening = check_strategy_file_status()
     
             if strategies_need_screening:
                 print(f"\n🚨 스크리닝이 필요한 전략: {', '.join(strategies_need_screening)}")
+                print("  📊 2-1: 모든 스크리닝 프로세스 실행")
                 run_all_screening_processes()
+                print("  📊 2-2: 필요한 전략들 실행")
                 execute_strategies(strategies_need_screening)
             else:
-                print("\n📊 패턴 분석 실행...")
+                print("\n📊 2단계: 패턴 분석만 실행...")
                 run_pattern_analysis()
 
-# 포트폴리오 관리 실행
+        # 포트폴리오 관리 실행
+        print("\n🏦 3단계: 포트폴리오 관리 실행")
         create_portfolio_manager()
        
         print("\n🎉 모든 프로세스 완료!")
+        print(f"⏰ 완료 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
         
     except KeyboardInterrupt:
         print("\n⚠️ 사용자에 의해 중단되었습니다.")
+        print(f"⏰ 중단 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
     except Exception as e:
         print(f"\n❌ 시스템 오류 발생: {e}")
+        print(f"⏰ 오류 발생 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print(traceback.format_exc())
 
 
