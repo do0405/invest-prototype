@@ -58,7 +58,7 @@ class PortfolioManager:
                 self.config = {
                     'portfolio_name': self.portfolio_name,
                     'initial_capital': self.initial_capital,
-                    'strategies': list(StrategyConfig.get_all_strategy_names()),
+                    'strategies': list(StrategyConfig.get_all_strategies()),
                     'created_date': datetime.now().strftime('%Y-%m-%d'),
                     'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                 }
@@ -312,25 +312,27 @@ class PortfolioManager:
             portfolio_manager = PortfolioManager()
         
         # 모든 전략 처리
-            for strategy_name in StrategyConfig.get_all_strategy_names():
+            for strategy_name in StrategyConfig.get_all_strategies():
                 print(f"\n📊 {strategy_name} 처리 중...")
-                portfolio_manager.process_single_strategy(strategy_name)
+                strategy_results = portfolio_manager.load_strategy_results(strategy_name)
+                if strategy_results is not None:
+                    portfolio_manager.process_strategy_signals(strategy_name, strategy_results)
         
         # 청산 조건 확인
-            portfolio_manager.check_and_process_exit_conditions()
+            portfolio_manager.utils.check_and_process_exit_conditions()
         
         # 포트폴리오 업데이트
             portfolio_manager.position_tracker.update_positions()
         
         # 요약 출력
-            summary = portfolio_manager.get_portfolio_summary()
+            summary = portfolio_manager.utils.get_portfolio_summary()
             print(f"\n📈 포트폴리오 현황:")
             print(f"   총 가치: ${summary.get('current_value', 0):,.2f}")
             print(f"   총 수익: ${summary.get('total_return', 0):,.2f} ({summary.get('total_return_pct', 0):.2f}%)")
             print(f"   활성 포지션: {summary.get('positions', {}).get('total_positions', 0)}개")
         
         # 리포트 생성
-            portfolio_manager.generate_report()
+            portfolio_manager.reporter.generate_report()
         
             print("✅ 통합 포트폴리오 관리 완료")
         
@@ -342,24 +344,29 @@ class PortfolioManager:
         try:
             print("🚀 개별 전략 포트폴리오 관리 시작")
         
-            for strategy_name in StrategyConfig.get_all_strategy_names():
+            for strategy_name in StrategyConfig.get_all_strategies():
                 print(f"\n📊 {strategy_name} 개별 처리 중...")
 
             # 개별 전략용 포트폴리오 매니저
                 portfolio_manager = PortfolioManager(f"{strategy_name}_portfolio")
             
             # 해당 전략만 처리
-                success = portfolio_manager.process_single_strategy(strategy_name)
+                strategy_results = portfolio_manager.load_strategy_results(strategy_name)
+                success = False
+                if strategy_results is not None:
+                    added_count = portfolio_manager.process_strategy_signals(strategy_name, strategy_results)
+                    success = added_count > 0
             
                 if success:
                 # 청산 조건 확인
-                    portfolio_manager.check_and_process_exit_conditions()
+                    # 356번째 줄을 다음과 같이 수정
+                    portfolio_manager.utils.check_and_process_exit_conditions()
                 
                 # 포트폴리오 업데이트
                     portfolio_manager.position_tracker.update_positions()
                 
                 # 개별 리포트 생성
-                    portfolio_manager.generate_report()
+                    portfolio_manager.reporter.generate_report()
         
             print("✅ 개별 전략 포트폴리오 관리 완료")
         
@@ -404,7 +411,7 @@ class PortfolioManager:
             for file_name in os.listdir(sell_dir):
                 if file_name.endswith('_results.csv'):
                     file_path = os.path.join(sell_dir, file_name)
-                    self._check_sell_exit_conditions(file_path)
+                    self._check_buy_exit_conditions(file_path)
                     
         except Exception as e:
             print(f"❌ Sell 신호 처리 실패: {e}")

@@ -27,13 +27,6 @@ from config import (
     ADVANCED_FINANCIAL_RESULTS_PATH, ALPHA_VANTAGE_API_KEY
 )
 from Markminervini.ticker_tracker import track_new_tickers
-
-# 옵션 기반 전략 모듈 임포트 (선택적)
-try:
-    from option_data_based_strategy.volatility_skew_reversal import VolatilitySkewScreener
-except ImportError:
-    VolatilitySkewScreener = None
-
 # 포트폴리오 관리 모듈 임포트
 try:
     from portfolio_managing.core.portfolio_manager import PortfolioManager
@@ -45,65 +38,26 @@ except ImportError as e:
     StrategyConfig = None
 
 
-def check_strategy_files_and_run_screening():
-    """전략 결과 파일을 확인하고 필요시 스크리닝을 실행합니다."""
-    strategy_files = {
-        'strategy1': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy1_results.csv'),
-        'strategy2': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy2_results.csv'),
-        'strategy3': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy3_results.csv'),
-        'strategy4': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy4_results.csv'),
-        'strategy5': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy5_results.csv'),
-        'strategy6': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy6_results.csv')
-    }
+def execute_strategies(strategy_list=None, monitoring_only=False, screening_mode=False):
+    """통합된 전략 실행 함수
     
-    missing_files = []
-    insufficient_files = []
-    
-    print("\n🔍 전략 결과 파일 상태 확인 중...")
-    
-    for strategy_name, file_path in strategy_files.items():
-        if not os.path.exists(file_path):
-            missing_files.append(strategy_name)
-            print(f"❌ {strategy_name}: 파일 없음 - {file_path}")
-        else:
-            try:
-                df = pd.read_csv(file_path)
-                if len(df) < 10:  # 10개 미만 종목
-                    insufficient_files.append(strategy_name)
-                    print(f"⚠️ {strategy_name}: 종목 수 부족 ({len(df)}개) - {file_path}")
-                else:
-                    print(f"✅ {strategy_name}: 충분한 종목 수 ({len(df)}개)")
-            except Exception as e:
-                missing_files.append(strategy_name)
-                print(f"❌ {strategy_name}: 파일 읽기 오류 - {e}")
-    
-    # 스크리닝이 필요한 경우
-    strategies_need_screening = missing_files + insufficient_files
-    
-    if strategies_need_screening:
-        print(f"\n🚨 스크리닝이 필요한 전략: {', '.join(strategies_need_screening)}")
-        print("\n🔄 자동 스크리닝 시작...")
-        
-        # 기본 스크리닝 프로세스 실행
-        run_all_screening_processes()
-        
-        # 필요한 전략만 실행
-        execute_strategies(strategies_need_screening)
-        
-        print("\n✅ 자동 스크리닝 완료")
-        return True
-    else:
-        print("\n✅ 모든 전략 파일이 충분한 종목을 포함하고 있습니다.")
-        return False
-
-
-def execute_strategies(strategy_list=None):
-    """통합된 전략 실행 함수"""
+    Args:
+        strategy_list: 실행할 전략 리스트
+        monitoring_only: True면 모니터링만 수행
+        screening_mode: True면 스크리닝 모드로 실행
+    """
     if strategy_list is None:
         strategy_list = [f'strategy{i}' for i in range(1, 7)]
     
     try:
-        print(f"\n📊 전략 실행 시작: {strategy_list}")
+        if monitoring_only:
+            action_type = "모니터링"
+        elif screening_mode:
+            action_type = "스크리닝"
+        else:
+            action_type = "실행"
+            
+        print(f"\n📊 전략 {action_type} 시작: {strategy_list}")
         
         # 전략 모듈들 동적 로드
         strategy_modules = {}
@@ -116,124 +70,116 @@ def execute_strategies(strategy_list=None):
         success_count = 0
         for strategy_name, module in strategy_modules.items():
             try:
-                print(f"\n🔄 {strategy_name} 실행 중...")
+                print(f"\n🔄 {strategy_name} {action_type} 중...")
                 
-                # 전략별 실행 함수 호출 (우선순위 순서)
-                if hasattr(module, 'run_strategy'):
-                    module.run_strategy()
-                elif hasattr(module, f'run_{strategy_name}_screening'):
-                    getattr(module, f'run_{strategy_name}_screening')()
-                elif hasattr(module, 'main'):
-                    module.main()
+                if monitoring_only:
+                    # 모니터링 전용: 기존 포지션 추적/업데이트만
+                    if hasattr(module, 'monitor_positions'):
+                        module.monitor_positions()
+                    elif hasattr(module, 'update_positions'):
+                        module.update_positions()
+                    elif hasattr(module, 'track_existing_positions'):
+                        module.track_existing_positions()
+                    else:
+                        print(f"⚠️ {strategy_name}: 모니터링 함수를 찾을 수 없습니다. 스킵합니다.")
+                        continue
                 else:
-                    print(f"⚠️ {strategy_name}: 실행 함수를 찾을 수 없습니다.")
-                    continue
+                    # 스크리닝 또는 일반 실행 모드
+                    if hasattr(module, 'run_strategy'):
+                        module.run_strategy()
+                    elif hasattr(module, f'run_{strategy_name}_screening'):
+                        getattr(module, f'run_{strategy_name}_screening')()
+                    elif hasattr(module, 'main'):
+                        module.main()
+                    else:
+                        print(f"⚠️ {strategy_name}: 실행 함수를 찾을 수 없습니다.")
+                        continue
                 
-                print(f"✅ {strategy_name} 실행 완료")
+                print(f"✅ {strategy_name} {action_type} 완료")
                 success_count += 1
                 
             except Exception as e:
-                print(f"❌ {strategy_name} 실행 중 오류: {e}")
-                print(traceback.format_exc())
+                print(f"❌ {strategy_name} {action_type} 중 오류: {e}")
+                # os 관련 오류는 상세 정보 출력하지 않음
+                if "name 'os' is not defined" not in str(e):
+                    print(traceback.format_exc())
         
-        print(f"\n✅ 전략 실행 완료: {success_count}/{len(strategy_list)}개 성공")
+        print(f"\n✅ 전략 {action_type} 완료: {success_count}/{len(strategy_list)}개 성공")
         return success_count > 0
         
     except Exception as e:
-        print(f"❌ 전략 실행 중 오류 발생: {e}")
+        print(f"❌ 전략 {action_type} 중 오류 발생: {e}")
         print(traceback.format_exc())
 
-
-def run_portfolio_management_main():
-    """포트폴리오 관리 메인 함수"""
-    try:
-        print("\n📈 포트폴리오 관리 시작...")
-        
-        # 포트폴리오 매니저 초기화
-        portfolio_manager = PortfolioManager()
-        
-        # 전략 결과 파일 상태 확인 및 필요시 스크리닝 실행
-        screening_needed = check_strategy_files_and_run_screening()
-        
-        # 3. 모든 전략에 대한 포트폴리오 처리
-        if hasattr(StrategyConfig, 'get_all_strategies'):
-            for strategy_name in StrategyConfig.get_all_strategies():
-                print(f"\n📊 {strategy_name} 처리 중...")
-                
-                # 전략 결과 로드
-                strategy_results = portfolio_manager.load_strategy_results(strategy_name)
-                
-                if strategy_results is not None and not strategy_results.empty:
-                    # 전략 신호 처리 (기존 메서드 활용)
-                    added_count = portfolio_manager.process_strategy_signals(strategy_name, strategy_results)
-                    print(f"✅ {strategy_name}: {added_count}개 포지션 추가")
+def check_strategy_file_status():
+    """전략 결과 파일 상태만 확인하고 부족한 전략 리스트 반환"""
+    strategy_files = {
+        'strategy1': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy1_results.csv'),
+        'strategy2': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy2_results.csv'),
+        'strategy3': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy3_results.csv'),
+        'strategy4': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy4_results.csv'),
+        'strategy5': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy5_results.csv'),
+        'strategy6': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy6_results.csv')
+    }
+    
+    strategies_need_screening = []
+    
+    print("\n🔍 전략 결과 파일 상태 확인 중...")
+    
+    for strategy_name, file_path in strategy_files.items():
+        if not os.path.exists(file_path):
+            strategies_need_screening.append(strategy_name)
+            print(f"❌ {strategy_name}: 파일 없음")
+        else:
+            try:
+                df = pd.read_csv(file_path)
+                if len(df) < 10:  # 10개 미만 종목
+                    strategies_need_screening.append(strategy_name)
+                    print(f"⚠️ {strategy_name}: 종목 수 부족 ({len(df)}개)")
                 else:
-                    print(f"⚠️ {strategy_name}: 처리할 결과 없음")
-                    # 결과가 없으면 해당 전략만 스크리닝 실행
-                    print(f"🔄 {strategy_name} 스크리닝 실행 중...")
-                    execute_strategies([strategy_name])
-        
-        # 4. 포지션 업데이트 및 리스크 체크
-        portfolio_manager.position_tracker.update_positions()
-        
-        # 5. 청산 조건 확인 및 처리
-        portfolio_manager.utils.check_and_process_exit_conditions()
-        
-        # 6. 포트폴리오 리포트 생성
-        portfolio_manager.reporter.generate_report()
-        
-        print("✅ 포트폴리오 관리 완료")
-        
-    except Exception as e:
-        print(f"❌ 포트폴리오 관리 실패: {e}")
-        import traceback
-        traceback.print_exc()
-
+                    print(f"✅ {strategy_name}: 충분한 종목 수 ({len(df)}개)")
+            except Exception as e:
+                strategies_need_screening.append(strategy_name)
+                print(f"❌ {strategy_name}: 파일 읽기 오류")
+    
+    return strategies_need_screening
 
 def ensure_directories():
     """필요한 디렉토리들을 생성합니다."""
     directories = [
-        RESULTS_DIR, RESULTS_VER2_DIR, DATA_US_DIR,
+        RESULTS_DIR, RESULTS_VER2_DIR, DATA_US_DIR, OPTION_VOLATILITY_DIR,
         os.path.join(RESULTS_VER2_DIR, 'buy'),
         os.path.join(RESULTS_VER2_DIR, 'sell'),
         os.path.join(RESULTS_VER2_DIR, 'reports'),
-        os.path.join(RESULTS_VER2_DIR, 'portfolio_management'),
-        OPTION_VOLATILITY_DIR
+        os.path.join(RESULTS_VER2_DIR, 'portfolio_management')
     ]
     
     for directory in directories:
         ensure_dir(directory)
-
 
 def run_pattern_analysis():
     """패턴 분석을 실행합니다."""
     try:
         print("\n📊 패턴 분석 시작...")
         
-        results_dir = RESULTS_DIR
-        data_dir = DATA_US_DIR
         output_dir = os.path.join(RESULTS_DIR, 'results2')
+        analyze_tickers_from_results(RESULTS_DIR, DATA_US_DIR, output_dir)
         
-        # 패턴 분석 실행
-        analyze_tickers_from_results(results_dir, data_dir, output_dir)
-        
-        print("✅ 패턴 분석 완료.")
+        print("✅ 패턴 분석 완료")
         
     except Exception as e:
         print(f"❌ 패턴 분석 중 오류 발생: {e}")
         print(traceback.format_exc())
-
 
 def collect_data_main():
     """데이터 수집 실행"""
     print("\n💾 데이터 수집 시작...")
     try:
         collect_data()
-        print("✅ 데이터 수집 완료.")
+        print("✅ 데이터 수집 완료")
     except Exception as e:
         print(f"❌ 데이터 수집 중 오류 발생: {e}")
         print(traceback.format_exc())
-
 
 def run_all_screening_processes():
     """모든 스크리닝 프로세스 실행"""
@@ -300,13 +246,20 @@ def load_strategy_module(strategy_name):
             return None
             
         module = importlib.util.module_from_spec(spec)
+        
+        # os 모듈을 전략 모듈에 주입
+        module.os = os
+        
         spec.loader.exec_module(module)
         
         print(f"✅ {strategy_name} 모듈 로드 성공")
         return module
         
     except Exception as e:
-        print(f"⚠️ {strategy_name} 모듈 로드 실패: {e}")
+        if "name 'os' is not defined" in str(e):
+            print(f"⚠️ {strategy_name}: os 모듈 오류 - 스킵합니다")
+        else:
+            print(f"⚠️ {strategy_name} 모듈 로드 실패: {e}")
         return None
 
 
@@ -339,7 +292,7 @@ def main():
         
         # 포트폴리오 관리만 실행
         if args.portfolio_only:
-            run_portfolio_management_main()
+            create_portfolio_manager()
             return
         
         # 전체 프로세스 실행
@@ -354,16 +307,20 @@ def main():
             execute_strategies()
             run_volatility_skew_screening()
         else:
-            # 전략 파일 상태 확인 후 필요시에만 스크리닝
-            screening_needed = check_strategy_files_and_run_screening()
-            
-            if not screening_needed:
+    # 전략 파일 상태 확인 및 필요시 스크리닝
+            strategies_need_screening = check_strategy_file_status()
+    
+            if strategies_need_screening:
+                print(f"\n🚨 스크리닝이 필요한 전략: {', '.join(strategies_need_screening)}")
+                run_all_screening_processes()
+                execute_strategies(strategies_need_screening)
+            else:
                 print("\n📊 패턴 분석 실행...")
                 run_pattern_analysis()
-        
-        # 포트폴리오 관리 실행
-        run_portfolio_management_main()
-        
+
+# 포트폴리오 관리 실행
+        create_portfolio_manager()
+       
         print("\n🎉 모든 프로세스 완료!")
         
     except KeyboardInterrupt:

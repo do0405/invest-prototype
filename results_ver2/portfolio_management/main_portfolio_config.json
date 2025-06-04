@@ -1,9 +1,0 @@
-{
-  "initial_capital": 100000,
-  "created_date": "2025-06-03",
-  "strategies": [],
-  "rebalance_frequency": "daily",
-  "auto_trailing_stop": true,
-  "max_positions_per_strategy": 10,
-  "strategy_weights": {}
-}
