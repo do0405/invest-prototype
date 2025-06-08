@@ -8,10 +8,11 @@ import os
 import sys
 import pandas as pd
 import numpy as np
-import yfinance as yf
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 import json
+
+from .price_calculator import PriceCalculator
 
 # 프로젝트 루트 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -50,6 +51,51 @@ class PositionTracker:
             'holding_days', 'atr_value', 'stop_loss_price', 'profit_target_price',
             'trailing_stop_price', 'max_holding_days'
         ])
+
+    def has_position(self, symbol: str, strategy: str) -> bool:
+        """이미 동일 종목의 포지션이 존재하는지 확인합니다."""
+        mask = (self.positions['symbol'] == symbol) & (self.positions['strategy'] == strategy)
+        return mask.any()
+
+    def get_portfolio_value(self) -> float:
+        """현재 포트폴리오 가치 총합을 반환합니다."""
+        if self.positions.empty:
+            return 0.0
+        return float(self.positions['market_value'].sum())
+
+    def add_position(self, position_data: Dict) -> bool:
+        """포지션 데이터(dict)를 추가합니다."""
+        try:
+            new_position = {
+                'symbol': position_data['symbol'],
+                'position_type': position_data.get('position_type', 'LONG'),
+                'quantity': position_data['quantity'],
+                'entry_price': position_data['entry_price'],
+                'entry_date': position_data.get('entry_date', datetime.now().strftime('%Y-%m-%d')),
+                'current_price': position_data.get('entry_price'),
+                'market_value': position_data['quantity'] * position_data.get('entry_price', 0),
+                'unrealized_pnl': 0.0,
+                'unrealized_pnl_pct': 0.0,
+                'strategy': position_data.get('strategy', ''),
+                'weight': position_data.get('weight', 0.0),
+                'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'entry_order_type': position_data.get('entry_order_type', 'market'),
+                'target_entry_price': position_data.get('entry_price'),
+                'holding_days': 0,
+                'atr_value': None,
+                'stop_loss_price': position_data.get('stop_loss'),
+                'profit_target_price': position_data.get('take_profit'),
+                'trailing_stop_price': None,
+                'max_holding_days': position_data.get('max_holding_days')
+            }
+
+            self.positions = pd.concat([self.positions, pd.DataFrame([new_position])], ignore_index=True)
+            self.save_positions()
+            print(f"✅ 포지션 추가: {new_position['symbol']} {new_position['position_type']} {new_position['quantity']:.2f}주")
+            return True
+        except Exception as e:
+            print(f"❌ 포지션 추가 실패 ({position_data.get('symbol')}): {e}")
+            return False
     
     def add_position_with_strategy(self, symbol: str, strategy_name: str, 
                                  current_price: float, weight: float = 0.0,
@@ -374,14 +420,7 @@ class PositionTracker:
     
     def get_current_price(self, symbol: str) -> Optional[float]:
         """현재가 가져오기"""
-        try:
-            ticker = yf.Ticker(symbol)
-            hist = ticker.history(period="1d")
-            if not hist.empty:
-                return hist['Close'].iloc[-1]
-        except Exception:
-            pass
-        return None
+        return PriceCalculator.get_current_price(symbol)
     
     def record_closed_position(self, position: pd.Series, close_price: float, 
                              realized_pnl: float, realized_pnl_pct: float):

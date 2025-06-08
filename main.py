@@ -291,7 +291,6 @@ def run_after_market_close():
         print(f"\n🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 시작")
         
         # 포트폴리오만 실행
-        from portfolio_managing.core.portfolio_manager import create_portfolio_manager
         create_portfolio_manager()
         
         print(f"✅ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 완료")

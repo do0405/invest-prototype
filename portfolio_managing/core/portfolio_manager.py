@@ -303,6 +303,7 @@ class PortfolioManager:
             return original_condition
     
 
+    @staticmethod
     def run_individual_strategy_portfolios():
         """개별 전략 포트폴리오 관리"""
         try:
@@ -753,86 +754,6 @@ class PortfolioManager:
             print(f"⚠️ 기존 조건 확인 실패: {e}")
             return False, ""
 
-    def _calculate_stop_loss_price(self, purchase_price, exit_conditions, position_type):
-        """손절매 가격 계산"""
-        try:
-            if 'stop_loss' not in exit_conditions:
-                return None
-            
-            stop_loss_config = exit_conditions['stop_loss']
-            
-            # 퍼센트 기반 손절매
-            if 'percent' in stop_loss_config:
-                percent = stop_loss_config['percent'] / 100
-                if position_type == 'BUY':
-                    return purchase_price * (1 - percent)
-                else:  # SELL
-                    return purchase_price * (1 + percent)
-            
-            # ATR 기반 손절매
-            if 'atr_multiplier' in stop_loss_config:
-                # ATR 계산은 복잡하므로 기본 2% 손절매로 대체
-                if position_type == 'BUY':
-                    return purchase_price * 0.98
-                else:
-                    return purchase_price * 1.02
-            
-            return None
-            
-        except Exception as e:
-            print(f"⚠️ 손절매 가격 계산 실패: {e}")
-            return None
-    
-    def _calculate_profit_target_price_from_config(self, purchase_price, exit_conditions, position_type):
-        """전략 설정에서 수익 목표가 계산"""
-        try:
-            if 'profit_taking' not in exit_conditions:
-                return None
-            
-            profit_config = exit_conditions['profit_taking']
-            
-            # 퍼센트 기반 수익 목표
-            if 'percent' in profit_config:
-                percent = profit_config['percent'] / 100
-                if position_type == 'BUY':
-                    return purchase_price * (1 + percent)
-                else:  # SELL
-                    return purchase_price * (1 - percent)
-            
-            return None
-            
-        except Exception as e:
-            print(f"⚠️ 수익 목표가 계산 실패: {e}")
-            return None
-    
-    def _check_trailing_stop_condition(self, row, current_price, purchase_price, profit_protection_config, position_type):
-        """트레일링 스톱 조건 확인"""
-        try:
-            if 'trailing_stop' not in profit_protection_config:
-                return False, ""
-            
-            trailing_config = profit_protection_config['trailing_stop']
-            
-            # 간단한 트레일링 스톱 구현 (실제로는 최고가/최저가 추적 필요)
-            # 현재는 기본 수익률 기준으로 구현
-            if position_type == 'BUY':
-                current_return = (current_price - purchase_price) / purchase_price
-                if current_return > 0.05:  # 5% 이상 수익시 트레일링 스톱 활성화
-                    trailing_stop_price = current_price * 0.97  # 3% 트레일링
-                    if current_price <= trailing_stop_price:
-                        return True, "트레일링 스톱 조건 달성"
-            else:  # SELL
-                current_return = (purchase_price - current_price) / purchase_price
-                if current_return > 0.05:
-                    trailing_stop_price = current_price * 1.03
-                    if current_price >= trailing_stop_price:
-                        return True, "트레일링 스톱 조건 달성"
-            
-            return False, ""
-            
-        except Exception as e:
-            print(f"⚠️ 트레일링 스톱 확인 실패: {e}")
-            return False, ""
 
     def _check_single_condition(self, condition_dict: dict, purchase_price: float, 
                           current_price: float, condition_type: str, position_type: str = 'BUY') -> bool:
