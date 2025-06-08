@@ -215,11 +215,15 @@ class PositionTracker:
             return False
     
     
-    def close_position(self, symbol: str, position_type: str, strategy: str, 
-                      close_price: Optional[float] = None, 
-                      exit_reason: str = "manual") -> Tuple[bool, Dict]:"""
-#        """포지션 청산 및 거래 기록 반환"""
-    """
+    def close_position(
+        self,
+        symbol: str,
+        position_type: str,
+        strategy: str,
+        close_price: Optional[float] = None,
+        exit_reason: str = "manual",
+    ) -> Tuple[bool, Dict]:
+        """포지션 청산 및 거래 기록 반환"""
         try:
             mask = (self.positions['symbol'] == symbol) & \
                    (self.positions['position_type'] == position_type) & \
@@ -273,7 +277,7 @@ class PositionTracker:
             
         except Exception as e:
             print(f"❌ 포지션 청산 실패: {e}")
-            return False, {}"""
+            return False, {}
     
     def update_positions(self) -> bool:
         """모든 포지션의 현재가 및 손익 업데이트"""

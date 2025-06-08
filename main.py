@@ -8,7 +8,10 @@ import argparse
 import traceback
 import pandas as pd
 import importlib.util
-import schedule
+try:
+    import schedule
+except ImportError:
+    schedule = None
 import time
 from datetime import datetime
 
@@ -300,11 +303,15 @@ def run_after_market_close():
 
 def setup_scheduler():
     """스케줄러 설정 - 매일 오후 4시 30분에 실행"""
+    if schedule is None:
+        raise ImportError("schedule 패키지가 설치되어 있지 않습니다.")
     schedule.every().day.at("16:30").do(run_after_market_close)
     print("📅 스케줄러 설정 완료: 매일 오후 4시 30분에 포트폴리오 업데이트 실행")
 
 def run_scheduler():
     """스케줄러 실행"""
+    if schedule is None:
+        raise ImportError("schedule 패키지가 설치되어 있지 않습니다.")
     setup_scheduler()
     print("🔄 스케줄러 시작... (Ctrl+C로 종료)")
     
