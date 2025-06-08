@@ -215,7 +215,7 @@ if __name__ == '__main__':
     # 총 자산 설정
     CAPITAL = 100000
 
-    print("🚀 전략 6 스크리닝을 실행합니다. 포트폴리오 관리는 run_integrated_portfolio.py를 이용해주세요.")
+    print("🚀 전략 6 스크리닝을 실행합니다. 개별 포트폴리오 관리는 portfolio_managing 모듈을 이용해주세요.")
     try:
         run_strategy(total_capital=CAPITAL)
     except Exception as e:

@@ -25,9 +25,9 @@ from utils import ensure_dir
 from .strategy_config import StrategyConfig
 
 class PortfolioManager:
-    """통합 포트폴리오 관리 클래스 - 6개 전략 통합 지원"""
+    """개별 전략 포트폴리오 관리 클래스"""
     
-    def __init__(self, portfolio_name: str = "main_portfolio", initial_capital: float = 100000):
+    def __init__(self, portfolio_name: str = "individual_portfolio", initial_capital: float = 100000):
         self.portfolio_name = portfolio_name
         self.initial_capital = initial_capital
         
@@ -303,42 +303,6 @@ class PortfolioManager:
             return original_condition
     
 
-    def run_integrated_portfolio_management():
-        """통합 포트폴리오 관리 실행"""
-        try:
-            print("🚀 통합 포트폴리오 관리 시작")
-        
-        # 포트폴리오 매니저 초기화
-            portfolio_manager = PortfolioManager()
-        
-        # 모든 전략 처리
-            for strategy_name in StrategyConfig.get_all_strategies():
-                print(f"\n📊 {strategy_name} 처리 중...")
-                strategy_results = portfolio_manager.load_strategy_results(strategy_name)
-                if strategy_results is not None:
-                    portfolio_manager.process_strategy_signals(strategy_name, strategy_results)
-        
-        # 청산 조건 확인
-            portfolio_manager.utils.check_and_process_exit_conditions()
-        
-        # 포트폴리오 업데이트
-            portfolio_manager.position_tracker.update_positions()
-        
-        # 요약 출력
-            summary = portfolio_manager.utils.get_portfolio_summary()
-            print(f"\n📈 포트폴리오 현황:")
-            print(f"   총 가치: ${summary.get('current_value', 0):,.2f}")
-            print(f"   총 수익: ${summary.get('total_return', 0):,.2f} ({summary.get('total_return_pct', 0):.2f}%)")
-            print(f"   활성 포지션: {summary.get('positions', {}).get('total_positions', 0)}개")
-        
-        # 리포트 생성
-            portfolio_manager.reporter.generate_report()
-        
-            print("✅ 통합 포트폴리오 관리 완료")
-        
-        except Exception as e:
-            print(f"❌ 통합 포트폴리오 관리 실패: {e}")
-
     def run_individual_strategy_portfolios():
         """개별 전략 포트폴리오 관리"""
         try:
@@ -434,11 +398,16 @@ class PortfolioManager:
             for idx, row in df.iterrows():
                 symbol = row['종목명']
                 purchase_price = self._parse_price(row['매수가'])
+                purchase_date = row.get('매수일', '')
                 stop_loss = self._parse_price(row['손절매'])
                 profit_protection = self._parse_price(row['수익보호'])
                 profit_taking = self._parse_price(row['차익실현'])
                 
-                if purchase_price is None:
+                if purchase_price is None or not purchase_date:
+                    continue
+                
+                # 매수일 다음날부터 조건 확인
+                if not self._should_check_exit_from_next_day(purchase_date):
                     continue
                 
                 # 최근 가격 데이터 가져오기
@@ -450,34 +419,23 @@ class PortfolioManager:
                 recent_low = recent_data.get('low')
                 recent_close = recent_data.get('close')
                 
-                # 수익률 업데이트 (SHORT 포지션)
+                # 수익률 업데이트 (SHORT 포지션) - 삭제 전에 계산
                 if recent_close and purchase_price:
                     return_pct = ((purchase_price - recent_close) / purchase_price) * 100
                     df.loc[idx, '수익률'] = return_pct
                     updated = True
+                    print(f"  📊 {symbol}: 수익률 업데이트 {return_pct:.2f}%")
                 
                 # SHORT 포지션 청산 조건 확인
-                should_exit = False
-                exit_reason = ""
-                
-                # 1. 최근 고가가 손절매가 위로 올라간 경우
-                if stop_loss and recent_high and recent_high >= stop_loss:
-                    should_exit = True
-                    exit_reason = f"손절매 조건 (고가 {recent_high:.2f} >= 손절매 {stop_loss:.2f})"
-                
-                # 2. 최근 고가가 수익보호가 위로 올라간 경우
-                elif profit_protection and recent_high and recent_high >= profit_protection:
-                    should_exit = True
-                    exit_reason = f"수익보호 조건 (고가 {recent_high:.2f} >= 수익보호 {profit_protection:.2f})"
-                
-                # 3. 최근 저가가 차익실현가 아래로 떨어진 경우
-                elif profit_taking and recent_low and recent_low <= profit_taking:
-                    should_exit = True
-                    exit_reason = f"차익실현 조건 (저가 {recent_low:.2f} <= 차익실현 {profit_taking:.2f})"
+                # Buy 포지션 청산 조건 확인 (복합 조건 사용)
+                should_exit, exit_reason = self._check_complex_exit_condition(row, recent_data, 'BUY')
+                final_return = return_pct if 'return_pct' in locals() else 0
                 
                 if should_exit:
+                    # 청산 기록 저장
+                    self._log_exit_transaction(symbol, 'SELL', purchase_price, recent_close, final_return, exit_reason)
                     rows_to_remove.append(idx)
-                    print(f"  🔄 {symbol}: {exit_reason} - 데이터 삭제")
+                    print(f"  🔄 {symbol}: {exit_reason} - 최종 수익률 {final_return:.2f}% - 데이터 삭제")
             
             # 조건 충족 행 제거
             if rows_to_remove:
@@ -487,6 +445,8 @@ class PortfolioManager:
             # 파일 저장
             if updated:
                 df.to_csv(file_path, index=False)
+                json_file = file_path.replace('.csv', '.json')
+                df.to_json(json_file, orient='records', force_ascii=False, indent=2)
                 print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
                 
         except Exception as e:
@@ -510,11 +470,16 @@ class PortfolioManager:
             for idx, row in df.iterrows():
                 symbol = row['종목명']
                 purchase_price = self._parse_price(row['매수가'])
+                purchase_date = row.get('매수일', '')
                 stop_loss = self._parse_price(row['손절매'])
                 profit_protection = self._parse_price(row['수익보호'])
                 profit_taking = self._parse_price(row['차익실현'])
                 
-                if purchase_price is None:
+                if purchase_price is None or not purchase_date:
+                    continue
+                
+                # 매수일 다음날부터 조건 확인
+                if not self._should_check_exit_from_next_day(purchase_date):
                     continue
                 
                 # 최근 가격 데이터 가져오기
@@ -526,34 +491,22 @@ class PortfolioManager:
                 recent_low = recent_data.get('low')
                 recent_close = recent_data.get('close')
                 
-                # 수익률 업데이트
+                # 수익률 업데이트 - 삭제 전에 계산
                 if recent_close and purchase_price:
                     return_pct = ((recent_close - purchase_price) / purchase_price) * 100
                     df.loc[idx, '수익률'] = return_pct
                     updated = True
+                    print(f"  📊 {symbol}: 수익률 업데이트 {return_pct:.2f}%")
                 
                 # Buy 포지션 청산 조건 확인
-                should_exit = False
-                exit_reason = ""
-                
-                # 1. 최근 저가가 손절매가 아래로 떨어진 경우
-                if stop_loss and recent_low and recent_low <= stop_loss:
-                    should_exit = True
-                    exit_reason = f"손절매 조건 (저가 {recent_low:.2f} <= 손절매 {stop_loss:.2f})"
-                
-                # 2. 최근 저가가 수익보호가 아래로 떨어진 경우
-                elif profit_protection and recent_low and recent_low <= profit_protection:
-                    should_exit = True
-                    exit_reason = f"수익보호 조건 (저가 {recent_low:.2f} <= 수익보호 {profit_protection:.2f})"
-                
-                # 3. 최근 고가가 차익실현가를 넘어간 경우
-                elif profit_taking and recent_high and recent_high >= profit_taking:
-                    should_exit = True
-                    exit_reason = f"차익실현 조건 (고가 {recent_high:.2f} >= 차익실현 {profit_taking:.2f})"
-                
+                # Buy 포지션 청산 조건 확인 (복합 조건 사용)
+                should_exit, exit_reason = self._check_complex_exit_condition(row, recent_data, 'BUY')
+                final_return = return_pct if 'return_pct' in locals() else 0                
                 if should_exit:
+                    # 청산 기록 저장
+                    self._log_exit_transaction(symbol, 'BUY', purchase_price, recent_close, final_return, exit_reason)
                     rows_to_remove.append(idx)
-                    print(f"  🔄 {symbol}: {exit_reason} - 데이터 삭제")
+                    print(f"  🔄 {symbol}: {exit_reason} - 최종 수익률 {final_return:.2f}% - 데이터 삭제")
             
             # 조건 충족 행 제거
             if rows_to_remove:
@@ -563,6 +516,8 @@ class PortfolioManager:
             # 파일 저장
             if updated:
                 df.to_csv(file_path, index=False)
+                json_file = file_path.replace('.csv', '.json')
+                df.to_json(json_file, orient='records', force_ascii=False, indent=2)
                 print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
                 
         except Exception as e:
@@ -614,3 +569,197 @@ class PortfolioManager:
         except Exception as e:
             print(f"⚠️ {symbol} 가격 데이터 조회 실패: {e}")
             return None
+    
+
+    def _should_check_exit_from_next_day(self, purchase_date: str) -> bool:
+        """매수일 다음날부터 청산 조건을 확인해야 하는지 판단합니다."""
+        try:
+            from datetime import datetime, timedelta
+            
+            purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
+            next_day = purchase_dt + timedelta(days=1)
+            current_dt = datetime.now()
+            
+            # 현재 시간이 매수일 다음날 이후인지 확인
+            return current_dt.date() >= next_day.date()
+            
+        except Exception as e:
+            print(f"⚠️ 날짜 확인 실패: {e}")
+            return True  # 오류 시 기본적으로 확인 진행
+    
+    def _log_exit_transaction(self, symbol: str, position_type: str, purchase_price: float, 
+                            exit_price: float, return_pct: float, exit_reason: str):
+        """청산 거래를 별도 파일에 기록합니다."""
+        try:
+            import pandas as pd
+            from datetime import datetime
+            
+            log_file = os.path.join(self.results_dir, f"{self.portfolio_name}_exit_log.csv")
+            
+            # 새로운 거래 기록
+            new_record = {
+                '청산일시': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                '종목명': symbol,
+                '포지션': position_type,
+                '매수가': purchase_price,
+                '청산가': exit_price,
+                '수익률': f"{return_pct:.2f}%",
+                '청산사유': exit_reason
+            }
+            
+            # 기존 로그 파일이 있으면 읽어오기
+            if os.path.exists(log_file):
+                df = pd.read_csv(log_file)
+                df = pd.concat([df, pd.DataFrame([new_record])], ignore_index=True)
+            else:
+                df = pd.DataFrame([new_record])
+            
+            # 파일 저장
+            df.to_csv(log_file, index=False)
+            print(f"  📝 청산 기록 저장: {log_file}")
+            
+        except Exception as e:
+            print(f"⚠️ 청산 기록 저장 실패: {e}")
+
+
+def _parse_complex_condition(self, condition_str: str, purchase_date: str) -> dict:
+    """복합 청산 조건을 파싱합니다 (가격 + 시간 조건)."""
+    try:
+        import re
+        
+        result = {
+            'price': None,
+            'days_remaining': None,
+            'original_condition': str(condition_str),
+            'has_or_condition': False
+        }
+        
+        if pd.isna(condition_str) or condition_str == '없음':
+            return result
+        
+        condition = str(condition_str)
+        
+        # "또는" 조건 확인
+        if '또는' in condition:
+            result['has_or_condition'] = True
+            parts = condition.split('또는')
+        else:
+            parts = [condition]
+        
+        for part in parts:
+            part = part.strip()
+            
+            # 가격 조건 추출 (숫자% 또는 직접 가격)
+            price_match = re.search(r'(\d+(?:\.\d+)?)%', part)
+            if price_match:
+                result['price_percent'] = float(price_match.group(1))
+            else:
+                price_match = re.search(r'(\d+(?:\.\d+)?)', part)
+                if price_match and '일' not in part:
+                    result['price'] = float(price_match.group(1))
+            
+            # 일수 조건 추출
+            days_match = re.search(r'(\d+)일\s*후', part)
+            if days_match:
+                original_days = int(days_match.group(1))
+                remaining_days = self._calculate_remaining_days(purchase_date, part)
+                result['days_remaining'] = remaining_days
+        
+        return result
+        
+    except Exception as e:
+        print(f"⚠️ 복합 조건 파싱 실패: {e}")
+        return {'price': None, 'days_remaining': None, 'original_condition': str(condition_str)}
+
+def _check_complex_exit_condition(self, row, recent_data, position_type='BUY') -> tuple:
+    """복합 청산 조건을 확인합니다."""
+    try:
+        symbol = row['종목명']
+        purchase_price = self._parse_price(row['매수가'])
+        purchase_date = row.get('매수일', '')
+        
+        # 각 조건별로 복합 파싱
+        stop_loss_condition = self._parse_complex_condition(row['손절매'], purchase_date)
+        profit_protection_condition = self._parse_complex_condition(row['수익보호'], purchase_date)
+        profit_taking_condition = self._parse_complex_condition(row['차익실현'], purchase_date)
+        
+        recent_high = recent_data.get('high')
+        recent_low = recent_data.get('low')
+        recent_close = recent_data.get('close')
+        
+        # 조건 확인 로직
+        should_exit = False
+        exit_reason = ""
+        
+        # 1. 손절매 조건 확인
+        if self._check_single_condition(stop_loss_condition, purchase_price, recent_low, 'stop_loss', position_type):
+            should_exit = True
+            exit_reason = "손절매 조건 충족"
+        
+        # 2. 수익보호 조건 확인
+        elif self._check_single_condition(profit_protection_condition, purchase_price, recent_low, 'profit_protection', position_type):
+            should_exit = True
+            exit_reason = "수익보호 조건 충족"
+        
+        # 3. 차익실현 조건 확인
+        elif self._check_single_condition(profit_taking_condition, purchase_price, recent_high, 'profit_taking', position_type):
+            should_exit = True
+            exit_reason = "차익실현 조건 충족"
+        
+        return should_exit, exit_reason
+        
+    except Exception as e:
+        print(f"⚠️ 복합 조건 확인 실패: {e}")
+        return False, ""
+
+def _check_single_condition(self, condition_dict: dict, purchase_price: float, 
+                          current_price: float, condition_type: str, position_type: str = 'BUY') -> bool:
+    """단일 조건(가격 또는 시간)을 확인합니다."""
+    try:
+        # 시간 조건 우선 확인 (n일 후 → 0일이 되면 청산)
+        if condition_dict.get('days_remaining') is not None:
+            if condition_dict['days_remaining'] <= 0:
+                return True
+        
+        # "또는" 조건이 있는 경우, 시간 조건이 충족되면 가격 조건 무시
+        if condition_dict.get('has_or_condition') and condition_dict.get('days_remaining') is not None:
+            if condition_dict['days_remaining'] <= 0:
+                return True
+        
+        # 가격 조건 확인
+        if condition_dict.get('price') and current_price:
+            target_price = condition_dict['price']
+            if position_type == 'BUY':
+                if condition_type in ['stop_loss', 'profit_protection']:
+                    return current_price <= target_price
+                elif condition_type == 'profit_taking':
+                    return current_price >= target_price
+            else:  # SELL position
+                if condition_type in ['stop_loss', 'profit_protection']:
+                    return current_price >= target_price
+                elif condition_type == 'profit_taking':
+                    return current_price <= target_price
+        
+        # 퍼센트 조건 확인
+        if condition_dict.get('price_percent') and purchase_price and current_price:
+            percent = condition_dict['price_percent']
+            if position_type == 'BUY':
+                if condition_type == 'stop_loss':
+                    target_price = purchase_price * (1 - percent / 100)
+                    return current_price <= target_price
+                elif condition_type == 'profit_taking':
+                    target_price = purchase_price * (1 + percent / 100)
+                    return current_price >= target_price
+            else:  # SELL position
+                if condition_type == 'stop_loss':
+                    target_price = purchase_price * (1 + percent / 100)
+                    return current_price >= target_price
+                elif condition_type == 'profit_taking':
+                    target_price = purchase_price * (1 - percent / 100)
+                    return current_price <= target_price
+        
+        return False
+        
+    except Exception as e:
+        print(f"⚠️ 단일 조건 확인 실패: {e}")
+        return False

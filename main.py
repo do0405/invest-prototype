@@ -8,6 +8,9 @@ import argparse
 import traceback
 import pandas as pd
 import importlib.util
+import schedule
+import time
+from datetime import datetime
 
 from portfolio_managing import create_portfolio_manager
 
@@ -251,6 +254,7 @@ def run_volatility_skew_screening():
         print(traceback.format_exc())
 
 
+
 def load_strategy_module(strategy_name):
     """전략 모듈을 동적으로 로드합니다."""
     try:
@@ -281,27 +285,65 @@ def load_strategy_module(strategy_name):
             print(f"⚠️ {strategy_name} 모듈 로드 실패: {e}")
         return None
 
+def run_after_market_close():
+    """장 마감 후 포트폴리오 업데이트 실행"""
+    try:
+        print(f"\n🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 시작")
+        
+        # 포트폴리오만 실행
+        from portfolio_managing.core.portfolio_manager import create_portfolio_manager
+        create_portfolio_manager()
+        
+        print(f"✅ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 완료")
+        
+    except Exception as e:
+        print(f"❌ 자동 포트폴리오 업데이트 실패: {e}")
+
+def setup_scheduler():
+    """스케줄러 설정 - 매일 오후 4시 30분에 실행"""
+    schedule.every().day.at("16:30").do(run_after_market_close)
+    print("📅 스케줄러 설정 완료: 매일 오후 4시 30분에 포트폴리오 업데이트 실행")
+
+def run_scheduler():
+    """스케줄러 실행"""
+    setup_scheduler()
+    print("🔄 스케줄러 시작... (Ctrl+C로 종료)")
+    
+    try:
+        while True:
+            schedule.run_pending()
+            time.sleep(60)  # 1분마다 확인
+    except KeyboardInterrupt:
+        print("\n⏹️ 스케줄러 종료")
+
 
 def main():
     """메인 실행 함수"""
     parser = argparse.ArgumentParser(description='투자 스크리너 및 포트폴리오 관리 시스템')
     parser.add_argument('--skip-data', action='store_true', help='데이터 수집 건너뛰기')
-    parser.add_argument('--portfolio-only', action='store_true', help='포트폴리오 관리만 실행')
-    parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 실행')
-    parser.add_argument('--volatility-skew', action='store_true', help='변동성 스큐 역전 전략만 실행')
+    parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 모드')
     parser.add_argument('--strategies', action='store_true', help='6개 전략 스크리닝만 실행')
+    parser.add_argument('--volatility-skew', action='store_true', help='변동성 스큐 역전 전략만 실행')
+    parser.add_argument('--portfolio-only', action='store_true', help='포트폴리오 관리만 실행')
+    parser.add_argument('--schedule', action='store_true', help='스케줄링 모드로 실행 (매일 오후 4시 30분)')
     
     args = parser.parse_args()
     
     try:
-        print("🚀 투자 스크리너 및 포트폴리오 관리 시스템 시작")
+        print(f"🚀 투자 스크리너 및 포트폴리오 관리 시스템 시작")
         print(f"⏰ 시작 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"🔧 실행 옵션: {vars(args)}")
         
         # 필요한 디렉토리 생성
         print(f"\n📁 디렉토리 생성 중...")
         ensure_directories()
         print(f"✅ 디렉토리 생성 완료")
+        
+        # 스케줄러 모드
+        if args.schedule:
+            print(f"\n🕐 스케줄러 모드 시작")
+            setup_scheduler()
+            run_scheduler()
+            return
         
         # 변동성 스큐 역전 전략만 실행
         if args.volatility_skew:
@@ -316,13 +358,18 @@ def main():
             return
         
         # 포트폴리오 관리만 실행
-        if args.portfolio_only:
-            print(f"\n🎯 포트폴리오 관리 전용 모드")
+        if args.schedule:
+            print("📅 스케줄링 모드로 실행합니다.")
+            run_scheduler()
+        elif args.portfolio_only:
+            print("🎯 포트폴리오 관리만 실행합니다.")
+            #from portfolio_managing.core.portfolio_manager import create_portfolio_manager
             create_portfolio_manager()
-            return
+        else:
+    # 기존 전체 실행 로직        
         
         # 전체 프로세스 실행
-        print(f"\n🎯 전체 프로세스 실행 모드")
+            print(f"\n🎯 전체 프로세스 실행 모드")
         
         if not args.skip_data:
             print(f"\n📊 1단계: 데이터 수집")

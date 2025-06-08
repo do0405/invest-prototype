@@ -1,5 +1,5 @@
 {
-  "portfolio_name": "main_portfolio",
+  "portfolio_name": "individual_portfolio",
   "initial_capital": 100000,
   "strategies": [
     "strategy1",
@@ -9,6 +9,6 @@
     "strategy5",
     "strategy6"
   ],
-  "created_date": "2025-06-04",
-  "last_updated": "2025-06-04 13:19:14"
+  "created_date": "2025-06-08",
+  "last_updated": "2025-06-08 16:49:06"
 }

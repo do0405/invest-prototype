@@ -350,13 +350,6 @@
     "rs_score":93.5852553542
   },
   {
-    "symbol":"OLLI",
-    "met_count":8,
-    "fin_met_count":7,
-    "total_met_count":15,
-    "rs_score":93.1939868204
-  },
-  {
     "symbol":"NEXN",
     "met_count":8,
     "fin_met_count":7,
@@ -397,13 +390,6 @@
     "fin_met_count":7,
     "total_met_count":15,
     "rs_score":90.0432454695
-  },
-  {
-    "symbol":"NTNX",
-    "met_count":8,
-    "fin_met_count":7,
-    "total_met_count":15,
-    "rs_score":88.8385502471
   },
   {
     "symbol":"BMI",
@@ -1981,6 +1967,13 @@
     "rs_score":88.9929983526
   },
   {
+    "symbol":"NTNX",
+    "met_count":8,
+    "fin_met_count":4,
+    "total_met_count":12,
+    "rs_score":88.8385502471
+  },
+  {
     "symbol":"HFFG",
     "met_count":8,
     "fin_met_count":4,
@@ -2126,13 +2119,6 @@
     "fin_met_count":4,
     "total_met_count":12,
     "rs_score":81.2705930807
-  },
-  {
-    "symbol":"KEYS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":80.4159802306
   },
   {
     "symbol":"DFDV",
@@ -2784,6 +2770,13 @@
     "fin_met_count":2,
     "total_met_count":10,
     "rs_score":93.2763591433
+  },
+  {
+    "symbol":"OLLI",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.1939868204
   },
   {
     "symbol":"MLYS",
@@ -4429,6 +4422,13 @@
     "fin_met_count":1,
     "total_met_count":9,
     "rs_score":80.4571663921
+  },
+  {
+    "symbol":"KEYS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":80.4159802306
   },
   {
     "symbol":"QTJL",

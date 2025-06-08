@@ -30,7 +30,7 @@ __all__ = [
 ]
 
 # 편의 함수들
-def create_portfolio_manager(portfolio_name: str = "main_portfolio", initial_capital: float = 100000, **kwargs):
+def create_portfolio_manager(portfolio_name: str = "individual_portfolio", initial_capital: float = 100000, **kwargs):
     """
     포트폴리오 매니저를 생성하는 편의 함수
     
@@ -60,10 +60,6 @@ def create_portfolio_manager(portfolio_name: str = "main_portfolio", initial_cap
         # 포트폴리오 매니저 실행
         print(f"\n🚀 포트폴리오 관리 프로세스 시작...")
         
-        # 통합 포트폴리오 관리 실행 - Static method로 호출
-        print(f"📊 통합 포트폴리오 관리 실행 중...")
-        PortfolioManager.run_integrated_portfolio_management()
-        print(f"✅ 통합 포트폴리오 관리 완료")
         
         # 개별 전략 포트폴리오 관리 실행 - Static method로 호출
         print(f"📊 개별 전략 포트폴리오 관리 실행 중...")

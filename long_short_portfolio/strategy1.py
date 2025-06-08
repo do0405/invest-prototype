@@ -226,7 +226,7 @@ if __name__ == "__main__":
     
     print("\n📊 전략 1 스크리닝을 실행합니다. (결과 파일 생성)")
     run_strategy(total_capital=100000, update_existing=False) 
-    print("\n💡 포트폴리오 통합 관리는 'run_integrated_portfolio.py'를 사용하세요.")
+    print("\n💡 개별 포트폴리오 관리는 portfolio_managing 모듈을 사용하세요.")
 
 
 def run_strategy(total_capital=100000):
