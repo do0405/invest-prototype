@@ -1,30 +1,15 @@
 import yfinance as yf
 import pandas as pd
 import os
+from .price_calculator import PriceCalculator
 from datetime import datetime
-from typing import Dict, Optional, Tuple
-from .strategy_config import StrategyConfig
-
+from typing import Dict, Tuple
 class PortfolioUtils:
     """포트폴리오 유틸리티 클래스"""
     
     def __init__(self, portfolio_manager):
         self.pm = portfolio_manager
     
-    def get_current_price(self, symbol: str) -> Optional[float]:
-        """현재가 조회 (매수일 다음날 시가 반영)"""
-        try:
-            ticker = yf.Ticker(symbol)
-            hist = ticker.history(period="2d")
-            
-            if len(hist) > 0:
-                return float(hist['Open'].iloc[-1])
-            return None
-                
-        except Exception as e:
-            print(f"⚠️ {symbol} 현재가 조회 실패: {e}")
-            return None
-
    
     def get_portfolio_summary(self) -> Dict:
         """포트폴리오 요약 정보 반환"""
@@ -96,8 +81,12 @@ class PortfolioUtils:
                 'entry_price': signal.get('price', 0),
                 'quantity': position_size,
                 'entry_date': datetime.now().strftime('%Y-%m-%d'),
-                'stop_loss': self.calculate_stop_loss(signal, strategy_config),
-                'take_profit': self.calculate_take_profit(signal, strategy_config)
+                'stop_loss': PriceCalculator.calculate_stop_loss_price(
+                    signal.get('price', 0), strategy_config, strategy_config.get('type', 'LONG')
+                ),
+                'take_profit': PriceCalculator.calculate_profit_target_price(
+                    signal.get('price', 0), strategy_config, strategy_config.get('type', 'LONG')
+                )
             }
             
             return self.pm.position_tracker.add_position(position_data)
@@ -107,33 +96,7 @@ class PortfolioUtils:
             return False
 
 
-
-    def calculate_stop_loss(self, signal: pd.Series, strategy_config: Dict) -> float:
-        """손절가 계산"""
-        try:
-            price = signal.get('price', 0)
-            stop_loss_pct = strategy_config.get('stop_loss', 0.05)
-            
-            if strategy_config.get('type') == 'LONG':
-                return price * (1 - stop_loss_pct)
-            else:
-                return price * (1 + stop_loss_pct)
-        except Exception:
-            return 0
-    
-    def calculate_take_profit(self, signal: pd.Series, strategy_config: Dict) -> float:
-        """익절가 계산"""
-        try:
-            price = signal.get('price', 0)
-            take_profit_pct = strategy_config.get('take_profit', 0.10)
-            
-            if strategy_config.get('type') == 'LONG':
-                return price * (1 + take_profit_pct)
-            else:
-                return price * (1 - take_profit_pct)
-        except Exception:
-            return 0
-    
+  
     def check_and_process_exit_conditions(self):
         """청산 조건 확인 및 처리"""
         try:
@@ -146,7 +109,7 @@ class PortfolioUtils:
             
             for idx, position in positions.iterrows():
                 symbol = position['symbol']
-                current_price = self.get_current_price(symbol)
+                current_price = PriceCalculator.get_current_price(symbol)
                 
                 if current_price is None:
                     continue
@@ -165,7 +128,7 @@ class PortfolioUtils:
             for idx, symbol, strategy, reason, return_pct in positions_to_close:
                 position = positions.iloc[idx]
                 position_type = position['position_type']
-                current_price = self.get_current_price(symbol)
+                current_price = PriceCalculator.get_current_price(symbol)
     
                 success, trade_record = self.pm.position_tracker.close_position(
                     symbol=symbol,

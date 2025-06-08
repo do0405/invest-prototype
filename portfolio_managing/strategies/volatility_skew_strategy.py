@@ -165,14 +165,6 @@ class VolatilitySkewPortfolioStrategy:
             }
             
             # 기존 데이터 로드
-            if os.path.exists(self.performance_file):
-                df = pd.read_csv(self.performance_file)
-                df = pd.concat([df, pd.DataFrame([performance_data])], ignore_index=True)
-            else:
-                df = pd.DataFrame([performance_data])
-            
-            # 저장
-            df.to_csv(self.performance_file, index=False, encoding='utf-8-sig')
             
         except Exception as e:
             print(f"❌ 성과 추적 업데이트 오류: {e}")

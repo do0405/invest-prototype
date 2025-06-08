@@ -38,12 +38,20 @@ class StrategyConfig:
             "exit_conditions": {
                 "stop_loss": {
                     "type": ExitConditionType.STOP_LOSS,
-                    "atr_multiplier": 5.0,
-                    "atr_period": 20
+                    "atr_multiplier": 1.5,
+                    "atr_period": 40
                 },
                 "trailing_stop": {
                     "type": ExitConditionType.TRAILING_STOP,
-                    "trailing_pct": 0.25  # 25%
+                    "trailing_pct": 0.20  # 20% 추격 역지정가
+                },
+                "profit_target": {
+                    "type": ExitConditionType.PROFIT_TARGET,
+                    "target_pct": 0.04  # 4% 수익 목표
+                },
+                "time_based": {
+                    "type": ExitConditionType.TIME_BASED,
+                    "max_holding_days": 30
                 }
             },
             "position_sizing": {

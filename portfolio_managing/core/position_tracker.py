@@ -168,8 +168,9 @@ class PositionTracker:
             print(f"❌ 포지션 추가 실패 ({symbol}): {e}")
             return False
     
-    def check_exit_conditions(self) -> List[Dict]:
-        """모든 포지션의 청산 조건 확인"""
+#    def check_exit_conditions(self) -> List[Dict]:
+#        """모든 포지션의 청산 조건 확인"""
+    """
         exit_signals = []
         
         if self.positions.empty:
@@ -261,17 +262,18 @@ class PositionTracker:
                 pass
         
         return exit_signals
-    
-    def get_total_portfolio_value(self) -> float:
-        """전체 포트폴리오 가치 계산"""
-        if self.positions.empty:
+    """
+#    def get_total_portfolio_value(self) -> float:
+#        """전체 포트폴리오 가치 계산"""
+    """        if self.positions.empty:
             return 100000  # 기본값
         return self.positions['market_value'].sum()
     
     def close_position(self, symbol: str, position_type: str, strategy: str, 
                       close_price: Optional[float] = None, 
-                      exit_reason: str = "manual") -> Tuple[bool, Dict]:
-        """포지션 청산 및 거래 기록 반환"""
+                      exit_reason: str = "manual") -> Tuple[bool, Dict]:"""
+#        """포지션 청산 및 거래 기록 반환"""
+    """
         try:
             mask = (self.positions['symbol'] == symbol) & \
                    (self.positions['position_type'] == position_type) & \
@@ -325,7 +327,7 @@ class PositionTracker:
             
         except Exception as e:
             print(f"❌ 포지션 청산 실패: {e}")
-            return False, {}
+            return False, {}"""
     
     def update_positions(self) -> bool:
         """모든 포지션의 현재가 및 손익 업데이트"""

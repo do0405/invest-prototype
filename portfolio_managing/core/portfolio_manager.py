@@ -99,7 +99,7 @@ class PortfolioManager:
             max_positions = strategy_config.get('max_positions', 5)
             
             # 현재 해당 전략의 포지션 수 확인
-            current_positions = len(self.position_tracker.get_strategy_positions(strategy_name))
+            current_positions = len(self.position_tracker.get_positions_by_strategy(strategy_name))
             available_slots = max_positions - current_positions
             
             if available_slots <= 0:
@@ -594,7 +594,7 @@ class PortfolioManager:
             import pandas as pd
             from datetime import datetime
             
-            log_file = os.path.join(self.results_dir, f"{self.portfolio_name}_exit_log.csv")
+            log_file = os.path.join(self.portfolio_dir, f"{self.portfolio_name}_exit_log.csv")
             
             # 새로운 거래 기록
             new_record = {
@@ -622,144 +622,268 @@ class PortfolioManager:
             print(f"⚠️ 청산 기록 저장 실패: {e}")
 
 
-def _parse_complex_condition(self, condition_str: str, purchase_date: str) -> dict:
-    """복합 청산 조건을 파싱합니다 (가격 + 시간 조건)."""
-    try:
-        import re
+    def _parse_complex_condition(self, condition_str: str, purchase_date: str) -> dict:
+        """복합 청산 조건을 파싱합니다 (가격 + 시간 조건)."""
+        try:
+            import re
         
-        result = {
-            'price': None,
-            'days_remaining': None,
-            'original_condition': str(condition_str),
-            'has_or_condition': False
-        }
+            result = {
+                'price': None,
+                'days_remaining': None,
+                'original_condition': str(condition_str),
+                'has_or_condition': False
+            }
         
-        if pd.isna(condition_str) or condition_str == '없음':
-            return result
-        
-        condition = str(condition_str)
+            if pd.isna(condition_str) or condition_str == '없음':
+                return result
+
+            condition = str(condition_str)
         
         # "또는" 조건 확인
-        if '또는' in condition:
-            result['has_or_condition'] = True
-            parts = condition.split('또는')
-        else:
-            parts = [condition]
+            if '또는' in condition:
+                result['has_or_condition'] = True
+                parts = condition.split('또는')
+            else:
+                parts = [condition]
         
-        for part in parts:
-            part = part.strip()
+            for part in parts:
+                part = part.strip()
             
             # 가격 조건 추출 (숫자% 또는 직접 가격)
-            price_match = re.search(r'(\d+(?:\.\d+)?)%', part)
-            if price_match:
-                result['price_percent'] = float(price_match.group(1))
-            else:
-                price_match = re.search(r'(\d+(?:\.\d+)?)', part)
-                if price_match and '일' not in part:
-                    result['price'] = float(price_match.group(1))
+                price_match = re.search(r'(\d+(?:\.\d+)?)%', part)
+                if price_match:
+                    result['price_percent'] = float(price_match.group(1))
+                else:
+                    price_match = re.search(r'(\d+(?:\.\d+)?)', part)
+                    if price_match and '일' not in part:
+                        result['price'] = float(price_match.group(1))
             
             # 일수 조건 추출
-            days_match = re.search(r'(\d+)일\s*후', part)
-            if days_match:
-                original_days = int(days_match.group(1))
-                remaining_days = self._calculate_remaining_days(purchase_date, part)
-                result['days_remaining'] = remaining_days
+                days_match = re.search(r'(\d+)일\s*후', part)
+                if days_match:
+                    original_days = int(days_match.group(1))
+                    remaining_days = self._calculate_remaining_days(purchase_date, part)
+                    result['days_remaining'] = remaining_days
         
-        return result
+            return result
         
-    except Exception as e:
-        print(f"⚠️ 복합 조건 파싱 실패: {e}")
-        return {'price': None, 'days_remaining': None, 'original_condition': str(condition_str)}
+        except Exception as e:
+            print(f"⚠️ 복합 조건 파싱 실패: {e}")
+            return {'price': None, 'days_remaining': None, 'original_condition': str(condition_str)}
 
-def _check_complex_exit_condition(self, row, recent_data, position_type='BUY') -> tuple:
-    """복합 청산 조건을 확인합니다."""
-    try:
-        symbol = row['종목명']
-        purchase_price = self._parse_price(row['매수가'])
-        purchase_date = row.get('매수일', '')
+    def _check_complex_exit_condition(self, row, recent_data, position_type='BUY') -> tuple:
+        symbol = "Unknown"
+        """복합 청산 조건 확인 (전략별 설정 반영)"""
+        #print(f"🔍 [DEBUG] _check_complex_exit_condition 시작 - row keys: {list(row.keys()) if hasattr(row, 'keys') else type(row)}")
+        try:
+            symbol = row['종목명']
+            purchase_price = self._parse_price(row['매수가'])
+            purchase_date = row.get('매수일', '')
+            strategy_name = row.get('전략', '')
         
-        # 각 조건별로 복합 파싱
-        stop_loss_condition = self._parse_complex_condition(row['손절매'], purchase_date)
-        profit_protection_condition = self._parse_complex_condition(row['수익보호'], purchase_date)
-        profit_taking_condition = self._parse_complex_condition(row['차익실현'], purchase_date)
+            if not purchase_price or not purchase_date:
+                return False, ""
         
-        recent_high = recent_data.get('high')
-        recent_low = recent_data.get('low')
-        recent_close = recent_data.get('close')
+        # 전략별 설정 가져오기
+            strategy_config = StrategyConfig.get_strategy_config(strategy_name)
+            if strategy_config:
+                exit_conditions = strategy_config.get('exit_conditions', {})
+                return self._check_strategy_based_exit_conditions(
+                    row, recent_data, position_type, exit_conditions
+                )
         
-        # 조건 확인 로직
-        should_exit = False
-        exit_reason = ""
+        # 기존 복합 조건 로직 (fallback)
+            return self._check_legacy_complex_conditions(row, recent_data, position_type)
         
-        # 1. 손절매 조건 확인
-        if self._check_single_condition(stop_loss_condition, purchase_price, recent_low, 'stop_loss', position_type):
-            should_exit = True
-            exit_reason = "손절매 조건 충족"
+        except Exception as e:
+            print(f"❌ 복합 청산 조건 확인 실패 ({symbol}): {e}")
+            return False, ""
+    
+    def _check_strategy_based_exit_conditions(self, row, recent_data, position_type, exit_conditions):
+        """전략별 청산 조건 확인 - 기존 portfolio_utils 활용"""
+        #print(f"🔍 [DEBUG] _check_strategy_based_exit_conditions 시작 - row: {row}")
+        try:
+            symbol = row['종목명']
+        # 기존 portfolio_utils의 check_exit_condition 직접 활용
+            from .portfolio_utils import PortfolioUtils
+            import pandas as pd
         
-        # 2. 수익보호 조건 확인
-        elif self._check_single_condition(profit_protection_condition, purchase_price, recent_low, 'profit_protection', position_type):
-            should_exit = True
-            exit_reason = "수익보호 조건 충족"
-        
-        # 3. 차익실현 조건 확인
-        elif self._check_single_condition(profit_taking_condition, purchase_price, recent_high, 'profit_taking', position_type):
-            should_exit = True
-            exit_reason = "차익실현 조건 충족"
-        
-        return should_exit, exit_reason
-        
-    except Exception as e:
-        print(f"⚠️ 복합 조건 확인 실패: {e}")
-        return False, ""
+        # 임시 포지션 데이터 생성 (기존 데이터 구조 활용)
+            temp_position = pd.Series({
+            'entry_price': self._parse_price(row['매수가']),
+            'position_type': 'LONG' if position_type == 'BUY' else 'SHORT',
+            'entry_date': row.get('매수일', ''),
+            'stop_loss': row.get('손절가', 0)
+            })
 
-def _check_single_condition(self, condition_dict: dict, purchase_price: float, 
+            current_price = self.position_tracker.get_current_price(symbol)
+        
+            # 기존 PortfolioUtils의 check_exit_condition 그대로 사용
+            portfolio_utils = PortfolioUtils(self)
+            return portfolio_utils.check_exit_condition(temp_position, current_price)
+        
+        except Exception as e:
+            print(f"❌ 전략별 청산 조건 확인 실패: {e}")
+            return False, ""
+
+    def _check_legacy_complex_conditions(self, row, recent_data, position_type):
+        """기존 복합 조건 로직 - 기존 _check_single_condition 활용"""
+        #print(f"🔍 [DEBUG] _check_legacy_complex_conditions 시작 - row: {row}")
+        try:
+            symbol = row['종목명']
+            current_price = self.position_tracker.get_current_price(symbol)
+            purchase_price = self._parse_price(row['매수가'])
+        
+            if not current_price or not purchase_price:
+                return False, ""
+        
+        # 기존 _check_single_condition 메서드 활용
+            basic_stop_loss = {'price_percent': 5}
+            basic_profit_taking = {'price_percent': 10}
+
+            if self._check_single_condition(basic_stop_loss, purchase_price, current_price, 'stop_loss', position_type):
+                return True, "기본 5% 손절매"
+        
+            if self._check_single_condition(basic_profit_taking, purchase_price, current_price, 'profit_taking', position_type):
+                return True, "기본 10% 익절"
+
+            return False, ""
+        
+        except Exception as e:
+            print(f"⚠️ 기존 조건 확인 실패: {e}")
+            return False, ""
+
+    def _calculate_stop_loss_price(self, purchase_price, exit_conditions, position_type):
+        """손절매 가격 계산"""
+        try:
+            if 'stop_loss' not in exit_conditions:
+                return None
+            
+            stop_loss_config = exit_conditions['stop_loss']
+            
+            # 퍼센트 기반 손절매
+            if 'percent' in stop_loss_config:
+                percent = stop_loss_config['percent'] / 100
+                if position_type == 'BUY':
+                    return purchase_price * (1 - percent)
+                else:  # SELL
+                    return purchase_price * (1 + percent)
+            
+            # ATR 기반 손절매
+            if 'atr_multiplier' in stop_loss_config:
+                # ATR 계산은 복잡하므로 기본 2% 손절매로 대체
+                if position_type == 'BUY':
+                    return purchase_price * 0.98
+                else:
+                    return purchase_price * 1.02
+            
+            return None
+            
+        except Exception as e:
+            print(f"⚠️ 손절매 가격 계산 실패: {e}")
+            return None
+    
+    def _calculate_profit_target_price_from_config(self, purchase_price, exit_conditions, position_type):
+        """전략 설정에서 수익 목표가 계산"""
+        try:
+            if 'profit_taking' not in exit_conditions:
+                return None
+            
+            profit_config = exit_conditions['profit_taking']
+            
+            # 퍼센트 기반 수익 목표
+            if 'percent' in profit_config:
+                percent = profit_config['percent'] / 100
+                if position_type == 'BUY':
+                    return purchase_price * (1 + percent)
+                else:  # SELL
+                    return purchase_price * (1 - percent)
+            
+            return None
+            
+        except Exception as e:
+            print(f"⚠️ 수익 목표가 계산 실패: {e}")
+            return None
+    
+    def _check_trailing_stop_condition(self, row, current_price, purchase_price, profit_protection_config, position_type):
+        """트레일링 스톱 조건 확인"""
+        try:
+            if 'trailing_stop' not in profit_protection_config:
+                return False, ""
+            
+            trailing_config = profit_protection_config['trailing_stop']
+            
+            # 간단한 트레일링 스톱 구현 (실제로는 최고가/최저가 추적 필요)
+            # 현재는 기본 수익률 기준으로 구현
+            if position_type == 'BUY':
+                current_return = (current_price - purchase_price) / purchase_price
+                if current_return > 0.05:  # 5% 이상 수익시 트레일링 스톱 활성화
+                    trailing_stop_price = current_price * 0.97  # 3% 트레일링
+                    if current_price <= trailing_stop_price:
+                        return True, "트레일링 스톱 조건 달성"
+            else:  # SELL
+                current_return = (purchase_price - current_price) / purchase_price
+                if current_return > 0.05:
+                    trailing_stop_price = current_price * 1.03
+                    if current_price >= trailing_stop_price:
+                        return True, "트레일링 스톱 조건 달성"
+            
+            return False, ""
+            
+        except Exception as e:
+            print(f"⚠️ 트레일링 스톱 확인 실패: {e}")
+            return False, ""
+
+    def _check_single_condition(self, condition_dict: dict, purchase_price: float, 
                           current_price: float, condition_type: str, position_type: str = 'BUY') -> bool:
-    """단일 조건(가격 또는 시간)을 확인합니다."""
-    try:
+        """단일 조건(가격 또는 시간)을 확인합니다."""
+        try:
         # 시간 조건 우선 확인 (n일 후 → 0일이 되면 청산)
-        if condition_dict.get('days_remaining') is not None:
-            if condition_dict['days_remaining'] <= 0:
-                return True
+            if condition_dict.get('days_remaining') is not None:
+                if condition_dict['days_remaining'] <= 0:
+                    return True
         
         # "또는" 조건이 있는 경우, 시간 조건이 충족되면 가격 조건 무시
-        if condition_dict.get('has_or_condition') and condition_dict.get('days_remaining') is not None:
-            if condition_dict['days_remaining'] <= 0:
-                return True
+            if condition_dict.get('has_or_condition') and condition_dict.get('days_remaining') is not None:
+                if condition_dict['days_remaining'] <= 0:
+                    return True
         
         # 가격 조건 확인
-        if condition_dict.get('price') and current_price:
-            target_price = condition_dict['price']
-            if position_type == 'BUY':
-                if condition_type in ['stop_loss', 'profit_protection']:
-                    return current_price <= target_price
-                elif condition_type == 'profit_taking':
-                    return current_price >= target_price
-            else:  # SELL position
-                if condition_type in ['stop_loss', 'profit_protection']:
-                    return current_price >= target_price
-                elif condition_type == 'profit_taking':
-                    return current_price <= target_price
+            if condition_dict.get('price') and current_price:
+                target_price = condition_dict['price']
+                if position_type == 'BUY':
+                    if condition_type in ['stop_loss', 'profit_protection']:
+                        return current_price <= target_price
+                    elif condition_type == 'profit_taking':
+                        return current_price >= target_price
+                else:  # SELL position
+                    if condition_type in ['stop_loss', 'profit_protection']:
+                        return current_price >= target_price
+                    elif condition_type == 'profit_taking':
+                        return current_price <= target_price
         
         # 퍼센트 조건 확인
-        if condition_dict.get('price_percent') and purchase_price and current_price:
-            percent = condition_dict['price_percent']
-            if position_type == 'BUY':
-                if condition_type == 'stop_loss':
-                    target_price = purchase_price * (1 - percent / 100)
-                    return current_price <= target_price
-                elif condition_type == 'profit_taking':
-                    target_price = purchase_price * (1 + percent / 100)
-                    return current_price >= target_price
-            else:  # SELL position
-                if condition_type == 'stop_loss':
-                    target_price = purchase_price * (1 + percent / 100)
-                    return current_price >= target_price
-                elif condition_type == 'profit_taking':
-                    target_price = purchase_price * (1 - percent / 100)
-                    return current_price <= target_price
+            if condition_dict.get('price_percent') and purchase_price and current_price:
+                percent = condition_dict['price_percent']
+                if position_type == 'BUY':
+                    if condition_type == 'stop_loss':
+                        target_price = purchase_price * (1 - percent / 100)
+                        return current_price <= target_price
+                    elif condition_type == 'profit_taking':
+                        target_price = purchase_price * (1 + percent / 100)
+                        return current_price >= target_price
+                else:  # SELL position
+                    if condition_type == 'stop_loss':
+                        target_price = purchase_price * (1 + percent / 100)
+                        return current_price >= target_price
+                    elif condition_type == 'profit_taking':
+                        target_price = purchase_price * (1 - percent / 100)
+                        return current_price <= target_price
+
+            return False
         
-        return False
-        
-    except Exception as e:
-        print(f"⚠️ 단일 조건 확인 실패: {e}")
-        return False
+        except Exception as e:
+            print(f"⚠️ 단일 조건 확인 실패: {e}")
+            return False
+
+

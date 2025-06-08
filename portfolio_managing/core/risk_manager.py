@@ -138,8 +138,9 @@ class RiskManager:
             print(f"❌ Trailing Stop 설정 실패 ({symbol}): {e}")
             return False
     
-    def update_trailing_stops(self, positions_df: pd.DataFrame) -> List[Dict]:
-        """Trailing Stop 업데이트 및 청산 신호 생성"""
+#    def update_trailing_stops(self, positions_df: pd.DataFrame) -> List[Dict]:
+#        """Trailing Stop 업데이트 및 청산 신호 생성"""
+        """
         stop_signals = []
         
         try:
@@ -209,10 +210,11 @@ class RiskManager:
         except Exception as e:
             print(f"❌ Trailing Stop 업데이트 실패: {e}")
             return []
-    
+        """
     def calculate_portfolio_var(self, positions_df: pd.DataFrame, 
                                confidence_level: float = 0.95) -> float:
         """포트폴리오 VaR 계산"""
+        
         try:
             if positions_df.empty:
                 return 0.0
@@ -236,7 +238,7 @@ class RiskManager:
         except Exception as e:
             print(f"⚠️ VaR 계산 실패: {e}")
             return 0.0
-    
+        
     def check_risk_limits(self, positions_df: pd.DataFrame) -> List[Dict]:
         """리스크 한도 체크"""
         warnings = []
