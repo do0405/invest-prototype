@@ -3,6 +3,9 @@
 
 import os
 import pandas as pd
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from Markminervini.screener import run_us_screening, calculate_rs_score
 from utils import ensure_dir
 from config import DATA_DIR, DATA_US_DIR, RESULTS_DIR, US_WITH_RS_PATH
