@@ -346,7 +346,5 @@ class PortfolioManager:
                 print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
 
         except Exception as e:
-
             print(f"❌ {position_type} 청산 조건 확인 실패 ({file_path}): {e}")
-
 
