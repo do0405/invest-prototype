@@ -94,6 +94,7 @@ OPTION_DATA_SOURCES = [
 
 # 변동성 스큐 역전 전략 관련 설정 (새 디렉토리 구조)
 OPTION_VOLATILITY_DIR = os.path.join(BASE_DIR, 'option_volatility')  # 옵션 변동성 결과 디렉토리
+OPTION_VOLATILITY_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'option_volatility')  # 포트폴리오 관리용 결과 디렉토리
 VOLATILITY_SKEW_RESULTS_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_results.csv')  # 변동성 스큐 스크리닝 결과
 VOLATILITY_SKEW_DETAILED_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_detailed.csv')  # 상세 분석 결과
 VOLATILITY_SKEW_PERFORMANCE_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_performance.csv')  # 성과 분석 결과

@@ -199,9 +199,38 @@ class StrategyConfig:
             "position_sizing": {
                 "risk_pct": 0.02,
                 "max_allocation_pct": 0.10,
+            "max_positions": 10
+        },
+
+        "volatility_skew": {
+            "name": "변동성 스큐 역전",
+            "position_type": PositionType.LONG,
+            "result_file": "buy/volatility_skew_results.csv",
+            "entry": {
+                "order_type": OrderType.MARKET,
+                "price_offset_pct": 0.0
+            },
+            "exit_conditions": {
+                "stop_loss": {
+                    "type": ExitConditionType.STOP_LOSS,
+                    "percent": 15.0
+                },
+                "profit_target": {
+                    "type": ExitConditionType.PROFIT_TARGET,
+                    "target_pct": 0.1
+                },
+                "time_based": {
+                    "type": ExitConditionType.TIME_BASED,
+                    "max_holding_days": 30
+                }
+            },
+            "position_sizing": {
+                "risk_pct": 0.02,
+                "max_allocation_pct": 0.10,
                 "max_positions": 10
             }
         }
+    }
     }
     
     @classmethod
