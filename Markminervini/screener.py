@@ -7,7 +7,10 @@ sys.path.append("..")
 import os
 import pandas as pd
 import numpy as np
-import schedule
+try:
+    import schedule
+except ImportError:  # pragma: no cover - optional dependency
+    schedule = None
 import time
 import argparse
 from datetime import datetime, timedelta
@@ -589,16 +592,16 @@ def run_screening():
 
 # 스케줄러 설정 함수
 def setup_scheduler(collect_hour=1, screen_hour=2):
-    # 데이터 수집 스케줄 설정
+    if schedule is None:
+        raise ImportError("schedule 패키지가 필요합니다")
+
     schedule.every().day.at(f"{collect_hour:02d}:00").do(collect_data)
-    
-    # 스크리닝 스케줄 설정
     schedule.every().day.at(f"{screen_hour:02d}:00").do(run_screening)
-    
+
     print(f"\n⏰ 스케줄러 설정 완료:")
     print(f"  - 데이터 수집: 매일 {collect_hour:02d}:00")
     print(f"  - 스크리닝: 매일 {screen_hour:02d}:00")
-    
+
     while True:
         schedule.run_pending()
         time.sleep(60)
