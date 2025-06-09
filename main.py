@@ -231,29 +231,30 @@ def run_all_screening_processes():
         print(traceback.format_exc())
 
 
-def run_volatility_skew_screening():
-    """변동성 스큐 역전 전략 스크리닝을 실행합니다."""
-    if not VolatilitySkewScreener:
-        print("⚠️ VolatilitySkewScreener를 사용할 수 없습니다.")
-        return
-        
+def run_volatility_skew_portfolio():
+    """변동성 스큐 전략을 실행해 포트폴리오 신호를 생성합니다."""
     try:
-        print("\n📊 변동성 스큐 역전 전략 스크리닝 시작...")
-        
-        # Alpha Vantage API 키 설정
+        from portfolio_managing.strategies import VolatilitySkewPortfolioStrategy
+    except Exception as e:
+        print(f"⚠️ VolatilitySkewPortfolioStrategy 로드 실패: {e}")
+        return
+
+    try:
+        print("\n📊 변동성 스큐 포트폴리오 생성 시작...")
+
         api_key = ALPHA_VANTAGE_API_KEY if ALPHA_VANTAGE_API_KEY != "YOUR_ALPHA_VANTAGE_KEY" else None
-        
-        screener = VolatilitySkewScreener(alpha_vantage_key=api_key)
-        results, filepath = screener.run_screening()
-        
-        if results:
-            print(f"✅ 변동성 스큐 역전 전략 스크리닝 완료: {len(results)}개 종목 발견")
+
+        strategy = VolatilitySkewPortfolioStrategy(alpha_vantage_key=api_key)
+        signals, filepath = strategy.run_screening_and_portfolio_creation()
+
+        if signals:
+            print(f"✅ 변동성 스큐 포트폴리오 신호 생성: {len(signals)}개")
             print(f"📁 결과 파일: {filepath}")
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
-            
+
     except Exception as e:
-        print(f"❌ 변동성 스큐 스크리닝 중 오류 발생: {e}")
+        print(f"❌ 변동성 스큐 포트폴리오 생성 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
@@ -354,7 +355,7 @@ def main():
         # 변동성 스큐 역전 전략만 실행
         if args.volatility_skew:
             print(f"\n🎯 변동성 스큐 역전 전략 전용 모드")
-            run_volatility_skew_screening()
+            run_volatility_skew_portfolio()
             return
         
         # 6개 전략 스크리닝만 실행
@@ -393,7 +394,7 @@ def main():
             print("  📊 2-3: 전략 실행")
             execute_strategies()
             print("  📊 2-4: 변동성 스큐 스크리닝 실행")
-            run_volatility_skew_screening()
+            run_volatility_skew_portfolio()
         else:
             print("\n🔍 2단계: 전략 파일 상태 확인 및 조건부 스크리닝")
             # 전략 파일 상태 확인 및 필요시 스크리닝
