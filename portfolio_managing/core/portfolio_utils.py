@@ -214,6 +214,30 @@ class PortfolioUtils:
             
             # 히스토리 저장
             history_df.to_csv(history_file, index=False, encoding='utf-8-sig')
-            
+
         except Exception as e:
             print(f"⚠️ 거래 기록 저장 실패: {e}")
+
+    def log_exit_transaction(self, symbol: str, position_type: str, purchase_price: float,
+                              exit_price: float, return_pct: float, exit_reason: str):
+        """청산 거래 기록"""
+        try:
+            log_file = os.path.join(self.pm.portfolio_dir, f"{self.pm.portfolio_name}_exit_log.csv")
+            new_record = {
+                '청산일시': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                '종목명': symbol,
+                '포지션': position_type,
+                '매수가': purchase_price,
+                '청산가': exit_price,
+                '수익률': f"{return_pct:.2f}%",
+                '청산사유': exit_reason
+            }
+            if os.path.exists(log_file):
+                df = pd.read_csv(log_file)
+                df = pd.concat([df, pd.DataFrame([new_record])], ignore_index=True)
+            else:
+                df = pd.DataFrame([new_record])
+            df.to_csv(log_file, index=False)
+            print(f"  📝 청산 기록 저장: {log_file}")
+        except Exception as e:
+            print(f"⚠️ 청산 기록 저장 실패: {e}")
