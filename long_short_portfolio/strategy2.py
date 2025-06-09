@@ -194,46 +194,6 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
         print(traceback.format_exc())
 
 
-# 최신 가격 데이터 가져오기 함수 (고가 포함)
-def get_latest_price_data_high(symbol):
-    """특정 종목의 최신 가격 데이터를 가져오는 함수 (고가 포함)
-    
-    Args:
-        symbol: 종목 심볼
-        
-    Returns:
-        tuple: (현재가, 당일 고가) 또는 데이터가 없는 경우 (None, None)
-    """
-    try:
-        # 종목 데이터 파일 경로
-        file_path = os.path.join(DATA_US_DIR, f'{symbol}.csv')
-        
-        if not os.path.exists(file_path):
-            print(f"⚠️ {symbol} 데이터 파일을 찾을 수 없습니다.")
-            return None, None
-        
-        # 데이터 로드
-        df = pd.read_csv(file_path)
-        df.columns = [col.lower() for col in df.columns]
-        
-        if 'date' in df.columns:
-            df['date'] = pd.to_datetime(df['date'], utc=True)
-            df = df.sort_values('date')
-        else:
-            print(f"⚠️ {symbol} 데이터에 날짜 컬럼이 없습니다.")
-            return None, None
-        
-        # 최신 데이터 확인
-        if df.empty:
-            return None, None
-        
-        latest = df.iloc[-1]
-        
-        return latest['close'], latest['high']
-        
-    except Exception as e:
-        print(f"❌ {symbol} 가격 데이터 가져오기 오류: {e}")
-        return None, None
 
 
 
@@ -252,4 +212,3 @@ if __name__ == "__main__":
 def run_strategy(total_capital=100000):
     """Wrapper function for main.py compatibility"""
     return run_strategy2_screening(total_capital=total_capital, update_existing=False)
-    print("\n💡 개별 포트폴리오 관리는 portfolio_managing 모듈을 사용하세요.")
