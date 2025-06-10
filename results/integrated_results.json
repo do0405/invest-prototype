@@ -1022,13 +1022,6 @@
     "rs_score":94.3163097199
   },
   {
-    "symbol":"AGX",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":94.1412685338
-  },
-  {
     "symbol":"SENEB",
     "met_count":8,
     "fin_met_count":5,
@@ -1209,13 +1202,6 @@
     "fin_met_count":5,
     "total_met_count":13,
     "rs_score":89.9196869852
-  },
-  {
-    "symbol":"CBRL",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":89.8682042834
   },
   {
     "symbol":"PSMT",
@@ -1708,6 +1694,13 @@
     "rs_score":94.1515650741
   },
   {
+    "symbol":"AGX",
+    "met_count":8,
+    "fin_met_count":4,
+    "total_met_count":12,
+    "rs_score":94.1412685338
+  },
+  {
     "symbol":"TISI",
     "met_count":8,
     "fin_met_count":4,
@@ -1818,13 +1811,6 @@
     "fin_met_count":4,
     "total_met_count":12,
     "rs_score":91.989291598
-  },
-  {
-    "symbol":"WDH",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":91.9789950577
   },
   {
     "symbol":"CME",
@@ -2338,6 +2324,13 @@
     "rs_score":92.6791598023
   },
   {
+    "symbol":"WDH",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":91.9789950577
+  },
+  {
     "symbol":"CKPT",
     "met_count":8,
     "fin_met_count":3,
@@ -2392,13 +2385,6 @@
     "fin_met_count":3,
     "total_met_count":11,
     "rs_score":90.3933278418
-  },
-  {
-    "symbol":"CIEN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.3109555189
   },
   {
     "symbol":"EBAY",
@@ -2595,13 +2581,6 @@
     "fin_met_count":2,
     "total_met_count":10,
     "rs_score":98.3937397035
-  },
-  {
-    "symbol":"JFIN",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.2804777595
   },
   {
     "symbol":"NVCT",
@@ -3008,6 +2987,13 @@
     "fin_met_count":1,
     "total_met_count":9,
     "rs_score":98.9909390445
+  },
+  {
+    "symbol":"JFIN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.2804777595
   },
   {
     "symbol":"SJT",
@@ -3738,6 +3724,13 @@
     "rs_score":90.3315485997
   },
   {
+    "symbol":"CIEN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.3109555189
+  },
+  {
     "symbol":"AM",
     "met_count":8,
     "fin_met_count":1,
@@ -3806,6 +3799,13 @@
     "fin_met_count":1,
     "total_met_count":9,
     "rs_score":89.8785008237
+  },
+  {
+    "symbol":"CBRL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.8682042834
   },
   {
     "symbol":"FXI",
