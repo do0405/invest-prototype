@@ -60,43 +60,6 @@ def should_check_exit_from_next_day(purchase_date: str) -> bool:
         return True
 
 
-def parse_complex_condition(condition_str: str, purchase_date: str) -> dict:
-    """복합 청산 조건 파싱"""
-    try:
-        result = {
-            'price': None,
-            'days_remaining': None,
-            'original_condition': str(condition_str),
-            'has_or_condition': False
-        }
-        if pd.isna(condition_str) or condition_str == '없음':
-            return result
-
-        condition = str(condition_str)
-        parts = condition.split('또는') if '또는' in condition else [condition]
-        if '또는' in condition:
-            result['has_or_condition'] = True
-
-        for part in parts:
-            part = part.strip()
-            percent_match = re.search(r'(\d+(?:\.\d+)?)%', part)
-            if percent_match:
-                result['price_percent'] = float(percent_match.group(1))
-            else:
-                price_match = re.search(r'(\d+(?:\.\d+)?)', part)
-                if price_match and '일' not in part:
-                    result['price'] = float(price_match.group(1))
-
-            days_match = re.search(r'(\d+)일\s*후', part)
-            if days_match:
-                remaining = calculate_remaining_days(purchase_date, part)
-                result['days_remaining'] = remaining
-
-        return result
-    except Exception as e:
-        print(f"⚠️ 복합 조건 파싱 실패: {e}")
-        return {'price': None, 'days_remaining': None, 'original_condition': str(condition_str)}
-
 
 def check_single_condition(condition: dict, purchase_price: float, current_price: float, condition_type: str, position_type: str = 'BUY') -> bool:
     """단일 조건 확인"""
