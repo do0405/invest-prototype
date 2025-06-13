@@ -84,23 +84,6 @@ class PriceCalculator:
         except Exception:
             return 0.0
 
-    @staticmethod
-    def get_price_data(symbol: str, period: str = "1d") -> Optional[Dict[str, Any]]:
-        """지정 기간의 가격 데이터"""
-        try:
-            hist = yf.Ticker(symbol).history(period=period)
-            if not hist.empty:
-                latest = hist.iloc[-1]
-                return {
-                    'open': latest['Open'],
-                    'high': latest['High'],
-                    'low': latest['Low'],
-                    'close': latest['Close'],
-                    'volume': latest['Volume']
-                }
-        except Exception as e:
-            print(f"⚠️ 가격 데이터 조회 실패 ({symbol}): {e}")
-        return None
 
     @staticmethod
     def get_recent_price_data(symbol: str, days: int = 5) -> Optional[Dict[str, float]]:
@@ -140,24 +123,5 @@ class PriceCalculator:
             print(f"⚠️ {symbol} 다음날 시가 조회 실패: {e}")
             return None
 
-    @staticmethod
-    def get_latest_close_high_from_csv(symbol: str) -> Tuple[Optional[float], Optional[float]]:
-        """로컬 CSV에서 가장 최근 종가와 고가 조회"""
-        try:
-            file_path = os.path.join(DATA_US_DIR, f'{symbol}.csv')
-            if not os.path.exists(file_path):
-                return None, None
 
-            df = pd.read_csv(file_path)
-            df.columns = [c.lower() for c in df.columns]
-            if 'date' in df.columns:
-                df['date'] = pd.to_datetime(df['date'], utc=True)
-                df = df.sort_values('date')
-            if df.empty:
-                return None, None
-            latest = df.iloc[-1]
-            return float(latest['close']), float(latest['high'])
-        except Exception as e:
-            print(f"❌ {symbol} 가격 데이터 가져오기 오류: {e}")
-            return None, None
 
