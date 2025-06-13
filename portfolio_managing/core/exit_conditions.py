@@ -61,7 +61,6 @@ def should_check_exit_from_next_day(purchase_date: str) -> bool:
 
 
 
-
 def check_single_condition(condition: dict, purchase_price: float, current_price: float, condition_type: str, position_type: str = 'BUY') -> bool:
     """단일 조건 확인"""
     try:
