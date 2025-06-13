@@ -56,9 +56,13 @@ def create_portfolio_manager(portfolio_name: str = "individual_portfolio", initi
             # **kwargs는 제거 - PortfolioManager가 받지 않는 매개변수들이 포함될 수 있음
         )
         print(f"✅ 포트폴리오 매니저 생성 완료")
-        
+
         # 포트폴리오 매니저 실행
         print(f"\n🚀 포트폴리오 관리 프로세스 시작...")
+
+        # 전략 결과 파일 선처리
+        print(f"📄 전략 결과 파일 업데이트 중...")
+        manager.process_and_update_strategy_files()
         
         
         # 개별 전략 포트폴리오 관리 실행 - Static method로 호출
