@@ -8,10 +8,11 @@ import os
 import sys
 import pandas as pd
 import numpy as np
-import yfinance as yf
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 import json
+
+from .price_calculator import PriceCalculator
 
 # 프로젝트 루트 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
@@ -50,6 +51,51 @@ class PositionTracker:
             'holding_days', 'atr_value', 'stop_loss_price', 'profit_target_price',
             'trailing_stop_price', 'max_holding_days'
         ])
+
+    def has_position(self, symbol: str, strategy: str) -> bool:
+        """이미 동일 종목의 포지션이 존재하는지 확인합니다."""
+        mask = (self.positions['symbol'] == symbol) & (self.positions['strategy'] == strategy)
+        return mask.any()
+
+    def get_portfolio_value(self) -> float:
+        """현재 포트폴리오 가치 총합을 반환합니다."""
+        if self.positions.empty:
+            return 0.0
+        return float(self.positions['market_value'].sum())
+
+    def add_position(self, position_data: Dict) -> bool:
+        """포지션 데이터(dict)를 추가합니다."""
+        try:
+            new_position = {
+                'symbol': position_data['symbol'],
+                'position_type': position_data.get('position_type', 'LONG'),
+                'quantity': position_data['quantity'],
+                'entry_price': position_data['entry_price'],
+                'entry_date': position_data.get('entry_date', datetime.now().strftime('%Y-%m-%d')),
+                'current_price': position_data.get('entry_price'),
+                'market_value': position_data['quantity'] * position_data.get('entry_price', 0),
+                'unrealized_pnl': 0.0,
+                'unrealized_pnl_pct': 0.0,
+                'strategy': position_data.get('strategy', ''),
+                'weight': position_data.get('weight', 0.0),
+                'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'entry_order_type': position_data.get('entry_order_type', 'market'),
+                'target_entry_price': position_data.get('entry_price'),
+                'holding_days': 0,
+                'atr_value': None,
+                'stop_loss_price': position_data.get('stop_loss'),
+                'profit_target_price': position_data.get('take_profit'),
+                'trailing_stop_price': None,
+                'max_holding_days': position_data.get('max_holding_days')
+            }
+
+            self.positions = pd.concat([self.positions, pd.DataFrame([new_position])], ignore_index=True)
+            self.save_positions()
+            print(f"✅ 포지션 추가: {new_position['symbol']} {new_position['position_type']} {new_position['quantity']:.2f}주")
+            return True
+        except Exception as e:
+            print(f"❌ 포지션 추가 실패 ({position_data.get('symbol')}): {e}")
+            return False
     
     def add_position_with_strategy(self, symbol: str, strategy_name: str, 
                                  current_price: float, weight: float = 0.0,
@@ -168,112 +214,16 @@ class PositionTracker:
             print(f"❌ 포지션 추가 실패 ({symbol}): {e}")
             return False
     
-#    def check_exit_conditions(self) -> List[Dict]:
-#        """모든 포지션의 청산 조건 확인"""
-    """
-        exit_signals = []
-        
-        if self.positions.empty:
-            return exit_signals
-        
-        for idx, position in self.positions.iterrows():
-            strategy_name = position['strategy']
-            strategy_config = StrategyConfig.get_strategy_config(strategy_name)
-            
-            if not strategy_config:
-                continue
-            
-            exit_conditions = strategy_config['exit_conditions']
-            current_price = position['current_price']
-            entry_price = position['entry_price']
-            position_type = position['position_type']
-            
-            # 보유일 계산
-            entry_date = pd.to_datetime(position['entry_date'])
-            holding_days = (datetime.now() - entry_date).days
-            
-            # 손익률 계산
-            if position_type == 'LONG':
-                pnl_pct = (current_price - entry_price) / entry_price
-            else:  # SHORT
-                pnl_pct = (entry_price - current_price) / entry_price
-            
-            # 1. 손절매 조건 확인
-            if position['stop_loss_price'] and current_price:
-                if position_type == 'LONG' and current_price <= position['stop_loss_price']:
-                    exit_signals.append({
-                        'symbol': position['symbol'],
-                        'strategy': strategy_name,
-                        'position_type': position_type,
-                        'exit_type': 'stop_loss',
-                        'exit_price': current_price,
-                        'reason': f"손절매 조건 달성 (${current_price:.2f} <= ${position['stop_loss_price']:.2f})"
-                    })
-                    continue
-                elif position_type == 'SHORT' and current_price >= position['stop_loss_price']:
-                    exit_signals.append({
-                        'symbol': position['symbol'],
-                        'strategy': strategy_name,
-                        'position_type': position_type,
-                        'exit_type': 'stop_loss',
-                        'exit_price': current_price,
-                        'reason': f"손절매 조건 달성 (${current_price:.2f} >= ${position['stop_loss_price']:.2f})"
-                    })
-                    continue
-            
-            # 2. 수익 목표 조건 확인
-            if position['profit_target_price'] and current_price:
-                if position_type == 'LONG' and current_price >= position['profit_target_price']:
-                    exit_signals.append({
-                        'symbol': position['symbol'],
-                        'strategy': strategy_name,
-                        'position_type': position_type,
-                        'exit_type': 'profit_target',
-                        'exit_price': current_price,
-                        'reason': f"수익 목표 달성 ({pnl_pct:.1%})"
-                    })
-                    continue
-                elif position_type == 'SHORT' and current_price <= position['profit_target_price']:
-                    exit_signals.append({
-                        'symbol': position['symbol'],
-                        'strategy': strategy_name,
-                        'position_type': position_type,
-                        'exit_type': 'profit_target',
-                        'exit_price': current_price,
-                        'reason': f"수익 목표 달성 ({pnl_pct:.1%})"
-                    })
-                    continue
-            
-            # 3. 시간 기반 청산 조건 확인
-            if position['max_holding_days'] and holding_days >= position['max_holding_days']:
-                exit_signals.append({
-                    'symbol': position['symbol'],
-                    'strategy': strategy_name,
-                    'position_type': position_type,
-                    'exit_type': 'time_based',
-                    'exit_price': current_price,
-                    'reason': f"최대 보유일 도달 ({holding_days}일)"
-                })
-                continue
-            
-            # 4. 추격 역지정가 조건 확인 (별도 처리 필요)
-            if 'trailing_stop' in exit_conditions:
-                # 추격 역지정가 로직은 RiskManager에서 처리
-                pass
-        
-        return exit_signals
-    """
-#    def get_total_portfolio_value(self) -> float:
-#        """전체 포트폴리오 가치 계산"""
-    """        if self.positions.empty:
-            return 100000  # 기본값
-        return self.positions['market_value'].sum()
     
-    def close_position(self, symbol: str, position_type: str, strategy: str, 
-                      close_price: Optional[float] = None, 
-                      exit_reason: str = "manual") -> Tuple[bool, Dict]:"""
-#        """포지션 청산 및 거래 기록 반환"""
-    """
+    def close_position(
+        self,
+        symbol: str,
+        position_type: str,
+        strategy: str,
+        close_price: Optional[float] = None,
+        exit_reason: str = "manual",
+    ) -> Tuple[bool, Dict]:
+        """포지션 청산 및 거래 기록 반환"""
         try:
             mask = (self.positions['symbol'] == symbol) & \
                    (self.positions['position_type'] == position_type) & \
@@ -327,7 +277,7 @@ class PositionTracker:
             
         except Exception as e:
             print(f"❌ 포지션 청산 실패: {e}")
-            return False, {}"""
+            return False, {}
     
     def update_positions(self) -> bool:
         """모든 포지션의 현재가 및 손익 업데이트"""
@@ -374,14 +324,7 @@ class PositionTracker:
     
     def get_current_price(self, symbol: str) -> Optional[float]:
         """현재가 가져오기"""
-        try:
-            ticker = yf.Ticker(symbol)
-            hist = ticker.history(period="1d")
-            if not hist.empty:
-                return hist['Close'].iloc[-1]
-        except Exception:
-            pass
-        return None
+        return PriceCalculator.get_current_price(symbol)
     
     def record_closed_position(self, position: pd.Series, close_price: float, 
                              realized_pnl: float, realized_pnl_pct: float):
