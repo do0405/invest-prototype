@@ -6,6 +6,7 @@ from typing import Optional, Dict, Any, Tuple
 import pandas as pd
 import yfinance as yf
 
+
 def use_local_only() -> bool:
     return os.getenv("USE_LOCAL_DATA_ONLY") == "1"
 
@@ -18,6 +19,7 @@ class PriceCalculator:
     @staticmethod
     def get_current_price(symbol: str) -> Optional[float]:
         """현재가 반환"""
+
         if use_local_only():
             path = os.path.join(DATA_US_DIR, f"{symbol.upper()}.csv")
             if os.path.exists(path):
@@ -28,6 +30,7 @@ class PriceCalculator:
                 except Exception:
                     pass
             return None
+
         try:
             hist = yf.Ticker(symbol).history(period="1d")
             if not hist.empty:
@@ -121,6 +124,7 @@ class PriceCalculator:
                 except Exception:
                     pass
             return None
+
         try:
             end_date = datetime.now()
             start_date = end_date - timedelta(days=days)
@@ -142,6 +146,7 @@ class PriceCalculator:
     @staticmethod
     def get_next_day_open_price(symbol: str, purchase_date: str) -> Optional[float]:
         """매수일 다음날 시가 반환"""
+
         purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
         next_day = purchase_dt + timedelta(days=1)
 
@@ -161,6 +166,7 @@ class PriceCalculator:
             return None
 
         try:
+
             for i in range(5):
                 check_date = next_day + timedelta(days=i)
                 end_date = check_date + timedelta(days=1)
@@ -171,6 +177,4 @@ class PriceCalculator:
         except Exception as e:
             print(f"⚠️ {symbol} 다음날 시가 조회 실패: {e}")
             return None
-
-
 

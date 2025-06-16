@@ -75,6 +75,55 @@ export default function AllStrategiesPage() {
     },
   ];
 
+  const columns: DataTableColumn<PortfolioItem>[] = [
+    { key: '종목명', header: '종목명' },
+    { key: '매수일', header: '매수일' },
+    {
+      key: '시장 진입가',
+      header: '시장 진입가',
+      align: 'right',
+      render: (item) =>
+        item['시장 진입가']
+          ? `$${
+              typeof item['시장 진입가'] === 'number'
+                ? item['시장 진입가'].toFixed(2)
+                : item['시장 진입가']
+            }`
+          : 'N/A',
+    },
+    { key: '비중(%)', header: '비중(%)', align: 'right' },
+    { key: '수익률(%)', header: '수익률(%)', align: 'right' },
+    { key: '차익실현', header: '차익실현' },
+    {
+      key: '손절매',
+      header: '손절매',
+      align: 'right',
+      render: (item) =>
+        item.손절매
+          ? `$${
+              typeof item.손절매 === 'number'
+                ? item.손절매.toFixed(2)
+                : item.손절매
+            }`
+          : 'N/A',
+    },
+    { key: '수익보호', header: '수익보호' },
+    {
+      key: '롱여부',
+      header: '롱여부',
+      align: 'center',
+      render: (item) => (
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            item.롱여부 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}
+        >
+          {item.롱여부 ? 'Long' : 'Short'}
+        </span>
+      ),
+    },
+  ];
+
   useEffect(() => {
     const fetchAllStrategies = async () => {
       try {
