@@ -3,6 +3,7 @@
 import React from 'react';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { FaTimes, FaHome, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import { useState } from 'react';
 
@@ -41,19 +42,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
   ];
 
   return (
-    <div
-      className={`fixed inset-y-0 left-0 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-                  transition-transform duration-300 ease-in-out 
-                  bg-white text-gray-800 w-64 space-y-6 py-7 px-2 z-30 flex flex-col`}
+    <motion.div
+      initial={{ x: '-100%' }}
+      animate={{ x: isOpen ? '0%' : '-100%' }}
+      transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+      className="fixed inset-y-0 left-0 bg-white text-gray-800 w-64 space-y-6 py-7 px-2 z-30 flex flex-col shadow-lg"
     >
       <div className="flex items-center justify-between px-4 flex-shrink-0">
         <h2 className="flex-grow text-2xl font-semibold text-center">Strategies</h2>
-        <Link 
+        <motion.custom(Link)
           href="/"
-          className="text-gray-800 hover:text-indigo-600 p-2 rounded-md transition-all duration-200 ease-in-out hover:bg-indigo-100 active:bg-indigo-200 transform hover:scale-105 active:scale-95"
+          className="text-gray-800 p-2 rounded-md"
+          whileHover={{ scale: 1.05, backgroundColor: 'rgba(129, 140, 248, 0.1)' }}
+          whileTap={{ scale: 0.95, backgroundColor: 'rgba(129, 140, 248, 0.2)' }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         >
           <FaHome size={24} />
-        </Link>
+        </motion.custom(Link)>
         <button onClick={onClose} className="md:hidden text-gray-800 hover:text-gray-600 ml-2">
           <FaTimes size={24} />
         </button>
@@ -62,64 +67,96 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
       <nav className="flex-1 overflow-y-auto px-2">
         {/* Strategy Alpha 섹션 */}
         <div className="mb-4">
-          <button
+          <motion.button
             onClick={() => setIsStrategyAlphaOpen(!isStrategyAlphaOpen)}
-            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md transition-all duration-200 ease-in-out hover:bg-indigo-100 hover:text-indigo-700 active:bg-indigo-200"
+            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md"
+            whileHover={{ backgroundColor: 'rgba(129, 140, 248, 0.1)', color: '#4f46e5' }}
+            whileTap={{ backgroundColor: 'rgba(129, 140, 248, 0.2)' }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             <span className="font-semibold">Strategy Alpha</span>
             {isStrategyAlphaOpen ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />}
-          </button>
+          </motion.button>
           
           {isStrategyAlphaOpen && (
             <div className="ml-4 mt-2 space-y-1">
-              <Link
-                href="/strategy/all"
-                className="block py-2 px-4 rounded-md text-sm transition-all duration-200 ease-in-out hover:bg-blue-50 hover:text-blue-700 border-l-2 border-blue-200 hover:border-blue-400"
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
               >
-                📊 All Strategies Overview
-              </Link>
-              {strategyAlphaItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/strategy/${item.id}`}
-                  className={`block py-2 px-4 rounded-md text-sm transition-all duration-200 ease-in-out hover:bg-green-50 hover:text-green-700 border-l-2 ${
-                    item.type === 'buy' ? 'border-green-200 hover:border-green-400' : 'border-red-200 hover:border-red-400'
-                  }`}
+                <motion.custom(Link)
+                  href="/strategy/all"
+                  className="block py-2 px-4 rounded-md text-sm"
+                  whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', borderLeftColor: '#60a5fa' }}
+                  whileTap={{ backgroundColor: 'rgba(59, 130, 246, 0.2)' }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
-                  {item.type === 'buy' ? '📈' : '📉'} {item.name}
-                </Link>
-              ))}
+                  📊 All Strategies Overview
+                </motion.custom(Link)>
+                {strategyAlphaItems.map((item) => (
+                  <motion.custom(Link)
+                    key={item.id}
+                    href={`/strategy/${item.id}`}
+                    className={`block py-2 px-4 rounded-md text-sm ${
+                      item.type === 'buy' ? 'border-l-2 border-green-200' : 'border-l-2 border-red-200'
+                    }`}
+                    whileHover={{ backgroundColor: item.type === 'buy' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: item.type === 'buy' ? '#16a34a' : '#dc2626', borderLeftColor: item.type === 'buy' ? '#4ade80' : '#f87171' }}
+                    whileTap={{ backgroundColor: item.type === 'buy' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
+                    {item.type === 'buy' ? '📈' : '📉'} {item.name}
+                  </motion.custom(Link)>
+                ))} 
+              </motion.div>
             </div>
           )}
         </div>
 
         {/* Markminervini Screener 섹션 */}
         <div className="mb-4">
-          <button
+          <motion.button
             onClick={() => setIsMarkminerviniOpen(!isMarkminerviniOpen)}
-            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md transition-all duration-200 ease-in-out hover:bg-purple-100 hover:text-purple-700 active:bg-purple-200"
+            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md"
+            whileHover={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#7e22ce' }}
+            whileTap={{ backgroundColor: 'rgba(168, 85, 247, 0.2)' }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             <span className="font-semibold">Markminervini Screener</span>
             {isMarkminerviniOpen ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />}
-          </button>
+          </motion.button>
           
           {isMarkminerviniOpen && (
             <div className="ml-4 mt-2 space-y-1">
-              <Link
-                href="/markminervini/all"
-                className="block py-2 px-4 rounded-md text-sm transition-all duration-200 ease-in-out hover:bg-purple-50 hover:text-purple-700 border-l-2 border-purple-200 hover:border-purple-400"
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
               >
-                🔍 All Screener Results
-              </Link>
-              {markminerviniItems.map((item) => (
-                <Link
-                  key={item.id}
-                  href={`/markminervini/${item.id}`}
-                  className="block py-2 px-4 rounded-md text-sm transition-all duration-200 ease-in-out hover:bg-purple-50 hover:text-purple-700 border-l-2 border-purple-200 hover:border-purple-400"
+                <motion.custom(Link)
+                  href="/markminervini/all"
+                  className="block py-2 px-4 rounded-md text-sm"
+                  whileHover={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#7e22ce', borderLeftColor: '#c084fc' }}
+                  whileTap={{ backgroundColor: 'rgba(168, 85, 247, 0.2)' }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
-                  {item.icon} {item.name}
-                </Link>
-              ))}
+                  🔍 All Screener Results
+                </motion.custom(Link)>
+                {markminerviniItems.map((item) => (
+                  <motion.custom(Link)
+                    key={item.id}
+                    href={`/markminervini/${item.id}`}
+                    className="block py-2 px-4 rounded-md text-sm"
+                    whileHover={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#7e22ce', borderLeftColor: '#c084fc' }}
+                    whileTap={{ backgroundColor: 'rgba(168, 85, 247, 0.2)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
+                    {item.icon} {item.name}
+                  </motion.custom(Link)>
+                ))} 
+              </motion.div>
             </div>
           )}
         </div>
@@ -128,23 +165,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
         <div className="border-t pt-4">
           <h3 className="px-4 text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Other Strategies</h3>
           {strategies.filter(s => !['strategy1', 'strategy2', 'strategy3', 'strategy4', 'strategy5', 'strategy6'].includes(s.id)).map((strategy) => (
-            <Link
+            <motion.custom(Link)
               key={strategy.id}
               href={`/strategy/${strategy.id}`}
-              className="block py-2.5 px-4 rounded-md transition-all duration-200 ease-in-out hover:bg-indigo-100 hover:text-indigo-700 active:bg-indigo-200 transform hover:translate-x-1 active:translate-x-0.5"
+              className="block py-2.5 px-4 rounded-md"
+              whileHover={{ backgroundColor: 'rgba(129, 140, 248, 0.1)', color: '#4f46e5', x: 4 }}
+              whileTap={{ backgroundColor: 'rgba(129, 140, 248, 0.2)', x: 2 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             >
               {strategy.name}
-            </Link>
+            </motion.custom(Link)>
           ))}
-          <Link
+          <motion.custom(Link)
             href="/volatility-skew"
-            className="block py-2.5 px-4 rounded-md transition-all duration-200 ease-in-out hover:bg-yellow-50 hover:text-yellow-700 active:bg-yellow-200 transform hover:translate-x-1 active:translate-x-0.5"
+            className="block py-2.5 px-4 rounded-md"
+            whileHover={{ backgroundColor: 'rgba(250, 204, 21, 0.1)', color: '#a16207', x: 4 }}
+            whileTap={{ backgroundColor: 'rgba(250, 204, 21, 0.2)', x: 2 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             ⚡ Volatility Skew Screener
-          </Link>
+          </motion.custom(Link)>
         </div>
       </nav>
-    </div>
+    </motion.div>
   );
 };
 

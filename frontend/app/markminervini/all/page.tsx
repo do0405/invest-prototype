@@ -49,13 +49,18 @@ export default function AllMarkminerviniPage() {
             const response = await fetch(`/api/markminervini/${screener.id}`);
             if (response.ok) {
               const result = await response.json();
+              console.log(`API response for ${screener.id}:`, result); // ADDED LOG
               if (result.success && result.data) {
                 results.push({
                   name: screener.name,
                   data: Array.isArray(result.data) ? result.data : [],
                   type: screener.id
                 });
+              } else {
+                console.warn(`API call for ${screener.id} was successful but data was not valid:`, result); // ADDED LOG
               }
+            } else {
+              console.error(`HTTP error for ${screener.id}: ${response.status} ${response.statusText}`); // ADDED LOG
             }
           } catch (err) {
             console.warn(`Failed to fetch ${screener.id}:`, err);
@@ -63,6 +68,7 @@ export default function AllMarkminerviniPage() {
         }
         
         setScreenersData(results);
+        console.log('Screeners data after fetch:', results); // ADDED LOG
         initializeSliderFilters(results);
         setError(null);
       } catch (err) {
@@ -356,26 +362,42 @@ export default function AllMarkminerviniPage() {
                   ? 'max-h-96 opacity-100' 
                   : 'max-h-0 opacity-0'
               }`}>
-                {filteredData.length > 0 ? (
-                  <>
-                    <DataTable data={filteredData.slice(0, 10)} columns={columns} headerRowClassName="bg-gray-50" />
-                    {filteredData.length > 10 && (
-                      <div className="p-4 text-center text-gray-500 text-sm">
-                        Showing 10 of {filteredData.length} results.
-                        <Link
-                          href={`/markminervini/${screenerData.type}`}
-                          className="text-purple-600 hover:text-purple-800 ml-1"
-                        >
-                          View all →
-                        </Link>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <div className="p-8 text-center text-gray-500">
-                    No data matches your current filters.
-                  </div>
-                )}
+                {(() => { // Use an IIFE to log inside JSX
+                  const filteredData = getFilteredData(screenerData.data);
+                  console.log(`Filtered data for ${screenerData.name}:`, filteredData); // ADDED LOG
+                  const headers = getOrderedHeaders(filteredData);
+                  const columns: DataTableColumn<ScreenerResult>[] = headers.map(header => ({
+                    key: header,
+                    header: header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+                    render: (item: ScreenerResult) => {
+                      const value = item[header];
+                      if (header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker')) {
+                        return <span className="font-semibold text-purple-600">{String(value ?? 'N/A')}</span>;
+                      }
+                      return typeof value === 'number' ? value.toFixed(2) : String(value ?? 'N/A');
+                    }
+                  }));
+                  return filteredData.length > 0 ? (
+                    <>
+                      <DataTable data={filteredData.slice(0, 10)} columns={columns} headerRowClassName="bg-gray-50" />
+                      {filteredData.length > 10 && (
+                        <div className="p-4 text-center text-gray-500 text-sm">
+                          Showing 10 of {filteredData.length} results.
+                          <Link
+                            href={`/markminervini/${screenerData.type}`}
+                            className="text-purple-600 hover:text-purple-800 ml-1"
+                          >
+                            View all →
+                          </Link>
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="p-8 text-center text-gray-500">
+                      No data matches your current filters.
+                    </div>
+                  );
+                })()}
               </div>
             </div>
           );
