@@ -92,51 +92,6 @@ class RiskManager:
             print(f"⚠️ 포지션 사이즈 계산 실패 ({symbol}): {e}")
             return portfolio_value * 0.01  # 기본값 1%
     
-    def set_trailing_stop(self, symbol: str, position_type: str, strategy: str,
-                         current_price: float, trailing_pct: float = None) -> bool:
-        """Trailing Stop 설정"""
-        try:
-            if trailing_pct is None:
-                trailing_pct = self.risk_limits['trailing_stop_pct']
-            
-            # 스탑 가격 계산
-            if position_type == 'LONG':
-                stop_price = current_price * (1 - trailing_pct)
-            else:  # SHORT
-                stop_price = current_price * (1 + trailing_pct)
-            
-            # 기존 스탑 오더 확인
-            mask = (self.stop_orders['symbol'] == symbol) & \
-                   (self.stop_orders['position_type'] == position_type) & \
-                   (self.stop_orders['strategy'] == strategy)
-            
-            stop_data = {
-                'symbol': symbol,
-                'position_type': position_type,
-                'strategy': strategy,
-                'stop_price': stop_price,
-                'trailing_stop_pct': trailing_pct,
-                'highest_price': current_price,
-                'created_date': datetime.now().strftime('%Y-%m-%d'),
-                'last_updated': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            }
-            
-            if mask.any():
-                # 기존 스탑 오더 업데이트
-                idx = mask.idxmax()
-                for key, value in stop_data.items():
-                    self.stop_orders.loc[idx, key] = value
-            else:
-                # 새 스탑 오더 추가
-                self.stop_orders = pd.concat([self.stop_orders, pd.DataFrame([stop_data])], 
-                                           ignore_index=True)
-            
-            self.save_stop_orders()
-            return True
-            
-        except Exception as e:
-            print(f"❌ Trailing Stop 설정 실패 ({symbol}): {e}")
-            return False
     
     def calculate_portfolio_var(self, positions_df: pd.DataFrame, 
                                confidence_level: float = 0.95) -> float:
@@ -225,18 +180,6 @@ class RiskManager:
         except Exception as e:
             print(f"⚠️ 스탑 오더 저장 실패: {e}")
     
-    def remove_stop_order(self, symbol: str, position_type: str, strategy: str):
-        """스탑 오더 제거 (포지션 청산 시)"""
-        try:
-            mask = (self.stop_orders['symbol'] == symbol) & \
-                   (self.stop_orders['position_type'] == position_type) & \
-                   (self.stop_orders['strategy'] == strategy)
-            
-            self.stop_orders = self.stop_orders[~mask]
-            self.save_stop_orders()
-            
-        except Exception as e:
-            print(f"⚠️ 스탑 오더 제거 실패: {e}")
     
     def get_risk_summary(self, positions_df: pd.DataFrame) -> Dict:
         """리스크 요약 정보"""

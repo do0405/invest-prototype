@@ -41,16 +41,16 @@ class PortfolioManager:
         self.portfolio_name = portfolio_name
         self.initial_capital = initial_capital
         
-        # 핵심 모듈 초기화
-        self.position_tracker = PositionTracker(portfolio_name)
-        self.risk_manager = RiskManager(portfolio_name)
-        self.trailing_stop_manager = TrailingStopManager(portfolio_name)
-        self.utils = PortfolioUtils(self)
-        self.reporter = PortfolioReporter(self)
-        
         # 포트폴리오 디렉토리 설정
         self.portfolio_dir = os.path.join(RESULTS_VER2_DIR, 'portfolio_management')
         ensure_dir(self.portfolio_dir)
+
+        # 핵심 모듈 초기화
+        self.position_tracker = PositionTracker(portfolio_name)
+        self.risk_manager = RiskManager(portfolio_name)
+        self.trailing_stop_manager = TrailingStopManager(self.portfolio_dir, portfolio_name)
+        self.utils = PortfolioUtils(self)
+        self.reporter = PortfolioReporter(self)
         
         # 포트폴리오 설정 파일
         self.config_file = os.path.join(self.portfolio_dir, f'{portfolio_name}_config.json')

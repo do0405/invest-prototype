@@ -103,11 +103,12 @@ class PortfolioUtils:
                 
                 # 트레일링 스탑 비율이 설정되어 있으면 초기화
                 if trailing_pct > 0:
-                    self.pm.trailing_stop_manager.init_trailing_stop(
+                    self.pm.trailing_stop_manager.initialize_trailing_stop(
                         symbol=symbol,
-                        strategy=strategy_name,
                         position_type=position_type,
+                        strategy=strategy_name,
                         entry_price=entry_price,
+                        entry_date=position_data['entry_date'],
                         trailing_pct=trailing_pct
                     )
             
@@ -165,7 +166,7 @@ class PortfolioUtils:
                 )
                 
                 # 트레일링 스탑 항목 제거
-                self.pm.trailing_stop_manager.remove_trailing_stop(symbol, strategy)
+                self.pm.trailing_stop_manager.remove_trailing_stop(symbol, position_type, strategy)
 
             # 포지션 파일 저장
             self.pm.position_tracker.save_positions()
