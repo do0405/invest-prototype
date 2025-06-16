@@ -25,6 +25,7 @@ const strategies = [
   { id: 'strategy4', name: 'Strategy Delta' },
   { id: 'strategy5', name: 'Strategy Epsilon' },
   { id: 'strategy6', name: 'Strategy Zeta' },
+  { id: 'volatility_skew', name: 'Volatility Skew' },
 ];
 
 export default function RootLayout({

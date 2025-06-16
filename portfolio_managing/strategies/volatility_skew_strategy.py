@@ -130,27 +130,6 @@ class VolatilitySkewPortfolioStrategy:
             print(f"❌ 신호 파일 읽기 오류: {e}")
             return None
     
-    def update_performance_tracking(self, portfolio_status: Dict):
-        """
-        성과 추적 정보를 업데이트합니다.
-        """
-        try:
-            performance_data = {
-                'date': datetime.now().strftime('%Y-%m-%d'),
-                'time': datetime.now().strftime('%H:%M:%S'),
-                'strategy': self.strategy_name,
-                'total_value': portfolio_status.get('total_value', 0),
-                'invested_amount': portfolio_status.get('invested_amount', 0),
-                'cash': portfolio_status.get('cash', 0),
-                'total_return': portfolio_status.get('total_return', 0),
-                'active_positions': len(portfolio_status.get('positions', [])),
-                'daily_pnl': portfolio_status.get('daily_pnl', 0)
-            }
-            
-            # 기존 데이터 로드
-            
-        except Exception as e:
-            print(f"❌ 성과 추적 업데이트 오류: {e}")
 
 
 def run_volatility_skew_portfolio_strategy(alpha_vantage_key: Optional[str] = None) -> Tuple[List[Dict], str]:

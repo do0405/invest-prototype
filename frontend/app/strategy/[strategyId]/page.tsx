@@ -16,6 +16,7 @@ export default function StrategyPage({ params }: StrategyPageProps) {
   const [data, setData] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
     const fetchStrategyData = async () => {
@@ -35,9 +36,16 @@ export default function StrategyPage({ params }: StrategyPageProps) {
         setLoading(false);
       }
     };
+    const fetchDescription = async () => {
+      const res = await apiClient.getStrategyDescription(resolvedParams.strategyId);
+      if (res.success && res.data) {
+        setDescription(res.data as unknown as string);
+      }
+    };
 
     if (resolvedParams.strategyId) {
       fetchStrategyData();
+      fetchDescription();
     }
   }, [resolvedParams.strategyId]);
 
@@ -156,6 +164,11 @@ export default function StrategyPage({ params }: StrategyPageProps) {
         <p className="text-gray-600 mt-2">
           {data.length} positions found
         </p>
+        {description && (
+          <pre className="whitespace-pre-wrap bg-gray-50 p-4 mt-4 rounded text-sm">
+            {description}
+          </pre>
+        )}
       </div>
       
       {data.length > 0 ? (

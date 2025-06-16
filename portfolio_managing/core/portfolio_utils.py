@@ -121,8 +121,12 @@ class PortfolioUtils:
                 should_close, reason = self.check_exit_condition(position, current_price)
                 
                 if should_close:
-                    return_pct = self.calculate_return_pct(position, current_price)
-                    positions_to_close.append((idx, symbol, position['strategy'], reason, return_pct))
+                    return_pct = PriceCalculator.calculate_return_percentage(
+                        position['entry_price'], current_price, position['position_type']
+                    )
+                    positions_to_close.append(
+                        (idx, symbol, position['strategy'], reason, return_pct)
+                    )
             
             # 청산 처리 - PositionTracker의 close_position 메서드 사용
             for idx, symbol, strategy, reason, return_pct in positions_to_close:
@@ -184,18 +188,6 @@ class PortfolioUtils:
         except Exception:
             return False, ""
     
-    def calculate_return_pct(self, position: pd.Series, current_price: float) -> float:
-        """수익률 계산"""
-        try:
-            entry_price = position['entry_price']
-            position_type = position['position_type']
-            
-            if position_type == 'LONG':
-                return (current_price - entry_price) / entry_price * 100
-            else:
-                return (entry_price - current_price) / entry_price * 100
-        except Exception:
-            return 0.0
     
     def record_trade(self, trade_record: Dict):
         """거래 기록을 히스토리에 추가"""

@@ -3,6 +3,8 @@
 import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
+import { apiClient } from '@/lib/api';
+
 
 interface ScreenerPageProps {
   params: Promise<{
@@ -32,6 +34,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [description, setDescription] = useState('');
 
   const getScreenerName = (id: string) => {
     const names: { [key: string]: string } = {
@@ -70,8 +73,15 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         setLoading(false);
       }
     };
+    const fetchDescription = async () => {
+      const res = await apiClient.getScreenerDescription(resolvedParams.screenerId);
+      if (res.success && res.data) {
+        setDescription(res.data as unknown as string);
+      }
+    };
 
     fetchScreenerData();
+    fetchDescription();
   }, [resolvedParams.screenerId]);
 
   const initializeSliderFilters = (dataArray: ScreenerResult[]) => {
@@ -239,6 +249,11 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         <p className="text-gray-600 mt-2">
           {filteredData.length} of {data.length} results
         </p>
+        {description && (
+          <pre className="whitespace-pre-wrap bg-gray-50 p-4 mt-4 rounded text-sm">
+            {description}
+          </pre>
+        )}
       </div>
       
       {/* 필터 토글 버튼 */}
