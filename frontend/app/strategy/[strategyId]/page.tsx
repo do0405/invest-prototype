@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import { apiClient, PortfolioItem } from '@/lib/api';
 import Link from 'next/link';
+import DataTable, { DataTableColumn } from '@/components/DataTable';
 
 interface StrategyPageProps {
   params: Promise<{
@@ -15,6 +16,7 @@ export default function StrategyPage({ params }: StrategyPageProps) {
   const [data, setData] = useState<PortfolioItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
     const fetchStrategyData = async () => {
@@ -34,9 +36,16 @@ export default function StrategyPage({ params }: StrategyPageProps) {
         setLoading(false);
       }
     };
+    const fetchDescription = async () => {
+      const res = await apiClient.getStrategyDescription(resolvedParams.strategyId);
+      if (res.success && res.data) {
+        setDescription(res.data as unknown as string);
+      }
+    };
 
     if (resolvedParams.strategyId) {
       fetchStrategyData();
+      fetchDescription();
     }
   }, [resolvedParams.strategyId]);
 
@@ -84,6 +93,55 @@ export default function StrategyPage({ params }: StrategyPageProps) {
 
   const strategyType = getStrategyType(resolvedParams.strategyId);
 
+  const columns: DataTableColumn<PortfolioItem>[] = [
+    { key: '종목명', header: '종목명' },
+    { key: '매수일', header: '매수일' },
+    {
+      key: '시장 진입가',
+      header: '시장 진입가',
+      align: 'right',
+      render: (item) =>
+        item['시장 진입가']
+          ? `$${
+              typeof item['시장 진입가'] === 'number'
+                ? item['시장 진입가'].toFixed(2)
+                : item['시장 진입가']
+            }`
+          : 'N/A',
+    },
+    { key: '비중(%)', header: '비중(%)', align: 'right' },
+    { key: '수익률(%)', header: '수익률(%)', align: 'right' },
+    { key: '차익실현', header: '차익실현' },
+    {
+      key: '손절매',
+      header: '손절매',
+      align: 'right',
+      render: (item) =>
+        item.손절매
+          ? `$${
+              typeof item.손절매 === 'number'
+                ? item.손절매.toFixed(2)
+                : item.손절매
+            }`
+          : 'N/A',
+    },
+    { key: '수익보호', header: '수익보호' },
+    {
+      key: '롱여부',
+      header: '롱여부',
+      align: 'center',
+      render: (item) => (
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-medium ${
+            item.롱여부 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}
+        >
+          {item.롱여부 ? 'Long' : 'Short'}
+        </span>
+      ),
+    },
+  ];
+
   return (
     <div className="container mx-auto px-4 py-8 max-h-screen overflow-y-auto">
       <div className="mb-6">
@@ -106,92 +164,20 @@ export default function StrategyPage({ params }: StrategyPageProps) {
         <p className="text-gray-600 mt-2">
           {data.length} positions found
         </p>
+        {description && (
+          <pre className="whitespace-pre-wrap bg-gray-50 p-4 mt-4 rounded text-sm">
+            {description}
+          </pre>
+        )}
       </div>
       
       {data.length > 0 ? (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className={`${
-                strategyType === 'buy' ? 'bg-green-50' : 'bg-red-50'
-              }`}>
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    종목명
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    매수일
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    시장 진입가
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    비중(%)
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    수익률(%)
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    차익실현
-                  </th>
-                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    손절매
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    수익보호
-                  </th>
-                  <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    롱여부
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {data.map((item, index) => {
-                  return (
-                    <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {item.종목명 || 'N/A'}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.매수일 || 'N/A'}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900 text-right">
-                        {item['시장 진입가'] ? 
-                          `$${typeof item['시장 진입가'] === 'number' ? item['시장 진입가'].toFixed(2) : item['시장 진입가']}` 
-                          : 'N/A'
-                        }
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
-                        {item['비중(%)'] || 'N/A'}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500 text-right">
-                        {item['수익률(%)'] || 'N/A'}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.차익실현 || 'N/A'}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-red-600 text-right">
-                        {item.손절매 ? 
-                          `$${typeof item.손절매 === 'number' ? item.손절매.toFixed(2) : item.손절매}` 
-                          : 'N/A'
-                        }
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {item.수익보호 || 'N/A'}
-                      </td>
-                      <td className="px-4 py-4 whitespace-nowrap text-center">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          item.롱여부 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                        }`}>
-                          {item.롱여부 ? 'Long' : 'Short'}
-                        </span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            data={data}
+            columns={columns}
+            headerRowClassName={strategyType === 'buy' ? 'bg-green-50' : 'bg-red-50'}
+          />
         </div>
       ) : (
         <div className="text-center py-12">

@@ -90,6 +90,32 @@ def get_portfolio_by_strategy(strategy_name):
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+@app.route('/api/strategy-description/<strategy_name>', methods=['GET'])
+def get_strategy_description(strategy_name):
+    """전략 설명 텍스트 반환"""
+    try:
+        md_path = os.path.join('long_short_portfolio', 'strategy', f'{strategy_name}.md')
+        if os.path.exists(md_path):
+            with open(md_path, 'r', encoding='utf-8') as f:
+                text = f.read()
+            return jsonify({'success': True, 'data': text})
+        return jsonify({'success': False, 'message': 'Description not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/screener-description/<screener_name>', methods=['GET'])
+def get_screener_description(screener_name):
+    """스크리너 설명 텍스트 반환"""
+    try:
+        md_path = os.path.join('Markminervini', f'{screener_name}.md')
+        if os.path.exists(md_path):
+            with open(md_path, 'r', encoding='utf-8') as f:
+                text = f.read()
+            return jsonify({'success': True, 'data': text})
+        return jsonify({'success': False, 'message': 'Description not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 @app.route('/api/volatility-skew', methods=['GET'])
 def get_volatility_skew_results():
     """변동성 스큐 스크리닝 결과 반환"""

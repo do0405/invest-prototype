@@ -121,8 +121,12 @@ class PortfolioUtils:
                 should_close, reason = self.check_exit_condition(position, current_price)
                 
                 if should_close:
-                    return_pct = self.calculate_return_pct(position, current_price)
-                    positions_to_close.append((idx, symbol, position['strategy'], reason, return_pct))
+                    return_pct = PriceCalculator.calculate_return_percentage(
+                        position['entry_price'], current_price, position['position_type']
+                    )
+                    positions_to_close.append(
+                        (idx, symbol, position['strategy'], reason, return_pct)
+                    )
             
             # 청산 처리 - PositionTracker의 close_position 메서드 사용
             for idx, symbol, strategy, reason, return_pct in positions_to_close:
@@ -184,18 +188,6 @@ class PortfolioUtils:
         except Exception:
             return False, ""
     
-    def calculate_return_pct(self, position: pd.Series, current_price: float) -> float:
-        """수익률 계산"""
-        try:
-            entry_price = position['entry_price']
-            position_type = position['position_type']
-            
-            if position_type == 'LONG':
-                return (current_price - entry_price) / entry_price * 100
-            else:
-                return (entry_price - current_price) / entry_price * 100
-        except Exception:
-            return 0.0
     
     def record_trade(self, trade_record: Dict):
         """거래 기록을 히스토리에 추가"""
@@ -214,6 +206,30 @@ class PortfolioUtils:
             
             # 히스토리 저장
             history_df.to_csv(history_file, index=False, encoding='utf-8-sig')
-            
+
         except Exception as e:
             print(f"⚠️ 거래 기록 저장 실패: {e}")
+
+    def log_exit_transaction(self, symbol: str, position_type: str, purchase_price: float,
+                              exit_price: float, return_pct: float, exit_reason: str):
+        """청산 거래 기록"""
+        try:
+            log_file = os.path.join(self.pm.portfolio_dir, f"{self.pm.portfolio_name}_exit_log.csv")
+            new_record = {
+                '청산일시': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                '종목명': symbol,
+                '포지션': position_type,
+                '매수가': purchase_price,
+                '청산가': exit_price,
+                '수익률': f"{return_pct:.2f}%",
+                '청산사유': exit_reason
+            }
+            if os.path.exists(log_file):
+                df = pd.read_csv(log_file)
+                df = pd.concat([df, pd.DataFrame([new_record])], ignore_index=True)
+            else:
+                df = pd.DataFrame([new_record])
+            df.to_csv(log_file, index=False)
+            print(f"  📝 청산 기록 저장: {log_file}")
+        except Exception as e:
+            print(f"⚠️ 청산 기록 저장 실패: {e}")

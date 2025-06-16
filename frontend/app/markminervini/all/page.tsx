@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import DataTable, { DataTableColumn } from '@/components/DataTable';
 
 interface ScreenerResult {
   symbol: string;
@@ -303,6 +304,17 @@ export default function AllMarkminerviniPage() {
         {screenersData.map((screenerData, index) => {
           const filteredData = getFilteredData(screenerData.data);
           const headers = getOrderedHeaders(filteredData);
+          const columns: DataTableColumn<ScreenerResult>[] = headers.map(header => ({
+            key: header,
+            header: header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            render: (item: ScreenerResult) => {
+              const value = item[header];
+              if (header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker')) {
+                return <span className="font-semibold text-purple-600">{String(value ?? 'N/A')}</span>;
+              }
+              return typeof value === 'number' ? value.toFixed(2) : String(value ?? 'N/A');
+            }
+          }));
           const isExpanded = expandedScreeners.has(screenerData.type);
           const screener = screeners.find(s => s.id === screenerData.type);
           
@@ -345,41 +357,12 @@ export default function AllMarkminerviniPage() {
                   : 'max-h-0 opacity-0'
               }`}>
                 {filteredData.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          {headers.map((header) => (
-                            <th key={header} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              {header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {filteredData.slice(0, 10).map((item, itemIndex) => (
-                          <tr key={itemIndex} className="hover:bg-gray-50">
-                            {headers.map((header) => (
-                              <td key={header} className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker') ? (
-                                  <span className="font-semibold text-purple-600">
-                                    {String(item[header] || 'N/A')}
-                                  </span>
-                                ) : (
-                                  typeof item[header] === 'number' ? 
-                                    item[header].toFixed(2) : 
-                                    String(item[header] || 'N/A')
-                                )}
-                              </td>
-                            ))}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  <>
+                    <DataTable data={filteredData.slice(0, 10)} columns={columns} headerRowClassName="bg-gray-50" />
                     {filteredData.length > 10 && (
                       <div className="p-4 text-center text-gray-500 text-sm">
-                        Showing 10 of {filteredData.length} results. 
-                        <Link 
+                        Showing 10 of {filteredData.length} results.
+                        <Link
                           href={`/markminervini/${screenerData.type}`}
                           className="text-purple-600 hover:text-purple-800 ml-1"
                         >
@@ -387,7 +370,7 @@ export default function AllMarkminerviniPage() {
                         </Link>
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <div className="p-8 text-center text-gray-500">
                     No data matches your current filters.

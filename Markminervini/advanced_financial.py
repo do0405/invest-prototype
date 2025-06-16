@@ -17,12 +17,7 @@ from config import (
 )
 
 # 유틸리티 함수 임포트
-try:
-    from utils import ensure_dir
-except Exception as e:
-    # 간단한 디렉토리 생성 함수 정의
-    def ensure_dir(path):
-        os.makedirs(path, exist_ok=True)
+from utils import ensure_dir
 
 # 필요한 디렉토리 생성
 ensure_dir(RESULTS_DIR)

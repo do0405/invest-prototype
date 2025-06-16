@@ -8,7 +8,10 @@ import argparse
 import traceback
 import pandas as pd
 import importlib.util
-import schedule
+try:
+    import schedule
+except ImportError:
+    schedule = None
 import time
 from datetime import datetime
 
@@ -50,7 +53,10 @@ def execute_strategies(strategy_list=None, monitoring_only=False, screening_mode
         screening_mode: True면 스크리닝 모드로 실행
     """
     if strategy_list is None:
-        strategy_list = [f'strategy{i}' for i in range(1, 7)]
+        if StrategyConfig is not None:
+            strategy_list = StrategyConfig.get_all_strategies()
+        else:
+            strategy_list = [f'strategy{i}' for i in range(1, 7)]
     
     try:
         if monitoring_only:
@@ -141,7 +147,8 @@ def check_strategy_file_status():
         'strategy3': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy3_results.csv'),
         'strategy4': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy4_results.csv'),
         'strategy5': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy5_results.csv'),
-        'strategy6': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy6_results.csv')
+        'strategy6': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy6_results.csv'),
+        'volatility_skew': os.path.join(RESULTS_VER2_DIR, 'buy', 'volatility_skew_results.csv'),
     }
     
     strategies_need_screening = []
@@ -222,35 +229,41 @@ def run_all_screening_processes():
         track_new_tickers(ADVANCED_FINANCIAL_RESULTS_PATH)
         print("✅ 3단계: 새로운 티커 추적 완료.")
 
+        # 4. 변동성 스큐 스크리닝
+        print("\n⏳ 4단계: 변동성 스큐 스크리닝 실행 중...")
+        run_volatility_skew_portfolio()
+        print("✅ 4단계: 변동성 스큐 스크리닝 완료.")
+
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:
         print(f"❌ 스크리닝 프로세스 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
-def run_volatility_skew_screening():
-    """변동성 스큐 역전 전략 스크리닝을 실행합니다."""
-    if not VolatilitySkewScreener:
-        print("⚠️ VolatilitySkewScreener를 사용할 수 없습니다.")
-        return
-        
+def run_volatility_skew_portfolio():
+    """변동성 스큐 전략을 실행해 포트폴리오 신호를 생성합니다."""
     try:
-        print("\n📊 변동성 스큐 역전 전략 스크리닝 시작...")
-        
-        # Alpha Vantage API 키 설정
+        from portfolio_managing.strategies import VolatilitySkewPortfolioStrategy
+    except Exception as e:
+        print(f"⚠️ VolatilitySkewPortfolioStrategy 로드 실패: {e}")
+        return
+
+    try:
+        print("\n📊 변동성 스큐 포트폴리오 생성 시작...")
+
         api_key = ALPHA_VANTAGE_API_KEY if ALPHA_VANTAGE_API_KEY != "YOUR_ALPHA_VANTAGE_KEY" else None
-        
-        screener = VolatilitySkewScreener(alpha_vantage_key=api_key)
-        results, filepath = screener.run_screening()
-        
-        if results:
-            print(f"✅ 변동성 스큐 역전 전략 스크리닝 완료: {len(results)}개 종목 발견")
+
+        strategy = VolatilitySkewPortfolioStrategy(alpha_vantage_key=api_key)
+        signals, filepath = strategy.run_screening_and_portfolio_creation()
+
+        if signals:
+            print(f"✅ 변동성 스큐 포트폴리오 신호 생성: {len(signals)}개")
             print(f"📁 결과 파일: {filepath}")
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
-            
+
     except Exception as e:
-        print(f"❌ 변동성 스큐 스크리닝 중 오류 발생: {e}")
+        print(f"❌ 변동성 스큐 포트폴리오 생성 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
@@ -291,7 +304,6 @@ def run_after_market_close():
         print(f"\n🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 시작")
         
         # 포트폴리오만 실행
-        from portfolio_managing.core.portfolio_manager import create_portfolio_manager
         create_portfolio_manager()
         
         print(f"✅ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 완료")
@@ -301,11 +313,15 @@ def run_after_market_close():
 
 def setup_scheduler():
     """스케줄러 설정 - 매일 오후 4시 30분에 실행"""
+    if schedule is None:
+        raise ImportError("schedule 패키지가 설치되어 있지 않습니다.")
     schedule.every().day.at("16:30").do(run_after_market_close)
     print("📅 스케줄러 설정 완료: 매일 오후 4시 30분에 포트폴리오 업데이트 실행")
 
 def run_scheduler():
     """스케줄러 실행"""
+    if schedule is None:
+        raise ImportError("schedule 패키지가 설치되어 있지 않습니다.")
     setup_scheduler()
     print("🔄 스케줄러 시작... (Ctrl+C로 종료)")
     
@@ -348,7 +364,7 @@ def main():
         # 변동성 스큐 역전 전략만 실행
         if args.volatility_skew:
             print(f"\n🎯 변동성 스큐 역전 전략 전용 모드")
-            run_volatility_skew_screening()
+            run_volatility_skew_portfolio()
             return
         
         # 6개 전략 스크리닝만 실행
@@ -363,7 +379,7 @@ def main():
             run_scheduler()
         elif args.portfolio_only:
             print("🎯 포트폴리오 관리만 실행합니다.")
-            #from portfolio_managing.core.portfolio_manager import create_portfolio_manager
+            os.environ["USE_LOCAL_DATA_ONLY"] = "1"
             create_portfolio_manager()
         else:
     # 기존 전체 실행 로직        
@@ -387,7 +403,7 @@ def main():
             print("  📊 2-3: 전략 실행")
             execute_strategies()
             print("  📊 2-4: 변동성 스큐 스크리닝 실행")
-            run_volatility_skew_screening()
+            run_volatility_skew_portfolio()
         else:
             print("\n🔍 2단계: 전략 파일 상태 확인 및 조건부 스크리닝")
             # 전략 파일 상태 확인 및 필요시 스크리닝

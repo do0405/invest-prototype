@@ -2,6 +2,8 @@
 
 import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
+import DataTable, { DataTableColumn } from '@/components/DataTable';
+import { apiClient } from '@/lib/api';
 
 interface ScreenerPageProps {
   params: Promise<{
@@ -31,6 +33,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [description, setDescription] = useState('');
 
   const getScreenerName = (id: string) => {
     const names: { [key: string]: string } = {
@@ -69,8 +72,15 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         setLoading(false);
       }
     };
+    const fetchDescription = async () => {
+      const res = await apiClient.getScreenerDescription(resolvedParams.screenerId);
+      if (res.success && res.data) {
+        setDescription(res.data as unknown as string);
+      }
+    };
 
     fetchScreenerData();
+    fetchDescription();
   }, [resolvedParams.screenerId]);
 
   const initializeSliderFilters = (dataArray: ScreenerResult[]) => {
@@ -206,6 +216,17 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   }
 
   const headers = getTableHeaders();
+  const columns: DataTableColumn<ScreenerResult>[] = headers.map((header) => ({
+    key: header,
+    header: header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    render: (item) => {
+      const value = item[header];
+      if (header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker')) {
+        return <span className="font-semibold text-purple-600">{String(value ?? 'N/A')}</span>;
+      }
+      return typeof value === 'number' ? value.toFixed(2) : String(value ?? 'N/A');
+    },
+  }));
 
   return (
     <div className="container mx-auto px-4 py-8 max-h-screen overflow-y-auto">
@@ -227,6 +248,11 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         <p className="text-gray-600 mt-2">
           {filteredData.length} of {data.length} results
         </p>
+        {description && (
+          <pre className="whitespace-pre-wrap bg-gray-50 p-4 mt-4 rounded text-sm">
+            {description}
+          </pre>
+        )}
       </div>
       
       {/* 필터 토글 버튼 */}
@@ -305,49 +331,11 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       
       {filteredData.length > 0 ? (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead className="bg-purple-50">
-                <tr>
-                  {headers.map((header) => (
-                    <th 
-                      key={header} 
-                      className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-purple-100 transition-colors"
-                      onClick={() => handleSort(header)}
-                    >
-                      <div className="flex items-center gap-1">
-                        {header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                        {sortConfig?.key === header && (
-                          <span className="text-purple-600">
-                            {sortConfig.direction === 'asc' ? '↑' : '↓'}
-                          </span>
-                        )}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredData.map((item, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    {headers.map((header) => (
-                      <td key={header} className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker') ? (
-                          <span className="font-semibold text-purple-600">
-                            {String(item[header] || 'N/A')}
-                          </span>
-                        ) : (
-                          typeof item[header] === 'number' ? 
-                            item[header].toFixed(2) : 
-                            String(item[header] || 'N/A')
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            data={filteredData}
+            columns={columns}
+            headerRowClassName="bg-purple-50"
+          />
         </div>
       ) : (
         <div className="text-center py-12">
