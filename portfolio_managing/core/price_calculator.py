@@ -101,9 +101,6 @@ class PriceCalculator:
             return 0.0
 
 
-    @staticmethod
-    def get_recent_price_data(symbol: str, days: int = 5) -> Optional[Dict[str, float]]:
-        """최근 가격 데이터 조회"""
         if use_local_only():
             path = os.path.join(DATA_US_DIR, f"{symbol.upper()}.csv")
             if os.path.exists(path):
@@ -121,6 +118,27 @@ class PriceCalculator:
                             'open': float(latest['Open']),
                             'volume': float(latest['Volume'])
                         }
+                except Exception:
+                    pass
+            return None
+
+    @staticmethod
+        purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
+        next_day = purchase_dt + timedelta(days=1)
+
+
+        if use_local_only():
+            path = os.path.join(DATA_US_DIR, f"{symbol.upper()}.csv")
+            if os.path.exists(path):
+                try:
+                    df = pd.read_csv(path)
+                    df['date'] = pd.to_datetime(df['date']).dt.date
+                    for i in range(5):
+                        target = next_day.date() + timedelta(days=i)
+                        row = df[df['date'] == target]
+                        if not row.empty:
+                            return float(row.iloc[0]['Open'])
+
                 except Exception:
                     pass
             return None
