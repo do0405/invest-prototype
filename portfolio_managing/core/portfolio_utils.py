@@ -74,22 +74,44 @@ class PortfolioUtils:
                 return False
             
             # 포지션 추가
+            entry_price = signal.get('price', 0)
+            position_type = strategy_config.get('type', 'LONG')
             position_data = {
                 'symbol': symbol,
                 'strategy': strategy_name,
-                'position_type': strategy_config.get('type', 'LONG'),
-                'entry_price': signal.get('price', 0),
+                'position_type': position_type,
+                'entry_price': entry_price,
                 'quantity': position_size,
                 'entry_date': datetime.now().strftime('%Y-%m-%d'),
                 'stop_loss': PriceCalculator.calculate_stop_loss_price(
-                    signal.get('price', 0), strategy_config, strategy_config.get('type', 'LONG')
+                    entry_price, strategy_config, position_type
                 ),
                 'take_profit': PriceCalculator.calculate_profit_target_price(
-                    signal.get('price', 0), strategy_config, strategy_config.get('type', 'LONG')
+                    entry_price, strategy_config, position_type
                 )
             }
             
-            return self.pm.position_tracker.add_position(position_data)
+            # 포지션 추가
+            position_added = self.pm.position_tracker.add_position(position_data)
+            
+            # 트레일링 스탑 초기화
+            if position_added:
+                # 전략 설정에서 트레일링 스탑 비율 가져오기
+                exit_conditions = strategy_config.get('exit_conditions', {})
+                trailing_stop_config = exit_conditions.get('trailing_stop', {})
+                trailing_pct = trailing_stop_config.get('trailing_pct', 0.0)
+                
+                # 트레일링 스탑 비율이 설정되어 있으면 초기화
+                if trailing_pct > 0:
+                    self.pm.trailing_stop_manager.init_trailing_stop(
+                        symbol=symbol,
+                        strategy=strategy_name,
+                        position_type=position_type,
+                        entry_price=entry_price,
+                        trailing_pct=trailing_pct
+                    )
+            
+            return position_added
             
         except Exception as e:
             print(f"⚠️ 포지션 추가 실패: {e}")
@@ -141,6 +163,9 @@ class PortfolioUtils:
                     close_price=current_price,
                     exit_reason=reason
                 )
+                
+                # 트레일링 스탑 항목 제거
+                self.pm.trailing_stop_manager.remove_trailing_stop(symbol, strategy)
 
             # 포지션 파일 저장
             self.pm.position_tracker.save_positions()

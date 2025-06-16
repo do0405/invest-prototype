@@ -10,6 +10,7 @@ import sys
 import pandas as pd
 import numpy as np
 import json
+import re
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 
@@ -21,6 +22,7 @@ from .risk_manager import RiskManager
 from .portfolio_utils import PortfolioUtils
 from .portfolio_reporter import PortfolioReporter
 from .price_calculator import PriceCalculator
+from .trailing_stop import TrailingStopManager
 from .exit_conditions import (
     calculate_profit_target_price,
     calculate_remaining_days,
@@ -42,6 +44,7 @@ class PortfolioManager:
         # 핵심 모듈 초기화
         self.position_tracker = PositionTracker(portfolio_name)
         self.risk_manager = RiskManager(portfolio_name)
+        self.trailing_stop_manager = TrailingStopManager(portfolio_name)
         self.utils = PortfolioUtils(self)
         self.reporter = PortfolioReporter(self)
         
@@ -185,18 +188,20 @@ class PortfolioManager:
                         df.loc[idx, '차익실현'] = str(row['차익실현']).replace('n% 수익', f'{target_price:.2f}')
                         updated = True
                 
-                # 2-2. n일 후 청산/강제매도 처리
-                if 'n일 후' in str(row['차익실현']):
-                    remaining_days = calculate_remaining_days(row['매수일'], row['차익실현'])
-                    
-                    if remaining_days == -1:  # 삭제 조건
-                        rows_to_remove.append(idx)
-                        print(f"  🗑️ {row['종목명']}: 보유기간 만료로 삭제")
-                    elif remaining_days >= 0:  # 일수 업데이트
-                        updated_condition = update_days_condition(row['차익실현'], remaining_days)
-                        df.loc[idx, '차익실현'] = updated_condition
-                        updated = True
-                        print(f"  ⏰ {row['종목명']}: {remaining_days}일 남음")
+                # 3. n일 후 청산/강제매도 처리 - 매수일에 따라 숫자가 줄어들게 함
+                for column in ['차익실현', '손절매', '수익보호']:
+                    if column in row and 'n일 후' in str(row[column]):
+                        remaining_days = calculate_remaining_days(row['매수일'], row[column])
+                        
+                        if remaining_days <= -1:  # 삭제 조건
+                            rows_to_remove.append(idx)
+                            print(f"  🗑️ {row['종목명']}: 보유기간 만료로 삭제")
+                            break  # 이 행은 삭제 예정이므로 다른 컬럼 처리 불필요
+                        else:  # 일수 업데이트
+                            updated_condition = update_days_condition(row[column], remaining_days)
+                            df.loc[idx, column] = updated_condition
+                            updated = True
+                            print(f"  ⏰ {row['종목명']}: {column} {remaining_days}일 남음")
             
             # 만료된 행 제거
             if rows_to_remove:
@@ -206,10 +211,14 @@ class PortfolioManager:
             # 파일 저장
             if updated:
                 df.to_csv(file_path, index=False)
+                json_file = file_path.replace('.csv', '.json')
+                if os.path.exists(json_file) or file_path.endswith('.csv'):
+                    df.to_json(json_file, orient='records', force_ascii=False, indent=2)
                 print(f"  ✅ {os.path.basename(file_path)} 업데이트 완료")
             
         except Exception as e:
             print(f"❌ 파일 처리 실패 ({file_path}): {e}")
+
     
     
 
@@ -233,9 +242,14 @@ class PortfolioManager:
                     success = added_count > 0
             
                 if success:
-                # 청산 조건 확인
-                    # 356번째 줄을 다음과 같이 수정
+                    # 청산 조건 확인
                     portfolio_manager.utils.check_and_process_exit_conditions()
+                    
+                    # 포트폴리오 업데이트
+                    portfolio_manager.position_tracker.update_positions()
+                    
+                    # 개별 리포트 생성
+                    portfolio_manager.reporter.generate_report()
                 
                 # 포트폴리오 업데이트
                     portfolio_manager.position_tracker.update_positions()
@@ -316,6 +330,8 @@ class PortfolioManager:
                     continue
 
                 recent_close = recent_data.get('close')
+                recent_high = recent_data.get('high')
+                recent_low = recent_data.get('low')
 
                 if recent_close and purchase_price:
                     if position_type == 'BUY':
@@ -325,8 +341,45 @@ class PortfolioManager:
                     df.loc[idx, '수익률'] = return_pct
                     updated = True
                     print(f"  📊 {symbol}: 수익률 업데이트 {return_pct:.2f}%")
+                
+                # 4. ATR 상단 또는 n일 후 강제매도 조건 확인
+                profit_taking_condition = str(row.get('차익실현', ''))
+                
+                # 숫자 + (설명) 형태의 조건 확인 (예: 254.23 (10일 ATR 상단))
+                price_match = re.search(r'(\d+\.\d+)\s*\(', profit_taking_condition)
+                days_match = re.search(r'(\d+)일 후', profit_taking_condition)
+                
+                # 가격 기반 청산 조건 확인
+                if price_match and recent_data:
+                    target_price = float(price_match.group(1))
+                    
+                    if position_type == 'BUY' and recent_high and recent_high >= target_price:
+                        rows_to_remove.append(idx)
+                        exit_reason = f"목표가 {target_price:.2f} 도달 (고가: {recent_high:.2f})"
+                        self.utils.log_exit_transaction(symbol, 'BUY', purchase_price, recent_high, return_pct, exit_reason)
+                        print(f"  🔄 {symbol}: {exit_reason} - 최종 수익률 {return_pct:.2f}% - 데이터 삭제")
+                        updated = True
+                        continue
+                    elif position_type == 'SELL' and recent_low and recent_low <= target_price:
+                        rows_to_remove.append(idx)
+                        exit_reason = f"목표가 {target_price:.2f} 도달 (저가: {recent_low:.2f})"
+                        self.utils.log_exit_transaction(symbol, 'SELL', purchase_price, recent_low, return_pct, exit_reason)
+                        print(f"  🔄 {symbol}: {exit_reason} - 최종 수익률 {return_pct:.2f}% - 데이터 삭제")
+                        updated = True
+                        continue
+                
+                # 일수 기반 청산 조건이 -1일이 되면 포지션 청산
+                if days_match and int(days_match.group(1)) <= 0:
+                    rows_to_remove.append(idx)
+                    exit_reason = "보유기간 만료"
+                    self.utils.log_exit_transaction(symbol, 'BUY' if position_type == 'BUY' else 'SELL', 
+                                                  purchase_price, recent_close, return_pct, exit_reason)
+                    print(f"  🔄 {symbol}: {exit_reason} - 최종 수익률 {return_pct:.2f}% - 데이터 삭제")
+                    updated = True
+                    continue
 
-                should_exit, exit_reason = check_complex_exit_condition(row, recent_data, position_type)
+                # 기존 복합 청산 조건 확인 (트레일링 스탑 포함)
+                should_exit, exit_reason = check_complex_exit_condition(row, recent_data, position_type, self.trailing_stop_manager)
                 final_return = return_pct if 'return_pct' in locals() else 0
 
                 if should_exit:
