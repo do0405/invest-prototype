@@ -370,7 +370,7 @@ def main():
             run_scheduler()
         elif args.portfolio_only:
             print("🎯 포트폴리오 관리만 실행합니다.")
-            #from portfolio_managing.core.portfolio_manager import create_portfolio_manager
+            os.environ["USE_LOCAL_DATA_ONLY"] = "1"
             create_portfolio_manager()
         else:
     # 기존 전체 실행 로직        

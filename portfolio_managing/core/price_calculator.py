@@ -6,6 +6,9 @@ from typing import Optional, Dict, Any, Tuple
 import pandas as pd
 import yfinance as yf
 
+def use_local_only() -> bool:
+    return os.getenv("USE_LOCAL_DATA_ONLY") == "1"
+
 from config import DATA_US_DIR
 
 
@@ -15,6 +18,16 @@ class PriceCalculator:
     @staticmethod
     def get_current_price(symbol: str) -> Optional[float]:
         """현재가 반환"""
+        if use_local_only():
+            path = os.path.join(DATA_US_DIR, f"{symbol.upper()}.csv")
+            if os.path.exists(path):
+                try:
+                    df = pd.read_csv(path)
+                    if not df.empty:
+                        return float(df.iloc[-1]['Close'])
+                except Exception:
+                    pass
+            return None
         try:
             hist = yf.Ticker(symbol).history(period="1d")
             if not hist.empty:
@@ -85,10 +98,46 @@ class PriceCalculator:
             return 0.0
 
 
+        if use_local_only():
+            path = os.path.join(DATA_US_DIR, f"{symbol.upper()}.csv")
+            if os.path.exists(path):
+                try:
+                    df = pd.read_csv(path)
+                    df['date'] = pd.to_datetime(df['date'])
+                    df = df.sort_values('date')
+                    df_recent = df.tail(days)
+                    if not df_recent.empty:
+                        latest = df_recent.iloc[-1]
+                        return {
+                            'high': float(latest['High']),
+                            'low': float(latest['Low']),
+                            'close': float(latest['Close']),
+                            'open': float(latest['Open']),
+                            'volume': float(latest['Volume'])
+                        }
+                except Exception:
+                    pass
+            return None
 
     @staticmethod
-    def get_recent_price_data(symbol: str, days: int = 5) -> Optional[Dict[str, float]]:
-        """최근 가격 데이터 조회"""
+        purchase_dt = datetime.strptime(purchase_date, '%Y-%m-%d')
+        next_day = purchase_dt + timedelta(days=1)
+
+        if use_local_only():
+            path = os.path.join(DATA_US_DIR, f"{symbol.upper()}.csv")
+            if os.path.exists(path):
+                try:
+                    df = pd.read_csv(path)
+                    df['date'] = pd.to_datetime(df['date']).dt.date
+                    for i in range(5):
+                        target = next_day.date() + timedelta(days=i)
+                        row = df[df['date'] == target]
+                        if not row.empty:
+                            return float(row.iloc[0]['Open'])
+                except Exception:
+                    pass
+            return None
+
         try:
             end_date = datetime.now()
             start_date = end_date - timedelta(days=days)
