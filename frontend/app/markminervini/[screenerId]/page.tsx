@@ -5,6 +5,7 @@ import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
 import { apiClient } from '@/lib/api';
 
+
 interface ScreenerPageProps {
   params: Promise<{
     screenerId: string;
