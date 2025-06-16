@@ -2,6 +2,7 @@
 
 import './globals.css';
 import { Inter } from 'next/font/google';
+import type { Metadata } from 'next';
 import Sidebar from '@/components/Sidebar';
 import { useState, useEffect } from 'react';
 import { FaBars, FaArrowLeft } from 'react-icons/fa';
@@ -9,6 +10,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation'; // usePathname 임포트
 
 const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: 'Investment Dashboard',
+  description: 'Portfolio strategies and screeners',
+  viewport: 'width=device-width, initial-scale=1',
+};
 
 // 예시 데이터 (실제로는 API 등에서 가져와야 함)
 const strategies = [
@@ -18,6 +25,7 @@ const strategies = [
   { id: 'strategy4', name: 'Strategy Delta' },
   { id: 'strategy5', name: 'Strategy Epsilon' },
   { id: 'strategy6', name: 'Strategy Zeta' },
+  { id: 'volatility_skew', name: 'Volatility Skew' },
 ];
 
 export default function RootLayout({

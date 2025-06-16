@@ -136,6 +136,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
               {strategy.name}
             </Link>
           ))}
+          <Link
+            href="/volatility-skew"
+            className="block py-2.5 px-4 rounded-md transition-all duration-200 ease-in-out hover:bg-yellow-50 hover:text-yellow-700 active:bg-yellow-200 transform hover:translate-x-1 active:translate-x-0.5"
+          >
+            ⚡ Volatility Skew Screener
+          </Link>
         </div>
       </nav>
     </div>
