@@ -95,6 +95,10 @@ export class ApiClient {
     return this.request<string>(`/api/screener-description/${name}`);
   }
 
+  async getVolatilitySkewResults() {
+    return this.request<ScreeningData[]>('/api/volatility-skew');
+  }
+
 
   // 전체 요약 (여러 API를 조합하여 생성)
   async getSummary(): Promise<ApiResponse<SummaryData>> {
