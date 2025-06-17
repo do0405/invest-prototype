@@ -1,0 +1,4 @@
+﻿symbol,company_name,skew_index,expected_return,confidence_score,base_confidence,data_source,data_quality_grade,confidence_numeric,quality_description
+CHTR,"Charter Communications, Inc.",-64.75154974365235,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+PFG,"Principal Financial Group, Inc.",-51.73288110351562,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+REG,Regency Centers Corporation,-23.48609326171876,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터

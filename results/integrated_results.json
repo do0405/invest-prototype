@@ -546,13 +546,6 @@
     "rs_score":97.5494233937
   },
   {
-    "symbol":"MPAA",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":97.4773476112
-  },
-  {
     "symbol":"FARO",
     "met_count":8,
     "fin_met_count":6,
@@ -684,13 +677,6 @@
     "fin_met_count":6,
     "total_met_count":14,
     "rs_score":92.9365733114
-  },
-  {
-    "symbol":"COE",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":92.6173805601
   },
   {
     "symbol":"NC",
@@ -931,6 +917,13 @@
     "rs_score":98.5172981878
   },
   {
+    "symbol":"URBN",
+    "met_count":8,
+    "fin_met_count":5,
+    "total_met_count":13,
+    "rs_score":98.2186985173
+  },
+  {
     "symbol":"HOOD",
     "met_count":8,
     "fin_met_count":5,
@@ -1141,13 +1134,6 @@
     "rs_score":93.9559308072
   },
   {
-    "symbol":"KARO",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":93.8838550247
-  },
-  {
     "symbol":"COOP",
     "met_count":8,
     "fin_met_count":5,
@@ -1211,6 +1197,13 @@
     "rs_score":92.7203459638
   },
   {
+    "symbol":"COE",
+    "met_count":8,
+    "fin_met_count":5,
+    "total_met_count":13,
+    "rs_score":92.6173805601
+  },
+  {
     "symbol":"YSG",
     "met_count":8,
     "fin_met_count":5,
@@ -1244,13 +1237,6 @@
     "fin_met_count":5,
     "total_met_count":13,
     "rs_score":91.6598023064
-  },
-  {
-    "symbol":"IDT",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":91.618616145
   },
   {
     "symbol":"PAC",
@@ -1321,6 +1307,13 @@
     "fin_met_count":5,
     "total_met_count":13,
     "rs_score":89.9196869852
+  },
+  {
+    "symbol":"CNM",
+    "met_count":8,
+    "fin_met_count":5,
+    "total_met_count":13,
+    "rs_score":89.8990939044
   },
   {
     "symbol":"PSMT",
@@ -1582,13 +1575,6 @@
     "rs_score":98.3113673806
   },
   {
-    "symbol":"URBN",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":98.2186985173
-  },
-  {
     "symbol":"ETON",
     "met_count":8,
     "fin_met_count":4,
@@ -1608,6 +1594,13 @@
     "fin_met_count":4,
     "total_met_count":12,
     "rs_score":97.8480230643
+  },
+  {
+    "symbol":"MPAA",
+    "met_count":8,
+    "fin_met_count":4,
+    "total_met_count":12,
+    "rs_score":97.4773476112
   },
   {
     "symbol":"VEON",
@@ -1792,6 +1785,13 @@
     "rs_score":94.1000823723
   },
   {
+    "symbol":"KARO",
+    "met_count":8,
+    "fin_met_count":4,
+    "total_met_count":12,
+    "rs_score":93.8838550247
+  },
+  {
     "symbol":"ATEC",
     "met_count":8,
     "fin_met_count":4,
@@ -1911,6 +1911,13 @@
     "rs_score":91.76276771
   },
   {
+    "symbol":"IDT",
+    "met_count":8,
+    "fin_met_count":4,
+    "total_met_count":12,
+    "rs_score":91.618616145
+  },
+  {
     "symbol":"EAT",
     "met_count":8,
     "fin_met_count":4,
@@ -1951,6 +1958,13 @@
     "fin_met_count":4,
     "total_met_count":12,
     "rs_score":91.0831960461
+  },
+  {
+    "symbol":"NATH",
+    "met_count":8,
+    "fin_met_count":4,
+    "total_met_count":12,
+    "rs_score":90.6713344316
   },
   {
     "symbol":"LPLA",
@@ -2322,13 +2336,6 @@
     "fin_met_count":3,
     "total_met_count":11,
     "rs_score":95.7887149918
-  },
-  {
-    "symbol":"SUPV",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.7166392092
   },
   {
     "symbol":"PRA",
@@ -2786,6 +2793,13 @@
     "rs_score":95.7990115321
   },
   {
+    "symbol":"SUPV",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":95.7166392092
+  },
+  {
     "symbol":"LINC",
     "met_count":8,
     "fin_met_count":2,
@@ -2910,13 +2924,6 @@
     "fin_met_count":2,
     "total_met_count":10,
     "rs_score":90.681630972
-  },
-  {
-    "symbol":"NATH",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":90.6713344316
   },
   {
     "symbol":"AM",
@@ -3806,13 +3813,6 @@
     "fin_met_count":1,
     "total_met_count":9,
     "rs_score":90.0020593081
-  },
-  {
-    "symbol":"CNM",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.8990939044
   },
   {
     "symbol":"KGRN",
