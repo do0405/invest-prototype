@@ -7,6 +7,8 @@ import { motion } from 'framer-motion';
 import { FaTimes, FaHome, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import { useState } from 'react';
 
+const MotionLink = motion(Link);
+
 // Strategy 인터페이스 정의 추가
 interface Strategy {
   id: string;
@@ -50,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
     >
       <div className="flex items-center justify-between px-4 flex-shrink-0">
         <h2 className="flex-grow text-2xl font-semibold text-center">Strategies</h2>
-        <motion.custom(Link)
+        <MotionLink
           href="/"
           className="text-gray-800 p-2 rounded-md"
           whileHover={{ scale: 1.05, backgroundColor: 'rgba(129, 140, 248, 0.1)' }}
@@ -58,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
           transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         >
           <FaHome size={24} />
-        </motion.custom(Link)>
+        </MotionLink>
         <button onClick={onClose} className="md:hidden text-gray-800 hover:text-gray-600 ml-2">
           <FaTimes size={24} />
         </button>
@@ -86,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <motion.custom(Link)
+                <MotionLink
                   href="/strategy/all"
                   className="block py-2 px-4 rounded-md text-sm"
                   whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', borderLeftColor: '#60a5fa' }}
@@ -94,9 +96,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
                   📊 All Strategies Overview
-                </motion.custom(Link)>
+                </MotionLink>
                 {strategyAlphaItems.map((item) => (
-                  <motion.custom(Link)
+                  <MotionLink
                     key={item.id}
                     href={`/strategy/${item.id}`}
                     className={`block py-2 px-4 rounded-md text-sm ${
@@ -107,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
                     {item.type === 'buy' ? '📈' : '📉'} {item.name}
-                  </motion.custom(Link)>
+                  </MotionLink>
                 ))} 
               </motion.div>
             </div>
@@ -135,7 +137,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
               >
-                <motion.custom(Link)
+                <MotionLink
                   href="/markminervini/all"
                   className="block py-2 px-4 rounded-md text-sm"
                   whileHover={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#7e22ce', borderLeftColor: '#c084fc' }}
@@ -143,9 +145,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
                   🔍 All Screener Results
-                </motion.custom(Link)>
+                </MotionLink>
                 {markminerviniItems.map((item) => (
-                  <motion.custom(Link)
+                  <MotionLink
                     key={item.id}
                     href={`/markminervini/${item.id}`}
                     className="block py-2 px-4 rounded-md text-sm"
@@ -154,7 +156,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
                     {item.icon} {item.name}
-                  </motion.custom(Link)>
+                  </MotionLink>
                 ))} 
               </motion.div>
             </div>
@@ -165,7 +167,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
         <div className="border-t pt-4">
           <h3 className="px-4 text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Other Strategies</h3>
           {strategies.filter(s => !['strategy1', 'strategy2', 'strategy3', 'strategy4', 'strategy5', 'strategy6'].includes(s.id)).map((strategy) => (
-            <motion.custom(Link)
+            <MotionLink
               key={strategy.id}
               href={`/strategy/${strategy.id}`}
               className="block py-2.5 px-4 rounded-md"
@@ -174,9 +176,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             >
               {strategy.name}
-            </motion.custom(Link)>
+            </MotionLink>
           ))}
-          <motion.custom(Link)
+          <MotionLink
             href="/volatility-skew"
             className="block py-2.5 px-4 rounded-md"
             whileHover={{ backgroundColor: 'rgba(250, 204, 21, 0.1)', color: '#a16207', x: 4 }}
@@ -184,7 +186,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             ⚡ Volatility Skew Screener
-          </motion.custom(Link)>
+          </MotionLink>
         </div>
       </nav>
     </motion.div>
