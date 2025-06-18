@@ -163,12 +163,11 @@ def get_markminervini_results(screener_name):
     """Markminervini 스크리너 결과 반환"""
     try:
         # Check main results directory
-        results_path = 'c:/Users/HOME/Desktop/invest_prototype/results'
-        json_file = os.path.join(results_path, f'{screener_name}.json')
+        json_file = os.path.join(RESULTS_DIR, f'{screener_name}.json')
         
         # Check results2 subdirectory for pattern analysis
         if not os.path.exists(json_file) and screener_name == 'pattern_analysis_results':
-            json_file = os.path.join(results_path, 'results2', f'{screener_name}.json')
+            json_file = os.path.join(RESULTS_DIR, 'results2', f'{screener_name}.json')
         
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
