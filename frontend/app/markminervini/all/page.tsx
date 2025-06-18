@@ -35,6 +35,8 @@ export default function AllMarkminerviniPage() {
     { id: 'integrated_results', name: 'Integrated Results', icon: '🔗' },
     { id: 'new_tickers', name: 'New Tickers', icon: '🆕' },
     { id: 'previous_us_with_rs', name: 'Previous US with RS', icon: '📈' },
+    { id: 'us_setup_results', name: 'US Setup Results', icon: '⚙️' },
+    { id: 'us_gainers_results', name: 'US Gainers Results', icon: '📈' },
     { id: 'pattern_analysis_results', name: 'Pattern Analysis', icon: '📊' },
   ];
 

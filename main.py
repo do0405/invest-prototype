@@ -28,6 +28,8 @@ from utils import ensure_dir
 from Markminervini.filter_stock import run_integrated_screening
 from Markminervini.advanced_financial import run_advanced_financial_screening
 from Markminervini.pattern_detection import analyze_tickers_from_results
+from USSetupScreener.screener import screen_us_setup
+from USGainersScreener.screener import screen_us_gainers
 from config import (
     DATA_US_DIR, RESULTS_DIR, RESULTS_VER2_DIR, OPTION_VOLATILITY_DIR,
     ADVANCED_FINANCIAL_RESULTS_PATH, ALPHA_VANTAGE_API_KEY
@@ -234,6 +236,16 @@ def run_all_screening_processes():
         run_volatility_skew_portfolio()
         print("✅ 4단계: 변동성 스큐 스크리닝 완료.")
 
+        # 5. US Setup 스크리닝
+        print("\n⏳ 5단계: US Setup 스크리닝 실행 중...")
+        run_setup_screener()
+        print("✅ 5단계: US Setup 스크리닝 완료.")
+
+        # 6. US Gainers 스크리닝
+        print("\n⏳ 6단계: US Gainers 스크리닝 실행 중...")
+        run_gainers_screener()
+        print("✅ 6단계: US Gainers 스크리닝 완료.")
+
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:
         print(f"❌ 스크리닝 프로세스 중 오류 발생: {e}")
@@ -264,6 +276,34 @@ def run_volatility_skew_portfolio():
 
     except Exception as e:
         print(f"❌ 변동성 스큐 포트폴리오 생성 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_setup_screener():
+    """US Setup Screener 실행"""
+    try:
+        print("\n📊 US Setup Screener 시작...")
+        df = screen_us_setup()
+        if not df.empty:
+            print(f"✅ US Setup 결과 저장 완료: {len(df)}개 종목")
+        else:
+            print("⚠️ 조건을 만족하는 종목이 없습니다.")
+    except Exception as e:
+        print(f"❌ US Setup Screener 실행 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_gainers_screener():
+    """US Gainers Screener 실행"""
+    try:
+        print("\n📊 US Gainers Screener 시작...")
+        df = screen_us_gainers()
+        if not df.empty:
+            print(f"✅ US Gainers 결과 저장 완료: {len(df)}개 종목")
+        else:
+            print("⚠️ 조건을 만족하는 종목이 없습니다.")
+    except Exception as e:
+        print(f"❌ US Gainers Screener 실행 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
@@ -340,6 +380,8 @@ def main():
     parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 모드')
     parser.add_argument('--strategies', action='store_true', help='6개 전략 스크리닝만 실행')
     parser.add_argument('--volatility-skew', action='store_true', help='변동성 스큐 역전 전략만 실행')
+    parser.add_argument('--setup', action='store_true', help='US Setup 스크리너만 실행')
+    parser.add_argument('--gainers', action='store_true', help='US Gainers 스크리너만 실행')
     parser.add_argument('--portfolio-only', action='store_true', help='포트폴리오 관리만 실행')
     parser.add_argument('--schedule', action='store_true', help='스케줄링 모드로 실행 (매일 오후 4시 30분)')
     
@@ -365,6 +407,16 @@ def main():
         if args.volatility_skew:
             print(f"\n🎯 변동성 스큐 역전 전략 전용 모드")
             run_volatility_skew_portfolio()
+            return
+
+        if args.setup:
+            print(f"\n🎯 US Setup 스크리너 전용 모드")
+            run_setup_screener()
+            return
+
+        if args.gainers:
+            print(f"\n🎯 US Gainers 스크리너 전용 모드")
+            run_gainers_screener()
             return
         
         # 6개 전략 스크리닝만 실행

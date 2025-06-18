@@ -43,6 +43,8 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       'new_tickers': 'New Tickers',
       'previous_us_with_rs': 'Previous US with RS',
       'us_with_rs': 'US with RS',
+      'us_setup_results': 'US Setup Results',
+      'us_gainers_results': 'US Gainers Results',
       'pattern_analysis_results': 'Pattern Analysis Results'
     };
     return names[id] || id;
