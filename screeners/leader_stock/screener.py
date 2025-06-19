@@ -97,8 +97,10 @@ class LeaderStockScreener:
         self.pe_map = {}
         self.revenue_growth_map = {}
         self.stock_rs_percentile = {}
+        self.market_cap_map = {}
+        self.ipo_date_map = {}
 
-        # 섹터, P/E, 매출 성장률 메타데이터
+        # 섹터, P/E, 매출 성장률, 시가총액, IPO 날짜 메타데이터
         if os.path.exists(STOCK_METADATA_PATH):
             try:
                 meta = pd.read_csv(STOCK_METADATA_PATH)
@@ -108,6 +110,11 @@ class LeaderStockScreener:
                     self.pe_map = meta.set_index('symbol')['pe_ratio'].to_dict()
                 if 'revenue_growth' in meta.columns:
                     self.revenue_growth_map = meta.set_index('symbol')['revenue_growth'].to_dict()
+                if 'market_cap' in meta.columns:
+                    self.market_cap_map = meta.set_index('symbol')['market_cap'].to_dict()
+                if 'ipo_date' in meta.columns:
+                    meta['ipo_date'] = pd.to_datetime(meta['ipo_date'], errors='coerce')
+                    self.ipo_date_map = meta.set_index('symbol')['ipo_date'].to_dict()
             except Exception as e:
                 logger.warning(f"메타데이터 로드 실패: {e}")
         else:
@@ -152,6 +159,23 @@ class LeaderStockScreener:
     def _growth_slowdown(self, ticker):
         growth = self.revenue_growth_map.get(ticker)
         return growth is not None and growth < 15
+
+    def _small_cap_or_recent_ipo(
+        self,
+        ticker,
+        cap_threshold: int = 2_000_000_000,
+        max_ipo_age: int = 365,
+    ) -> bool:
+        """시가총액 또는 IPO 연령 조건 체크"""
+        market_cap = self.market_cap_map.get(ticker)
+        if market_cap is not None and market_cap <= cap_threshold:
+            return True
+        ipo_date = self.ipo_date_map.get(ticker)
+        if ipo_date is not None:
+            ipo_age = (self.today - ipo_date).days
+            if ipo_age <= max_ipo_age:
+                return True
+        return False
     
     def calculate_sector_rs(self, sector_etfs):
         """섹터별 상대 강도(RS) 계산"""
@@ -395,7 +419,7 @@ class LeaderStockScreener:
             },
             "stage3": {
                 "market_trend": lambda df, recent, sector, strong_sectors, ticker=None: self._market_trend_ok(),
-                "small_cap_or_ipo": lambda df, recent, sector, strong_sectors, ticker=None: True,
+                "small_cap_or_ipo": lambda df, recent, sector, strong_sectors, ticker=None: self._small_cap_or_recent_ipo(ticker),
                 "volume_explosion": lambda df, recent, sector, strong_sectors, ticker=None: recent['volume_ratio'] >= 5.0,
                 "rsi_overbought": lambda df, recent, sector, strong_sectors, ticker=None: recent['rsi_14'] >= 70,
                 "momentum": lambda df, recent, sector, strong_sectors, ticker=None: (recent['close'] / df.iloc[-5]['close'] - 1) * 100 >= 10,
