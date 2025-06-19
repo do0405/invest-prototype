@@ -163,9 +163,9 @@ LEADER_STOCK_CRITERIA = {
 
 # 상승 모멘텀 신호 전략 기준
 MOMENTUM_SIGNALS_CRITERIA = {
-    # 모멘텀 점수 기준
-    'min_momentum_score': 8,  # 최소 모멘텀 점수
-    'min_core_signals': 3,    # 최소 핵심 신호 수
+    # 모멘텀 점수 기준 (Weinstein Stage 2A 조건 반영)
+    'min_momentum_score': 10,  # 최소 모멘텀 점수
+    'min_core_signals': 4,    # 최소 핵심 신호 수
     
     # 기술적 지표 기준
     'rsi_uptrend': 50,        # RSI 상승 추세 기준

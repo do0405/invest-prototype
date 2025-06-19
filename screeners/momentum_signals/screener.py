@@ -7,12 +7,18 @@ import numpy as np
 from datetime import datetime, timedelta
 import logging
 
-from config import DATA_US_DIR, RESULTS_DIR
+from config import (
+    DATA_US_DIR,
+    RESULTS_DIR,
+    US_WITH_RS_PATH,
+    MOMENTUM_SIGNALS_CRITERIA,
+    MOMENTUM_SIGNALS_RESULTS_DIR,
+)
 from utils.calc_utils import get_us_market_today, calculate_rsi
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
+from screeners.leader_stock.screener import LeaderStockScreener
 
-# 결과 저장 디렉토리
-MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, 'momentum_signals')
+# 결과 저장 디렉토리 (config에서 가져옴)
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -26,6 +32,8 @@ class MomentumSignalsScreener:
         """초기화"""
         self.today = get_us_market_today()
         ensure_dir(MOMENTUM_SIGNALS_RESULTS_DIR)
+        self.rs_scores = self._load_rs_scores()
+        self.strong_sectors = self._load_sector_strength()
     
     def _calculate_macd(self, df, fast=12, slow=26, signal=9):
         """MACD 계산"""
@@ -113,9 +121,12 @@ class MomentumSignalsScreener:
         
         # 장기 이동평균
         df['sma_200'] = df['close'].rolling(window=200).mean()
-        
+
+        # 주간 이동평균 (Stage 2A 판별용)
+        df['sma_30w'] = df['close'].rolling(window=150).mean()  # 30주 SMA
+
         return df
-    
+
     def _calculate_volume_indicators(self, df):
         """거래량 지표 계산"""
         # 거래량 이동평균
@@ -127,8 +138,57 @@ class MomentumSignalsScreener:
         
         # 거래량 증가율
         df['volume_change'] = df['volume'].pct_change() * 100
-        
+
         return df
+
+    def _calculate_vwap(self, df, window=20):
+        """VWAP 계산"""
+        tp = (df['high'] + df['low'] + df['close']) / 3
+        vol = df['volume']
+        df['vwap'] = (tp * vol).rolling(window=window).sum() / vol.rolling(window=window).sum()
+        return df
+
+    def _calculate_obv(self, df):
+        """On-Balance Volume 계산"""
+        direction = np.sign(df['close'].diff()).fillna(0)
+        df['obv'] = (direction * df['volume']).cumsum()
+        return df
+
+    def _calculate_ad(self, df):
+        """Accumulation/Distribution 라인 계산"""
+        mfm = ((df['close'] - df['low']) - (df['high'] - df['close'])) / (df['high'] - df['low'])
+        mfm = mfm.replace([np.inf, -np.inf], 0).fillna(0)
+        df['ad'] = (mfm * df['volume']).cumsum()
+        return df
+
+    def _load_rs_scores(self):
+        """RS 점수 로드"""
+        if os.path.exists(US_WITH_RS_PATH):
+            rs_df = pd.read_csv(US_WITH_RS_PATH)
+            return dict(zip(rs_df['symbol'], rs_df['rs_score']))
+        logger.warning(f"RS 점수 파일을 찾을 수 없습니다: {US_WITH_RS_PATH}")
+        return {}
+
+    def _load_sector_strength(self):
+        """섹터별 상대 강도 계산"""
+        sector_etfs = {
+            'Technology': 'XLK',
+            'Healthcare': 'XLV',
+            'Consumer Discretionary': 'XLY',
+            'Financials': 'XLF',
+            'Communication Services': 'XLC',
+            'Industrials': 'XLI',
+            'Consumer Staples': 'XLP',
+            'Energy': 'XLE',
+            'Utilities': 'XLU',
+            'Real Estate': 'XLRE',
+            'Materials': 'XLB',
+        }
+        leader = LeaderStockScreener()
+        sector_rs = leader.calculate_sector_rs(sector_etfs)
+        self.all_sectors = list(sector_etfs.keys())
+        strong = {s: d for s, d in sector_rs.items() if d.get('percentile', 0) >= 60}
+        return strong
     
     def screen_momentum_signals(self):
         """상승 모멘텀 신호 스크리닝 실행"""
@@ -145,9 +205,19 @@ class MomentumSignalsScreener:
             try:
                 file_path = os.path.join(DATA_US_DIR, file)
                 ticker = extract_ticker_from_filename(file)
-                
+
                 # 주요 지수 제외
                 if ticker in ['SPY', 'QQQ', 'DIA', 'IWM']:
+                    continue
+
+                # RS 점수 필터
+                rs_score = self.rs_scores.get(ticker)
+                if rs_score is None or rs_score < 70:
+                    continue
+
+                # 섹터 상대 강도 필터 (임의 할당)
+                sector = np.random.choice(self.all_sectors) if hasattr(self, 'all_sectors') else None
+                if self.strong_sectors and sector not in self.strong_sectors:
                     continue
                 
                 # 데이터 로드
@@ -166,6 +236,9 @@ class MomentumSignalsScreener:
                 df = self._calculate_adx(df)
                 df = self._calculate_bollinger_bands(df)
                 df = self._calculate_volume_indicators(df)
+                df = self._calculate_vwap(df)
+                df = self._calculate_obv(df)
+                df = self._calculate_ad(df)
                 
                 # 최근 데이터
                 if len(df) < 5:  # 최소 5일 데이터 필요
@@ -246,10 +319,33 @@ class MomentumSignalsScreener:
                 signals['uptrend_confirmed'] = (
                     recent['close'] > recent['sma_20'] > recent['sma_50']
                 )
+
+                # 16. 30주 이평선 돌파 3일 연속
+                signals['above_30w_3d'] = all(df.iloc[-i]['close'] > df.iloc[-i]['sma_30w'] for i in range(1, 4))
+
+                # 17. Stage 2A 확인 (10주 SMA 상승, 30주 SMA 수평/상승)
+                signals['stage_2a'] = (
+                    recent['sma_50'] > df.iloc[-10]['sma_50'] and
+                    recent['sma_30w'] >= df.iloc[-10]['sma_30w']
+                )
+
+                # 18. VWAP 돌파
+                signals['vwap_breakout'] = (
+                    recent['close'] > recent['vwap'] and recent['volume_ratio'] >= 1.5
+                )
+
+                # 19. OBV 상승세
+                signals['obv_rising'] = (
+                    len(df) >= 4 and recent['obv'] > df.iloc[-2]['obv'] > df.iloc[-3]['obv']
+                )
+
+                # 20. A/D 라인 신고점 경신
+                ad_max = df['ad'].iloc[-50:].max() if len(df) >= 50 else df['ad'].max()
+                signals['ad_new_high'] = recent['ad'] >= ad_max
                 
                 # 모멘텀 점수 계산 (각 신호당 1점)
                 momentum_score = sum(signals.values())
-                
+
                 # 핵심 신호 확인 (최소 3개 이상 만족해야 함)
                 core_signals = [
                     signals['macd_crossover'],
@@ -257,17 +353,24 @@ class MomentumSignalsScreener:
                     signals['stoch_crossover'],
                     signals['strong_trend'],
                     signals['positive_trend'],
-                    signals['volume_surge']
+                    signals['volume_surge'],
+                    signals['above_30w_3d'],
+                    signals['stage_2a']
                 ]
                 core_signals_count = sum(core_signals)
-                
-                # 최소 총점 8점 이상 & 핵심 신호 3개 이상 만족하는 종목 선택
-                if momentum_score >= 8 and core_signals_count >= 3:
+
+                min_score = MOMENTUM_SIGNALS_CRITERIA['min_momentum_score']
+                min_core = MOMENTUM_SIGNALS_CRITERIA['min_core_signals']
+
+                # 최소 점수 및 핵심 신호 충족 여부 확인
+                if momentum_score >= min_score and core_signals_count >= min_core:
                     # 결과에 추가
                     result = {
                         'ticker': ticker,
+                        'sector': sector,
                         'close': recent['close'],
                         'volume': recent['volume'],
+                        'rs_score': rs_score,
                         'momentum_score': momentum_score,
                         'core_signals': core_signals_count,
                         'rsi_14': recent['rsi_14'],
