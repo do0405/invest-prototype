@@ -88,6 +88,7 @@ python api_server.py
 # GET http://localhost:5000/api/screening-results
 # GET http://localhost:5000/api/portfolio-performance
 # GET http://localhost:5000/api/strategy-results
+
 ```
 ## 📊 스크리닝 기준
 ### 기술적 분석 (Mark Minervini 기법)
