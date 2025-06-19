@@ -11,6 +11,7 @@ from config import (
     DATA_US_DIR,
     RESULTS_DIR,
     US_WITH_RS_PATH,
+    STOCK_METADATA_PATH,
     MOMENTUM_SIGNALS_CRITERIA,
     MOMENTUM_SIGNALS_RESULTS_DIR,
 )
@@ -33,6 +34,7 @@ class MomentumSignalsScreener:
         self.today = get_us_market_today()
         ensure_dir(MOMENTUM_SIGNALS_RESULTS_DIR)
         self.rs_scores = self._load_rs_scores()
+        self._load_metadata()
         self.strong_sectors = self._load_sector_strength()
     
     def _calculate_macd(self, df, fast=12, slow=26, signal=9):
@@ -161,6 +163,32 @@ class MomentumSignalsScreener:
         df['ad'] = (mfm * df['volume']).cumsum()
         return df
 
+    def _load_metadata(self):
+        """Load sector and RS percentile information."""
+        self.sector_map = {}
+        self.stock_rs_percentile = {}
+
+        if os.path.exists(STOCK_METADATA_PATH):
+            try:
+                meta = pd.read_csv(STOCK_METADATA_PATH)
+                if {'symbol', 'sector'}.issubset(meta.columns):
+                    self.sector_map = meta.set_index('symbol')['sector'].to_dict()
+            except Exception as e:
+                logger.warning(f"메타데이터 로드 실패: {e}")
+        else:
+            logger.warning(f"메타데이터 파일이 없습니다: {STOCK_METADATA_PATH}")
+
+        if os.path.exists(US_WITH_RS_PATH) and self.sector_map:
+            try:
+                rs_df = pd.read_csv(US_WITH_RS_PATH)
+                if {'symbol', 'rs_score'}.issubset(rs_df.columns):
+                    rs_df['sector'] = rs_df['symbol'].map(self.sector_map)
+                    rs_df.dropna(subset=['sector'], inplace=True)
+                    rs_df['sector_rank'] = rs_df.groupby('sector')['rs_score'].rank(pct=True) * 100
+                    self.stock_rs_percentile = rs_df.set_index('symbol')['sector_rank'].to_dict()
+            except Exception as e:
+                logger.warning(f"RS 메타데이터 로드 실패: {e}")
+
     def _load_rs_scores(self):
         """RS 점수 로드"""
         if os.path.exists(US_WITH_RS_PATH):
@@ -215,9 +243,13 @@ class MomentumSignalsScreener:
                 if rs_score is None or rs_score < 70:
                     continue
 
-                # 섹터 상대 강도 필터 (임의 할당)
-                sector = np.random.choice(self.all_sectors) if hasattr(self, 'all_sectors') else None
+                # 실제 섹터 조회 및 강한 섹터 필터
+                sector = self.sector_map.get(ticker)
+                if not sector:
+                    continue
                 if self.strong_sectors and sector not in self.strong_sectors:
+                    continue
+                if self.stock_rs_percentile.get(ticker, 0) < 60:
                     continue
                 
                 # 데이터 로드

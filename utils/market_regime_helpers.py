@@ -1,90 +1,89 @@
-# -*- coding: utf-8 -*-
-"""Market Regime Classification Indicator.
+"""Helper functions for market regime indicator."""
 
-이 모듈은 시장 국면을 판단하기 위한 정량적 규칙 기반 지표를 제공합니다.
-다양한 기술적 지표와 시장 지수를 분석하여 현재 시장 상태를 5가지 국면으로 분류합니다.
-
-1. 공격적 상승장 (Aggressive Bull Market): 80-100점
-2. 상승장 (Bull Market): 60-79점
-3. 조정장 (Correction Market): 40-59점
-4. 위험 관리장 (Risk Management Market): 20-39점
-5. 완전한 약세장 (Full Bear Market): 0-19점
-This module uses several daily datasets under ``DATA_DIR``:
-
-* ``DATA_US_DIR`` - price history for major indices.
-* ``BREADTH_DATA_DIR/advance_decline.csv`` - market breadth advancing/declining issues.
-* ``BREADTH_DATA_DIR/high_low.csv`` - daily new highs and lows.
-* ``OPTION_DATA_DIR/put_call_ratio.csv`` - option market put/call ratio.
-
-Files must contain a ``date`` column and corresponding value columns (e.g. ``ratio``,
-``highs``, ``lows``, ``advancing`` and ``declining``). Latest rows are used for
-calculations.
-"""
-
+import os
 import pandas as pd
 import numpy as np
-import os
-from datetime import datetime, timedelta
-from typing import Dict, List, Tuple, Optional, Union
+from typing import Dict, Optional
 
-from config import (
-    DATA_US_DIR,
-    BREADTH_DATA_DIR,
-    OPTION_DATA_DIR,
-    RESULTS_DIR,
-    MARKET_REGIME_DIR,
-    MARKET_REGIME_CRITERIA,
-)
-from utils.calc_utils import get_us_market_today
-from .market_regime_helpers import INDEX_TICKERS, MARKET_REGIMES, load_index_data, calculate_high_low_index, calculate_advance_decline_trend, calculate_put_call_ratio
-from .market_regime_calc import calculate_market_score, get_market_regime, get_regime_description, get_investment_strategy, analyze_market_regime
+from config import DATA_US_DIR, BREADTH_DATA_DIR, OPTION_DATA_DIR
+
 __all__ = [
-    "analyze_market_regime",
-    "calculate_market_score",
-    "get_market_regime",
-    "get_regime_description",
-    "get_investment_strategy",
+    "load_index_data",
+    "calculate_high_low_index",
+    "calculate_advance_decline_trend",
+    "calculate_put_call_ratio",
+    "INDEX_TICKERS",
+    "MARKET_REGIMES",
 ]
 
 
+INDEX_TICKERS = {
+    "SPY": "S&P 500 (대형주)",
+    "QQQ": "나스닥 100 (기술주)",
+    "IWM": "Russell 2000 (소형주)",
+    "MDY": "S&P 400 MidCap (중형주)",
+    "IBB": "바이오텍 ETF",
+    "XBI": "바이오텍 ETF",
+    "VIX": "변동성 지수",
+}
+
+MARKET_REGIMES = {
+    "aggressive_bull": {
+        "name": "공격적 상승장 (Aggressive Bull Market)",
+        "score_range": (80, 100),
+        "description": "모든 주요 지수가 강세를 보이며 시장 심리가 매우 낙관적인 상태입니다.",
+        "strategy": "소형주, 성장주 비중 확대",
+    },
+    "bull": {
+        "name": "상승장 (Bull Market)",
+        "score_range": (60, 79),
+        "description": "대형주 중심의 상승세가 유지되나 일부 섹터에서 약세가 나타나기 시작합니다.",
+        "strategy": "대형주 중심, 리더주 선별 투자",
+    },
+    "correction": {
+        "name": "조정장 (Correction Market)",
+        "score_range": (40, 59),
+        "description": "주요 지수가 단기 이동평균선 아래로 하락하며 조정이 진행중입니다.",
+        "strategy": "현금 비중 증대, 방어적 포지션",
+    },
+    "risk_management": {
+        "name": "위험 관리장 (Risk Management Market)",
+        "score_range": (20, 39),
+        "description": "주요 지수가 장기 이동평균선 아래로 하락하며 위험이 증가하고 있습니다.",
+        "strategy": "신규 투자 중단, 손절매 기준 엄격 적용",
+    },
+    "bear": {
+        "name": "완전한 약세장 (Full Bear Market)",
+        "score_range": (0, 19),
+        "description": "모든 주요 지수가 장기 이동평균선 아래에서 지속적인 하락세를 보입니다.",
+        "strategy": "현금 보유, 적립식 투자 외 투자 자제",
+    },
+}
+
 
 def load_index_data(ticker: str, days: int = 200) -> Optional[pd.DataFrame]:
-    """지수 데이터를 로드합니다.
-    
-    Args:
-        ticker: 지수 티커 심볼
-        days: 로드할 데이터의 일수
-        
-    Returns:
-        DataFrame 또는 로드 실패 시 None
-    """
+    """Load index price data with moving averages."""
     try:
         file_path = os.path.join(DATA_US_DIR, f"{ticker}.csv")
         if not os.path.exists(file_path):
             print(f"⚠️ {ticker} 데이터 파일을 찾을 수 없습니다.")
             return None
-            
+
         df = pd.read_csv(file_path)
-        df.columns = [col.lower() for col in df.columns]
-        
-        if 'date' in df.columns:
-            df['date'] = pd.to_datetime(df['date'], utc=True)
-            df = df.sort_values('date')
-        else:
+        df.columns = [c.lower() for c in df.columns]
+        if 'date' not in df.columns:
             print(f"⚠️ {ticker} 데이터에 날짜 컬럼이 없습니다.")
             return None
-            
+
+        df['date'] = pd.to_datetime(df['date'], utc=True)
+        df = df.sort_values('date')
         if len(df) < days:
             print(f"⚠️ {ticker} 데이터가 충분하지 않습니다. (필요: {days}, 실제: {len(df)})")
             return None
-            
-        # 최근 데이터만 사용
+
         df = df.iloc[-days:].copy()
-        
-        # 이동평균선 계산
         df['ma50'] = df['close'].rolling(window=50).mean()
         df['ma200'] = df['close'].rolling(window=200).mean()
-        
         return df
     except Exception as e:
         print(f"❌ {ticker} 데이터 로드 오류: {e}")
@@ -92,12 +91,7 @@ def load_index_data(ticker: str, days: int = 200) -> Optional[pd.DataFrame]:
 
 
 def calculate_high_low_index(index_data: Dict[str, pd.DataFrame]) -> float:
-    """High-Low Index를 계산합니다.
-
-    ``BREADTH_DATA_DIR/high_low.csv`` 파일에서 신고가/신저가 수치를 읽어
-    지수화합니다. 파일에는 ``date`` 와 ``highs``, ``lows`` 컬럼이 존재해야
-    하며 최신 값을 이용해 0~100 범위의 지표를 반환합니다.
-    """
+    """Calculate High-Low Index from breadth data."""
     file_path = os.path.join(BREADTH_DATA_DIR, "high_low.csv")
     try:
         if not os.path.exists(file_path):
@@ -121,7 +115,6 @@ def calculate_high_low_index(index_data: Dict[str, pd.DataFrame]) -> float:
         total = highs + lows
         if total == 0:
             return 50
-
         return max(min(highs / total * 100, 100), 0)
     except Exception as e:
         print(f"❌ High-Low Index 계산 오류: {e}")
@@ -129,12 +122,7 @@ def calculate_high_low_index(index_data: Dict[str, pd.DataFrame]) -> float:
 
 
 def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> float:
-    """Advance-Decline Line의 추세를 계산합니다.
-
-    ``BREADTH_DATA_DIR/advance_decline.csv`` 파일의 상승 종목 수와 하락 종목
-    수를 이용하여 AD Line의 단기/장기 이동평균을 비교하고 -100~100 범위의
-    추세 값을 반환합니다.
-    """
+    """Calculate trend of Advance-Decline Line."""
     file_path = os.path.join(BREADTH_DATA_DIR, "advance_decline.csv")
     try:
         if not os.path.exists(file_path):
@@ -161,7 +149,6 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
         long_ma = df['ad_line'].rolling(window=50).mean().iloc[-1]
         if long_ma == 0:
             return 0
-
         return ((short_ma - long_ma) / abs(long_ma)) * 100
     except Exception as e:
         print(f"❌ Advance-Decline 추세 계산 오류: {e}")
@@ -169,11 +156,7 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
 
 
 def calculate_put_call_ratio() -> float:
-    """Put/Call Ratio를 계산합니다.
-
-    ``OPTION_DATA_DIR/put_call_ratio.csv`` 파일의 최근 값을 사용합니다.
-    파일에는 ``date`` 와 ``ratio`` 컬럼이 존재해야 합니다.
-    """
+    """Return latest put/call ratio."""
     file_path = os.path.join(OPTION_DATA_DIR, "put_call_ratio.csv")
     try:
         if not os.path.exists(file_path):
@@ -190,20 +173,7 @@ def calculate_put_call_ratio() -> float:
         if not ratio_col:
             print("⚠️ Put/Call Ratio 데이터에 비율 컬럼이 없습니다.")
             return 0.9
-
         return float(df[ratio_col].iloc[-1])
     except Exception as e:
         print(f"❌ Put/Call Ratio 계산 오류: {e}")
         return 0.9
-    
-    return result
-
-
-if __name__ == "__main__":
-    # 모듈 테스트
-    result = analyze_market_regime()
-    print(f"\n📊 시장 국면 분석 결과 (점수: {result['score']})")
-    print(f"🔍 현재 국면: {result['regime_name']}")
-    print(f"📝 설명: {result['description']}")
-    print(f"💡 투자 전략: {result['strategy']}")
-
