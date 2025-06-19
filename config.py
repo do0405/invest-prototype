@@ -23,6 +23,9 @@ LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
 MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, 'momentum_signals')
 IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
 DATA_US_DIR = os.path.join(DATA_DIR, 'us')  # 미국 주식 데이터 디렉토리
+# 시장 폭(Breadth) 지표 및 옵션 데이터 디렉토리
+BREADTH_DATA_DIR = os.path.join(DATA_DIR, 'breadth')
+OPTION_DATA_DIR = os.path.join(DATA_DIR, 'options')
 BACKUP_DIR = os.path.join(BASE_DIR, 'backup')  # 백업 디렉토리
 SCREENERS_DIR = os.path.join(BASE_DIR, 'screeners')
 MARKMINERVINI_DIR = os.path.join(SCREENERS_DIR, 'markminervini')
@@ -133,7 +136,7 @@ MARKET_REGIME_CRITERIA = {
     # 기술적 지표 기준
     'vix_thresholds': [15, 20, 25, 35],  # VIX 임계값
     'put_call_ratio_thresholds': [0.7, 0.9, 1.2, 1.5],  # Put/Call Ratio 임계값
-    'high_low_index_thresholds': [20, 30, 50, 70],  # High-Low Index 임계값
+    'high_low_index_thresholds': [30, 50, 70, 90],  # High-Low Index 임계값
     'advance_decline_thresholds': [-50, -20, 20, 50],  # Advance-Decline 추세 임계값
     'biotech_return_thresholds': [-15, 0, 3, 10],  # 바이오텍 지수 월간 수익률 임계값
 }
