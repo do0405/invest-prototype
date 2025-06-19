@@ -8,7 +8,7 @@ import glob
 import json  # 추가된 import
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
 from config import RESULTS_DIR, RESULTS_VER2_DIR
 
@@ -183,6 +183,131 @@ def get_markminervini_results(screener_name):
             
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
+
+# 쿨라매기 매매법 관련 API 엔드포인트 추가
+@app.route('/api/qullamaggie/description', methods=['GET'])
+def get_qullamaggie_description():
+    """쿨라매기 매매법 설명 텍스트 반환"""
+    try:
+        md_path = os.path.join('qullamaggie', 'pattern.md')
+        if os.path.exists(md_path):
+            with open(md_path, 'r', encoding='utf-8') as f:
+                text = f.read()
+            return jsonify({'success': True, 'data': text})
+        return jsonify({'success': False, 'message': 'Description not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/qullamaggie/breakout', methods=['GET'])
+def get_qullamaggie_breakout_results():
+    """쿨라매기 브레이크아웃 셋업 결과 반환"""
+    try:
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'breakout_results.json')
+        if os.path.exists(json_file):
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({
+                'success': True,
+                'data': data,
+                'total_count': len(data)
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Breakout setup data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/qullamaggie/episode-pivot', methods=['GET'])
+def get_qullamaggie_episode_pivot_results():
+    """쿨라매기 에피소드 피벗 셋업 결과 반환"""
+    try:
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'episode_pivot_results.json')
+        if os.path.exists(json_file):
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({
+                'success': True,
+                'data': data,
+                'total_count': len(data)
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Episode pivot setup data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/qullamaggie/parabolic-short', methods=['GET'])
+def get_qullamaggie_parabolic_short_results():
+    """쿨라매기 파라볼릭 숏 셋업 결과 반환"""
+    try:
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'parabolic_short_results.json')
+        if os.path.exists(json_file):
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({
+                'success': True,
+                'data': data,
+                'total_count': len(data)
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Parabolic short setup data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/qullamaggie/buy-signals', methods=['GET'])
+def get_qullamaggie_buy_signals():
+    """쿨라매기 매수 시그널 결과 반환"""
+    try:
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'buy', 'qullamaggie_buy_signals.json')
+        if os.path.exists(json_file):
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({
+                'success': True,
+                'data': data,
+                'total_count': len(data)
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Buy signals data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/qullamaggie/sell-signals', methods=['GET'])
+def get_qullamaggie_sell_signals():
+    """쿨라매기 매도 시그널 결과 반환"""
+    try:
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'sell', 'qullamaggie_sell_signals.json')
+        if os.path.exists(json_file):
+            with open(json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({
+                'success': True,
+                'data': data,
+                'total_count': len(data)
+            })
+        else:
+            return jsonify({'success': False, 'message': 'Sell signals data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/qullamaggie/run', methods=['POST'])
+def run_qullamaggie_screening():
+    """쿨라매기 매매법 스크리닝 실행"""
+    try:
+        import subprocess
+        data = request.get_json()
+        mode = data.get('mode', 'all')  # all, breakout, episode_pivot, parabolic_short
+        
+        # qullamaggie/main.py 실행
+        cmd = ['python', 'qullamaggie/main.py', f'--{mode}']
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        return jsonify({
+            'success': result.returncode == 0,
+            'message': 'Qullamaggie screening completed' if result.returncode == 0 else 'Qullamaggie screening failed',
+            'output': result.stdout,
+            'error': result.stderr if result.returncode != 0 else None
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

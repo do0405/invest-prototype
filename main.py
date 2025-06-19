@@ -340,6 +340,10 @@ def main():
     parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 모드')
     parser.add_argument('--strategies', action='store_true', help='6개 전략 스크리닝만 실행')
     parser.add_argument('--volatility-skew', action='store_true', help='변동성 스큐 역전 전략만 실행')
+    parser.add_argument('--qullamaggie', action='store_true', help='쿨라매기 전략 실행')
+    parser.add_argument('--qullamaggie-breakout', action='store_true', help='쿨라매기 브레이크아웃 셋업만 실행')
+    parser.add_argument('--qullamaggie-episode-pivot', action='store_true', help='쿨라매기 에피소드 피봇 셋업만 실행')
+    parser.add_argument('--qullamaggie-parabolic-short', action='store_true', help='쿨라매기 파라볼릭 숏 셋업만 실행')
     parser.add_argument('--portfolio-only', action='store_true', help='포트폴리오 관리만 실행')
     parser.add_argument('--schedule', action='store_true', help='스케줄링 모드로 실행 (매일 오후 4시 30분)')
     
@@ -365,6 +369,32 @@ def main():
         if args.volatility_skew:
             print(f"\n🎯 변동성 스큐 역전 전략 전용 모드")
             run_volatility_skew_portfolio()
+            return
+        
+        # 쿨라매기 전략 실행
+        if args.qullamaggie or args.qullamaggie_breakout or args.qullamaggie_episode_pivot or args.qullamaggie_parabolic_short:
+            print(f"\n🎯 쿨라매기 전략 실행 모드")
+            try:
+                from qullamaggie.main import run_qullamaggie_strategy
+                
+                # 실행할 셋업 결정
+                setups = []
+                if args.qullamaggie:  # 모든 셋업 실행
+                    setups = ['breakout', 'episode_pivot', 'parabolic_short']
+                else:
+                    if args.qullamaggie_breakout:
+                        setups.append('breakout')
+                    if args.qullamaggie_episode_pivot:
+                        setups.append('episode_pivot')
+                    if args.qullamaggie_parabolic_short:
+                        setups.append('parabolic_short')
+                
+                # 쿨라매기 전략 실행
+                run_qullamaggie_strategy(setups)
+                print(f"✅ 쿨라매기 전략 실행 완료: {', '.join(setups)}")
+            except Exception as e:
+                print(f"❌ 쿨라매기 전략 실행 중 오류: {str(e)}")
+                traceback.print_exc()
             return
         
         # 6개 전략 스크리닝만 실행
