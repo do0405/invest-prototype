@@ -356,10 +356,17 @@ class MomentumSignalsScreener:
                 signals['above_30w_3d'] = all(df.iloc[-i]['close'] > df.iloc[-i]['sma_30w'] for i in range(1, 4))
 
                 # 17. Stage 2A 확인 (10주 SMA 상승, 30주 SMA 수평/상승)
-                signals['stage_2a'] = (
-                    recent['sma_50'] > df.iloc[-10]['sma_50'] and
-                    recent['sma_30w'] >= df.iloc[-10]['sma_30w']
-                )
+                if len(df) >= 51:
+                    prev_sma_50 = df['sma_50'].shift(50).iloc[-1]
+                    prev_sma_30w = df['sma_30w'].shift(50).iloc[-1]
+                    signals['stage_2a'] = (
+                        not np.isnan(prev_sma_50)
+                        and not np.isnan(prev_sma_30w)
+                        and recent['sma_50'] > prev_sma_50
+                        and recent['sma_30w'] >= prev_sma_30w
+                    )
+                else:
+                    signals['stage_2a'] = False
 
                 # 18. VWAP 돌파
                 signals['vwap_breakout'] = (
