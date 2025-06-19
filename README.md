@@ -25,42 +25,25 @@
 
 ```
 invest_prototype/
-├── main.py                     # 메인 실행 파일
 ├── config.py                   # 전역 설정
-├── utils.py                    # 공통 유틸리티
+├── main.py                     # 메인 실행 파일
+├── utils/                      # 유틸리티 모듈 모음
 ├── data_collector.py           # 데이터 수집
-├── fill_business_days.py       # 영업일 데이터 채우기
-├──
-├── Markminervini/              # Mark Minervini 기법
-│   ├── filter_stock.py         # 기술적 스크리닝
-│   ├── advanced_financial.py   # 재무제표 스크리닝
-│   ├── ticker_tracker.py       # 종목 추적
-│   ├── pattern_detection.py    # 패턴 감지
-│   └── filter_tickers.py       # 종목 필터링
-├──
+├── screeners/                  # 스크리너 모듈
+│   ├── markminervini/
+│   ├── qullamaggie/
+│   ├── us_gainer/
+│   ├── us_setup/
+│   └── option_volatility/
 ├── portfolio/
-│   ├── long_short/             # 포트폴리오 관리
-│   ├── strategy1.py ~ strategy6.py  # 6가지 투자 전략
-│   ├── portfolio_integration.py     # 포트폴리오 통합 관리
-│   └── run_screener.py             # 스크리너 실행
-├──
-├── portfolio/manager/          # 포트폴리오 핵심 기능
-│   ├── portfolio_manager.py    # 포트폴리오 매니저
-│   └── core/
-│       └── performance_analyzer.py  # 성과 분석
-├──
-├── option_data_based_strategy/ # 옵션 기반 전략
-│   └── volatility_skew_screener.py  # 변동성 스큐 스크리너
-├──
-├── backend/                    # 백엔드 API
-│   ├── api_server.py          # Flask API 서버
-│   ├── api_utils.py           # API 유틸리티
-│   └── json_backend_wrapper.py # 백엔드 래퍼
-├──
-├── data/                      # 데이터 저장소
-│   └── us/                    # 미국 주식 데이터
-└── results/                   # 분석 결과
-└── ver2/                  # 포트폴리오 결과
+│   ├── long_short/             # 전략 스크립트
+│   └── manager/                # 포트폴리오 관리 로직
+├── backend/                    # Flask API 서버
+├── data/
+│   └── us/
+└── results/
+    ├── screeners/
+    └── portfolio/
 
 ```
 
@@ -82,8 +65,8 @@ python main.py --financial-only
 # 통합 스크리닝 실행
 python main.py --integrated
 
-포트폴리오 관리
-
+### 포트폴리오 관리
+```bash
 # 포트폴리오 스크리너 실행
 cd portfolio/long_short
 python run_screener.py
@@ -95,70 +78,17 @@ python strategy2.py  # 밸류 모멘텀
 
 # 포트폴리오 통합 관리
 python portfolio_integration.py
+```
 
-백엔드 API 서버
-
-# API 서버 시작
+### 백엔드 API 서버
+```bash
 cd backend
 python api_server.py
-
-# API 엔드포인트 예시
+# 주요 엔드포인트
 # GET http://localhost:5000/api/screening-results
 # GET http://localhost:5000/api/portfolio-performance
 # GET http://localhost:5000/api/strategy-results
 
-
-
-
-
-## 🚀 실행 방법
-
-### 기본 스크리닝 실행
-```bash
-# 전체 프로세스 실행 (데이터 
-수집 + 스크리닝)
-python main.py
-
-# 기술적 스크리닝만 실행
-python main.py --screen-only
-
-# 재무제표 스크리닝만 실행
-python main.py 
---financial-only
-
-# 통합 스크리닝 실행
-python main.py --integrated
-```
-### 포트폴리오 관리
-```
-# 포트폴리오 스크리너 실행
-cd portfolio/long_short
-python run_screener.py
-
-# 개별 전략 실행
-python strategy1.py  # 
-트렌드 하이 모멘텀
-python strategy2.py  # 밸류 
-모멘텀
-# ... strategy6.py까지
-
-# 포트폴리오 통합 관리
-python portfolio_integration.
-py
-```
-### 백엔드 API 서버
-```
-# API 서버 시작
-cd backend
-python api_server.py
-
-# API 엔드포인트 예시
-# GET http://localhost:5000/
-api/screening-results
-# GET http://localhost:5000/
-api/portfolio-performance
-# GET http://localhost:5000/
-api/strategy-results
 ```
 ## 📊 스크리닝 기준
 ### 기술적 분석 (Mark Minervini 기법)
@@ -188,8 +118,9 @@ api/strategy-results
 - results/us_with_rs.csv/.json : 기술적 스크리닝 결과
 - results/advanced_financial_results.csv/.json : 재무 스크리닝 결과
 - results/integrated_results.csv/.json : 통합 스크리닝 결과
-- results/ver2/strategy_X_results.csv/.json : 각 전략별 결과
-- results/ver2/portfolio_integration_report.csv/.json : 포트폴리오 통합 보고서
+- results/portfolio/buy/strategyX_results.csv/.json : 전략별 매수 신호
+- results/portfolio/sell/strategyX_results.csv/.json : 전략별 매도 신호
+- results/portfolio/portfolio_integration_report.csv/.json : 포트폴리오 통합 보고서
 ### 주요 결과 지표
 - rs_score : 상대강도 점수 (0-100)
 - fin_met_count : 충족한 재무 조건 수 (0-11)
