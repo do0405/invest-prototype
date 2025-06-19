@@ -26,16 +26,39 @@ class IPOInvestmentScreener:
         """초기화"""
         self.today = get_us_market_today()
         ensure_dir(IPO_INVESTMENT_RESULTS_DIR)
-        
+
         # IPO 데이터 로드 (실제로는 외부 API나 데이터베이스에서 가져와야 함)
         # 여기서는 예시로 빈 데이터프레임 생성
         self.ipo_data = self._load_ipo_data()
+
+        # 시장 지표 및 섹터 RS 계산
+        self.vix = self._get_vix()
+        sector_etfs = {
+            'Technology': 'XLK',
+            'Healthcare': 'XLV',
+            'Consumer Discretionary': 'XLY',
+            'Financials': 'XLF',
+            'Communication Services': 'XLC',
+            'Industrials': 'XLI',
+            'Consumer Staples': 'XLP',
+            'Energy': 'XLE',
+            'Utilities': 'XLU',
+            'Real Estate': 'XLRE',
+            'Materials': 'XLB'
+        }
+        self.sector_rs = self._calculate_sector_rs(sector_etfs)
     
     def _load_ipo_data(self):
-        """IPO 데이터 로드 (예시)"""
-        # 실제로는 IPO 데이터를 외부 소스에서 가져와야 함
-        # 여기서는 예시로 빈 데이터프레임 생성
-        ipo_data = pd.DataFrame({
+        """IPO 데이터 로드"""
+        dataset_path = os.path.join(DATA_US_DIR, 'ipo_fundamentals.csv')
+
+        if os.path.exists(dataset_path):
+            ipo_data = pd.read_csv(dataset_path)
+            ipo_data['ipo_date'] = pd.to_datetime(ipo_data['ipo_date'])
+            return ipo_data
+
+        logger.warning(f"IPO fundamentals dataset not found: {dataset_path}")
+        return pd.DataFrame({
             'ticker': [],
             'ipo_date': [],
             'ipo_price': [],
@@ -44,9 +67,77 @@ class IPOInvestmentScreener:
             'market_cap': [],
             'float': [],
             'revenue_growth': [],
-            'profitable': []
+            'ps_ratio': [],
+            'industry_ps_ratio': [],
+            'equity_ratio': [],
+            'cash_to_sales': [],
+            'institutional_buy_streak': []
         })
-        return ipo_data
+
+    def _get_vix(self):
+        """VIX 지수의 최신 값을 반환"""
+        vix_path = os.path.join(DATA_US_DIR, 'VIX.csv')
+        if os.path.exists(vix_path):
+            try:
+                vix = pd.read_csv(vix_path)
+                vix['date'] = pd.to_datetime(vix['date'])
+                vix = vix.sort_values('date')
+                if not vix.empty:
+                    return float(vix.iloc[-1]['close'])
+            except Exception as e:
+                logger.error(f"VIX 데이터 로드 오류: {e}")
+        return 20.0
+
+    def _calculate_sector_rs(self, sector_etfs):
+        """섹터별 상대 강도(RS) 계산"""
+        sector_rs = {}
+        try:
+            sp500_path = os.path.join(DATA_US_DIR, 'SPY.csv')
+            if not os.path.exists(sp500_path):
+                return {}
+
+            sp500 = pd.read_csv(sp500_path)
+            sp500['date'] = pd.to_datetime(sp500['date'])
+            sp500 = sp500.sort_values('date')
+
+            last_date = sp500['date'].max()
+            three_months_ago = last_date - timedelta(days=90)
+            sp500_3m = sp500[sp500['date'] >= three_months_ago]
+            if sp500_3m.empty or len(sp500_3m) < 2:
+                return {}
+
+            sp500_return = (sp500_3m['close'].iloc[-1] / sp500_3m['close'].iloc[0] - 1) * 100
+
+            for sector, etf in sector_etfs.items():
+                etf_path = os.path.join(DATA_US_DIR, f"{etf}.csv")
+                if not os.path.exists(etf_path):
+                    continue
+
+                etf_data = pd.read_csv(etf_path)
+                etf_data['date'] = pd.to_datetime(etf_data['date'])
+                etf_data = etf_data.sort_values('date')
+                etf_3m = etf_data[etf_data['date'] >= three_months_ago]
+                if etf_3m.empty or len(etf_3m) < 2:
+                    continue
+
+                etf_return = (etf_3m['close'].iloc[-1] / etf_3m['close'].iloc[0] - 1) * 100
+                if sp500_return > 0:
+                    rs_score = (etf_return / sp500_return) * 100
+                else:
+                    rs_score = (1 - (etf_return / sp500_return)) * 100 if etf_return < 0 else 100
+
+                sector_rs[sector] = {'rs_score': rs_score}
+
+            if sector_rs:
+                rs_scores = [v['rs_score'] for v in sector_rs.values()]
+                for sector in sector_rs:
+                    percentile = np.percentile(rs_scores,
+                                               np.searchsorted(np.sort(rs_scores), sector_rs[sector]['rs_score']) / len(rs_scores) * 100)
+                    sector_rs[sector]['percentile'] = percentile
+            return sector_rs
+        except Exception as e:
+            logger.error(f"섹터 RS 계산 오류: {e}")
+            return {}
     
     def _get_recent_ipos(self, days=365):
         """최근 IPO 종목 가져오기 (예시)"""
@@ -124,7 +215,34 @@ class IPOInvestmentScreener:
         
         # 베이스 형성 여부 확인 (20일 동안 가격 변동이 작고 횡보하는 패턴)
         df['price_range'] = (df['rolling_high'] / df['rolling_low'] - 1) * 100
-        
+
+        return df
+
+    def _calculate_macd(self, df, fast=12, slow=26, signal=9):
+        """MACD 계산"""
+        df['ema_fast'] = df['close'].ewm(span=fast, adjust=False).mean()
+        df['ema_slow'] = df['close'].ewm(span=slow, adjust=False).mean()
+        df['macd'] = df['ema_fast'] - df['ema_slow']
+        df['macd_signal'] = df['macd'].ewm(span=signal, adjust=False).mean()
+        return df
+
+    def _calculate_stochastic(self, df, k_period=14, d_period=3):
+        """스토캐스틱 오실레이터 계산"""
+        df['lowest_low'] = df['low'].rolling(window=k_period).min()
+        df['highest_high'] = df['high'].rolling(window=k_period).max()
+        df['stoch_k'] = ((df['close'] - df['lowest_low']) /
+                         (df['highest_high'] - df['lowest_low'])) * 100
+        df['stoch_d'] = df['stoch_k'].rolling(window=d_period).mean()
+        return df
+
+    def _calculate_track2_indicators(self, df):
+        """Track2에 필요한 추가 지표 계산"""
+        df['ema_5'] = df['close'].ewm(span=5, adjust=False).mean()
+        df['rsi_7'] = calculate_rsi(df, window=7)
+        df['roc_5'] = df['close'].pct_change(periods=5) * 100
+        df = self._calculate_macd(df)
+        df = self._calculate_stochastic(df, k_period=7, d_period=3)
+        df['volume_sma_20'] = df['volume'].rolling(window=20).mean()
         return df
     
     def _check_ipo_base_pattern(self, df, min_days=30, max_days=200):
@@ -228,6 +346,87 @@ class IPOInvestmentScreener:
         
         # 브레이크아웃 확인 (점수가 3점 이상이면 브레이크아웃으로 간주)
         return breakout_score >= 3, breakout_info
+
+    def check_track1(self, ticker, df):
+        """Track 1 조건 확인"""
+        ipo_row = self.ipo_data[self.ipo_data['ticker'] == ticker]
+        if ipo_row.empty:
+            return False, {}
+
+        ipo_info = ipo_row.iloc[0]
+        df = self._calculate_base_pattern(df)
+        recent = df.iloc[-1]
+
+        price_cond = ipo_info['ipo_price'] * 0.7 <= recent['close'] <= ipo_info['ipo_price'] * 0.9
+        rsi_cond = recent['rsi_14'] < 30
+        support_touch = recent['close'] <= recent['rolling_low'] * 1.02
+        volume_cond = recent['volume'] < recent['volume_sma_20'] * 0.5
+
+        sector_rs = self.sector_rs.get(ipo_info['sector'], {}).get('percentile', 0)
+        environment_cond = self.vix < 25 and sector_rs >= 50
+
+        fundamental_cond = (
+            ipo_info.get('ps_ratio', np.inf) < ipo_info.get('industry_ps_ratio', np.inf) and
+            ipo_info.get('revenue_growth', 0) > 20 and
+            ipo_info.get('equity_ratio', 0) > 30 and
+            ipo_info.get('cash_to_sales', 0) > 15
+        )
+
+        info = {
+            'price_cond': price_cond,
+            'rsi_cond': rsi_cond,
+            'support_touch': support_touch,
+            'volume_cond': volume_cond,
+            'environment_cond': environment_cond,
+            'fundamental_cond': fundamental_cond,
+            'sector_rs': sector_rs,
+            'vix': self.vix,
+            'current_price': recent['close'],
+            'ipo_price': ipo_info['ipo_price']
+        }
+
+        return all([price_cond, rsi_cond and support_touch, volume_cond, environment_cond, fundamental_cond]), info
+
+    def check_track2(self, ticker, df):
+        """Track 2 조건 확인"""
+        ipo_row = self.ipo_data[self.ipo_data['ticker'] == ticker]
+        if ipo_row.empty:
+            return False, {}
+
+        ipo_info = ipo_row.iloc[0]
+        df = self._calculate_track2_indicators(df)
+        recent = df.iloc[-1]
+
+        price_momentum = len(df) >= 5 and (df['close'].iloc[4] / df['close'].iloc[0] - 1) >= 0.20
+        macd_signal = recent['macd'] > recent['macd_signal']
+        volume_surge = recent['volume'] >= recent['volume_sma_20'] * 3
+        institutional_buy = ipo_info.get('institutional_buy_streak', 0) >= 3
+
+        ema_break = df.iloc[-2]['close'] > df.iloc[-2]['ema_5'] and recent['close'] > recent['ema_5']
+        rsi_strong = recent['rsi_7'] > 70
+        stoch_cond = recent['stoch_k'] > recent['stoch_d'] and recent['stoch_k'] > 80
+        roc_cond = recent['roc_5'] > 15
+
+        sector_rs = self.sector_rs.get(ipo_info['sector'], {}).get('percentile', 0)
+        environment_cond = self.vix < 25 and sector_rs >= 50
+
+        info = {
+            'price_momentum': price_momentum,
+            'macd_signal': macd_signal,
+            'volume_surge': volume_surge,
+            'institutional_buy': institutional_buy,
+            'ema_break': ema_break,
+            'rsi_strong': rsi_strong,
+            'stoch_cond': stoch_cond,
+            'roc_cond': roc_cond,
+            'environment_cond': environment_cond,
+            'sector_rs': sector_rs,
+            'vix': self.vix,
+            'current_price': recent['close']
+        }
+
+        return all([price_momentum, macd_signal, volume_surge, institutional_buy,
+                    ema_break, rsi_strong, stoch_cond, roc_cond, environment_cond]), info
     
     def screen_ipo_investments(self):
         """IPO 투자 전략 스크리닝 실행"""
@@ -244,6 +443,8 @@ class IPOInvestmentScreener:
         # 결과 저장용 데이터프레임
         base_results = []
         breakout_results = []
+        track1_results = []
+        track2_results = []
         
         # 각 IPO 종목 분석
         for _, ipo in recent_ipos.iterrows():
@@ -261,9 +462,13 @@ class IPOInvestmentScreener:
                 
                 # 베이스 패턴 확인
                 has_base, base_info = self._check_ipo_base_pattern(df)
-                
+
                 # 브레이크아웃 확인
                 has_breakout, breakout_info = self._check_ipo_breakout(df)
+
+                # Track1/Track2 조건 확인
+                track1_pass, track1_info = self.check_track1(ticker, df)
+                track2_pass, track2_info = self.check_track2(ticker, df)
                 
                 # 결과 저장
                 if has_base:
@@ -291,6 +496,30 @@ class IPOInvestmentScreener:
                     }
                     breakout_result.update(breakout_info)
                     breakout_results.append(breakout_result)
+
+                if track1_pass:
+                    t1 = {
+                        'ticker': ticker,
+                        'ipo_date': ipo['ipo_date'],
+                        'track': 'track1',
+                        'days_since_ipo': ipo['days_since_ipo'],
+                        'current_price': track1_info['current_price'],
+                        'date': self.today.strftime('%Y-%m-%d')
+                    }
+                    t1.update(track1_info)
+                    track1_results.append(t1)
+
+                if track2_pass:
+                    t2 = {
+                        'ticker': ticker,
+                        'ipo_date': ipo['ipo_date'],
+                        'track': 'track2',
+                        'days_since_ipo': ipo['days_since_ipo'],
+                        'current_price': track2_info['current_price'],
+                        'date': self.today.strftime('%Y-%m-%d')
+                    }
+                    t2.update(track2_info)
+                    track2_results.append(t2)
             
             except Exception as e:
                 logger.error(f"{ticker} 분석 중 오류 발생: {e}")
@@ -299,6 +528,8 @@ class IPOInvestmentScreener:
         # 결과를 데이터프레임으로 변환
         base_df = pd.DataFrame(base_results) if base_results else pd.DataFrame()
         breakout_df = pd.DataFrame(breakout_results) if breakout_results else pd.DataFrame()
+        track1_df = pd.DataFrame(track1_results) if track1_results else pd.DataFrame()
+        track2_df = pd.DataFrame(track2_results) if track2_results else pd.DataFrame()
         
         # 결과 저장
         if not base_df.empty:
@@ -312,15 +543,33 @@ class IPOInvestmentScreener:
         
         if not breakout_df.empty:
             breakout_df = breakout_df.sort_values('score', ascending=False)
-            breakout_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR, 
+            breakout_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
                                               f"ipo_breakout_{self.today.strftime('%Y%m%d')}.csv")
             breakout_df.to_csv(breakout_output_file, index=False)
             logger.info(f"IPO 브레이크아웃 결과 저장 완료: {breakout_output_file} ({len(breakout_df)}개 종목)")
         else:
             logger.info("IPO 브레이크아웃 조건을 만족하는 종목이 없습니다.")
-        
+
+        if not track1_df.empty:
+            track1_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
+                                             f"ipo_track1_{self.today.strftime('%Y%m%d')}.csv")
+            track1_df.to_csv(track1_output_file, index=False)
+            logger.info(f"Track1 결과 저장 완료: {track1_output_file} ({len(track1_df)}개 종목)")
+        else:
+            logger.info("Track1 조건을 만족하는 종목이 없습니다.")
+
+        if not track2_df.empty:
+            track2_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
+                                             f"ipo_track2_{self.today.strftime('%Y%m%d')}.csv")
+            track2_df.to_csv(track2_output_file, index=False)
+            logger.info(f"Track2 결과 저장 완료: {track2_output_file} ({len(track2_df)}개 종목)")
+        else:
+            logger.info("Track2 조건을 만족하는 종목이 없습니다.")
+
         # 통합 결과
-        combined_results = pd.concat([base_df, breakout_df]) if not (base_df.empty and breakout_df.empty) else pd.DataFrame()
+        dfs = [base_df, breakout_df, track1_df, track2_df]
+        dfs = [d for d in dfs if not d.empty]
+        combined_results = pd.concat(dfs) if dfs else pd.DataFrame()
         
         return combined_results
 
