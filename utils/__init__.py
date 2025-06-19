@@ -17,6 +17,13 @@ from .calc_utils import (
     calculate_historical_volatility,
     check_sp500_condition,
 )
+from .market_regime_indicator import (
+    analyze_market_regime,
+    calculate_market_score,
+    get_market_regime,
+    get_regime_description,
+    get_investment_strategy,
+)
 
 __all__ = [
     'ensure_dir',
@@ -34,5 +41,11 @@ __all__ = [
     'calculate_adx',
     'calculate_historical_volatility',
     'check_sp500_condition',
+    # 시장 국면 판단 지표
+    'analyze_market_regime',
+    'calculate_market_score',
+    'get_market_regime',
+    'get_regime_description',
+    'get_investment_strategy',
 ]
 

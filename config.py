@@ -19,6 +19,9 @@ QULLAMAGGIE_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'qullamaggie')
 US_GAINER_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'us_gainer')
 US_SETUP_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'us_setup')
 OPTION_VOLATILITY_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'option_volatility')
+LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
+MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, 'momentum_signals')
+IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
 DATA_US_DIR = os.path.join(DATA_DIR, 'us')  # 미국 주식 데이터 디렉토리
 BACKUP_DIR = os.path.join(BASE_DIR, 'backup')  # 백업 디렉토리
 SCREENERS_DIR = os.path.join(BASE_DIR, 'screeners')
@@ -27,6 +30,9 @@ QULLAMAGGIE_DIR = os.path.join(SCREENERS_DIR, 'qullamaggie')
 US_GAINER_DIR = os.path.join(SCREENERS_DIR, 'us_gainer')
 US_SETUP_DIR = os.path.join(SCREENERS_DIR, 'us_setup')
 OPTION_VOLATILITY_DIR = os.path.join(SCREENERS_DIR, 'option_volatility')
+LEADER_STOCK_DIR = os.path.join(SCREENERS_DIR, 'leader_stock')
+MOMENTUM_SIGNALS_DIR = os.path.join(SCREENERS_DIR, 'momentum_signals')
+IPO_INVESTMENT_DIR = os.path.join(SCREENERS_DIR, 'ipo_investment')
 
 # 파일 경로 설정
 US_WITH_RS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'us_with_rs.csv')
@@ -110,3 +116,79 @@ VOLATILITY_SKEW_RESULTS_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_s
 VOLATILITY_SKEW_DETAILED_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_detailed.csv')  # 상세 분석 결과
 VOLATILITY_SKEW_PERFORMANCE_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_performance.csv')  # 성과 분석 결과
 VOLATILITY_SKEW_LOG_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'screening_log.txt')  # 스크리닝 로그
+
+# 시장 국면 판단 지표 관련 설정
+MARKET_REGIME_DIR = os.path.join(RESULTS_DIR, 'market_regime')  # 시장 국면 분석 결과 디렉토리
+MARKET_REGIME_LATEST_PATH = os.path.join(MARKET_REGIME_DIR, 'latest_market_regime.json')  # 최신 시장 국면 분석 결과
+
+# 시장 국면 판단 지표 기준
+MARKET_REGIME_CRITERIA = {
+    # 점수 범위
+    'aggressive_bull_range': (80, 100),  # 공격적 상승장
+    'bull_range': (60, 79),              # 상승장
+    'correction_range': (40, 59),        # 조정장
+    'risk_management_range': (20, 39),   # 위험 관리장
+    'bear_range': (0, 19),               # 완전한 약세장
+    
+    # 기술적 지표 기준
+    'vix_thresholds': [15, 20, 25, 35],  # VIX 임계값
+    'put_call_ratio_thresholds': [0.7, 0.9, 1.2, 1.5],  # Put/Call Ratio 임계값
+    'high_low_index_thresholds': [20, 30, 50, 70],  # High-Low Index 임계값
+    'advance_decline_thresholds': [-50, -20, 20, 50],  # Advance-Decline 추세 임계값
+    'biotech_return_thresholds': [-15, 0, 3, 10],  # 바이오텍 지수 월간 수익률 임계값
+}
+
+# 주도주 투자 전략 기준
+LEADER_STOCK_CRITERIA = {
+    # 시장 단계별 기준
+    'stage1': {  # 공포 완화 시점
+        'rsi_threshold': 30,  # RSI 과매도 탈출 기준
+        'volume_surge': 2.0,  # 거래량 급증 기준 (20일 평균 대비)
+    },
+    'stage2': {  # 본격 상승장
+        'sma_period': 30,  # 주 이동평균 기간 (30주 = 약 150일)
+        'bollinger_breakout': True,  # 볼린저 밴드 상단 돌파 확인
+        'volume_threshold': 1.5,  # 거래량 기준 (20일 평균 대비)
+    },
+    'stage3': {  # 과열 구간
+        'rsi_overbought': 70,  # RSI 과매수 기준
+        'volume_explosion': 5.0,  # 거래량 폭발 기준 (20일 평균 대비)
+        'momentum_threshold': 10,  # 5일간 상승률 기준 (%)
+    },
+    'stage4': {  # 어깨 구간 (하락장)
+        'price_decline_min': 5,  # 52주 신고가 대비 최소 하락률 (%)
+        'price_decline_max': 10,  # 52주 신고가 대비 최대 하락률 (%)
+    },
+}
+
+# 상승 모멘텀 신호 전략 기준
+MOMENTUM_SIGNALS_CRITERIA = {
+    # 모멘텀 점수 기준
+    'min_momentum_score': 8,  # 최소 모멘텀 점수
+    'min_core_signals': 3,    # 최소 핵심 신호 수
+    
+    # 기술적 지표 기준
+    'rsi_uptrend': 50,        # RSI 상승 추세 기준
+    'adx_strong_trend': 25,   # ADX 강한 추세 기준
+    'volume_surge': 1.5,      # 거래량 급증 기준 (20일 평균 대비)
+    'price_momentum': 5,      # 5일간 상승률 기준 (%)
+    'ma_distance': 8,         # 20일 이동평균선 대비 이격도 기준 (%)
+}
+
+# IPO 투자 전략 기준
+IPO_INVESTMENT_CRITERIA = {
+    # IPO 기간 기준
+    'min_days': 30,           # 최소 상장 일수
+    'max_days': 365,          # 최대 상장 일수 (1년)
+    
+    # 베이스 패턴 기준
+    'base_min_score': 3,      # 최소 베이스 패턴 점수
+    'base_price_range': 15,   # 베이스 형성 중 가격 변동 범위 (%)
+    'price_to_high_ratio': 0.7, # IPO 이후 고점 대비 현재가 비율
+    
+    # 브레이크아웃 기준
+    'breakout_min_score': 3,  # 최소 브레이크아웃 점수
+    'volume_surge': 2.0,      # 거래량 급증 기준 (20일 평균 대비)
+    'daily_gain': 2,          # 당일 상승률 기준 (%)
+    'rsi_threshold': 50,      # RSI 기준
+}

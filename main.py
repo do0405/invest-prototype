@@ -25,11 +25,15 @@ sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'por
 # 데이터 수집 및 스크리닝 모듈 임포트
 from data_collector import collect_data
 from utils import ensure_dir
+from utils.market_regime_indicator import analyze_market_regime
 from screeners.markminervini.filter_stock import run_integrated_screening
 from screeners.markminervini.advanced_financial import run_advanced_financial_screening
 from screeners.markminervini.pattern_detection import analyze_tickers_from_results
 from screeners.us_setup.screener import screen_us_setup
 from screeners.us_gainer.screener import screen_us_gainers
+from screeners.leader_stock.screener import run_leader_stock_screening
+from screeners.momentum_signals.screener import run_momentum_signals_screening
+from screeners.ipo_investment.screener import run_ipo_investment_screening
 from config import (
     DATA_US_DIR,
     RESULTS_DIR,
@@ -39,6 +43,7 @@ from config import (
     OPTION_VOLATILITY_DIR,
     ADVANCED_FINANCIAL_RESULTS_PATH,
     ALPHA_VANTAGE_API_KEY,
+    MARKET_REGIME_DIR,
 )
 from screeners.markminervini.ticker_tracker import track_new_tickers
 # 포트폴리오 관리 모듈 임포트
@@ -190,6 +195,10 @@ def ensure_directories():
         PORTFOLIO_SELL_DIR,
         DATA_US_DIR,
         OPTION_VOLATILITY_DIR,
+        MARKET_REGIME_DIR,
+        os.path.join(RESULTS_DIR, 'leader_stock'),
+        os.path.join(RESULTS_DIR, 'momentum_signals'),
+        os.path.join(RESULTS_DIR, 'ipo_investment'),
     ]
     
     for directory in directories:
@@ -221,7 +230,7 @@ def collect_data_main():
 
 def run_all_screening_processes():
     """모든 스크리닝 프로세스 실행"""
-    print("\n⚙️ Mark Minervini 스크리닝 프로세스 시작...")
+    print("\n⚙️ 스크리닝 프로세스 시작...")
     try:
         # 1. 기본 스크리닝
         print("\n⏳ 1단계: 통합 스크리닝 실행 중...")
@@ -252,6 +261,21 @@ def run_all_screening_processes():
         print("\n⏳ 6단계: US Gainers 스크리닝 실행 중...")
         run_gainers_screener()
         print("✅ 6단계: US Gainers 스크리닝 완료.")
+        
+        # 7. 주도주 투자 전략 스크리닝
+        print("\n⏳ 7단계: 주도주 투자 전략 스크리닝 실행 중...")
+        run_leader_stock_screener()
+        print("✅ 7단계: 주도주 투자 전략 스크리닝 완료.")
+        
+        # 8. 상승 모멘텀 신호 스크리닝
+        print("\n⏳ 8단계: 상승 모멘텀 신호 스크리닝 실행 중...")
+        run_momentum_signals_screener()
+        print("✅ 8단계: 상승 모멘텀 신호 스크리닝 완료.")
+        
+        # 9. IPO 투자 전략 스크리닝
+        print("\n⏳ 9단계: IPO 투자 전략 스크리닝 실행 중...")
+        run_ipo_investment_screener()
+        print("✅ 9단계: IPO 투자 전략 스크리닝 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:
@@ -312,6 +336,78 @@ def run_gainers_screener():
     except Exception as e:
         print(f"❌ US Gainers Screener 실행 중 오류 발생: {e}")
         print(traceback.format_exc())
+
+
+def run_leader_stock_screener():
+    """주도주 투자 전략 스크리너 실행"""
+    try:
+        print("\n📊 주도주 투자 전략 스크리너 시작...")
+        df = run_leader_stock_screening()
+        if not df.empty:
+            print(f"✅ 주도주 투자 전략 결과 저장 완료: {len(df)}개 종목")
+        else:
+            print("⚠️ 조건을 만족하는 종목이 없습니다.")
+    except Exception as e:
+        print(f"❌ 주도주 투자 전략 스크리너 실행 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_momentum_signals_screener():
+    """상승 모멘텀 신호 스크리너 실행"""
+    try:
+        print("\n📊 상승 모멘텀 신호 스크리너 시작...")
+        df = run_momentum_signals_screening()
+        if not df.empty:
+            print(f"✅ 상승 모멘텀 신호 결과 저장 완료: {len(df)}개 종목")
+        else:
+            print("⚠️ 조건을 만족하는 종목이 없습니다.")
+    except Exception as e:
+        print(f"❌ 상승 모멘텀 신호 스크리너 실행 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_ipo_investment_screener():
+    """IPO 투자 전략 스크리너 실행"""
+    try:
+        print("\n📊 IPO 투자 전략 스크리너 시작...")
+        df = run_ipo_investment_screening()
+        if not df.empty:
+            print(f"✅ IPO 투자 전략 결과 저장 완료: {len(df)}개 종목")
+        else:
+            print("⚠️ 조건을 만족하는 종목이 없습니다.")
+    except Exception as e:
+        print(f"❌ IPO 투자 전략 스크리너 실행 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_market_regime_analysis():
+    """시장 국면 분석 실행"""
+    try:
+        print("\n📊 시장 국면 분석 시작...")
+        result = analyze_market_regime(save_result=True)
+        
+        # 결과 출력
+        print(f"\n📈 시장 국면 분석 결과:")
+        print(f"  🔍 시장 점수: {result['score']}/100")
+        print(f"  🔍 시장 국면: {result['regime_name']}")
+        print(f"  🔍 설명: {result['description']}")
+        print(f"  🔍 투자 전략: {result['strategy']}")
+        
+        # 세부 점수 출력
+        print(f"\n📊 세부 점수:")
+        print(f"  📌 지수 기본 점수: {result['base_score']}/60")
+        print(f"  📌 기술적 지표 점수: {result['technical_score']}/40")
+        
+        # 저장 경로 출력
+        if 'file_path' in result:
+            print(f"\n💾 결과 저장 경로: {result['file_path']}")
+        
+        print("\n✅ 시장 국면 분석 완료")
+        return result
+    except Exception as e:
+        print(f"❌ 시장 국면 분석 중 오류 발생: {e}")
+        print(traceback.format_exc())
+        return None
 
 
 
@@ -393,8 +489,12 @@ def main():
     parser.add_argument('--qullamaggie-parabolic-short', action='store_true', help='쿨라매기 파라볼릭 숏 셋업만 실행')
     parser.add_argument('--setup', action='store_true', help='US Setup 스크리너만 실행')
     parser.add_argument('--gainers', action='store_true', help='US Gainers 스크리너만 실행')
+    parser.add_argument('--leader-stock', action='store_true', help='주도주 투자 전략 스크리너만 실행')
+    parser.add_argument('--momentum-signals', action='store_true', help='상승 모멘텀 신호 스크리너만 실행')
+    parser.add_argument('--ipo-investment', action='store_true', help='IPO 투자 전략 스크리너만 실행')
     parser.add_argument('--portfolio-only', action='store_true', help='포트폴리오 관리만 실행')
     parser.add_argument('--schedule', action='store_true', help='스케줄링 모드로 실행 (매일 오후 4시 30분)')
+    parser.add_argument('--market-regime', action='store_true', help='시장 국면 분석만 실행')
     
     args = parser.parse_args()
     
@@ -406,6 +506,11 @@ def main():
         print(f"\n📁 디렉토리 생성 중...")
         ensure_directories()
         print(f"✅ 디렉토리 생성 완료")
+        
+        # 시장 국면 분석 실행
+        print(f"\n📊 시장 국면 분석 실행...")
+        market_regime_result = run_market_regime_analysis()
+        print(f"✅ 시장 국면 분석 완료")
         
         # 스케줄러 모드
         if args.schedule:
@@ -428,6 +533,26 @@ def main():
         if args.gainers:
             print(f"\n🎯 US Gainers 스크리너 전용 모드")
             run_gainers_screener()
+            return
+            
+        if args.leader_stock:
+            print(f"\n🎯 주도주 투자 전략 스크리너 전용 모드")
+            run_leader_stock_screener()
+            return
+            
+        if args.momentum_signals:
+            print(f"\n🎯 상승 모멘텀 신호 스크리너 전용 모드")
+            run_momentum_signals_screener()
+            return
+            
+        if args.ipo_investment:
+            print(f"\n🎯 IPO 투자 전략 스크리너 전용 모드")
+            run_ipo_investment_screener()
+            return
+            
+        if args.market_regime:
+            print(f"\n🎯 시장 국면 분석 전용 모드")
+            run_market_regime_analysis()
             return
         
         # 쿨라매기 전략 실행
