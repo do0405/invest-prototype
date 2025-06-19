@@ -15,30 +15,36 @@ except ImportError:
 import time
 from datetime import datetime
 
-from portfolio_managing import create_portfolio_manager
+from portfolio.manager import create_portfolio_manager
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'long_short_portfolio'))
-sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'portfolio_managing'))
+sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'portfolio', 'long_short'))
+sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'portfolio', 'manager'))
 
 # 데이터 수집 및 스크리닝 모듈 임포트
 from data_collector import collect_data
 from utils import ensure_dir
-from Markminervini.filter_stock import run_integrated_screening
-from Markminervini.advanced_financial import run_advanced_financial_screening
-from Markminervini.pattern_detection import analyze_tickers_from_results
-from USSetupScreener.screener import screen_us_setup
-from USGainersScreener.screener import screen_us_gainers
+from screeners.markminervini.filter_stock import run_integrated_screening
+from screeners.markminervini.advanced_financial import run_advanced_financial_screening
+from screeners.markminervini.pattern_detection import analyze_tickers_from_results
+from screeners.us_setup.screener import screen_us_setup
+from screeners.us_gainer.screener import screen_us_gainers
 from config import (
-    DATA_US_DIR, RESULTS_DIR, RESULTS_VER2_DIR, OPTION_VOLATILITY_DIR,
-    ADVANCED_FINANCIAL_RESULTS_PATH, ALPHA_VANTAGE_API_KEY
+    DATA_US_DIR,
+    RESULTS_DIR,
+    SCREENER_RESULTS_DIR,
+    PORTFOLIO_BUY_DIR,
+    PORTFOLIO_SELL_DIR,
+    OPTION_VOLATILITY_DIR,
+    ADVANCED_FINANCIAL_RESULTS_PATH,
+    ALPHA_VANTAGE_API_KEY,
 )
-from Markminervini.ticker_tracker import track_new_tickers
+from screeners.markminervini.ticker_tracker import track_new_tickers
 # 포트폴리오 관리 모듈 임포트
 try:
-    from portfolio_managing.core.portfolio_manager import PortfolioManager
-    from portfolio_managing.core.strategy_config import StrategyConfig
+    from portfolio.manager.core.portfolio_manager import PortfolioManager
+    from portfolio.manager.core.strategy_config import StrategyConfig
     print("✅ 포트폴리오 관리 모듈 임포트 성공")
 except ImportError as e:
     print(f"⚠️ 포트폴리오 관리 모듈 임포트 실패: {e}")
@@ -144,13 +150,13 @@ def execute_strategies(strategy_list=None, monitoring_only=False, screening_mode
 def check_strategy_file_status():
     """전략 결과 파일 상태만 확인하고 부족한 전략 리스트 반환"""
     strategy_files = {
-        'strategy1': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy1_results.csv'),
-        'strategy2': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy2_results.csv'),
-        'strategy3': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy3_results.csv'),
-        'strategy4': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy4_results.csv'),
-        'strategy5': os.path.join(RESULTS_VER2_DIR, 'buy', 'strategy5_results.csv'),
-        'strategy6': os.path.join(RESULTS_VER2_DIR, 'sell', 'strategy6_results.csv'),
-        'volatility_skew': os.path.join(RESULTS_VER2_DIR, 'buy', 'volatility_skew_results.csv'),
+        'strategy1': os.path.join(PORTFOLIO_BUY_DIR, 'strategy1_results.csv'),
+        'strategy2': os.path.join(PORTFOLIO_SELL_DIR, 'strategy2_results.csv'),
+        'strategy3': os.path.join(PORTFOLIO_BUY_DIR, 'strategy3_results.csv'),
+        'strategy4': os.path.join(PORTFOLIO_BUY_DIR, 'strategy4_results.csv'),
+        'strategy5': os.path.join(PORTFOLIO_BUY_DIR, 'strategy5_results.csv'),
+        'strategy6': os.path.join(PORTFOLIO_SELL_DIR, 'strategy6_results.csv'),
+        'volatility_skew': os.path.join(PORTFOLIO_BUY_DIR, 'volatility_skew_results.csv'),
     }
     
     strategies_need_screening = []
@@ -178,11 +184,12 @@ def check_strategy_file_status():
 def ensure_directories():
     """필요한 디렉토리들을 생성합니다."""
     directories = [
-        RESULTS_DIR, RESULTS_VER2_DIR, DATA_US_DIR, OPTION_VOLATILITY_DIR,
-        os.path.join(RESULTS_VER2_DIR, 'buy'),
-        os.path.join(RESULTS_VER2_DIR, 'sell'),
-        os.path.join(RESULTS_VER2_DIR, 'reports'),
-        os.path.join(RESULTS_VER2_DIR, 'portfolio_management')
+        RESULTS_DIR,
+        SCREENER_RESULTS_DIR,
+        PORTFOLIO_BUY_DIR,
+        PORTFOLIO_SELL_DIR,
+        DATA_US_DIR,
+        OPTION_VOLATILITY_DIR,
     ]
     
     for directory in directories:
@@ -255,7 +262,7 @@ def run_all_screening_processes():
 def run_volatility_skew_portfolio():
     """변동성 스큐 전략을 실행해 포트폴리오 신호를 생성합니다."""
     try:
-        from portfolio_managing.strategies import VolatilitySkewPortfolioStrategy
+        from portfolio.manager.strategies import VolatilitySkewPortfolioStrategy
     except Exception as e:
         print(f"⚠️ VolatilitySkewPortfolioStrategy 로드 실패: {e}")
         return
@@ -311,7 +318,7 @@ def run_gainers_screener():
 def load_strategy_module(strategy_name):
     """전략 모듈을 동적으로 로드합니다."""
     try:
-        strategy_path = os.path.join('long_short_portfolio', f'{strategy_name}.py')
+        strategy_path = os.path.join('portfolio', 'long_short', f'{strategy_name}.py')
         if not os.path.exists(strategy_path):
             print(f"⚠️ {strategy_name}: 파일이 존재하지 않습니다 - {strategy_path}")
             return None

@@ -94,7 +94,7 @@ def get_portfolio_by_strategy(strategy_name):
 def get_strategy_description(strategy_name):
     """전략 설명 텍스트 반환"""
     try:
-        md_path = os.path.join('long_short_portfolio', 'strategy', f'{strategy_name}.md')
+        md_path = os.path.join('portfolio', 'long_short', 'strategy', f'{strategy_name}.md')
         if os.path.exists(md_path):
             with open(md_path, 'r', encoding='utf-8') as f:
                 text = f.read()
@@ -107,7 +107,7 @@ def get_strategy_description(strategy_name):
 def get_screener_description(screener_name):
     """스크리너 설명 텍스트 반환"""
     try:
-        md_path = os.path.join('Markminervini', f'{screener_name}.md')
+        md_path = os.path.join('screeners', 'markminervini', f'{screener_name}.md')
         if os.path.exists(md_path):
             with open(md_path, 'r', encoding='utf-8') as f:
                 text = f.read()

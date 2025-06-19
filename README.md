@@ -38,12 +38,13 @@ invest_prototype/
 │   ├── pattern_detection.py    # 패턴 감지
 │   └── filter_tickers.py       # 종목 필터링
 ├──
-├── long_short_portfolio/       # 포트폴리오 관리
+├── portfolio/
+│   ├── long_short/             # 포트폴리오 관리
 │   ├── strategy1.py ~ strategy6.py  # 6가지 투자 전략
 │   ├── portfolio_integration.py     # 포트폴리오 통합 관리
 │   └── run_screener.py             # 스크리너 실행
 ├──
-├── portfolio_management/       # 포트폴리오 핵심 기능
+├── portfolio/manager/          # 포트폴리오 핵심 기능
 │   ├── portfolio_manager.py    # 포트폴리오 매니저
 │   └── core/
 │       └── performance_analyzer.py  # 성과 분석
@@ -84,7 +85,7 @@ python main.py --integrated
 포트폴리오 관리
 
 # 포트폴리오 스크리너 실행
-cd long_short_portfolio
+cd portfolio/long_short
 python run_screener.py
 
 # 개별 전략 실행
@@ -131,7 +132,7 @@ python main.py --integrated
 ### 포트폴리오 관리
 ```
 # 포트폴리오 스크리너 실행
-cd long_short_portfolio
+cd portfolio/long_short
 python run_screener.py
 
 # 개별 전략 실행
@@ -220,7 +221,7 @@ pip install pandas numpy yfinance requests flask flask-cors scipy pytz
 
 # 매일 장 마감 후 실행
 python main.py --integrated
-cd long_short_portfolio && python run_screener.py
+cd portfolio/long_short && python run_screener.py
 
 2. 포트폴리오 모니터링
 
