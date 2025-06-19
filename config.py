@@ -9,6 +9,9 @@ DATA_DIR = os.path.join(BASE_DIR, 'data')  # 데이터 디렉토리
 RESULTS_DIR = os.path.join(BASE_DIR, 'results')  # 결과 디렉토리
 #RESULTS2_DIR = os.path.join(BASE_DIR, 'results2')  # 재무 분석 결과 디렉토리
 RESULTS_VER2_DIR = os.path.join(BASE_DIR, 'results_ver2')  # 새로운 스크리닝 결과 디렉토리
+QULLAMAGGIE_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result')
+US_GAINER_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'USgainer')
+US_SETUP_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'USsetup')
 DATA_US_DIR = os.path.join(DATA_DIR, 'us')  # 미국 주식 데이터 디렉토리
 BACKUP_DIR = os.path.join(BASE_DIR, 'backup')  # 백업 디렉토리
 MARKMINERVINI_DIR = os.path.join(BASE_DIR, 'Markminervini')  # Markminervini 디렉토리
@@ -17,12 +20,8 @@ MARKMINERVINI_DIR = os.path.join(BASE_DIR, 'Markminervini')  # Markminervini 디
 US_WITH_RS_PATH = os.path.join(RESULTS_DIR, 'us_with_rs.csv')  # 미국 주식 RS 점수 결과
 ADVANCED_FINANCIAL_RESULTS_PATH = os.path.join(RESULTS_DIR, 'advanced_financial_results.csv')  # 고급 재무 분석 결과
 INTEGRATED_RESULTS_PATH = os.path.join(RESULTS_DIR, 'integrated_results.csv')  # 통합 결과
-US_SETUP_RESULTS_PATH = os.path.join(RESULTS_DIR, 'us_setup_results.csv')  # 미국 셋업 스크리닝 결과
-US_GAINERS_RESULTS_PATH = os.path.join(RESULTS_DIR, 'us_gainers_results.csv')  # 미국 급등주 스크리닝 결과
-
-# 변동성 스큐 역전 전략 관련 설정
-VOLATILITY_SKEW_RESULTS_PATH = os.path.join(RESULTS_DIR, 'volatility_skew_results.csv')  # 변동성 스큐 스크리닝 결과
-VOLATILITY_SKEW_DETAILED_PATH = os.path.join(RESULTS_DIR, 'volatility_skew_detailed.csv')  # 상세 분석 결과
+US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')  # 미국 셋업 스크리닝 결과
+US_GAINERS_RESULTS_PATH = os.path.join(US_GAINER_RESULTS_DIR, 'us_gainers_results.csv')  # 미국 급등주 스크리닝 결과
 
 # 스크리닝 조건 설정
 TECHNICAL_CONDITION_COUNT = 8  # 기술적 조건 수

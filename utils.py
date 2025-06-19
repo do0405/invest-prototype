@@ -13,8 +13,15 @@ from pytz import timezone
 
 # config import를 상단으로 이동
 from config import (
-    DATA_DIR, DATA_US_DIR, RESULTS_DIR,
-    RESULTS_VER2_DIR, BACKUP_DIR, MARKMINERVINI_DIR
+    DATA_DIR,
+    DATA_US_DIR,
+    RESULTS_DIR,
+    RESULTS_VER2_DIR,
+    QULLAMAGGIE_RESULTS_DIR,
+    US_GAINER_RESULTS_DIR,
+    US_SETUP_RESULTS_DIR,
+    BACKUP_DIR,
+    MARKMINERVINI_DIR,
 )
 
 # 디렉토리 생성 함수
@@ -32,8 +39,15 @@ def create_required_dirs(directories=None):
     """필요한 모든 디렉토리를 생성하는 함수"""
     if directories is None:
         directories = [
-            DATA_DIR, DATA_US_DIR, RESULTS_DIR,
-            RESULTS_VER2_DIR, BACKUP_DIR, MARKMINERVINI_DIR
+            DATA_DIR,
+            DATA_US_DIR,
+            RESULTS_DIR,
+            RESULTS_VER2_DIR,
+            QULLAMAGGIE_RESULTS_DIR,
+            US_GAINER_RESULTS_DIR,
+            US_SETUP_RESULTS_DIR,
+            BACKUP_DIR,
+            MARKMINERVINI_DIR,
         ]
     
     for directory in directories:

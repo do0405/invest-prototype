@@ -427,7 +427,7 @@ def main():
         if args.qullamaggie or args.qullamaggie_breakout or args.qullamaggie_episode_pivot or args.qullamaggie_parabolic_short:
             print(f"\n🎯 쿨라매기 전략 실행 모드")
             try:
-                from qullamaggie.main import run_qullamaggie_strategy
+                from qullamaggie import run_qullamaggie_strategy
                 
                 # 실행할 셋업 결정
                 setups = []

@@ -4,19 +4,16 @@
 import os
 import sys
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
 import json
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
 # 설정 및 유틸리티 임포트
-from config import RESULTS_DIR, RESULTS_VER2_DIR, DATA_US_DIR
+from config import DATA_US_DIR, QULLAMAGGIE_RESULTS_DIR
 from utils import ensure_dir, load_csvs_parallel
 
 # 결과 저장 경로 설정
-QULLAMAGGIE_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'qullamaggie')
 BREAKOUT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'breakout_results.csv')
 EPISODE_PIVOT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'episode_pivot_results.csv')
 PARABOLIC_SHORT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'parabolic_short_results.csv')
@@ -54,9 +51,29 @@ def apply_basic_filters(df):
     df['ma10'] = df['close'].rolling(window=10).mean()
     df['ma20'] = df['close'].rolling(window=20).mean()
     ma_condition = (latest['close'] > df['ma10'].iloc[-1]) and (latest['close'] > df['ma20'].iloc[-1])
-    
+
+    # 추가 상승률 조건
+    r1m_cond = len(df) >= 20 and (df['close'].pct_change(periods=20).iloc[-1] >= 0.25)
+    r3m_cond = len(df) >= 60 and (df['close'].pct_change(periods=60).iloc[-1] >= 0.50)
+    r6m_cond = len(df) >= 120 and (df['close'].pct_change(periods=120).iloc[-1] >= 1.0)
+
+    # 시가총액 조건 (데이터 존재 시)
+    if 'market_cap' in df.columns:
+        market_cap_condition = df['market_cap'].iloc[-1] >= 300_000_000
+    else:
+        market_cap_condition = True
+
     # 모든 조건 결합
-    basic_condition = price_condition and volume_condition and adr_condition and ma_condition
+    basic_condition = (
+        price_condition
+        and volume_condition
+        and adr_condition
+        and ma_condition
+        and r1m_cond
+        and r3m_cond
+        and r6m_cond
+        and market_cap_condition
+    )
     
     # 결과 반환
     return basic_condition, df
@@ -360,6 +377,7 @@ def screen_parabolic_short_setup(ticker, df):
         'ma20_deviation': None,
         'first_down_candle': False,
         'stop_loss': None,
+        'risk_reward_ratio': None,
         'score': 0
     }
     
@@ -430,6 +448,13 @@ def screen_parabolic_short_setup(ticker, df):
     # 손절: 최근 고점 +5%
     recent_high = df['high'].iloc[-10:].max()
     result_dict['stop_loss'] = recent_high * 1.05
+
+    # 손익비 계산 (진입가는 현재가의 90%로 가정, 목표가는 30% 하락 목표)
+    entry_price = latest['close'] * 0.9
+    target_price = latest['close'] * 0.7
+    risk = result_dict['stop_loss'] - entry_price
+    reward = entry_price - target_price
+    result_dict['risk_reward_ratio'] = reward / risk if risk > 0 else 0
     
     # 모든 조건 결합
     all_conditions = [
