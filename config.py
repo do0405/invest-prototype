@@ -44,6 +44,9 @@ INTEGRATED_RESULTS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_re
 US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')
 US_GAINERS_RESULTS_PATH = os.path.join(US_GAINER_RESULTS_DIR, 'us_gainers_results.csv')
 
+# 주식 메타데이터 (섹터, P/E, 매출 성장률 등)
+STOCK_METADATA_PATH = os.path.join(DATA_DIR, 'stock_metadata.csv')
+
 # 스크리닝 조건 설정
 TECHNICAL_CONDITION_COUNT = 8  # 기술적 조건 수
 FINANCIAL_CONDITION_COUNT = 11  # 재무제표 조건 수

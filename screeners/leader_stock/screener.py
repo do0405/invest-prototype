@@ -7,8 +7,17 @@ import numpy as np
 from datetime import datetime, timedelta
 import logging
 
-from config import DATA_US_DIR, RESULTS_DIR
-from utils.calc_utils import get_us_market_today, calculate_rsi
+from config import (
+    DATA_US_DIR,
+    RESULTS_DIR,
+    US_WITH_RS_PATH,
+    STOCK_METADATA_PATH,
+)
+from utils.calc_utils import (
+    get_us_market_today,
+    calculate_rsi,
+    check_sp500_condition,
+)
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
 
 # 결과 저장 디렉토리
@@ -27,6 +36,7 @@ class LeaderStockScreener:
         self.today = get_us_market_today()
         ensure_dir(LEADER_STOCK_RESULTS_DIR)
         self.market_stage = self._determine_market_stage()
+        self._load_metadata()
         
     def _determine_market_stage(self):
         """시장 단계 결정 (Stage 1-4)"""
@@ -80,6 +90,68 @@ class LeaderStockScreener:
         except Exception as e:
             logger.error(f"시장 단계 결정 중 오류 발생: {e}")
             return "unknown"
+
+    def _load_metadata(self):
+        """섹터 및 RS 메타데이터 로드"""
+        self.sector_map = {}
+        self.pe_map = {}
+        self.revenue_growth_map = {}
+        self.stock_rs_percentile = {}
+
+        # 섹터, P/E, 매출 성장률 메타데이터
+        if os.path.exists(STOCK_METADATA_PATH):
+            try:
+                meta = pd.read_csv(STOCK_METADATA_PATH)
+                if 'symbol' in meta.columns and 'sector' in meta.columns:
+                    self.sector_map = meta.set_index('symbol')['sector'].to_dict()
+                if 'pe_ratio' in meta.columns:
+                    self.pe_map = meta.set_index('symbol')['pe_ratio'].to_dict()
+                if 'revenue_growth' in meta.columns:
+                    self.revenue_growth_map = meta.set_index('symbol')['revenue_growth'].to_dict()
+            except Exception as e:
+                logger.warning(f"메타데이터 로드 실패: {e}")
+        else:
+            logger.warning(f"메타데이터 파일이 없습니다: {STOCK_METADATA_PATH}")
+
+        # RS 점수 로드 및 섹터별 백분위 계산
+        if os.path.exists(US_WITH_RS_PATH):
+            try:
+                rs_df = pd.read_csv(US_WITH_RS_PATH)
+                if {'symbol', 'rs_score'}.issubset(rs_df.columns) and self.sector_map:
+                    rs_df['sector'] = rs_df['symbol'].map(self.sector_map)
+                    rs_df.dropna(subset=['sector'], inplace=True)
+                    rs_df['sector_rank'] = rs_df.groupby('sector')['rs_score'].rank(pct=True) * 100
+                    self.stock_rs_percentile = rs_df.set_index('symbol')['sector_rank'].to_dict()
+            except Exception as e:
+                logger.warning(f"RS 메타데이터 로드 실패: {e}")
+
+    def _get_vix(self):
+        """최근 VIX 값을 반환"""
+        vix_path = os.path.join(DATA_US_DIR, 'VIX.csv')
+        if os.path.exists(vix_path):
+            try:
+                vix = pd.read_csv(vix_path)
+                vix['date'] = pd.to_datetime(vix['date'])
+                vix = vix.sort_values('date')
+                if not vix.empty:
+                    return float(vix.iloc[-1]['close'])
+            except Exception as e:
+                logger.warning(f"VIX 데이터 로드 오류: {e}")
+        return 20.0
+
+    def _market_trend_ok(self):
+        """SPY 200일 이동평균 및 VIX 조건 체크"""
+        spy_ok = check_sp500_condition(DATA_US_DIR, ma_days=200)
+        vix_value = self._get_vix()
+        return spy_ok and vix_value < 30
+
+    def _is_high_pe(self, ticker):
+        pe = self.pe_map.get(ticker)
+        return pe is not None and pe >= 40
+
+    def _growth_slowdown(self, ticker):
+        growth = self.revenue_growth_map.get(ticker)
+        return growth is not None and growth < 15
     
     def calculate_sector_rs(self, sector_etfs):
         """섹터별 상대 강도(RS) 계산"""
@@ -231,9 +303,14 @@ class LeaderStockScreener:
                     
                 recent = df.iloc[-1]
                 
-                # 섹터 정보 찾기 (실제로는 섹터 정보를 가져오는 로직 필요)
-                # 여기서는 간단히 랜덤하게 섹터 할당
-                stock_sector = np.random.choice(list(sector_etfs.keys()))
+                # 섹터 정보 조회
+                stock_sector = self.sector_map.get(ticker)
+                if not stock_sector:
+                    continue
+
+                # 섹터 내 RS 상위 10% 필터
+                if self.stock_rs_percentile.get(ticker, 0) < 90:
+                    continue
                 
                 # 현재 시장 단계에 맞는 조건 적용
                 conditions = stage_conditions.get(self.market_stage, {})
@@ -243,7 +320,9 @@ class LeaderStockScreener:
                 # 조건 검사
                 condition_results = {}
                 for name, condition_func in conditions.items():
-                    condition_results[name] = condition_func(df, recent, stock_sector, strong_sectors)
+                    condition_results[name] = condition_func(
+                        df, recent, stock_sector, strong_sectors, ticker
+                    )
                 
                 # 모든 조건을 만족하는지 확인
                 all_conditions_met = all(condition_results.values())
@@ -300,43 +379,31 @@ class LeaderStockScreener:
     def _get_stage_conditions(self):
         """시장 단계별 조건 정의"""
         conditions = {
-            "stage1": {  # 공포 완화 시점
-                "above_30w_sma": lambda df, recent, sector, strong_sectors: 
-                    recent['close'] > recent['sma_30w'],
-                "rsi_oversold_exit": lambda df, recent, sector, strong_sectors: 
-                    recent['rsi_14'] > 30,
-                "volume_surge": lambda df, recent, sector, strong_sectors: 
-                    recent['volume_ratio'] >= 2.0,
-                "strong_sector": lambda df, recent, sector, strong_sectors: 
-                    sector in strong_sectors
+            "stage1": {
+                "market_trend": lambda df, recent, sector, strong_sectors, ticker=None: self._market_trend_ok(),
+                "above_30w_sma": lambda df, recent, sector, strong_sectors, ticker=None: all(df.iloc[-3:]['close'] > df.iloc[-3:]['sma_30w']),
+                "rsi_oversold_exit": lambda df, recent, sector, strong_sectors, ticker=None: recent['rsi_14'] > 30,
+                "volume_surge": lambda df, recent, sector, strong_sectors, ticker=None: recent['volume_ratio'] >= 2.0,
+                "strong_sector": lambda df, recent, sector, strong_sectors, ticker=None: sector in strong_sectors,
             },
-            "stage2": {  # 본격 상승장
-                "above_30w_sma_3w": lambda df, recent, sector, strong_sectors: 
-                    all(df.iloc[-15:]['close'] > df.iloc[-15:]['sma_30w']),
-                "10w_above_30w": lambda df, recent, sector, strong_sectors: 
-                    recent['sma_10w'] > recent['sma_30w'],
-                "bollinger_breakout": lambda df, recent, sector, strong_sectors: 
-                    recent['close'] > recent['upper_band'],
-                "volume_above_avg": lambda df, recent, sector, strong_sectors: 
-                    recent['volume_ratio'] >= 1.5
+            "stage2": {
+                "market_trend": lambda df, recent, sector, strong_sectors, ticker=None: self._market_trend_ok(),
+                "above_30w_sma_3w": lambda df, recent, sector, strong_sectors, ticker=None: all(df.iloc[-15:]['close'] > df.iloc[-15:]['sma_30w']),
+                "10w_above_30w": lambda df, recent, sector, strong_sectors, ticker=None: recent['sma_10w'] > recent['sma_30w'],
+                "bollinger_breakout": lambda df, recent, sector, strong_sectors, ticker=None: recent['close'] > recent['upper_band'],
+                "volume_above_avg": lambda df, recent, sector, strong_sectors, ticker=None: recent['volume_ratio'] >= 1.5,
             },
-            "stage3": {  # 과열 구간
-                "small_cap_or_ipo": lambda df, recent, sector, strong_sectors: 
-                    True,  # 실제로는 시가총액이나 IPO 여부 확인 필요
-                "volume_explosion": lambda df, recent, sector, strong_sectors: 
-                    recent['volume_ratio'] >= 5.0,
-                "rsi_overbought": lambda df, recent, sector, strong_sectors: 
-                    recent['rsi_14'] >= 70,
-                "momentum": lambda df, recent, sector, strong_sectors: 
-                    (recent['close'] / df.iloc[-5]['close'] - 1) * 100 >= 10  # 5일간 10% 이상 상승
+            "stage3": {
+                "market_trend": lambda df, recent, sector, strong_sectors, ticker=None: self._market_trend_ok(),
+                "small_cap_or_ipo": lambda df, recent, sector, strong_sectors, ticker=None: True,
+                "volume_explosion": lambda df, recent, sector, strong_sectors, ticker=None: recent['volume_ratio'] >= 5.0,
+                "rsi_overbought": lambda df, recent, sector, strong_sectors, ticker=None: recent['rsi_14'] >= 70,
+                "momentum": lambda df, recent, sector, strong_sectors, ticker=None: (recent['close'] / df.iloc[-5]['close'] - 1) * 100 >= 10,
             },
-            "stage4": {  # 어깨 구간
-                "high_pe": lambda df, recent, sector, strong_sectors: 
-                    True,  # 실제로는 P/E 비율 확인 필요
-                "growth_slowdown": lambda df, recent, sector, strong_sectors: 
-                    True,  # 실제로는 매출 성장률 확인 필요
-                "price_decline": lambda df, recent, sector, strong_sectors: 
-                    df['close'].max() * 0.9 >= recent['close'] >= df['close'].max() * 0.95  # 52주 신고가 대비 5-10% 하락
+            "stage4": {
+                "high_pe": lambda df, recent, sector, strong_sectors, ticker=None: self._is_high_pe(ticker),
+                "growth_slowdown": lambda df, recent, sector, strong_sectors, ticker=None: self._growth_slowdown(ticker),
+                "price_decline": lambda df, recent, sector, strong_sectors, ticker=None: df['close'].max() * 0.9 >= recent['close'] >= df['close'].max() * 0.95,
             }
         }
         return conditions
