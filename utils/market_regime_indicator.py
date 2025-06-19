@@ -9,6 +9,16 @@
 3. 조정장 (Correction Market): 40-59점
 4. 위험 관리장 (Risk Management Market): 20-39점
 5. 완전한 약세장 (Full Bear Market): 0-19점
+This module uses several daily datasets under ``DATA_DIR``:
+
+* ``DATA_US_DIR`` - price history for major indices.
+* ``BREADTH_DATA_DIR/advance_decline.csv`` - market breadth advancing/declining issues.
+* ``BREADTH_DATA_DIR/high_low.csv`` - daily new highs and lows.
+* ``OPTION_DATA_DIR/put_call_ratio.csv`` - option market put/call ratio.
+
+Files must contain a ``date`` column and corresponding value columns (e.g. ``ratio``,
+``highs``, ``lows``, ``advancing`` and ``declining``). Latest rows are used for
+calculations.
 """
 
 import pandas as pd
@@ -17,7 +27,14 @@ import os
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional, Union
 
-from config import DATA_US_DIR, RESULTS_DIR, MARKET_REGIME_DIR, MARKET_REGIME_CRITERIA
+from config import (
+    DATA_US_DIR,
+    BREADTH_DATA_DIR,
+    OPTION_DATA_DIR,
+    RESULTS_DIR,
+    MARKET_REGIME_DIR,
+    MARKET_REGIME_CRITERIA,
+)
 from utils.calc_utils import get_us_market_today
 
 __all__ = [
@@ -119,95 +136,108 @@ def load_index_data(ticker: str, days: int = 200) -> Optional[pd.DataFrame]:
 
 def calculate_high_low_index(index_data: Dict[str, pd.DataFrame]) -> float:
     """High-Low Index를 계산합니다.
-    
-    신고가/신저가 비율을 기반으로 0-100 사이의 값을 반환합니다.
-    
-    Args:
-        index_data: 지수 데이터 딕셔너리
-        
-    Returns:
-        High-Low Index 값 (0-100)
+
+    ``BREADTH_DATA_DIR/high_low.csv`` 파일에서 신고가/신저가 수치를 읽어
+    지수화합니다. 파일에는 ``date`` 와 ``highs``, ``lows`` 컬럼이 존재해야
+    하며 최신 값을 이용해 0~100 범위의 지표를 반환합니다.
     """
-    # 실제 구현에서는 신고가/신저가 데이터가 필요하지만,
-    # 여기서는 간단한 예시로 구현합니다.
-    # 실제로는 NYSE/NASDAQ 신고가/신저가 데이터를 사용해야 합니다.
-    
-    # 임시 구현: SPY의 52주 최고가 대비 현재가 비율을 사용
+    file_path = os.path.join(BREADTH_DATA_DIR, "high_low.csv")
     try:
-        if 'SPY' not in index_data or index_data['SPY'] is None:
-            return 50  # 기본값
-            
-        spy_data = index_data['SPY']
-        current_close = spy_data['close'].iloc[-1]
-        high_52w = spy_data['high'].rolling(window=252).max().iloc[-1]
-        low_52w = spy_data['low'].rolling(window=252).min().iloc[-1]
-        
-        # 현재가의 52주 범위 내 위치 (0-100%)
-        position_in_range = (current_close - low_52w) / (high_52w - low_52w) * 100
-        
-        return min(max(position_in_range, 0), 100)
+        if not os.path.exists(file_path):
+            print(f"⚠️ High-Low 데이터 파일을 찾을 수 없습니다: {file_path}")
+            return 50
+
+        df = pd.read_csv(file_path)
+        df.columns = [c.lower() for c in df.columns]
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'])
+            df = df.sort_values('date')
+
+        high_col = next((c for c in df.columns if 'high' in c), None)
+        low_col = next((c for c in df.columns if 'low' in c), None)
+        if not high_col or not low_col:
+            print("⚠️ High-Low 데이터에 필요한 컬럼이 없습니다.")
+            return 50
+
+        highs = float(df[high_col].iloc[-1])
+        lows = float(df[low_col].iloc[-1])
+        total = highs + lows
+        if total == 0:
+            return 50
+
+        return max(min(highs / total * 100, 100), 0)
     except Exception as e:
         print(f"❌ High-Low Index 계산 오류: {e}")
-        return 50  # 기본값
+        return 50
 
 
 def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> float:
     """Advance-Decline Line의 추세를 계산합니다.
-    
-    상승/하락 추세를 -100에서 100 사이의 값으로 반환합니다.
-    
-    Args:
-        index_data: 지수 데이터 딕셔너리
-        
-    Returns:
-        Advance-Decline 추세 값 (-100 ~ 100)
+
+    ``BREADTH_DATA_DIR/advance_decline.csv`` 파일의 상승 종목 수와 하락 종목
+    수를 이용하여 AD Line의 단기/장기 이동평균을 비교하고 -100~100 범위의
+    추세 값을 반환합니다.
     """
-    # 실제 구현에서는 NYSE/NASDAQ Advance-Decline 데이터가 필요하지만,
-    # 여기서는 간단한 예시로 구현합니다.
-    
-    # 임시 구현: 주요 지수들의 최근 20일 방향성 평균을 사용
+    file_path = os.path.join(BREADTH_DATA_DIR, "advance_decline.csv")
     try:
-        trend_values = []
-        
-        for ticker, df in index_data.items():
-            if df is None or len(df) < 20:
-                continue
-                
-            # 최근 20일 종가 변화 방향 계산
-            recent_changes = df['close'].diff().iloc[-20:]
-            up_days = (recent_changes > 0).sum()
-            down_days = (recent_changes < 0).sum()
-            
-            # -100 ~ 100 범위로 정규화
-            if up_days + down_days == 0:
-                trend = 0
-            else:
-                trend = ((up_days - down_days) / (up_days + down_days)) * 100
-                
-            trend_values.append(trend)
-        
-        if not trend_values:
-            return 0  # 기본값
-            
-        return sum(trend_values) / len(trend_values)
+        if not os.path.exists(file_path):
+            print(f"⚠️ Advance-Decline 데이터 파일을 찾을 수 없습니다: {file_path}")
+            return 0
+
+        df = pd.read_csv(file_path)
+        df.columns = [c.lower() for c in df.columns]
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'])
+            df = df.sort_values('date')
+
+        adv_col = next((c for c in df.columns if 'advance' in c), None)
+        dec_col = next((c for c in df.columns if 'decline' in c), None)
+        if not adv_col or not dec_col:
+            print("⚠️ Advance-Decline 데이터에 필요한 컬럼이 없습니다.")
+            return 0
+
+        df['ad_line'] = (df[adv_col] - df[dec_col]).cumsum()
+        if len(df) < 50:
+            return 0
+
+        short_ma = df['ad_line'].rolling(window=20).mean().iloc[-1]
+        long_ma = df['ad_line'].rolling(window=50).mean().iloc[-1]
+        if long_ma == 0:
+            return 0
+
+        return ((short_ma - long_ma) / abs(long_ma)) * 100
     except Exception as e:
         print(f"❌ Advance-Decline 추세 계산 오류: {e}")
-        return 0  # 기본값
+        return 0
 
 
 def calculate_put_call_ratio() -> float:
     """Put/Call Ratio를 계산합니다.
-    
-    Args:
-        None
-        
-    Returns:
-        Put/Call Ratio 값
+
+    ``OPTION_DATA_DIR/put_call_ratio.csv`` 파일의 최근 값을 사용합니다.
+    파일에는 ``date`` 와 ``ratio`` 컬럼이 존재해야 합니다.
     """
-    # 실제 구현에서는 옵션 데이터가 필요하지만,
-    # 여기서는 기본값을 반환합니다.
-    # 실제로는 CBOE Put/Call Ratio 데이터를 사용해야 합니다.
-    return 0.9  # 기본값
+    file_path = os.path.join(OPTION_DATA_DIR, "put_call_ratio.csv")
+    try:
+        if not os.path.exists(file_path):
+            print(f"⚠️ Put/Call Ratio 데이터 파일을 찾을 수 없습니다: {file_path}")
+            return 0.9
+
+        df = pd.read_csv(file_path)
+        df.columns = [c.lower() for c in df.columns]
+        if 'date' in df.columns:
+            df['date'] = pd.to_datetime(df['date'])
+            df = df.sort_values('date')
+
+        ratio_col = next((c for c in df.columns if 'ratio' in c), None)
+        if not ratio_col:
+            print("⚠️ Put/Call Ratio 데이터에 비율 컬럼이 없습니다.")
+            return 0.9
+
+        return float(df[ratio_col].iloc[-1])
+    except Exception as e:
+        print(f"❌ Put/Call Ratio 계산 오류: {e}")
+        return 0.9
 
 
 def calculate_market_score(index_data: Dict[str, pd.DataFrame]) -> Tuple[int, Dict]:
@@ -374,11 +404,195 @@ def calculate_market_score(index_data: Dict[str, pd.DataFrame]) -> Tuple[int, Di
     
     scores['tech_score'] = tech_score
     details['tech_scores'] = tech_score_details
-    
-    # 총점 계산
-    total_score = base_score + tech_score
+
+    # 총점 계산 (임시 점수)
+    raw_total = base_score + tech_score
+    scores['raw_total_score'] = raw_total
+
+    # --- 필수/부가 조건 기반 시장 국면 판단 ---
+    def pct_above_ma200(df):
+        return (df['close'].iloc[-1] / df['ma200'].iloc[-1] - 1) * 100
+
+    def drawdown_pct(df):
+        high_52w = df['close'].rolling(window=252).max().iloc[-1]
+        return (df['close'].iloc[-1] - high_52w) / high_52w * 100
+
+    def monthly_return(df):
+        if len(df) < 30:
+            return 0.0
+        return (df['close'].iloc[-1] / df['close'].iloc[-30] - 1) * 100
+
+    def pct_change(df, days=20):
+        if len(df) <= days:
+            return 0.0
+        return (df['close'].iloc[-1] / df['close'].iloc[-days] - 1) * 100
+
+    metrics = {
+        'vix': vix_value,
+        'put_call_ratio': pc_ratio,
+        'high_low_index': hl_index,
+        'ad_trend': ad_trend,
+        'bio_return': bio_value,
+    }
+
+    for t in ['SPY', 'QQQ', 'IWM', 'MDY']:
+        df = index_data.get(t)
+        if df is None:
+            continue
+        metrics[f'{t}_above_ma50'] = df['close'].iloc[-1] > df['ma50'].iloc[-1]
+        metrics[f'{t}_pct_above_ma200'] = pct_above_ma200(df)
+        metrics[f'{t}_drawdown'] = drawdown_pct(df)
+        metrics[f'{t}_return'] = pct_change(df)
+        metrics[f'{t}_below_ma50_5d'] = (
+            len(df) >= 5 and (df['close'] < df['ma50']).iloc[-5:].all()
+        )
+
+    spy_ret = metrics.get('SPY_return', 0)
+    iwm_ret = metrics.get('IWM_return', 0)
+    metrics['iwm_outperform'] = iwm_ret > spy_ret
+
+    conditions = {
+        'aggressive_bull': {
+            'threshold': 0.7,
+            'mandatory': [
+                all(
+                    metrics.get(f'{t}_above_ma50', False)
+                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
+                ),
+                all(
+                    metrics.get(f'{t}_pct_above_ma200', 0) >= 5
+                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
+                ),
+                metrics['bio_return'] >= 3,
+            ],
+            'optional': [
+                metrics['vix'] < 20,
+                metrics['put_call_ratio'] < 0.7,
+                metrics['high_low_index'] > 70,
+                metrics['ad_trend'] > 0,
+                metrics['iwm_outperform'],
+            ],
+        },
+        'bull': {
+            'threshold': 0.6,
+            'mandatory': [
+                metrics.get('SPY_above_ma50', False)
+                and metrics.get('QQQ_above_ma50', False),
+                not (
+                    metrics.get('IWM_above_ma50', True)
+                    and metrics.get('MDY_above_ma50', True)
+                ),
+                0 <= metrics['bio_return'] < 3,
+            ],
+            'optional': [
+                20 <= metrics['vix'] <= 25,
+                0.7 <= metrics['put_call_ratio'] <= 0.9,
+                50 <= metrics['high_low_index'] <= 70,
+                metrics.get('SPY_return', 0)
+                > metrics.get('MDY_return', 0)
+                > metrics.get('IWM_return', 0),
+                metrics['ad_trend'] >= 0,
+            ],
+        },
+        'correction': {
+            'threshold': 0.6,
+            'mandatory': [
+                sum(
+                    not metrics.get(f'{t}_above_ma50', True)
+                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
+                )
+                >= 2,
+                sum(
+                    -15 <= metrics.get(f'{t}_drawdown', 0) <= -5
+                    for t in ['SPY', 'QQQ']
+                )
+                >= 1,
+                metrics.get('SPY_below_ma50_5d', False),
+            ],
+            'optional': [
+                25 <= metrics['vix'] <= 35,
+                0.9 <= metrics['put_call_ratio'] <= 1.2,
+                30 <= metrics['high_low_index'] <= 50,
+                metrics['ad_trend'] < 0,
+                iwm_ret < 0,
+            ],
+        },
+        'risk_management': {
+            'threshold': 0.5,
+            'mandatory': [
+                sum(
+                    not metrics.get(f'{t}_pct_above_ma200', 1) > 0
+                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
+                )
+                >= 3,
+                sum(
+                    -25 <= metrics.get(f'{t}_drawdown', 0) <= -15
+                    for t in ['SPY', 'QQQ']
+                )
+                >= 1,
+            ],
+            'optional': [
+                metrics['vix'] > 35,
+                metrics['put_call_ratio'] > 1.2,
+                metrics['high_low_index'] < 30,
+                metrics['ad_trend'] <= -20,
+                metrics.get('SPY_above_ma50', True)
+                and metrics.get('SPY_pct_above_ma200', 0) < 0,
+            ],
+        },
+        'bear': {
+            'threshold': 0.0,
+            'mandatory': [
+                all(
+                    metrics.get(f'{t}_pct_above_ma200', 0) < 0
+                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
+                ),
+                sum(
+                    metrics.get(f'{t}_drawdown', 0) <= -25
+                    for t in ['SPY', 'QQQ']
+                )
+                >= 1,
+            ],
+            'optional': [
+                metrics['vix'] > 40,
+                metrics['put_call_ratio'] > 1.5,
+                metrics['high_low_index'] < 20,
+                metrics['ad_trend'] <= -30,
+                metrics['bio_return'] <= -30,
+            ],
+        },
+    }
+
+    selected = None
+    pass_ratio = 0.0
+    condition_results = {}
+    for regime in ['aggressive_bull', 'bull', 'correction', 'risk_management', 'bear']:
+        conf = conditions[regime]
+        mand_results = conf['mandatory']
+        opt_results = conf['optional']
+        condition_results[regime] = {
+            'mandatory': mand_results,
+            'optional': opt_results,
+        }
+        if all(mand_results):
+            ratio = sum(bool(x) for x in opt_results) / len(opt_results) if opt_results else 1.0
+            condition_results[regime]['optional_pass_ratio'] = ratio
+            if ratio >= conf['threshold']:
+                selected = regime
+                pass_ratio = ratio
+                break
+
+    if selected is None:
+        selected = 'bear'
+        pass_ratio = 0.0
+
+    details['condition_results'] = condition_results
+    details['determined_regime'] = selected
+
+    min_score, max_score = MARKET_REGIME_CRITERIA[f'{selected}_range']
+    total_score = int(min_score + (max_score - min_score) * pass_ratio)
     scores['total_score'] = total_score
-    
+
     return total_score, {'scores': scores, 'details': details}
 
 
@@ -490,3 +704,4 @@ if __name__ == "__main__":
     print(f"🔍 현재 국면: {result['regime_name']}")
     print(f"📝 설명: {result['description']}")
     print(f"💡 투자 전략: {result['strategy']}")
+
