@@ -11,10 +11,10 @@ from typing import List, Dict
 import pandas as pd
 import yfinance as yf
 
-from config import DATA_US_DIR, RESULTS_DIR
+from config import DATA_US_DIR, US_SETUP_RESULTS_DIR
 from utils import ensure_dir
 
-US_SETUP_RESULTS_PATH = os.path.join(RESULTS_DIR, 'us_setup_results.csv')
+US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')
 
 
 def _calculate_indicators(df: pd.DataFrame) -> pd.DataFrame:
@@ -103,7 +103,7 @@ def screen_us_setup() -> pd.DataFrame:
 
     if results:
         df_res = pd.DataFrame(results)
-        ensure_dir(RESULTS_DIR)
+        ensure_dir(US_SETUP_RESULTS_DIR)
         df_res.to_csv(US_SETUP_RESULTS_PATH, index=False)
         df_res.to_json(US_SETUP_RESULTS_PATH.replace('.csv', '.json'),
                        orient='records', indent=2)

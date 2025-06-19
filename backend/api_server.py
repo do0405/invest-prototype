@@ -201,7 +201,7 @@ def get_qullamaggie_description():
 def get_qullamaggie_breakout_results():
     """쿨라매기 브레이크아웃 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'breakout_results.json')
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'breakout_results.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -219,7 +219,7 @@ def get_qullamaggie_breakout_results():
 def get_qullamaggie_episode_pivot_results():
     """쿨라매기 에피소드 피벗 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'episode_pivot_results.json')
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'episode_pivot_results.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -237,7 +237,7 @@ def get_qullamaggie_episode_pivot_results():
 def get_qullamaggie_parabolic_short_results():
     """쿨라매기 파라볼릭 숏 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'parabolic_short_results.json')
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'parabolic_short_results.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -255,7 +255,7 @@ def get_qullamaggie_parabolic_short_results():
 def get_qullamaggie_buy_signals():
     """쿨라매기 매수 시그널 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'buy', 'qullamaggie_buy_signals.json')
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'buy', 'qullamaggie_buy_signals.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -273,7 +273,7 @@ def get_qullamaggie_buy_signals():
 def get_qullamaggie_sell_signals():
     """쿨라매기 매도 시그널 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie', 'sell', 'qullamaggie_sell_signals.json')
+        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'sell', 'qullamaggie_sell_signals.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -291,19 +291,21 @@ def get_qullamaggie_sell_signals():
 def run_qullamaggie_screening():
     """쿨라매기 매매법 스크리닝 실행"""
     try:
-        import subprocess
+        from qullamaggie import run_qullamaggie_strategy
+
         data = request.get_json()
         mode = data.get('mode', 'all')  # all, breakout, episode_pivot, parabolic_short
-        
-        # qullamaggie/main.py 실행
-        cmd = ['python', 'qullamaggie/main.py', f'--{mode}']
-        result = subprocess.run(cmd, capture_output=True, text=True)
-        
+
+        if mode == 'all':
+            setups = ['breakout', 'episode_pivot', 'parabolic_short']
+        else:
+            setups = [mode]
+
+        success = run_qullamaggie_strategy(setups)
+
         return jsonify({
-            'success': result.returncode == 0,
-            'message': 'Qullamaggie screening completed' if result.returncode == 0 else 'Qullamaggie screening failed',
-            'output': result.stdout,
-            'error': result.stderr if result.returncode != 0 else None
+            'success': success,
+            'message': 'Qullamaggie screening completed' if success else 'Qullamaggie screening failed'
         })
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500

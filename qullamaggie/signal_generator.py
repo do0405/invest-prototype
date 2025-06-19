@@ -12,11 +12,10 @@ import json
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
 # 설정 및 유틸리티 임포트
-from config import RESULTS_DIR, RESULTS_VER2_DIR, DATA_US_DIR
+from config import QULLAMAGGIE_RESULTS_DIR
 from utils import ensure_dir
 
 # 결과 저장 경로 설정
-QULLAMAGGIE_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'qullamaggie')
 BUY_SIGNALS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'buy', 'qullamaggie_buy_signals.csv')
 SELL_SIGNALS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'sell', 'qullamaggie_sell_signals.csv')
 
