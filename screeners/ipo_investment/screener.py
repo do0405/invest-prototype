@@ -8,8 +8,14 @@ from datetime import datetime, timedelta
 import logging
 
 from config import DATA_US_DIR, RESULTS_DIR
-from utils.calc_utils import get_us_market_today, calculate_rsi, calculate_atr
+from utils.calc_utils import get_us_market_today
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
+from .indicators import (
+    calculate_base_pattern,
+    calculate_macd,
+    calculate_stochastic,
+    calculate_track2_indicators,
+)
 
 # 결과 저장 디렉토리
 IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
@@ -139,111 +145,19 @@ class IPOInvestmentScreener:
             logger.error(f"섹터 RS 계산 오류: {e}")
             return {}
     
-    def _get_recent_ipos(self, days=365):
-        """최근 IPO 종목 가져오기 (예시)"""
-        # 실제로는 IPO 데이터에서 최근 IPO 종목 필터링
-        # 여기서는 예시로 모든 주식 파일을 검사하여 데이터 길이로 추정
-        
-        recent_ipos = []
+    def _get_recent_ipos(self, days: int = 365) -> pd.DataFrame:
+        """최근 IPO 종목을 ipo_data에서 필터링"""
+        if self.ipo_data.empty:
+            return pd.DataFrame()
+
         cutoff_date = self.today - timedelta(days=days)
-        
-        # 모든 주식 파일 가져오기
-        stock_files = [f for f in os.listdir(DATA_US_DIR) if f.endswith('.csv')]
-        
-        for file in stock_files:
-            try:
-                file_path = os.path.join(DATA_US_DIR, file)
-                ticker = extract_ticker_from_filename(file)
-                
-                # 주요 지수 제외
-                if ticker in ['SPY', 'QQQ', 'DIA', 'IWM']:
-                    continue
-                
-                # 데이터 로드
-                df = pd.read_csv(file_path)
-                if df.empty:
-                    continue
-                    
-                df['date'] = pd.to_datetime(df['date'])
-                df = df.sort_values('date')
-                
-                # 데이터 시작일이 cutoff_date 이후인 경우 최근 IPO로 간주
-                first_date = df['date'].min()
-                if first_date >= cutoff_date:
-                    # IPO 정보 추정 (실제로는 정확한 정보 필요)
-                    ipo_info = {
-                        'ticker': ticker,
-                        'ipo_date': first_date,
-                        'first_price': df.iloc[0]['close'],
-                        'current_price': df.iloc[-1]['close'],
-                        'days_since_ipo': (self.today - first_date).days,
-                        'data_length': len(df)
-                    }
-                    recent_ipos.append(ipo_info)
-            
-            except Exception as e:
-                logger.error(f"{ticker} IPO 정보 분석 중 오류 발생: {e}")
-                continue
-        
-        return pd.DataFrame(recent_ipos) if recent_ipos else pd.DataFrame()
+        recent = self.ipo_data[self.ipo_data['ipo_date'] >= cutoff_date].copy()
+        if recent.empty:
+            return pd.DataFrame()
+
+        recent['days_since_ipo'] = (self.today - recent['ipo_date']).dt.days
+        return recent
     
-    def _calculate_base_pattern(self, df):
-        """IPO 베이스 패턴 계산"""
-        # 이동평균 계산
-        df['sma_10'] = df['close'].rolling(window=10).mean()
-        df['sma_20'] = df['close'].rolling(window=20).mean()
-        df['sma_50'] = df['close'].rolling(window=50).mean()
-        
-        # 볼린저 밴드 계산
-        df['std_20'] = df['close'].rolling(window=20).std()
-        df['upper_band'] = df['sma_20'] + (df['std_20'] * 2)
-        df['lower_band'] = df['sma_20'] - (df['std_20'] * 2)
-        
-        # ATR 계산
-        df = calculate_atr(df)
-        
-        # RSI 계산
-        df = calculate_rsi(df)
-        
-        # 거래량 지표
-        df['volume_sma_20'] = df['volume'].rolling(window=20).mean()
-        df['volume_ratio'] = df['volume'] / df['volume_sma_20']
-        
-        # 고점과 저점 식별
-        df['rolling_high'] = df['high'].rolling(window=20).max()
-        df['rolling_low'] = df['low'].rolling(window=20).min()
-        
-        # 베이스 형성 여부 확인 (20일 동안 가격 변동이 작고 횡보하는 패턴)
-        df['price_range'] = (df['rolling_high'] / df['rolling_low'] - 1) * 100
-
-        return df
-
-    def _calculate_macd(self, df, fast=12, slow=26, signal=9):
-        """MACD 계산"""
-        df['ema_fast'] = df['close'].ewm(span=fast, adjust=False).mean()
-        df['ema_slow'] = df['close'].ewm(span=slow, adjust=False).mean()
-        df['macd'] = df['ema_fast'] - df['ema_slow']
-        df['macd_signal'] = df['macd'].ewm(span=signal, adjust=False).mean()
-        return df
-
-    def _calculate_stochastic(self, df, k_period=14, d_period=3):
-        """스토캐스틱 오실레이터 계산"""
-        df['lowest_low'] = df['low'].rolling(window=k_period).min()
-        df['highest_high'] = df['high'].rolling(window=k_period).max()
-        df['stoch_k'] = ((df['close'] - df['lowest_low']) /
-                         (df['highest_high'] - df['lowest_low'])) * 100
-        df['stoch_d'] = df['stoch_k'].rolling(window=d_period).mean()
-        return df
-
-    def _calculate_track2_indicators(self, df):
-        """Track2에 필요한 추가 지표 계산"""
-        df['ema_5'] = df['close'].ewm(span=5, adjust=False).mean()
-        df['rsi_7'] = calculate_rsi(df, window=7)
-        df['roc_5'] = df['close'].pct_change(periods=5) * 100
-        df = self._calculate_macd(df)
-        df = self._calculate_stochastic(df, k_period=7, d_period=3)
-        df['volume_sma_20'] = df['volume'].rolling(window=20).mean()
-        return df
     
     def _check_ipo_base_pattern(self, df, min_days=30, max_days=200):
         """IPO 베이스 패턴 확인"""
@@ -256,7 +170,7 @@ class IPOInvestmentScreener:
             return False, {}
         
         # 기술적 지표 계산
-        df = self._calculate_base_pattern(df)
+        df = calculate_base_pattern(df)
         
         # 최근 데이터
         recent = df.iloc[-1]
@@ -306,7 +220,7 @@ class IPOInvestmentScreener:
             return False, {}
         
         # 기술적 지표 계산
-        df = self._calculate_base_pattern(df)
+        df = calculate_base_pattern(df)
         
         # 최근 데이터
         recent = df.iloc[-1]
@@ -354,7 +268,7 @@ class IPOInvestmentScreener:
             return False, {}
 
         ipo_info = ipo_row.iloc[0]
-        df = self._calculate_base_pattern(df)
+        df = calculate_base_pattern(df)
         recent = df.iloc[-1]
 
         price_cond = ipo_info['ipo_price'] * 0.7 <= recent['close'] <= ipo_info['ipo_price'] * 0.9
@@ -394,7 +308,7 @@ class IPOInvestmentScreener:
             return False, {}
 
         ipo_info = ipo_row.iloc[0]
-        df = self._calculate_track2_indicators(df)
+        df = calculate_track2_indicators(df)
         recent = df.iloc[-1]
 
         price_momentum = len(df) >= 5 and (df['close'].iloc[4] / df['close'].iloc[0] - 1) >= 0.20
