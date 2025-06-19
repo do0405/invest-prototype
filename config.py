@@ -7,21 +7,33 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')  # 데이터 디렉토리
 RESULTS_DIR = os.path.join(BASE_DIR, 'results')  # 결과 디렉토리
-#RESULTS2_DIR = os.path.join(BASE_DIR, 'results2')  # 재무 분석 결과 디렉토리
-RESULTS_VER2_DIR = os.path.join(BASE_DIR, 'results_ver2')  # 새로운 스크리닝 결과 디렉토리
-QULLAMAGGIE_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result')
-US_GAINER_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'USgainer')
-US_SETUP_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'USsetup')
+SCREENER_RESULTS_DIR = os.path.join(RESULTS_DIR, 'screeners')
+PORTFOLIO_RESULTS_DIR = os.path.join(RESULTS_DIR, 'portfolio')
+PORTFOLIO_BUY_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy')
+PORTFOLIO_SELL_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell')
+
+# 기존 코드 호환성을 위한 별칭
+RESULTS_VER2_DIR = PORTFOLIO_RESULTS_DIR
+MARKMINERVINI_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'markminervini')
+QULLAMAGGIE_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'qullamaggie')
+US_GAINER_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'us_gainer')
+US_SETUP_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'us_setup')
+OPTION_VOLATILITY_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'option_volatility')
 DATA_US_DIR = os.path.join(DATA_DIR, 'us')  # 미국 주식 데이터 디렉토리
 BACKUP_DIR = os.path.join(BASE_DIR, 'backup')  # 백업 디렉토리
-MARKMINERVINI_DIR = os.path.join(BASE_DIR, 'Markminervini')  # Markminervini 디렉토리
+SCREENERS_DIR = os.path.join(BASE_DIR, 'screeners')
+MARKMINERVINI_DIR = os.path.join(SCREENERS_DIR, 'markminervini')
+QULLAMAGGIE_DIR = os.path.join(SCREENERS_DIR, 'qullamaggie')
+US_GAINER_DIR = os.path.join(SCREENERS_DIR, 'us_gainer')
+US_SETUP_DIR = os.path.join(SCREENERS_DIR, 'us_setup')
+OPTION_VOLATILITY_DIR = os.path.join(SCREENERS_DIR, 'option_volatility')
 
 # 파일 경로 설정
-US_WITH_RS_PATH = os.path.join(RESULTS_DIR, 'us_with_rs.csv')  # 미국 주식 RS 점수 결과
-ADVANCED_FINANCIAL_RESULTS_PATH = os.path.join(RESULTS_DIR, 'advanced_financial_results.csv')  # 고급 재무 분석 결과
-INTEGRATED_RESULTS_PATH = os.path.join(RESULTS_DIR, 'integrated_results.csv')  # 통합 결과
-US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')  # 미국 셋업 스크리닝 결과
-US_GAINERS_RESULTS_PATH = os.path.join(US_GAINER_RESULTS_DIR, 'us_gainers_results.csv')  # 미국 급등주 스크리닝 결과
+US_WITH_RS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'us_with_rs.csv')
+ADVANCED_FINANCIAL_RESULTS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'advanced_financial_results.csv')
+INTEGRATED_RESULTS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_results.csv')
+US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')
+US_GAINERS_RESULTS_PATH = os.path.join(US_GAINER_RESULTS_DIR, 'us_gainers_results.csv')
 
 # 스크리닝 조건 설정
 TECHNICAL_CONDITION_COUNT = 8  # 기술적 조건 수
@@ -94,8 +106,6 @@ OPTION_DATA_SOURCES = [
 
 
 # 변동성 스큐 역전 전략 관련 설정 (새 디렉토리 구조)
-OPTION_VOLATILITY_DIR = os.path.join(BASE_DIR, 'option_volatility')  # 옵션 변동성 결과 디렉토리
-OPTION_VOLATILITY_RESULTS_DIR = os.path.join(RESULTS_VER2_DIR, 'option_volatility')  # 포트폴리오 관리용 결과 디렉토리
 VOLATILITY_SKEW_RESULTS_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_results.csv')  # 변동성 스큐 스크리닝 결과
 VOLATILITY_SKEW_DETAILED_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_detailed.csv')  # 상세 분석 결과
 VOLATILITY_SKEW_PERFORMANCE_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_performance.csv')  # 성과 분석 결과
