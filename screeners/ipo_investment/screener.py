@@ -14,8 +14,7 @@ import sys
 from .data_manager import DataManager
 
 from config import (
-    IPO_INVESTMENT_RESULTS_DIR, 
-    IPO_INVESTMENT_CONFIG
+    IPO_INVESTMENT_RESULTS_DIR
 )
 from .indicators import (
     calculate_base_pattern,
@@ -24,6 +23,7 @@ from .indicators import (
     calculate_track2_indicators
 )
 from utils.market_utils import get_vix_value, calculate_sector_rs
+
 
 # 결과 저장 디렉토리
 IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
