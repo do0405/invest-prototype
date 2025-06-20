@@ -43,7 +43,7 @@ class IPODataCollector:
             
         except Exception as e:
             logger.error(f"IPO 데이터 수집 중 오류: {e}")
-            return self._get_sample_ipo_data()
+            return pd.DataFrame()
     
     def _get_sec_ipo_data(self, days_back: int) -> List[Dict]:
         """실제 IPO 데이터를 수집합니다."""
@@ -74,7 +74,7 @@ class IPODataCollector:
             return unique_ipos
             
         except Exception as e:
-            logger.error(f"실제 IPO 데이터 수집 실패: {e}, 샘플 데이터 사용")
+            logger.error(f"실제 IPO 데이터 수집 실패: {e}")
             return self._get_fallback_ipo_data()
     
     def _get_nasdaq_ipo_data(self, start_date: datetime, end_date: datetime) -> List[Dict]:
@@ -82,33 +82,32 @@ class IPODataCollector:
         try:
             # NASDAQ IPO 캘린더 URL
             url = "https://api.nasdaq.com/api/ipo/calendar"
-            
+
             response = requests.get(url, headers=self.headers, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                
-                ipos = []
-                if 'data' in data and 'rows' in data['data']:
-                    for row in data['data']['rows']:
-                        try:
-                            ipo_date_str = row.get('expectedPriceDate', '')
-                            if ipo_date_str:
-                                ipo_date = datetime.strptime(ipo_date_str, '%m/%d/%Y')
-                                
-                                if start_date <= ipo_date <= end_date:
-                                    ipos.append({
-                                        'symbol': row.get('symbol', '').strip(),
-                                        'company_name': row.get('companyName', '').strip(),
-                                        'ipo_date': ipo_date.strftime('%Y-%m-%d'),
-                                        'ipo_price': self._parse_price(row.get('proposedSharePrice', '0'))
-                                    })
-                        except Exception as e:
-                            logger.warning(f"NASDAQ IPO 데이터 파싱 오류: {e}")
-                            continue
-                
-                logger.info(f"NASDAQ에서 {len(ipos)}개 IPO 데이터 수집")
-                return ipos
-            
+            response.raise_for_status()
+            data = response.json()
+
+            ipos = []
+            if 'data' in data and 'rows' in data['data']:
+                for row in data['data']['rows']:
+                    try:
+                        ipo_date_str = row.get('expectedPriceDate', '')
+                        if ipo_date_str:
+                            ipo_date = datetime.strptime(ipo_date_str, '%m/%d/%Y')
+                            if start_date <= ipo_date <= end_date:
+                                ipos.append({
+                                    'symbol': row.get('symbol', '').strip(),
+                                    'company_name': row.get('companyName', '').strip(),
+                                    'ipo_date': ipo_date.strftime('%Y-%m-%d'),
+                                    'ipo_price': self._parse_price(row.get('proposedSharePrice', '0'))
+                                })
+                    except Exception as e:
+                        logger.warning(f"NASDAQ IPO 데이터 파싱 오류: {e}")
+                        continue
+
+            logger.info(f"NASDAQ에서 {len(ipos)}개 IPO 데이터 수집")
+            return ipos
+
         except Exception as e:
             logger.warning(f"NASDAQ IPO 데이터 수집 실패: {e}")
         
@@ -122,42 +121,41 @@ class IPODataCollector:
             
             url = "https://www.iposcoop.com/ipo-calendar/"
             response = requests.get(url, headers=self.headers, timeout=10)
-            
-            if response.status_code == 200:
-                soup = BeautifulSoup(response.content, 'html.parser')
-                
-                ipos = []
-                # IPO 테이블 파싱 (실제 구조에 맞게 조정 필요)
-                tables = soup.find_all('table')
-                
-                for table in tables:
-                    rows = table.find_all('tr')
-                    for row in rows[1:]:  # 헤더 제외
-                        try:
-                            cells = row.find_all('td')
-                            if len(cells) >= 4:
-                                symbol = cells[0].get_text(strip=True)
-                                company_name = cells[1].get_text(strip=True)
-                                ipo_date_str = cells[2].get_text(strip=True)
-                                price_range = cells[3].get_text(strip=True)
-                                
-                                if symbol and company_name and ipo_date_str:
-                                    try:
-                                        ipo_date = datetime.strptime(ipo_date_str, '%m/%d/%Y')
-                                        if start_date <= ipo_date <= end_date:
-                                            ipos.append({
-                                                'symbol': symbol,
-                                                'company_name': company_name,
-                                                'ipo_date': ipo_date.strftime('%Y-%m-%d'),
-                                                'ipo_price': self._parse_price_range(price_range)
-                                            })
-                                    except ValueError:
-                                        continue
-                        except Exception as e:
-                            continue
-                
-                logger.info(f"IPO Scoop에서 {len(ipos)}개 IPO 데이터 수집")
-                return ipos
+            response.raise_for_status()
+            soup = BeautifulSoup(response.content, 'html.parser')
+
+            ipos = []
+            # IPO 테이블 파싱 (실제 구조에 맞게 조정 필요)
+            tables = soup.find_all('table')
+
+            for table in tables:
+                rows = table.find_all('tr')
+                for row in rows[1:]:  # 헤더 제외
+                    try:
+                        cells = row.find_all('td')
+                        if len(cells) >= 4:
+                            symbol = cells[0].get_text(strip=True)
+                            company_name = cells[1].get_text(strip=True)
+                            ipo_date_str = cells[2].get_text(strip=True)
+                            price_range = cells[3].get_text(strip=True)
+
+                            if symbol and company_name and ipo_date_str:
+                                try:
+                                    ipo_date = datetime.strptime(ipo_date_str, '%m/%d/%Y')
+                                    if start_date <= ipo_date <= end_date:
+                                        ipos.append({
+                                            'symbol': symbol,
+                                            'company_name': company_name,
+                                            'ipo_date': ipo_date.strftime('%Y-%m-%d'),
+                                            'ipo_price': self._parse_price_range(price_range)
+                                        })
+                                except ValueError:
+                                    continue
+                    except Exception as e:
+                        continue
+
+            logger.info(f"IPO Scoop에서 {len(ipos)}개 IPO 데이터 수집")
+            return ipos
             
         except Exception as e:
             logger.warning(f"IPO Scoop 데이터 수집 실패: {e}")
@@ -301,36 +299,6 @@ class IPODataCollector:
         
         return pd.DataFrame(enhanced_data)
     
-    def _get_sample_ipo_data(self) -> pd.DataFrame:
-        """샘플 IPO 데이터를 반환합니다."""
-        sample_data = [
-            {
-                'symbol': 'RIVN',
-                'company_name': 'Rivian Automotive Inc',
-                'ipo_date': '2021-11-10',
-                'ipo_price': 78.0,
-                'market_cap': 100000000000,
-                'sector': 'Consumer Cyclical',
-                'industry': 'Auto Manufacturers',
-                'current_price': 15.0,
-                'volume': 50000000,
-                'avg_volume': 25000000
-            },
-            {
-                'symbol': 'LCID',
-                'company_name': 'Lucid Group Inc',
-                'ipo_date': '2021-07-26',
-                'ipo_price': 24.0,
-                'market_cap': 15000000000,
-                'sector': 'Consumer Cyclical',
-                'industry': 'Auto Manufacturers',
-                'current_price': 4.5,
-                'volume': 30000000,
-                'avg_volume': 15000000
-            }
-        ]
-        
-        return pd.DataFrame(sample_data)
     
     def get_ipo_performance(self, symbol: str, ipo_date: str) -> Dict:
         """특정 IPO의 성과를 분석합니다."""
