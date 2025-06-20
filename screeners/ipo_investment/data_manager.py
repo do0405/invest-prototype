@@ -44,11 +44,15 @@ class DataManager:
             cache_age = datetime.now() - datetime.fromtimestamp(os.path.getmtime(cache_file))
             if cache_age < timedelta(hours=6):  # 6시간 이내 캐시 사용
                 logger.info("캐시된 IPO 데이터 사용")
-                return pd.read_csv(cache_file)
+                df = pd.read_csv(cache_file)
+                df['ipo_date'] = pd.to_datetime(df['ipo_date'], errors='coerce')
+                return df
         
         # 새로운 데이터 수집
         logger.info("새로운 IPO 데이터 수집")
         ipo_data = self.ipo_collector.get_recent_ipos(days_back)
+        if not ipo_data.empty:
+            ipo_data['ipo_date'] = pd.to_datetime(ipo_data['ipo_date'], errors='coerce')
         
         # 캐시 저장
         if not ipo_data.empty:
