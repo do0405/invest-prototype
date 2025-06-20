@@ -65,10 +65,6 @@ python main.py --task portfolio --skip-data
 
 ### 포트폴리오 관리
 ```bash
-# 포트폴리오 스크리너 실행
-cd portfolio/long_short
-python run_screener.py
-
 # 개별 전략 실행
 python strategy1.py  # 트렌드 하이 모멘텀
 python strategy2.py  # 밸류 모멘텀
@@ -151,7 +147,6 @@ pip install pandas numpy yfinance requests flask flask-cors scipy pytz
 
 # 매일 장 마감 후 실행
 python main.py --integrated
-cd portfolio/long_short && python run_screener.py
 
 2. 포트폴리오 모니터링
 
