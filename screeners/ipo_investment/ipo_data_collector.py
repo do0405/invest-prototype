@@ -85,6 +85,10 @@ class IPODataCollector:
                     seen_symbols.add(ipo['symbol'])
                     unique_ipos.append(ipo)
             
+            if not unique_ipos:
+                logger.warning("실제 IPO 데이터 수집 결과가 비어있음. 기본 데이터 사용")
+                return self._get_fallback_ipo_data()
+
             logger.info(f"실제 IPO 데이터 수집 완료: {len(unique_ipos)}개 종목")
             return unique_ipos
             

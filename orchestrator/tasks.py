@@ -19,6 +19,7 @@ from portfolio.manager import create_portfolio_manager
 
 from data_collector import collect_data
 from utils import ensure_dir, create_required_dirs
+from data_collectors.market_breadth_collector import MarketBreadthCollector
 from utils.market_regime_indicator import analyze_market_regime
 from screeners.markminervini.filter_stock import run_integrated_screening
 from screeners.markminervini.advanced_financial import run_advanced_financial_screening
@@ -62,6 +63,7 @@ __all__ = [
     "run_leader_stock_screener",
     "run_momentum_signals_screener",
     "run_ipo_investment_screener",
+    "run_market_breadth_collection",
     "run_qullamaggie_strategy_task",
     "run_market_regime_analysis",
     "load_strategy_module",
@@ -226,6 +228,7 @@ def collect_data_main() -> None:
     print("\n💾 데이터 수집 시작...")
     try:
         collect_data()
+        run_market_breadth_collection()
         print("✅ 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 데이터 수집 중 오류 발생: {e}")
@@ -354,6 +357,18 @@ def run_momentum_signals_screener() -> None:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 상승 모멘텀 신호 스크리너 실행 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_market_breadth_collection(days: int = 252) -> None:
+    """Collect market breadth indicators."""
+    try:
+        print("\n📊 시장 폭 데이터 수집 시작...")
+        collector = MarketBreadthCollector()
+        collector.collect_all_data(days)
+        print("✅ 시장 폭 데이터 수집 완료")
+    except Exception as e:  # pragma: no cover - runtime log
+        print(f"❌ 시장 폭 데이터 수집 실패: {e}")
         print(traceback.format_exc())
 
 
