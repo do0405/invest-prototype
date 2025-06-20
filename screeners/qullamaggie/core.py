@@ -10,8 +10,7 @@ import json
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
 # 설정 및 유틸리티 임포트
-from config import DATA_US_DIR, QULLAMAGGIE_RESULTS_DIR
-from utils import ensure_dir, load_csvs_parallel
+from config import QULLAMAGGIE_RESULTS_DIR
 
 # 결과 저장 경로 설정
 BREAKOUT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'breakout_results.csv')

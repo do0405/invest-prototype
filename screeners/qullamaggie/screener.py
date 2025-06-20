@@ -10,6 +10,7 @@ import json
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
 # 설정 및 유틸리티 임포트
+# 설정 및 유틸리티 임포트
 from config import DATA_US_DIR, QULLAMAGGIE_RESULTS_DIR
 from utils import ensure_dir, load_csvs_parallel
 from .core import (
@@ -18,12 +19,10 @@ from .core import (
     check_vcp_pattern,
     screen_episode_pivot_setup,
     screen_parabolic_short_setup,
+    BREAKOUT_RESULTS_PATH,
+    EPISODE_PIVOT_RESULTS_PATH,
+    PARABOLIC_SHORT_RESULTS_PATH,
 )
-
-# 결과 저장 경로 설정
-BREAKOUT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'breakout_results.csv')
-EPISODE_PIVOT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'episode_pivot_results.csv')
-PARABOLIC_SHORT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'parabolic_short_results.csv')
 
 # 기본 스크리닝 조건 함수
 def run_qullamaggie_screening(setup_type=None):
