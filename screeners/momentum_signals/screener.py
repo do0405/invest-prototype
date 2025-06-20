@@ -206,6 +206,7 @@ class MomentumSignalsScreener:
             logger.debug(f"Cup&Handle detection error: {e}")
             return False
 
+
     def _load_metadata(self):
         """Load sector and RS percentile information."""
         self.sector_map = {}
@@ -402,11 +403,13 @@ class MomentumSignalsScreener:
                 signals['above_30w_3d'] = all(df.iloc[-i]['close'] > df.iloc[-i]['sma_30w'] for i in range(1, 4))
 
                 # 17. Stage 2A 확인 (10주 SMA 상승, 30주 SMA 수평/상승)
+
                 signals['stage_2a'] = (
                     len(df) >= 50
                     and recent['sma_50'] > df.iloc[-50]['sma_50']
                     and recent['sma_30w'] >= df.iloc[-50]['sma_30w']
                 )
+
 
                 # 18. VWAP 돌파
                 signals['vwap_breakout'] = (

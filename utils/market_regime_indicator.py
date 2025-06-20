@@ -49,6 +49,7 @@ __all__ = [
 
 
 
+
 if __name__ == "__main__":
     # 모듈 테스트
     result = analyze_market_regime()

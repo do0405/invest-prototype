@@ -100,7 +100,7 @@ class LeaderStockScreener:
         self.market_cap_map = {}
         self.ipo_date_map = {}
 
-        # 섹터, P/E, 매출 성장률 메타데이터
+        # 섹터, P/E, 매출 성장률, 시가총액, IPO 날짜 메타데이터
         if os.path.exists(STOCK_METADATA_PATH):
             try:
                 meta = pd.read_csv(STOCK_METADATA_PATH)
