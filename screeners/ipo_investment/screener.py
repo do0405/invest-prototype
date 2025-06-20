@@ -83,7 +83,7 @@ class IPOInvestmentScreener:
         if self.ipo_data.empty:
             return pd.DataFrame()
 
-        cutoff_date = self.today - timedelta(days=days)
+        cutoff_date = pd.Timestamp(self.today - timedelta(days=days))
         recent = self.ipo_data[self.ipo_data['ipo_date'] >= cutoff_date].copy()
         if recent.empty:
             return pd.DataFrame()
