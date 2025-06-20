@@ -24,6 +24,7 @@ from .indicators import (
     calculate_track2_indicators
 )
 from utils.market_utils import get_vix_value, calculate_sector_rs
+from utils.calc_utils import get_us_market_today
 
 # 결과 저장 디렉토리
 IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
@@ -50,10 +51,11 @@ logger = logging.getLogger(__name__)
 
 class IPOInvestmentScreener:
     """IPO 투자 전략 스크리너 클래스"""
-    
+
     def __init__(self):
         """IPO Investment 스크리너 초기화"""
         self.logger = logging.getLogger(__name__)
+        self.today = get_us_market_today()
         
         # 데이터 매니저 초기화
         self.data_manager = DataManager()
