@@ -24,6 +24,10 @@ from .market_regime_indicator import (
     get_regime_description,
     get_investment_strategy,
 )
+from .relative_strength import (
+    calculate_rs_score_enhanced,
+    calculate_rs_score,
+)
 
 __all__ = [
     'ensure_dir',
@@ -47,5 +51,7 @@ __all__ = [
     'get_market_regime',
     'get_regime_description',
     'get_investment_strategy',
+    'calculate_rs_score_enhanced',
+    'calculate_rs_score',
 ]
 
