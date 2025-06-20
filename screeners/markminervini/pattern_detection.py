@@ -1,219 +1,197 @@
-# VCP 및 Cup-with-Handle 패턴 탐지 모듈
-# 기계학습 없이 룰 기반으로 패턴을 식별하고 신뢰도 점수를 계산
+"""Pattern detection for VCP and Cup-with-Handle.
+
+This module implements simple rule based detectors for
+Volatility Contraction Pattern (VCP) and Cup-with-Handle
+patterns as described in ``VCP & Cup handle.md``.
+It replaces the previous contraction score approach.
+"""
+
+from __future__ import annotations
 
 import os
+from typing import Dict, List
+
 import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks, argrelextrema
-from scipy.stats import linregress, gaussian_kde
-from statsmodels.nonparametric.kernel_regression import KernelReg
-import warnings
-from datetime import datetime, timedelta
-import yfinance as yf
-from sklearn.preprocessing import MinMaxScaler
-import traceback
-warnings.filterwarnings('ignore')
 
-class ContractionAnalyzer:
-    @staticmethod
-    def calculate_atr(high, low, close, period=14):
-        """ATR (Average True Range) 계산"""
-        tr1 = high - low
-        tr2 = abs(high - close.shift(1))
-        tr3 = abs(low - close.shift(1))
-        tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
-        return tr.rolling(window=period).mean()
-    
-    @staticmethod
-    def analyze_contraction_signals(df):
-        """5가지 수축 신호 분석"""
-        try:
-            vol = df['volume']
-            high, low = df['high'], df['low']
-            close = df['close']
-            
-            # ① VDU (Volume Dry-Up) - 데이터 충분성 확인 유지
-            v10 = vol.tail(10).mean()
-            
-            if len(vol) >= 50:
-                v50 = vol.ewm(span=50).mean().iloc[-1]
-                vdu = v10 < 0.4 * v50
-            else:
-                vdu = False
-            
-            # ② 가격 범위 수축 - 데이터 충분성 확인 제거
-            range_now = (high - low).tail(5).mean()
-            range_prev = (high - low).tail(10).head(5).mean()
-            pr_contr = range_now < 0.8 * range_prev
-            
-            # ③ ATR 수축 - 데이터 충분성 확인 제거
-            atr = ContractionAnalyzer.calculate_atr(high, low, close)
-            atr_contr = atr.iloc[-1] < 0.8 * atr.iloc[-15]
-        
-            # ④ 거래량 하락 추세 - 데이터 충분성 확인 제거
-            y = np.log1p(vol.tail(20).values)
-            slope, _ = np.polyfit(np.arange(20), y, 1)
-            std_ratio = y.std() / y.mean()
-            vol_down = (slope < -0.001) and (std_ratio < 0.2)
-            
-            # ⑤ Higher Lows - 데이터 충분성 확인 제거
-            lows = low.tail(3).values
-            higher_lows = lows[0] < lows[1] < lows[2]
-            
-            # 점수 계산 (30점 만점)
-            score = (
-                5 * vdu +
-                5 * pr_contr +
-                5 * atr_contr +
-                10 * vol_down +
-                5 * higher_lows
-            )
-            
-            return {
-                'score': score,
-                'signals': {
-                    'VDU': vdu,
-                    'PriceRange': pr_contr,
-                    'ATRContract': atr_contr,
-                    'VolDowntrend': vol_down,
-                    'HigherLows': higher_lows
-                }
-            }
-        except Exception as e:
-            return {
-                'score': 0,
-                'signals': {
-                    'VDU': False,
-                    'PriceRange': False,
-                    'ATRContract': False,
-                    'VolDowntrend': False,
-                    'HigherLows': False
-                },
-                'error': f'Analysis error: {str(e)}'
-            }
 
-def analyze_tickers_from_results(results_dir, data_dir, output_dir='../results2'):
-    """advanced_financial_results.csv에서 티커를 가져와 수축 신호 분석을 수행합니다."""
-    try:
-        # results2 디렉토리 생성
-        os.makedirs(output_dir, exist_ok=True)
-        print(f"📁 결과 디렉토리 생성/확인: {output_dir}")
-        
-        # advanced_financial_results.csv 파일 존재 확인
-        results_file = os.path.join(results_dir, 'advanced_financial_results.csv')
-        if not os.path.exists(results_file):
-            raise FileNotFoundError(f"결과 파일을 찾을 수 없습니다: {results_file}")
-        
-        results_df = pd.read_csv(results_file)
-        analyzer = ContractionAnalyzer()
-        analysis_results = []
-        
-        total_tickers = len(results_df)
-        print(f"📊 {total_tickers}개 종목 분석 시작...")
-        
-        for idx, row in results_df.iterrows():
-            try:
-                symbol = row['symbol']
-                fin_met_count = row['fin_met_count']
-                rs_score = row['rs_score']
-                
-                # 진행 상황 표시
-                if (idx + 1) % 100 == 0:
-                    print(f"⏳ 진행 중: {idx + 1}/{total_tickers} 종목 처리됨")
-                
-                # fin_met_count가 5 미만인 경우 건너뛰기
-                if fin_met_count < 5:
-                    continue
-                    
-                file_path = os.path.join(data_dir, f'{symbol}.csv')
-                if not os.path.exists(file_path):
-                    print(f"⚠️ {symbol} 데이터 파일을 찾을 수 없습니다: {file_path}")
-                    continue
-                    
-                df = pd.read_csv(file_path)
-                
-                # 컬럼명 확인 및 처리
-                date_column = None
-                for col in df.columns:
-                    if col.lower() in ['date', '날짜', '일자']:
-                        date_column = col
-                        break
-                
-                if date_column is None:
-                    print(f"⚠️ {symbol} 데이터에서 날짜 컬럼을 찾을 수 없습니다. 컬럼: {df.columns.tolist()}")
-                    continue
-                
-                # 날짜 컬럼을 인덱스로 설정
-                df[date_column] = pd.to_datetime(df[date_column])
-                df.set_index(date_column, inplace=True)
-                
-                # 컬럼명 매핑 (대소문자 구분 없이)
-                column_mapping = {
-                    'high': ['high', 'High', '고가'],
-                    'low': ['low', 'Low', '저가'],
-                    'close': ['close', 'Close', '종가'],
-                    'volume': ['volume', 'Volume', '거래량']
-                }
-                
-                # 컬럼명 찾기
-                found_columns = {}
-                for required_col, possible_names in column_mapping.items():
-                    for col in df.columns:
-                        if col.lower() in [name.lower() for name in possible_names]:
-                            found_columns[required_col] = col
-                            break
-                
-                # 필요한 컬럼이 모두 있는지 확인
-                missing_columns = [col for col in column_mapping.keys() if col not in found_columns]
-                if missing_columns:
-                    print(f"⚠️ {symbol} 데이터에서 필요한 컬럼을 찾을 수 없습니다: {missing_columns}")
-                    print(f"현재 컬럼: {df.columns.tolist()}")
-                    continue
-                
-                # 컬럼명 변경
-                df = df.rename(columns={v: k for k, v in found_columns.items()})
-                
-                result = analyzer.analyze_contraction_signals(df)
-                
-                # contraction_score가 5점 이하인 경우 건너뛰기
-                if result['score'] <= 5:
-                    continue
-                
-                analysis_results.append({
-                    'symbol': symbol,
-                    'rs_score': rs_score,
-                    'contraction_score': result['score'],
-                    'fin_met_count': fin_met_count,
-                    'VDU': result['signals'].get('VDU', False),
-                    'PriceRange': result['signals'].get('PriceRange', False),
-                    'ATRContract': result['signals'].get('ATRContract', False),
-                    'VolDowntrend': result['signals'].get('VolDowntrend', False),
-                    'HigherLows': result['signals'].get('HigherLows', False)
-                })
-            except Exception as e:
-                print(f"⚠️ {symbol} 분석 중 오류 발생: {e}")
-                print(traceback.format_exc())
-                continue
-        
-        if not analysis_results:
-            print("❌ 분석 결과가 없습니다.")
-            return pd.DataFrame()
-        
-        results_df = pd.DataFrame(analysis_results)
-        # 수축 점수 기준으로 내림차순 정렬
-        results_df = results_df.sort_values('contraction_score', ascending=False)
-        
-        # 결과 저장
-        output_file = os.path.join(output_dir, 'pattern_analysis_results.csv')
-        results_df.to_csv(output_file, index=False, encoding='utf-8-sig')
-        # JSON 파일 생성 추가
-        json_file = output_file.replace('.csv', '.json')
-        results_df.to_json(json_file, orient='records', indent=2, force_ascii=False)
-        print(f"✅ 분석 결과 저장 완료: {output_file}")
-        
-        return results_df
-        
-    except Exception as e:
-        print(f"❌ 패턴 분석 중 오류 발생: {e}")
-        print(traceback.format_exc())
+# -----------------------------------------------------
+# Detection helpers
+# -----------------------------------------------------
+
+def detect_vcp(df: pd.DataFrame) -> bool:
+    """Return True if VCP conditions are satisfied."""
+    if df is None or len(df) < 60:
+        return False
+
+    recent = df.tail(84).copy()  # up to 12 weeks
+    recent['adr'] = (recent['high'] - recent['low']) / recent['close'] * 100
+    recent['ma20'] = recent['close'].rolling(window=20).mean()
+    recent['correction'] = recent['close'] < recent['ma20']
+
+    correction_periods: List[List[int]] = []
+    current: List[int] = []
+    in_corr = False
+    for i, row in recent.iterrows():
+        if row['correction'] and not in_corr:
+            in_corr = True
+            current = [i]
+        elif row['correction'] and in_corr:
+            current.append(i)
+        elif not row['correction'] and in_corr:
+            in_corr = False
+            if len(current) >= 5:
+                correction_periods.append(current)
+            current = []
+    if in_corr and len(current) >= 5:
+        correction_periods.append(current)
+
+    if len(correction_periods) < 3:
+        return False
+
+    correction_periods = correction_periods[-3:]
+    adr_vals = []
+    lows = []
+    vols = []
+    for p in correction_periods:
+        seg = recent.loc[p]
+        adr_vals.append(seg['adr'].mean())
+        lows.append(seg['low'].min())
+        vols.append(seg['volume'].mean())
+
+    if not (adr_vals[1] < adr_vals[0] * 0.8 and adr_vals[2] < adr_vals[1] * 0.8):
+        return False
+    if not (lows[1] > lows[0] and lows[2] > lows[1]):
+        return False
+    if not (vols[1] < vols[0] * 0.7 and vols[2] < vols[1] * 0.7):
+        return False
+
+    vol_ma20 = recent['volume'].rolling(window=20).mean().iloc[-1]
+    if vols[-1] > vol_ma20 * 0.7:
+        return False
+
+    last_corr_len = len(correction_periods[-1])
+    if not (5 <= last_corr_len <= 15):
+        return False
+
+    return True
+
+
+def detect_cup_and_handle(df: pd.DataFrame, window: int = 180) -> bool:
+    """Return True if cup-with-handle conditions are satisfied."""
+    if len(df) < window:
+        return False
+    data = df.tail(window)
+    prices = data['close'].values
+    volumes = data['volume'].values
+    peaks, _ = find_peaks(prices)
+    troughs, _ = find_peaks(-prices)
+    if len(peaks) < 2 or len(troughs) == 0:
+        return False
+    left = peaks[0]
+    right_candidates = peaks[peaks > left]
+    if len(right_candidates) == 0:
+        return False
+    right = right_candidates[-1]
+    bottom_candidates = troughs[(troughs > left) & (troughs < right)]
+    if len(bottom_candidates) == 0:
+        return False
+    bottom = bottom_candidates[prices[bottom_candidates].argmin()]
+
+    if right - left < 35:  # cup duration at least 7 weeks
+        return False
+
+    left_high = prices[left]
+    right_high = prices[right]
+    bottom_low = prices[bottom]
+    depth = min(left_high, right_high) - bottom_low
+    if depth <= 0:
+        return False
+    depth_pct = depth / min(left_high, right_high) * 100
+    if not (12 <= depth_pct <= 50):
+        return False
+    if abs(left_high - right_high) / min(left_high, right_high) * 100 > 5:
+        return False
+
+    handle_low = prices[right:].min()
+    handle_depth = (right_high - handle_low) / depth * 100
+    handle_len = len(prices) - right
+    if not (3 <= handle_depth <= 33):
+        return False
+    if not (7 <= handle_len <= 28):
+        return False
+
+    avg_volume = data['volume'].rolling(window=20).mean().iloc[-1]
+    bottom_vol = volumes[bottom-2:bottom+3].mean() if bottom >=2 else volumes[bottom]
+    handle_vol = volumes[right:right+handle_len].mean() if handle_len >0 else volumes[right]
+    if bottom_vol >= avg_volume * 0.5:
+        return False
+    if handle_vol >= bottom_vol:
+        return False
+    if volumes[-1] < avg_volume * 1.5:
+        return False
+    return True
+
+
+# -----------------------------------------------------
+# Batch analysis
+# -----------------------------------------------------
+
+def analyze_tickers_from_results(results_dir: str, data_dir: str, output_dir: str = "../results2") -> pd.DataFrame:
+    """Analyze tickers from a csv and detect patterns."""
+    os.makedirs(output_dir, exist_ok=True)
+    results_file = os.path.join(results_dir, "advanced_financial_results.csv")
+    if not os.path.exists(results_file):
+        raise FileNotFoundError(f"결과 파일을 찾을 수 없습니다: {results_file}")
+
+    results_df = pd.read_csv(results_file)
+    analysis = []
+
+    for _, row in results_df.iterrows():
+        symbol = row['symbol']
+        fin_met_count = row.get('fin_met_count', 0)
+        if fin_met_count < 5:
+            continue
+        file_path = os.path.join(data_dir, f"{symbol}.csv")
+        if not os.path.exists(file_path):
+            continue
+        df = pd.read_csv(file_path)
+        date_col = next((c for c in df.columns if c.lower() in ['date', '날짜', '일자']), None)
+        if not date_col:
+            continue
+        df[date_col] = pd.to_datetime(df[date_col])
+        df.set_index(date_col, inplace=True)
+        col_map = {'high': ['high', 'High', '고가'], 'low': ['low', 'Low', '저가'], 'close': ['close', 'Close', '종가'], 'volume': ['volume', 'Volume', '거래량']}
+        found = {}
+        for k, names in col_map.items():
+            for c in df.columns:
+                if c.lower() in [n.lower() for n in names]:
+                    found[k] = c
+                    break
+        if len(found) < 4:
+            continue
+        df = df.rename(columns={v: k for k, v in found.items()})
+
+        vcp = detect_vcp(df)
+        cup = detect_cup_and_handle(df)
+        if not vcp and not cup:
+            continue
+
+        analysis.append({
+            'symbol': symbol,
+            'fin_met_count': fin_met_count,
+            'vcp': vcp,
+            'cup_handle': cup,
+        })
+
+    if not analysis:
         return pd.DataFrame()
+
+    out_df = pd.DataFrame(analysis)
+    out_df = out_df.sort_values(['vcp', 'cup_handle'], ascending=False)
+    out_file = os.path.join(output_dir, 'pattern_analysis_results.csv')
+    out_df.to_csv(out_file, index=False, encoding='utf-8-sig')
+    out_df.to_json(out_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
+    return out_df
+
