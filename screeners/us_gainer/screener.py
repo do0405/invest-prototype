@@ -8,35 +8,13 @@ import os
 from typing import List, Dict
 
 import pandas as pd
-import yfinance as yf
 
 from config import DATA_US_DIR, US_GAINER_RESULTS_DIR
-from utils import ensure_dir
+from utils import ensure_dir, fetch_market_cap, fetch_quarterly_eps_growth
 
 US_GAINERS_RESULTS_PATH = os.path.join(US_GAINER_RESULTS_DIR, 'us_gainers_results.csv')
 
 
-def _fetch_market_cap(symbol: str) -> int:
-    try:
-        info = yf.Ticker(symbol).info
-        return int(info.get('marketCap', 0) or 0)
-    except Exception:
-        return 0
-
-
-def _fetch_quarterly_eps_growth(symbol: str) -> float:
-    try:
-        ticker = yf.Ticker(symbol)
-        q_earnings = ticker.quarterly_earnings
-        if q_earnings is None or len(q_earnings) < 2:
-            return 0.0
-        recent_eps = q_earnings.iloc[-1]['Earnings']
-        prev_eps = q_earnings.iloc[-2]['Earnings']
-        if prev_eps == 0:
-            return 0.0
-        return (recent_eps - prev_eps) / abs(prev_eps) * 100
-    except Exception:
-        return 0.0
 
 
 def screen_us_gainers() -> pd.DataFrame:
@@ -70,11 +48,11 @@ def screen_us_gainers() -> pd.DataFrame:
         if rel_volume <= 2:
             continue
 
-        market_cap = _fetch_market_cap(symbol)
+        market_cap = fetch_market_cap(symbol)
         if market_cap < 1_000_000_000:
             continue
 
-        eps_growth = _fetch_quarterly_eps_growth(symbol)
+        eps_growth = fetch_quarterly_eps_growth(symbol)
         if eps_growth <= 10:
             continue
 
