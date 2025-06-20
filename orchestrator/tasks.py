@@ -40,6 +40,7 @@ from config import (
     ADVANCED_FINANCIAL_RESULTS_PATH,
     ALPHA_VANTAGE_API_KEY,
     MARKET_REGIME_DIR,
+    IPO_DATA_DIR,
     MARKMINERVINI_RESULTS_DIR,
 )
 
@@ -65,6 +66,7 @@ __all__ = [
     "run_momentum_signals_screener",
     "run_ipo_investment_screener",
     "run_market_breadth_collection",
+    "run_ipo_data_collection",
     "run_qullamaggie_strategy_task",
     "run_market_regime_analysis",
     "load_strategy_module",
@@ -203,6 +205,7 @@ def ensure_directories() -> None:
         PORTFOLIO_SELL_DIR,
         OPTION_VOLATILITY_DIR,
         MARKET_REGIME_DIR,
+        IPO_DATA_DIR,
         os.path.join(RESULTS_DIR, "leader_stock"),
         os.path.join(RESULTS_DIR, "momentum_signals"),
         os.path.join(RESULTS_DIR, "ipo_investment"),
@@ -231,6 +234,7 @@ def collect_data_main() -> None:
         collect_data()
         run_market_breadth_collection()
         run_market_regime_analysis()
+        run_ipo_data_collection()
         print("✅ 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 데이터 수집 중 오류 발생: {e}")
@@ -383,6 +387,22 @@ def run_market_breadth_collection(days: int = 252) -> None:
         print("✅ 시장 폭 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 시장 폭 데이터 수집 실패: {e}")
+        print(traceback.format_exc())
+
+
+def run_ipo_data_collection(days: int = 365) -> None:
+    """Collect and save IPO related data."""
+    try:
+        from screeners.ipo_investment.ipo_data_collector import IPODataCollector
+        print("\n📊 IPO 데이터 수집 시작...")
+        collector = IPODataCollector()
+        result = collector.collect_and_save_ipo_data(days_back=days, filename="recent_ipos")
+        if result:
+            print(f"✅ IPO 데이터 저장 완료: {result.get('records_count', 0)}개")
+        else:
+            print("⚠️ IPO 데이터 저장 실패 또는 데이터 없음")
+    except Exception as e:  # pragma: no cover - runtime log
+        print(f"❌ IPO 데이터 수집 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 

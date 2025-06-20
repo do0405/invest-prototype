@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Union
 import time
 import os
 import json
+from config import IPO_DATA_DIR
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -401,7 +402,7 @@ class IPODataCollector:
         """
         try:
             # 저장 디렉터리 생성
-            save_dir = r"c:\Users\HOME\Desktop\invest_prototype\data\IPO"
+            save_dir = IPO_DATA_DIR
             os.makedirs(save_dir, exist_ok=True)
             
             # 타임스탬프 추가

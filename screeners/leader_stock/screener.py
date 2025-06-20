@@ -310,6 +310,7 @@ class LeaderStockScreener:
             # 결과 저장
             output_file = os.path.join(LEADER_STOCK_RESULTS_DIR, f"leader_stocks_{self.today.strftime('%Y%m%d')}.csv")
             results_df.to_csv(output_file, index=False)
+            results_df.to_json(output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"스크리닝 결과 저장 완료: {output_file} ({len(results_df)}개 종목)")
             
             return results_df
