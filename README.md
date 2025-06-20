@@ -56,14 +56,12 @@ invest_prototype/
 # 전체 프로세스 실행 (데이터 수집 + 스크리닝)
 python main.py
 
-# 기술적 스크리닝만 실행
-python main.py --screen-only
+# 특정 스크리너 실행 예시
+python main.py --task setup
 
-# 재무제표 스크리닝만 실행
-python main.py --financial-only
-
-# 통합 스크리닝 실행
-python main.py --integrated
+# 포트폴리오 관리만 실행
+python main.py --task portfolio --skip-data
+```
 
 ### 포트폴리오 관리
 ```bash
@@ -115,9 +113,9 @@ python api_server.py
 6. Strategy 6 : 디펜시브 모멘텀 롱
 ## 📈 결과 파일
 ### CSV & JSON 형태로 이중 저장
-- results/us_with_rs.csv/.json : 기술적 스크리닝 결과
-- results/advanced_financial_results.csv/.json : 재무 스크리닝 결과
-- results/integrated_results.csv/.json : 통합 스크리닝 결과
+- results/screeners/markminervini/us_with_rs.csv/.json : 기술적 스크리닝 결과
+- results/screeners/markminervini/advanced_financial_results.csv/.json : 재무 스크리닝 결과
+- results/screeners/markminervini/integrated_results.csv/.json : 통합 스크리닝 결과
 - results/portfolio/buy/strategyX_results.csv/.json : 전략별 매수 신호
 - results/portfolio/sell/strategyX_results.csv/.json : 전략별 매도 신호
 - results/portfolio/portfolio_integration_report.csv/.json : 포트폴리오 통합 보고서
