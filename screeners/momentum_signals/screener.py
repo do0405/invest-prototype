@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
-"""상승 모멘텀 신호 (Uptrend Momentum Signals) 스크리너"""
+"""상승 모멘텀 신호 (Uptrend Momentum Signals) 스크리너.
+
+섹터 정보를 포함한 ``data/stock_metadata.csv`` 파일을 사용한다.
+파일 위치는 ``config.STOCK_METADATA_PATH`` 설정을 따른다.
+"""
 
 import os
 import pandas as pd
