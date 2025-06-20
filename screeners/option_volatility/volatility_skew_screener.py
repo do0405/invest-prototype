@@ -438,21 +438,3 @@ def run_volatility_skew_screening(alpha_vantage_key: Optional[str] = None) -> Tu
     """변동성 스큐 스크리닝 실행 함수 (main.py에서 호출용)"""
     screener = VolatilitySkewScreener(alpha_vantage_key=alpha_vantage_key)
     return screener.run_screening()
-
-
-if __name__ == "__main__":
-    # 직접 실행 시 테스트
-    print("🚀 변동성 스큐 역전 전략 테스트 실행")
-    
-    # Alpha Vantage API 키가 있다면 여기에 입력
-    API_KEY = None  # "YOUR_ALPHA_VANTAGE_KEY"
-    
-    screener = VolatilitySkewScreener(alpha_vantage_key=API_KEY)
-    portfolios, signals, portfolio_file, signals_file = screener.run_screening()
-    
-    if portfolios:
-        print(f"\n✅ 포트폴리오 구성 완료")
-        print(f"📁 포트폴리오 파일: {portfolio_file}")
-        print(f"📁 신호 파일: {signals_file}")
-    else:
-        print("\n❌ 포트폴리오 구성에 실패했습니다.")

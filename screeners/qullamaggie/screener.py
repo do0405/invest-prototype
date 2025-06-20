@@ -144,5 +144,3 @@ def main():
     # 스크리닝 실행
     run_qullamaggie_screening(args.setup)
 
-if __name__ == '__main__':
-    main()

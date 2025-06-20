@@ -200,14 +200,6 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
 
 
 # 메인 실행 부분
-if __name__ == "__main__":
-    # 필요한 디렉토리 생성
-    ensure_dir(RESULTS_VER2_DIR)
-    ensure_dir(os.path.join(RESULTS_VER2_DIR, 'results')) # 통합 results 디렉토리
-
-    print("\n📊 전략 2 스크리닝을 실행합니다. (결과 파일 생성)")
-    run_strategy(total_capital=100000, update_existing=False)
-    print("\n💡 개별 포트폴리오 관리는 portfolio_managing 모듈을 사용하세요.")
 
 def run_strategy(total_capital=100000):
     """Wrapper function for main.py compatibility"""
