@@ -190,8 +190,38 @@ class InstitutionalDataCollector:
     def get_insider_trading(self, symbol: str, months_back: int = 6) -> pd.DataFrame:
         """임원 거래 내역을 가져옵니다."""
         try:
-            # TODO: SEC Form 4 등 외부 데이터를 연동하여 임원 거래 내역을 수집
-            return pd.DataFrame()
+            mapping_url = "https://www.sec.gov/files/company_tickers.json"
+            resp = requests.get(mapping_url, headers=self.headers, timeout=10)
+            resp.raise_for_status()
+            mapping = resp.json()
+
+            cik = None
+            symbol_upper = symbol.upper()
+            for entry in mapping.values():
+                if entry.get("ticker", "").upper() == symbol_upper:
+                    cik = str(entry["cik"]).zfill(10)
+                    break
+
+            if not cik:
+                logger.error(f"{symbol}에 대한 CIK를 찾을 수 없습니다")
+                return pd.DataFrame()
+
+            filings_url = f"https://data.sec.gov/submissions/CIK{cik}.json"
+            resp = requests.get(filings_url, headers=self.headers, timeout=10)
+            resp.raise_for_status()
+            data = resp.json()
+
+            recent = data.get("filings", {}).get("recent", {})
+            df = pd.DataFrame(recent)
+            if df.empty:
+                return pd.DataFrame()
+
+            df = df[df["form"] == "4"]
+            df["filingDate"] = pd.to_datetime(df["filingDate"], errors="coerce")
+            start_date = datetime.now() - timedelta(days=months_back * 30)
+            df = df[df["filingDate"] >= start_date]
+
+            return df[["filingDate", "reportDate", "accessionNumber", "form"]].reset_index(drop=True)
 
         except Exception as e:
             logger.error(f"{symbol} 임원 거래 데이터 수집 중 오류: {e}")
