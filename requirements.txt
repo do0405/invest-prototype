@@ -1,0 +1,76 @@
+# 핵심 데이터 분석 라이브러리
+pandas>=1.5.0
+numpy>=1.21.0
+scipy>=1.9.0
+
+# 금융 데이터 수집
+yfinance>=0.2.18
+requests>=2.28.0
+
+# 기술적 분석
+TA-Lib>=0.4.25
+pandas-ta>=0.3.14b
+
+# 데이터 시각화
+matplotlib>=3.5.0
+seaborn>=0.11.0
+plotly>=5.10.0
+
+# 웹 개발 (프론트엔드)
+streamlit>=1.25.0
+flask>=2.3.0
+
+# 데이터베이스
+sqlalchemy>=1.4.0
+sqlite3  # Python 내장 모듈
+
+# 유틸리티
+python-dateutil>=2.8.0
+pytz>=2022.1
+openpyxl>=3.0.10  # Excel 파일 처리
+
+# 로깅 및 설정
+pyyaml>=6.0
+toml>=0.10.2
+
+# API 및 웹 스크래핑
+beautifulsoup4>=4.11.0
+lxml>=4.9.0
+
+# 성능 최적화
+numba>=0.56.0
+joblib>=1.2.0
+
+# 개발 도구
+pytest>=7.1.0
+black>=22.6.0
+flake8>=5.0.0
+
+# 데이터 소스 연동 추가 패키지
+sec-edgar-api>=1.0.0  # SEC EDGAR API
+fmp-python>=1.0.4     # Financial Modeling Prep API
+alpha-vantage>=2.3.1  # Alpha Vantage API
+quandl>=3.7.0         # Quandl 데이터
+
+# 기관 투자자 데이터
+finviz>=1.4.4         # FinViz 스크래핑
+yahoo-fin>=0.8.9      # Yahoo Finance 확장
+
+# 캐싱 및 성능
+redis>=4.3.0          # 캐싱 (선택사항)
+memcache>=1.59        # 메모리 캐싱
+
+# 스케줄링
+schedule>=1.2.0       # 작업 스케줄링
+apscheduler>=3.9.0    # 고급 스케줄링
+
+# 알림 및 모니터링
+slack-sdk>=3.19.0     # Slack 알림
+twilio>=8.2.0         # SMS 알림 (선택사항)
+
+# 보안
+cryptography>=37.0.0  # 암호화
+keyring>=23.9.0       # 키 관리
+
+# 환경 설정
+python-dotenv>=0.20.0 # 환경 변수 관리
