@@ -163,6 +163,50 @@ class MomentumSignalsScreener:
         df['ad'] = (mfm * df['volume']).cumsum()
         return df
 
+    def _detect_cup_and_handle(self, df, window: int = 180) -> bool:
+        """단순 컵앤핸들 패턴 인식"""
+        try:
+            from scipy.signal import find_peaks
+
+            if len(df) < window:
+                return False
+
+            data = df.tail(window)
+            prices = data['close'].values
+            peaks, _ = find_peaks(prices)
+            troughs, _ = find_peaks(-prices)
+            if len(peaks) < 2 or len(troughs) == 0:
+                return False
+
+            left = peaks[0]
+            right = peaks[-1]
+            bottom = troughs[troughs > left]
+            bottom = bottom[bottom < right]
+            if len(bottom) == 0:
+                return False
+            bottom = bottom[prices[bottom].argmin()]
+
+            left_high = prices[left]
+            right_high = prices[right]
+            bottom_low = prices[bottom]
+            depth = min(left_high, right_high) - bottom_low
+            if depth <= 0:
+                return False
+
+            depth_pct = depth / min(left_high, right_high) * 100
+            handle_low = prices[right: ].min()
+            handle_pct = (right_high - handle_low) / depth * 100
+
+            return (
+                abs(left_high - right_high) / min(left_high, right_high) <= 0.1
+                and depth_pct >= 20
+                and handle_pct <= 30
+            )
+        except Exception as e:
+            logger.debug(f"Cup&Handle detection error: {e}")
+            return False
+
+
     def _load_metadata(self):
         """Load sector and RS percentile information."""
         self.sector_map = {}
@@ -338,10 +382,13 @@ class MomentumSignalsScreener:
                 # 12. 신고가 돌파 (52주 신고가 돌파)
                 year_high = df.iloc[-260:]['high'].max() if len(df) >= 260 else df['high'].max()
                 signals['new_high'] = recent['close'] > year_high * 0.98  # 52주 신고가의 98% 이상
-                
+
                 # 13. 가격 모멘텀 (5일간 5% 이상 상승)
                 five_day_return = (recent['close'] / df.iloc[-6]['close'] - 1) * 100
                 signals['price_momentum'] = five_day_return >= 5
+
+                # 13-1. 컵앤핸들 패턴 돌파 여부
+                signals['cup_handle_breakout'] = self._detect_cup_and_handle(df)
                 
                 # 14. 이격도 양호 (종가가 20일 이동평균선 대비 8% 이내)
                 price_to_ma = (recent['close'] / recent['sma_20'] - 1) * 100
@@ -356,17 +403,13 @@ class MomentumSignalsScreener:
                 signals['above_30w_3d'] = all(df.iloc[-i]['close'] > df.iloc[-i]['sma_30w'] for i in range(1, 4))
 
                 # 17. Stage 2A 확인 (10주 SMA 상승, 30주 SMA 수평/상승)
-                if len(df) >= 51:
-                    prev_sma_50 = df['sma_50'].shift(50).iloc[-1]
-                    prev_sma_30w = df['sma_30w'].shift(50).iloc[-1]
-                    signals['stage_2a'] = (
-                        not np.isnan(prev_sma_50)
-                        and not np.isnan(prev_sma_30w)
-                        and recent['sma_50'] > prev_sma_50
-                        and recent['sma_30w'] >= prev_sma_30w
-                    )
-                else:
-                    signals['stage_2a'] = False
+
+                signals['stage_2a'] = (
+                    len(df) >= 50
+                    and recent['sma_50'] > df.iloc[-50]['sma_50']
+                    and recent['sma_30w'] >= df.iloc[-50]['sma_30w']
+                )
+
 
                 # 18. VWAP 돌파
                 signals['vwap_breakout'] = (

@@ -155,6 +155,12 @@ class IPOInvestmentScreener:
         if recent.empty:
             return pd.DataFrame()
 
+
+        # 상장가와 섹터 정보가 없는 경우 제외
+        recent.dropna(subset=['ipo_price', 'sector'], inplace=True)
+        recent = recent[recent['ipo_price'] > 0]
+        if recent.empty:
+            return pd.DataFrame()
         recent['days_since_ipo'] = (self.today - recent['ipo_date']).dt.days
         return recent
     

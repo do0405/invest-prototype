@@ -28,6 +28,10 @@ const strategies = [
   { id: 'strategy5', name: 'Strategy Epsilon' },
   { id: 'strategy6', name: 'Strategy Zeta' },
   { id: 'volatility_skew', name: 'Volatility Skew' },
+  { id: 'ipo-investment', name: 'IPO Investment' },
+  { id: 'leader-stock', name: 'Leader Stock' },
+  { id: 'momentum-signals', name: 'Momentum Signals' },
+  { id: 'market-regime', name: 'Market Regime' },
 ];
 
 export default function RootLayout({

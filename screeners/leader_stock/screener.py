@@ -160,22 +160,24 @@ class LeaderStockScreener:
         growth = self.revenue_growth_map.get(ticker)
         return growth is not None and growth < 15
 
-    def _small_cap_or_recent_ipo(
-        self,
-        ticker,
-        cap_threshold: int = 2_000_000_000,
-        max_ipo_age: int = 365,
-    ) -> bool:
-        """시가총액 또는 IPO 연령 조건 체크"""
-        market_cap = self.market_cap_map.get(ticker)
-        if market_cap is not None and market_cap <= cap_threshold:
+    def _small_cap_or_recent_ipo(self, ticker):
+        """소형주이거나 최근 IPO 여부 확인"""
+        cap = self.market_cap_map.get(ticker)
+        if cap is not None and cap < 2_000_000_000:
             return True
         ipo_date = self.ipo_date_map.get(ticker)
         if ipo_date is not None:
-            ipo_age = (self.today - ipo_date).days
-            if ipo_age <= max_ipo_age:
-                return True
+            return (self.today - ipo_date).days <= 5 * 365
         return False
+
+    def _calculate_momentum_indicator(self, df):
+        """간단한 모멘텀 지표 (RSI + 5일 수익률)"""
+        if len(df) < 6:
+            return 0.0
+        rsi = df['rsi_14'].iloc[-1]
+        roc5 = (df['close'].iloc[-1] / df['close'].iloc[-5] - 1) * 100
+        score = rsi + roc5
+        return max(min(score, 100), 0)
     
     def calculate_sector_rs(self, sector_etfs):
         """섹터별 상대 강도(RS) 계산"""
@@ -422,7 +424,7 @@ class LeaderStockScreener:
                 "small_cap_or_ipo": lambda df, recent, sector, strong_sectors, ticker=None: self._small_cap_or_recent_ipo(ticker),
                 "volume_explosion": lambda df, recent, sector, strong_sectors, ticker=None: recent['volume_ratio'] >= 5.0,
                 "rsi_overbought": lambda df, recent, sector, strong_sectors, ticker=None: recent['rsi_14'] >= 70,
-                "momentum": lambda df, recent, sector, strong_sectors, ticker=None: (recent['close'] / df.iloc[-5]['close'] - 1) * 100 >= 10,
+                "momentum": lambda df, recent, sector, strong_sectors, ticker=None: self._calculate_momentum_indicator(df) >= 90,
             },
             "stage4": {
                 "high_pe": lambda df, recent, sector, strong_sectors, ticker=None: self._is_high_pe(ticker),
