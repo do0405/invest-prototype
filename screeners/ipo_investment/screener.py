@@ -70,41 +70,12 @@ class IPOInvestmentScreener:
                 self.logger.info(f"IPO 데이터 로드 완료: {len(ipo_data)}개 종목")
                 return ipo_data
             else:
-                self.logger.warning("IPO 데이터가 비어있음, 샘플 데이터 사용")
-                return self._get_sample_ipo_data()
+                self.logger.warning("IPO 데이터가 비어있음")
+                return pd.DataFrame()
                 
         except Exception as e:
             self.logger.error(f"IPO 데이터 로드 중 오류: {e}")
-            return self._get_sample_ipo_data()
-    
-    def _get_sample_ipo_data(self):
-        """샘플 IPO 데이터 반환"""
-        sample_data = {
-            'ticker': ['RIVN', 'LCID', 'HOOD', 'COIN', 'RBLX'],
-            'company_name': [
-                'Rivian Automotive Inc',
-                'Lucid Group Inc', 
-                'Robinhood Markets Inc',
-                'Coinbase Global Inc',
-                'Roblox Corporation'
-            ],
-            'ipo_date': ['2021-11-10', '2021-07-26', '2021-07-29', '2021-04-14', '2021-03-10'],
-            'ipo_price': [78.0, 24.0, 38.0, 250.0, 45.0],
-            'sector': ['Consumer Cyclical', 'Consumer Cyclical', 'Financial Services', 'Financial Services', 'Communication Services'],
-            'industry': ['Auto Manufacturers', 'Auto Manufacturers', 'Capital Markets', 'Capital Markets', 'Electronic Gaming & Multimedia'],
-            'market_cap': [100000000000, 15000000000, 32000000000, 85000000000, 45000000000],
-            'float': [0.15, 0.20, 0.18, 0.25, 0.22],
-            'revenue_growth': [150.0, 200.0, 89.0, 125.0, 108.0],
-            'ps_ratio': [2.5, 1.8, 4.2, 8.5, 12.0],
-            'industry_ps_ratio': [3.0, 2.5, 5.0, 10.0, 15.0],
-            'equity_ratio': [85.0, 75.0, 65.0, 90.0, 80.0],
-            'cash_to_sales': [25.0, 30.0, 20.0, 35.0, 28.0],
-            'institutional_buy_streak': [2, 4, 1, 5, 3]
-        }
-        
-        df = pd.DataFrame(sample_data)
-        df['ipo_date'] = pd.to_datetime(df['ipo_date'], utc=True)
-        return df
+            return pd.DataFrame()
     
     def _get_recent_ipos(self, days: int = 365) -> pd.DataFrame:
         """최근 IPO 종목을 ipo_data에서 필터링"""
