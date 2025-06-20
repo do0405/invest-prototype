@@ -99,6 +99,22 @@ export class ApiClient {
     return this.request<ScreeningData[]>('/api/volatility-skew');
   }
 
+  async getIPOInvestmentResults() {
+    return this.request<ScreeningData[]>('/api/ipo-investment');
+  }
+
+  async getLeaderStockResults() {
+    return this.request<ScreeningData[]>('/api/leader-stock');
+  }
+
+  async getMomentumSignalsResults() {
+    return this.request<ScreeningData[]>('/api/momentum-signals');
+  }
+
+  async getMarketRegime() {
+    return this.request<any>('/api/market-regime');
+  }
+
 
   // 전체 요약 (여러 API를 조합하여 생성)
   async getSummary(): Promise<ApiResponse<SummaryData>> {

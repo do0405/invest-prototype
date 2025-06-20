@@ -10,7 +10,15 @@ import json  # 추가된 import
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
-from config import RESULTS_DIR, RESULTS_VER2_DIR
+from config import (
+    RESULTS_DIR,
+    RESULTS_VER2_DIR,
+    IPO_INVESTMENT_RESULTS_DIR,
+    LEADER_STOCK_RESULTS_DIR,
+    MOMENTUM_SIGNALS_RESULTS_DIR,
+    MARKET_REGIME_DIR,
+)
+from typing import Optional
 
 app = Flask(__name__)
 CORS(app)  # CORS 허용
@@ -134,6 +142,69 @@ def get_volatility_skew_results():
             })
         else:
             return jsonify({'success': False, 'message': 'Volatility skew data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+# --- New screener result endpoints ---
+
+def _load_latest_csv(directory: str) -> Optional[pd.DataFrame]:
+    pattern = os.path.join(directory, '*.csv')
+    files = glob.glob(pattern)
+    if not files:
+        return None
+    latest = max(files, key=os.path.getctime)
+    try:
+        return pd.read_csv(latest)
+    except Exception:
+        return None
+
+
+@app.route('/api/ipo-investment', methods=['GET'])
+def get_ipo_investment_results():
+    """Return latest IPO investment screener results."""
+    try:
+        df = _load_latest_csv(IPO_INVESTMENT_RESULTS_DIR)
+        if df is not None:
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df)})
+        return jsonify({'success': False, 'message': 'IPO data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/leader-stock', methods=['GET'])
+def get_leader_stock_results():
+    """Return latest leader stock screener results."""
+    try:
+        df = _load_latest_csv(LEADER_STOCK_RESULTS_DIR)
+        if df is not None:
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df)})
+        return jsonify({'success': False, 'message': 'Leader stock data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/momentum-signals', methods=['GET'])
+def get_momentum_signals_results():
+    """Return latest momentum signals screener results."""
+    try:
+        df = _load_latest_csv(MOMENTUM_SIGNALS_RESULTS_DIR)
+        if df is not None:
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df)})
+        return jsonify({'success': False, 'message': 'Momentum signals data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/market-regime', methods=['GET'])
+def get_market_regime_latest():
+    """Return latest market regime analysis result."""
+    try:
+        latest_file = os.path.join(MARKET_REGIME_DIR, 'latest_market_regime.json')
+        if os.path.exists(latest_file):
+            with open(latest_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return jsonify({'success': True, 'data': data})
+        return jsonify({'success': False, 'message': 'Market regime data not found'}), 404
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
