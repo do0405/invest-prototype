@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-"""주도주 투자 전략 (Leader Stock Investment) 스크리너"""
+"""주도주 투자 전략 (Leader Stock Investment) 스크리너.
+
+섹터, P/E 비율, 매출 성장률, 시가총액 정보를 담은
+``data/stock_metadata.csv`` 파일을 필수로 사용한다.
+파일 위치는 ``config.STOCK_METADATA_PATH`` 로 지정된다.
+"""
 
 import os
 import pandas as pd
@@ -99,9 +104,8 @@ class LeaderStockScreener:
         self.revenue_growth_map = {}
         self.stock_rs_percentile = {}
         self.market_cap_map = {}
-        self.ipo_date_map = {}
 
-        # 섹터, P/E, 매출 성장률, 시가총액, IPO 날짜 메타데이터
+        # 섹터, P/E, 매출 성장률, 시가총액 메타데이터
         if os.path.exists(STOCK_METADATA_PATH):
             try:
                 meta = pd.read_csv(STOCK_METADATA_PATH)
@@ -113,9 +117,6 @@ class LeaderStockScreener:
                     self.revenue_growth_map = meta.set_index('symbol')['revenue_growth'].to_dict()
                 if 'market_cap' in meta.columns:
                     self.market_cap_map = meta.set_index('symbol')['market_cap'].to_dict()
-                if 'ipo_date' in meta.columns:
-                    meta['ipo_date'] = pd.to_datetime(meta['ipo_date'], errors='coerce', utc=True)
-                    self.ipo_date_map = meta.set_index('symbol')['ipo_date'].to_dict()
             except Exception as e:
                 logger.warning(f"메타데이터 로드 실패: {e}")
         else:
@@ -148,15 +149,10 @@ class LeaderStockScreener:
         growth = self.revenue_growth_map.get(ticker)
         return growth is not None and growth < 15
 
-    def _small_cap_or_recent_ipo(self, ticker):
-        """소형주이거나 최근 IPO 여부 확인"""
+    def _is_small_cap(self, ticker):
+        """시가총액 기준 소형주 판별"""
         cap = self.market_cap_map.get(ticker)
-        if cap is not None and cap < 2_000_000_000:
-            return True
-        ipo_date = self.ipo_date_map.get(ticker)
-        if ipo_date is not None:
-            return (self.today - ipo_date).days <= 5 * 365
-        return False
+        return cap is not None and cap < 2_000_000_000
 
     def _calculate_momentum_indicator(self, df):
         """간단한 모멘텀 지표 (RSI + 5일 수익률)"""
@@ -337,7 +333,7 @@ class LeaderStockScreener:
             },
             "stage3": {
                 "market_trend": lambda df, recent, sector, strong_sectors, ticker=None: self._market_trend_ok(),
-                "small_cap_or_ipo": lambda df, recent, sector, strong_sectors, ticker=None: self._small_cap_or_recent_ipo(ticker),
+                "small_cap": lambda df, recent, sector, strong_sectors, ticker=None: self._is_small_cap(ticker),
                 "volume_explosion": lambda df, recent, sector, strong_sectors, ticker=None: recent['volume_ratio'] >= 5.0,
                 "rsi_overbought": lambda df, recent, sector, strong_sectors, ticker=None: recent['rsi_14'] >= 70,
                 "momentum": lambda df, recent, sector, strong_sectors, ticker=None: self._calculate_momentum_indicator(df) >= 90,
