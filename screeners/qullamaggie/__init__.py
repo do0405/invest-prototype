@@ -9,6 +9,7 @@ from .core import (
     screen_episode_pivot_setup,
     screen_parabolic_short_setup,
 )
+from .screener import run_qullamaggie_screening
 
 from .screener import run_qullamaggie_screening
 
@@ -26,6 +27,8 @@ __all__ = [
     "check_vcp_pattern",
     "screen_episode_pivot_setup",
     "screen_parabolic_short_setup",
+    "apply_basic_filters",
+    "check_vcp_pattern",
     "generate_buy_signals",
     "generate_sell_signals",
     "manage_positions",

@@ -9,10 +9,9 @@ import os
 from typing import List, Dict
 
 import pandas as pd
-import yfinance as yf
 
 from config import DATA_US_DIR, US_SETUP_RESULTS_DIR
-from utils import ensure_dir
+from utils import ensure_dir, fetch_market_cap
 
 US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')
 
@@ -26,15 +25,6 @@ def _calculate_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df['bb_std'] = df['close'].rolling(window=20).std()
     df['bb_upper'] = df['bb_mid'] + 2 * df['bb_std']
     return df
-
-
-def _fetch_market_cap(symbol: str) -> int:
-    try:
-        info = yf.Ticker(symbol).info
-        return int(info.get('marketCap', 0) or 0)
-    except Exception:
-        return 0
-
 
 def screen_us_setup() -> pd.DataFrame:
     results: List[Dict[str, float]] = []
@@ -67,7 +57,7 @@ def screen_us_setup() -> pd.DataFrame:
         if avg_volume60 <= 300_000:
             continue
 
-        market_cap = _fetch_market_cap(symbol)
+        market_cap = fetch_market_cap(symbol)
         if market_cap < 500_000_000:
             continue
 
