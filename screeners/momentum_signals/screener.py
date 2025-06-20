@@ -128,15 +128,26 @@ class MomentumSignalsScreener:
                 
                 # 데이터 로드
                 df = pd.read_csv(file_path)
+                
+                # 컬럼명을 소문자로 변환
+                df.columns = [c.lower() for c in df.columns]
+                
+                # 필수 컬럼 존재 여부 확인
+                required_columns = ['close', 'volume', 'date', 'high', 'low', 'open']
+                missing_columns = [col for col in required_columns if col not in df.columns]
+                if missing_columns:
+                    logger.warning(f"{ticker}: 필수 컬럼 누락 - {missing_columns}")
+                    continue
+                
                 if df.empty or len(df) < 200:  # 최소 200일 데이터 필요
                     continue
                     
-                df['date'] = pd.to_datetime(df['date'])
+                df['date'] = pd.to_datetime(df['date'], utc=True)
                 df = df.sort_values('date')
                 
                 # 기술적 지표 계산
                 df = calculate_moving_averages(df)
-                df = calculate_macd(df)
+                df = calculate_macd(df, include_hist=True)
                 df = calculate_rsi(df)
                 df = calculate_stochastic(df)
                 df = calculate_adx(df)

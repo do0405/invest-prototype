@@ -66,6 +66,16 @@ def load_csvs_parallel(file_paths, max_workers=4):
     def load_csv(file_path):
         try:
             df = pd.read_csv(file_path)
+            
+            # 컬럼명을 소문자로 변환
+            df.columns = [c.lower() for c in df.columns]
+            
+            # 필수 컬럼 존재 여부 확인
+            required_columns = ['close', 'volume', 'date']
+            if not all(col in df.columns for col in required_columns):
+                print(f"⚠️ {os.path.basename(file_path)}: 필수 컬럼 누락 - {[col for col in required_columns if col not in df.columns]}")
+                return os.path.basename(file_path), None
+            
             return os.path.basename(file_path), df
         except Exception as e:
             print(f"❌ {file_path} 로드 오류: {e}")

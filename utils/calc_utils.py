@@ -118,18 +118,18 @@ def calculate_rsi(df, window=14):
     try:
         if 'close' not in df.columns:
             print(f"⚠️ RSI 계산에 필요한 'close' 컬럼이 없습니다.")
-            return pd.Series(index=df.index)
+            return df
         delta = df['close'].diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
         avg_gain = gain.rolling(window=window).mean()
         avg_loss = loss.rolling(window=window).mean()
         rs = avg_gain / avg_loss.where(avg_loss != 0, 1)
-        rsi = 100 - (100 / (1 + rs))
-        return rsi
+        df[f'rsi_{window}'] = 100 - (100 / (1 + rs))
+        return df
     except Exception as e:
         print(f"❌ RSI 계산 오류: {e}")
-        return pd.Series(index=df.index)
+        return df
 
 
 def calculate_adx(df, window=14):
@@ -159,10 +159,10 @@ def calculate_adx(df, window=14):
         df['-di'] = 100 * df['-dm_avg'] / df['tr_avg']
         df['dx'] = 100 * abs(df['+di'] - df['-di']) / (df['+di'] + df['-di'])
         df['adx'] = df['dx'].rolling(window=window).mean()
-        return df['adx']
+        return df
     except Exception as e:
         print(f"❌ ADX 계산 오류: {e}")
-        return pd.Series(index=df.index)
+        return df
 
 
 def calculate_historical_volatility(df, window=60, annualize=True):

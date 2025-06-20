@@ -6,11 +6,11 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
 # 설정 파일 임포트
-from config import RESULTS_DIR, US_WITH_RS_PATH
+from config import MARKMINERVINI_RESULTS_DIR, US_WITH_RS_PATH
 
 def filter_new_tickers():
     # 파일 경로 설정
-    new_tickers_path = os.path.join(RESULTS_DIR, 'new_tickers.csv')
+    new_tickers_path = os.path.join(MARKMINERVINI_RESULTS_DIR, 'new_tickers.csv')
     us_with_rs_path = US_WITH_RS_PATH
     
     # 두 CSV 파일 읽기

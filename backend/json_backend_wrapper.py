@@ -43,7 +43,7 @@ class BackendWrapper:
             }
         
         # 통합 스크리닝
-        int_data = self.data_manager.get_json_data('results/integrated_results.json')
+        int_data = self.data_manager.get_json_data('results/screeners/markminervini/integrated_results.json')
         if int_data is not None:
             summary['integrated_screening'] = {
                 'count': len(int_data),

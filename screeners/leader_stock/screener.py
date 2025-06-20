@@ -49,7 +49,7 @@ class LeaderStockScreener:
                 return "unknown"
                 
             sp500 = pd.read_csv(sp500_path)
-            sp500['date'] = pd.to_datetime(sp500['date'])
+            sp500['date'] = pd.to_datetime(sp500['date'], utc=True)
             sp500 = sp500.sort_values('date')
             
             # 30주 이동평균 계산 (약 150 거래일)
@@ -70,7 +70,7 @@ class LeaderStockScreener:
             
             if os.path.exists(vix_path):
                 vix = pd.read_csv(vix_path)
-                vix['date'] = pd.to_datetime(vix['date'])
+                vix['date'] = pd.to_datetime(vix['date'], utc=True)
                 vix = vix.sort_values('date')
                 if not vix.empty:
                     vix_value = vix.iloc[-1]['close']
@@ -114,7 +114,7 @@ class LeaderStockScreener:
                 if 'market_cap' in meta.columns:
                     self.market_cap_map = meta.set_index('symbol')['market_cap'].to_dict()
                 if 'ipo_date' in meta.columns:
-                    meta['ipo_date'] = pd.to_datetime(meta['ipo_date'], errors='coerce')
+                    meta['ipo_date'] = pd.to_datetime(meta['ipo_date'], errors='coerce', utc=True)
                     self.ipo_date_map = meta.set_index('symbol')['ipo_date'].to_dict()
             except Exception as e:
                 logger.warning(f"메타데이터 로드 실패: {e}")
@@ -206,10 +206,20 @@ class LeaderStockScreener:
                 
                 # 데이터 로드
                 df = pd.read_csv(file_path)
+                
+                # 컬럼명을 소문자로 변환
+                df.columns = [c.lower() for c in df.columns]
+                
+                # 필수 컬럼 존재 여부 확인
+                required_columns = ['close', 'volume', 'date']
+                if not all(col in df.columns for col in required_columns):
+                    logger.warning(f"{ticker}: 필수 컬럼 누락 - {[col for col in required_columns if col not in df.columns]}")
+                    continue
+                
                 if df.empty or len(df) < 200:  # 최소 200일 데이터 필요
                     continue
                     
-                df['date'] = pd.to_datetime(df['date'])
+                df['date'] = pd.to_datetime(df['date'], utc=True)
                 df = df.sort_values('date')
                 
                 # 이동평균 계산

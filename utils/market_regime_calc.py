@@ -1,6 +1,7 @@
 """Calculation functions for market regime indicator."""
 
 from typing import Dict, Tuple
+import os
 import pandas as pd
 
 from .market_regime_helpers import (
@@ -11,6 +12,7 @@ from .market_regime_helpers import (
     calculate_advance_decline_trend,
     calculate_put_call_ratio,
 )
+from .market_regime_conditions import determine_regime_by_conditions
 from utils.calc_utils import get_us_market_today
 from config import MARKET_REGIME_DIR, MARKET_REGIME_CRITERIA
 
@@ -185,188 +187,43 @@ def calculate_market_score(index_data: Dict[str, pd.DataFrame]) -> Tuple[int, Di
     raw_total = base_score + tech_score
     scores['raw_total_score'] = raw_total
 
-    # --- 필수/부가 조건 기반 시장 국면 판단 ---
-    def pct_above_ma200(df):
-        return (df['close'].iloc[-1] / df['ma200'].iloc[-1] - 1) * 100
-
-    def drawdown_pct(df):
-        high_52w = df['close'].rolling(window=252).max().iloc[-1]
-        return (df['close'].iloc[-1] - high_52w) / high_52w * 100
-
-    def monthly_return(df):
-        if len(df) < 30:
-            return 0.0
-        return (df['close'].iloc[-1] / df['close'].iloc[-30] - 1) * 100
-
-    def pct_change(df, days=20):
-        if len(df) <= days:
-            return 0.0
-        return (df['close'].iloc[-1] / df['close'].iloc[-days] - 1) * 100
-
-    metrics = {
-        'vix': vix_value,
-        'put_call_ratio': pc_ratio,
-        'high_low_index': hl_index,
-        'ad_trend': ad_trend,
-        'bio_return': bio_value,
-    }
-
-    for t in ['SPY', 'QQQ', 'IWM', 'MDY']:
-        df = index_data.get(t)
-        if df is None:
-            continue
-        metrics[f'{t}_above_ma50'] = df['close'].iloc[-1] > df['ma50'].iloc[-1]
-        metrics[f'{t}_pct_above_ma200'] = pct_above_ma200(df)
-        metrics[f'{t}_drawdown'] = drawdown_pct(df)
-        metrics[f'{t}_return'] = pct_change(df)
-        metrics[f'{t}_below_ma50_5d'] = (
-            len(df) >= 5 and (df['close'] < df['ma50']).iloc[-5:].all()
-        )
-
-    spy_ret = metrics.get('SPY_return', 0)
-    iwm_ret = metrics.get('IWM_return', 0)
-    metrics['iwm_outperform'] = iwm_ret > spy_ret
-
-    conditions = {
-        'aggressive_bull': {
-            'threshold': 0.7,
-            'mandatory': [
-                all(
-                    metrics.get(f'{t}_above_ma50', False)
-                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
-                ),
-                all(
-                    metrics.get(f'{t}_pct_above_ma200', 0) >= 5
-                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
-                ),
-                metrics['bio_return'] >= 3,
-            ],
-            'optional': [
-                metrics['vix'] < 20,
-                metrics['put_call_ratio'] < 0.7,
-                metrics['high_low_index'] > 70,
-                metrics['ad_trend'] > 0,
-                metrics['iwm_outperform'],
-            ],
-        },
-        'bull': {
-            'threshold': 0.6,
-            'mandatory': [
-                metrics.get('SPY_above_ma50', False)
-                and metrics.get('QQQ_above_ma50', False),
-                not (
-                    metrics.get('IWM_above_ma50', True)
-                    and metrics.get('MDY_above_ma50', True)
-                ),
-                0 <= metrics['bio_return'] < 3,
-            ],
-            'optional': [
-                20 <= metrics['vix'] <= 25,
-                0.7 <= metrics['put_call_ratio'] <= 0.9,
-                50 <= metrics['high_low_index'] <= 70,
-                metrics.get('SPY_return', 0)
-                > metrics.get('MDY_return', 0)
-                > metrics.get('IWM_return', 0),
-                metrics['ad_trend'] >= 0,
-            ],
-        },
-        'correction': {
-            'threshold': 0.6,
-            'mandatory': [
-                sum(
-                    not metrics.get(f'{t}_above_ma50', True)
-                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
-                )
-                >= 2,
-                sum(
-                    -15 <= metrics.get(f'{t}_drawdown', 0) <= -5
-                    for t in ['SPY', 'QQQ']
-                )
-                >= 1,
-                metrics.get('SPY_below_ma50_5d', False),
-            ],
-            'optional': [
-                25 <= metrics['vix'] <= 35,
-                0.9 <= metrics['put_call_ratio'] <= 1.2,
-                30 <= metrics['high_low_index'] <= 50,
-                metrics['ad_trend'] < 0,
-                iwm_ret < 0,
-            ],
-        },
-        'risk_management': {
-            'threshold': 0.5,
-            'mandatory': [
-                sum(
-                    not metrics.get(f'{t}_pct_above_ma200', 1) > 0
-                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
-                )
-                >= 3,
-                sum(
-                    -25 <= metrics.get(f'{t}_drawdown', 0) <= -15
-                    for t in ['SPY', 'QQQ']
-                )
-                >= 1,
-            ],
-            'optional': [
-                metrics['vix'] > 35,
-                metrics['put_call_ratio'] > 1.2,
-                metrics['high_low_index'] < 30,
-                metrics['ad_trend'] <= -20,
-                metrics.get('SPY_above_ma50', True)
-                and metrics.get('SPY_pct_above_ma200', 0) < 0,
-            ],
-        },
-        'bear': {
-            'threshold': 0.0,
-            'mandatory': [
-                all(
-                    metrics.get(f'{t}_pct_above_ma200', 0) < 0
-                    for t in ['SPY', 'QQQ', 'IWM', 'MDY']
-                ),
-                sum(
-                    metrics.get(f'{t}_drawdown', 0) <= -25
-                    for t in ['SPY', 'QQQ']
-                )
-                >= 1,
-            ],
-            'optional': [
-                metrics['vix'] > 40,
-                metrics['put_call_ratio'] > 1.5,
-                metrics['high_low_index'] < 20,
-                metrics['ad_trend'] <= -30,
-                metrics['bio_return'] <= -30,
-            ],
-        },
-    }
-
-    selected = None
-    pass_ratio = 0.0
-    condition_results = {}
-    for regime in ['aggressive_bull', 'bull', 'correction', 'risk_management', 'bear']:
-        conf = conditions[regime]
-        mand_results = conf['mandatory']
-        opt_results = conf['optional']
-        condition_results[regime] = {
-            'mandatory': mand_results,
-            'optional': opt_results,
-        }
-        if all(mand_results):
-            ratio = sum(bool(x) for x in opt_results) / len(opt_results) if opt_results else 1.0
-            condition_results[regime]['optional_pass_ratio'] = ratio
-            if ratio >= conf['threshold']:
-                selected = regime
-                pass_ratio = ratio
-                break
-
-    if selected is None:
+    # --- MD 파일 기준 점수 기반 시장 국면 판단 ---
+    # 총점 = 기본 점수(60점) + 기술적 지표 점수(40점)
+    total_score = raw_total
+    
+    # 점수별 시장 국면 결정 (MD 파일 기준)
+    if total_score >= 80:
+        selected = 'aggressive_bull'
+        regime_name = '공격적 상승장 (Aggressive Bull Market)'
+        description = '모든 지수가 강세를 보이며 소형주까지 상승하는 전면적 상승장입니다.'
+        strategy = '소형주, 성장주 비중 확대'
+    elif total_score >= 60:
+        selected = 'bull'
+        regime_name = '상승장 (Bull Market)'
+        description = '대형주 중심의 상승세가 유지되나 일부 섹터에서 약세가 나타나기 시작합니다.'
+        strategy = '대형주 중심, 리더주 선별 투자'
+    elif total_score >= 40:
+        selected = 'correction'
+        regime_name = '조정장 (Correction Market)'
+        description = '시장이 조정 국면에 있으며 변동성이 증가하고 있습니다.'
+        strategy = '현금 비중 증대, 방어적 포지션'
+    elif total_score >= 20:
+        selected = 'risk_management'
+        regime_name = '위험 관리장 (Risk Management Market)'
+        description = '시장 위험이 높아 적극적인 위험 관리가 필요한 상황입니다.'
+        strategy = '신규 투자 중단, 손절매 기준 엄격 적용'
+    else:
         selected = 'bear'
-        pass_ratio = 0.0
-
-    details['condition_results'] = condition_results
+        regime_name = '완전한 약세장 (Full Bear Market)'
+        description = '전면적인 하락장으로 방어적 투자가 필요합니다.'
+        strategy = '현금 보유, 적립식 투자 외 투자 자제'
+    
+    # 상세 정보 저장 (기존 조건 결과는 참고용으로 유지)
     details['determined_regime'] = selected
-
-    min_score, max_score = MARKET_REGIME_CRITERIA[f'{selected}_range']
-    total_score = int(min_score + (max_score - min_score) * pass_ratio)
+    details['regime_name'] = regime_name
+    details['description'] = description
+    details['strategy'] = strategy
+    
     scores['total_score'] = total_score
 
     return total_score, {'scores': scores, 'details': details}
@@ -421,6 +278,11 @@ def get_investment_strategy(regime: str) -> str:
 def analyze_market_regime(save_result: bool = True) -> Dict:
     """현재 시장 국면을 분석합니다.
     
+    우선순위:
+    1. MD 파일의 필수조건 기반 시장 국면 판단
+    2. 부가조건으로 점수 범위 세분화
+    3. 조건 기반 판단 실패 시 기존 종합점수 산출 방식 사용
+    
     Args:
         save_result: 결과를 파일로 저장할지 여부
         
@@ -431,26 +293,59 @@ def analyze_market_regime(save_result: bool = True) -> Dict:
     index_data = {}
     for ticker in INDEX_TICKERS.keys():
         index_data[ticker] = load_index_data(ticker)
+
+    # 2. 우선적으로 조건 기반 시장 국면 판단 시도
+    condition_regime, condition_details = determine_regime_by_conditions(index_data)
     
-    # 2. 점수 계산
-    score, details = calculate_market_score(index_data)
+    # 3. 점수 계산 (조건 기반 판단 실패 시 또는 점수 범위 세분화용)
+    score, score_details = calculate_market_score(index_data)
     
-    # 3. 시장 국면 판단
-    regime = get_market_regime(score)
+    # 4. 최종 시장 국면 결정
+    if condition_regime is not None:
+        # 조건 기반 판단 성공 - 부가조건으로 점수 범위 세분화
+        regime = condition_regime
+        regime_range = MARKET_REGIMES[regime]['score_range']
+        
+        # 해당 국면의 점수 범위 내에서 정규화
+        min_score, max_score = regime_range
+        if max_score > min_score:
+            normalized_score = min_score + (score / 100) * (max_score - min_score)
+            final_score = max(min_score, min(max_score, int(normalized_score)))
+        else:
+            final_score = min_score
+            
+        determination_method = "condition_based"
+    else:
+        # 조건 기반 판단 실패 - 기존 종합점수 산출 방식 사용
+        regime = get_market_regime(score)
+        final_score = score
+        determination_method = "score_based"
+    
     regime_name = MARKET_REGIMES[regime]['name']
     description = get_regime_description(regime)
     strategy = get_investment_strategy(regime)
     
-    # 4. 결과 구성
+    # 5. 결과 구성
     today = get_us_market_today()
+    
+    # 세부 정보 통합
+    combined_details = {
+        'scores': score_details['scores'],
+        'details': score_details['details'],
+        'condition_analysis': condition_details,
+        'determination_method': determination_method,
+        'raw_score': score,
+        'final_score': final_score
+    }
+    
     result = {
         'date': today.strftime('%Y-%m-%d'),
-        'score': score,
+        'score': final_score,
         'regime': regime,
         'regime_name': regime_name,
         'description': description,
         'strategy': strategy,
-        'details': details
+        'details': combined_details
     }
     
     # 5. 결과 저장 (옵션)
@@ -462,7 +357,7 @@ def analyze_market_regime(save_result: bool = True) -> Dict:
             # JSON 형식으로 저장
             result_path = os.path.join(MARKET_REGIME_DIR, f"market_regime_{today.strftime('%Y%m%d')}.json")
             pd.Series(result).to_json(result_path)
-            print(f"✅ 시장 국면 분석 결과 저장됨: {result_path}")
+            # 출력은 tasks.py에서 담당
             
             # 최신 결과 별도 저장
             latest_path = os.path.join(MARKET_REGIME_DIR, "latest_market_regime.json")

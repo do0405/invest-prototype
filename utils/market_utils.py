@@ -36,9 +36,13 @@ def get_vix_value(data_dir: str = DATA_US_DIR) -> float:
     if os.path.exists(vix_path):
         try:
             vix = pd.read_csv(vix_path)
-            vix["date"] = pd.to_datetime(vix["date"])
+            
+            # 컬럼명을 소문자로 변환
+            vix.columns = [c.lower() for c in vix.columns]
+            
+            vix["date"] = pd.to_datetime(vix["date"], utc=True)
             vix = vix.sort_values("date")
-            if not vix.empty:
+            if not vix.empty and "close" in vix.columns:
                 return float(vix.iloc[-1]["close"])
         except Exception:
             pass
@@ -56,7 +60,15 @@ def calculate_sector_rs(
         return rs
     try:
         sp500 = pd.read_csv(sp500_path)
-        sp500["date"] = pd.to_datetime(sp500["date"])
+        
+        # 컬럼명을 소문자로 변환
+        sp500.columns = [c.lower() for c in sp500.columns]
+        
+        # 필수 컬럼 확인
+        if "close" not in sp500.columns or "date" not in sp500.columns:
+            return rs
+            
+        sp500["date"] = pd.to_datetime(sp500["date"], utc=True)
         sp500 = sp500.sort_values("date")
         last_date = sp500["date"].max()
         three_months_ago = last_date - timedelta(days=90)
@@ -72,7 +84,15 @@ def calculate_sector_rs(
             if not os.path.exists(etf_path):
                 continue
             etf_data = pd.read_csv(etf_path)
-            etf_data["date"] = pd.to_datetime(etf_data["date"])
+            
+            # 컬럼명을 소문자로 변환
+            etf_data.columns = [c.lower() for c in etf_data.columns]
+            
+            # 필수 컬럼 확인
+            if "close" not in etf_data.columns or "date" not in etf_data.columns:
+                continue
+                
+            etf_data["date"] = pd.to_datetime(etf_data["date"], utc=True)
             etf_data = etf_data.sort_values("date")
             etf_3m = etf_data[etf_data["date"] >= three_months_ago]
             if etf_3m.empty or len(etf_3m) < 2:

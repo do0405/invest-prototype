@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import time
+import traceback
 import pandas as pd
 import importlib.util
 from datetime import datetime
@@ -170,6 +171,11 @@ def check_strategy_file_status() -> List[str]:
         else:
             try:
                 df = pd.read_csv(file_path)
+                
+                # 컬럼명을 소문자로 변환 (결과 파일이므로 선택적)
+                if 'Close' in df.columns or 'Volume' in df.columns:
+                    df.columns = [c.lower() for c in df.columns]
+                
                 if len(df) < 10:
                     strategies_need_screening.append(strategy_name)
                     print(f"⚠️ {strategy_name}: 종목 수 부족 ({len(df)}개)")
@@ -366,8 +372,10 @@ def run_ipo_investment_screener() -> None:
 
 def run_market_regime_analysis():
     """Perform market regime analysis and print summary."""
+    import time
+    unique_id = int(time.time() * 1000) % 10000
     try:
-        print("\n📊 시장 국면 분석 시작...")
+        print(f"\n📊 시장 국면 분석 시작... [ID: {unique_id}]")
         result = analyze_market_regime(save_result=True)
 
         print(f"\n📈 시장 국면 분석 결과:")
@@ -377,8 +385,14 @@ def run_market_regime_analysis():
         print(f"  🔍 투자 전략: {result['strategy']}")
 
         print("\n📊 세부 점수:")
-        print(f"  📌 지수 기본 점수: {result['base_score']}/60")
-        print(f"  📌 기술적 지표 점수: {result['technical_score']}/40")
+        if 'details' in result and 'scores' in result['details']:
+            scores = result['details']['scores']
+            base_score = scores.get('base_score', 0)
+            tech_score = scores.get('tech_score', 0)
+            print(f"  📌 지수 기본 점수: {base_score}/60")
+            print(f"  📌 기술적 지표 점수: {tech_score}/40")
+        else:
+            print("  ⚠️ 세부 점수 정보를 찾을 수 없습니다.")
         if 'file_path' in result:
             print(f"\n💾 결과 저장 경로: {result['file_path']}")
 

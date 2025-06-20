@@ -50,11 +50,5 @@ __all__ = [
 
 
 
-if __name__ == "__main__":
-    # 모듈 테스트
-    result = analyze_market_regime()
-    print(f"\n📊 시장 국면 분석 결과 (점수: {result['score']})")
-    print(f"🔍 현재 국면: {result['regime_name']}")
-    print(f"📝 설명: {result['description']}")
-    print(f"💡 투자 전략: {result['strategy']}")
+# __main__ 블록 제거 - import 시 중복 실행 방지
 

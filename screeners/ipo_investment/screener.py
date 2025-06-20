@@ -16,6 +16,10 @@ from .data_manager import DataManager
 from config import (
     IPO_INVESTMENT_RESULTS_DIR
 )
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+from utils.calc_utils import get_us_market_today
 from .indicators import (
     calculate_base_pattern,
     calculate_macd,
@@ -99,7 +103,7 @@ class IPOInvestmentScreener:
         }
         
         df = pd.DataFrame(sample_data)
-        df['ipo_date'] = pd.to_datetime(df['ipo_date'])
+        df['ipo_date'] = pd.to_datetime(df['ipo_date'], utc=True)
         return df
     
     def _get_recent_ipos(self, days: int = 365) -> pd.DataFrame:

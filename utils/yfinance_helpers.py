@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pandas as pd
 import yfinance as yf
 
 __all__ = ["fetch_market_cap", "fetch_quarterly_eps_growth"]
@@ -20,13 +21,22 @@ def fetch_quarterly_eps_growth(symbol: str) -> float:
     """Return quarter-over-quarter EPS growth percent."""
     try:
         ticker = yf.Ticker(symbol)
-        q_earnings = ticker.quarterly_earnings
-        if q_earnings is None or len(q_earnings) < 2:
+        # Use quarterly_income_stmt instead of deprecated quarterly_earnings
+        q_income = ticker.quarterly_income_stmt
+        if q_income is None or q_income.empty or len(q_income.columns) < 2:
             return 0.0
-        recent_eps = q_earnings.iloc[-1]["Earnings"]
-        prev_eps = q_earnings.iloc[-2]["Earnings"]
-        if prev_eps == 0:
+        
+        # Get Net Income row (which represents earnings)
+        if "Net Income" not in q_income.index:
             return 0.0
-        return (recent_eps - prev_eps) / abs(prev_eps) * 100
+            
+        net_income_row = q_income.loc["Net Income"]
+        # Get the two most recent quarters
+        recent_earnings = net_income_row.iloc[0]  # Most recent quarter
+        prev_earnings = net_income_row.iloc[1]    # Previous quarter
+        
+        if prev_earnings == 0 or pd.isna(recent_earnings) or pd.isna(prev_earnings):
+            return 0.0
+        return (recent_earnings - prev_earnings) / abs(prev_earnings) * 100
     except Exception:
         return 0.0

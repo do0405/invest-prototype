@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from config import (
     RESULTS_DIR,
     RESULTS_VER2_DIR,
+    MARKMINERVINI_RESULTS_DIR,
     IPO_INVESTMENT_RESULTS_DIR,
     LEADER_STOCK_RESULTS_DIR,
     MOMENTUM_SIGNALS_RESULTS_DIR,
@@ -62,7 +63,7 @@ def get_financial_results():
 def get_integrated_results():
     """통합 스크리닝 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_DIR, 'integrated_results.json')
+        json_file = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_results.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
             return jsonify({

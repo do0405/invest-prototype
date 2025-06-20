@@ -66,10 +66,8 @@ def main():
         ensure_directories()
         print(f"✅ 디렉토리 생성 완료")
         
-        # 시장 국면 분석 실행
-        print(f"\n📊 시장 국면 분석 실행...")
-        market_regime_result = run_market_regime_analysis()
-        print(f"✅ 시장 국면 분석 완료")
+        # 시장 국면 분석은 전용 모드에서만 실행
+        # (--market-regime 옵션 사용 시에만 실행됨)
         
         # 스케줄러 모드
         if args.schedule:

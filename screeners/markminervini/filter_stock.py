@@ -47,9 +47,9 @@ def run_integrated_screening():
     """
     print("\n🔍 통합 스크리닝 시작...")
     
-    # 결과 저장 경로 (results 폴더에 저장)
-    from config import RESULTS_DIR
-    INTEGRATED_RESULTS_PATH = os.path.join(RESULTS_DIR, 'integrated_results.csv')
+    # 결과 저장 경로 (results/screeners/markminervini 폴더에 저장)
+    from config import MARKMINERVINI_RESULTS_DIR
+    INTEGRATED_RESULTS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_results.csv')
     
     try:
         # 기술적 스크리닝 결과 로드
@@ -108,7 +108,7 @@ def run_integrated_screening():
         selected_columns = ['symbol', 'met_count', 'fin_met_count', 'total_met_count', 'rs_score']
         filtered_df = merged_df[selected_columns]
         
-        ensure_dir(RESULTS_DIR)
+        ensure_dir(MARKMINERVINI_RESULTS_DIR)
         filtered_df.to_csv(INTEGRATED_RESULTS_PATH, index=False)
         # JSON 파일 생성 추가
         json_path = INTEGRATED_RESULTS_PATH.replace('.csv', '.json')

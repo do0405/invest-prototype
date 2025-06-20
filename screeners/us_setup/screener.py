@@ -28,10 +28,16 @@ def _calculate_indicators(df: pd.DataFrame) -> pd.DataFrame:
 
 def screen_us_setup() -> pd.DataFrame:
     results: List[Dict[str, float]] = []
-
-    for file in os.listdir(DATA_US_DIR):
-        if not file.endswith('.csv'):
-            continue
+    
+    files = [f for f in os.listdir(DATA_US_DIR) if f.endswith('.csv')]
+    total_files = len(files)
+    print(f"📊 총 {total_files}개 파일 처리 시작...")
+    
+    processed = 0
+    for file in files:
+        processed += 1
+        if processed % 100 == 0:
+            print(f"📈 진행률: {processed}/{total_files} ({processed/total_files*100:.1f}%)")
         file_path = os.path.join(DATA_US_DIR, file)
         try:
             df = pd.read_csv(file_path)
@@ -39,6 +45,12 @@ def screen_us_setup() -> pd.DataFrame:
             continue
 
         df.columns = [c.lower() for c in df.columns]
+        
+        # 필수 컬럼 존재 여부 확인
+        required_columns = ['close', 'volume', 'date']
+        if not all(col in df.columns for col in required_columns):
+            continue
+            
         if len(df) < 60:
             continue
 
@@ -91,15 +103,19 @@ def screen_us_setup() -> pd.DataFrame:
             'avg_volume60': avg_volume60,
         })
 
+    print(f"✅ 처리 완료: {processed}개 파일, {len(results)}개 종목 발견")
+    
     if results:
         df_res = pd.DataFrame(results)
         ensure_dir(US_SETUP_RESULTS_DIR)
         df_res.to_csv(US_SETUP_RESULTS_PATH, index=False)
         df_res.to_json(US_SETUP_RESULTS_PATH.replace('.csv', '.json'),
                        orient='records', indent=2)
+        print(f"💾 결과 저장 완료: {US_SETUP_RESULTS_PATH}")
         return df_res
-
-    return pd.DataFrame()
+    else:
+        print("⚠️ 조건을 만족하는 종목이 없습니다.")
+        return pd.DataFrame()
 
 
 if __name__ == '__main__':

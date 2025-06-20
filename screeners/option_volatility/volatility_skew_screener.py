@@ -13,11 +13,13 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Any
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(current_dir))
+sys.path.insert(0, project_root)
 
 from config import RESULTS_VER2_DIR, OPTION_VOLATILITY_DIR
 from utils import ensure_dir
-from .skew_mixins import SkewCalculationsMixin
+from screeners.option_volatility.skew_mixins import SkewCalculationsMixin
 
 class VolatilitySkewScreener(SkewCalculationsMixin):
     """Xing et al.(2010) 논문 기반 변동성 스큐 역전 전략 스크리너"""

@@ -9,12 +9,12 @@ import csv
 
 import sys
 sys.path.append("..")
-from config import RESULTS_DIR, US_WITH_RS_PATH
+from config import MARKMINERVINI_RESULTS_DIR, US_WITH_RS_PATH
 
 # 새로 추가된 티커를 저장할 파일 경로
-NEW_TICKERS_PATH = os.path.join(RESULTS_DIR, 'new_tickers.csv')
+NEW_TICKERS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'new_tickers.csv')
 # 이전 us_with_rs.csv 파일 백업 경로
-PREVIOUS_US_WITH_RS_PATH = os.path.join(RESULTS_DIR, 'previous_us_with_rs.csv')
+PREVIOUS_US_WITH_RS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'previous_us_with_rs.csv')
 
 def track_new_tickers(advanced_financial_results_path):
     """
@@ -111,7 +111,7 @@ def track_new_tickers(advanced_financial_results_path):
                         met_count = fin_data.iloc[0][tech_columns].sum()
                     else:
                         # integrated_results.csv 파일에서 met_count 값을 가져오는 로직 추가
-                        integrated_results_path = os.path.join(RESULTS_DIR, 'integrated_results.csv')
+                        integrated_results_path = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_results.csv')
                         if os.path.exists(integrated_results_path):
                             try:
                                 integrated_df = pd.read_csv(integrated_results_path)
@@ -137,8 +137,12 @@ def track_new_tickers(advanced_financial_results_path):
         # 새로운 티커 정보를 DataFrame으로 변환
         new_tickers_df_to_add = pd.DataFrame(new_tickers_info)
         
-        # 기존 데이터와 새로운 데이터 병합
-        new_tickers_df = pd.concat([new_tickers_df, new_tickers_df_to_add], ignore_index=True)
+        # 기존 데이터와 새로운 데이터 병합 (빈 DataFrame 체크)
+        if not new_tickers_df_to_add.empty:
+            if new_tickers_df.empty:
+                new_tickers_df = new_tickers_df_to_add.copy()
+            else:
+                new_tickers_df = pd.concat([new_tickers_df, new_tickers_df_to_add], ignore_index=True)
     else:
         print("새로 추가된 티커가 없습니다.")
         

@@ -1,3 +1,9 @@
+import yfinance as yf
+import pandas as pd
+import numpy as np
+from typing import Dict, List, Optional, Tuple
+from datetime import datetime, timedelta
+
 class SkewCalculationsMixin:
     def calculate_skew_index(self, symbol: str) -> Optional[float]:
         """논문의 정확한 정의에 따른 스큐 지수 계산"""

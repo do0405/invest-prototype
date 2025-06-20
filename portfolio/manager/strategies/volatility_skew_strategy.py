@@ -10,11 +10,13 @@ from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
+sys.path.insert(0, project_root)
 
 from config import OPTION_VOLATILITY_DIR, OPTION_VOLATILITY_RESULTS_DIR, RESULTS_VER2_DIR
 from utils import ensure_dir
-from option_data_based_strategy.volatility_skew_screener import VolatilitySkewScreener
+from screeners.option_volatility.volatility_skew_screener import VolatilitySkewScreener
 
 class VolatilitySkewPortfolioStrategy:
     """
