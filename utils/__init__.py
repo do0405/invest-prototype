@@ -28,6 +28,10 @@ from .relative_strength import (
     calculate_rs_score_enhanced,
     calculate_rs_score,
 )
+from .yfinance_helpers import (
+    fetch_market_cap,
+    fetch_quarterly_eps_growth,
+)
 
 __all__ = [
     'ensure_dir',
@@ -53,5 +57,7 @@ __all__ = [
     'get_investment_strategy',
     'calculate_rs_score_enhanced',
     'calculate_rs_score',
+    'fetch_market_cap',
+    'fetch_quarterly_eps_growth',
 ]
 
