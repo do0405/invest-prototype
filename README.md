@@ -84,6 +84,17 @@ python api_server.py
 # GET http://localhost:5000/api/strategy-results
 
 ```
+### 주식 메타데이터 수집
+`leader_stock`과 `momentum_signals` 스크리너는 섹터, PER, 매출 성장률 등
+기본 메타데이터가 포함된 `data/stock_metadata.csv` 파일을 사용합니다.
+메인 프로그램에서 데이터 수집 시 자동으로 생성되며, 필요 시 다음
+명령으로 개별 실행할 수 있습니다.
+
+```bash
+python data_collectors/stock_metadata_collector.py
+```
+
+파일 경로는 `config.STOCK_METADATA_PATH` 설정을 따릅니다.
 ## 📊 스크리닝 기준
 ### 기술적 분석 (Mark Minervini 기법)
 - 현재가 > 150일/200일 이동평균

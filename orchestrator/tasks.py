@@ -20,6 +20,7 @@ from portfolio.manager import create_portfolio_manager
 from data_collector import collect_data
 from utils import ensure_dir, create_required_dirs
 from data_collectors.market_breadth_collector import MarketBreadthCollector
+from data_collectors.stock_metadata_collector import main as collect_stock_metadata_main
 from utils.market_regime_indicator import analyze_market_regime
 from screeners.markminervini.filter_stock import run_integrated_screening
 from screeners.markminervini.advanced_financial import run_advanced_financial_screening
@@ -67,6 +68,7 @@ __all__ = [
     "run_ipo_investment_screener",
     "run_market_breadth_collection",
     "run_ipo_data_collection",
+    "run_stock_metadata_collection",
     "run_qullamaggie_strategy_task",
     "run_market_regime_analysis",
     "load_strategy_module",
@@ -235,6 +237,7 @@ def collect_data_main() -> None:
         run_market_breadth_collection()
         run_market_regime_analysis()
         run_ipo_data_collection()
+        run_stock_metadata_collection()
         print("✅ 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 데이터 수집 중 오류 발생: {e}")
@@ -403,6 +406,17 @@ def run_ipo_data_collection(days: int = 365) -> None:
             print("⚠️ IPO 데이터 저장 실패 또는 데이터 없음")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ IPO 데이터 수집 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_stock_metadata_collection() -> None:
+    """Collect and save stock metadata."""
+    try:
+        print("\n📊 주식 메타데이터 수집 시작...")
+        collect_stock_metadata_main()
+        print("✅ 주식 메타데이터 수집 완료")
+    except Exception as e:  # pragma: no cover - runtime log
+        print(f"❌ 주식 메타데이터 수집 실패: {e}")
         print(traceback.format_exc())
 
 
