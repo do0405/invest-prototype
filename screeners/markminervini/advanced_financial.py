@@ -151,5 +151,3 @@ def run_advanced_financial_screening(force_update=False):
         traceback.print_exc()
 
 # 직접 실행 시
-if __name__ == "__main__":
-    run_advanced_financial_screening()

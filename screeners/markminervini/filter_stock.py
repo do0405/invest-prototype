@@ -140,6 +140,3 @@ def main():
     
     # 기본적으로 US 주식 데이터 처리
     filter_us()
-
-if __name__ == '__main__':
-    main()
