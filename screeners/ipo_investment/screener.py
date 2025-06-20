@@ -458,5 +458,3 @@ def run_ipo_investment_screening():
     return screener.screen_ipo_investments()
 
 
-if __name__ == "__main__":
-    run_ipo_investment_screening()

@@ -386,6 +386,3 @@ def main():
             generate_sell_signals()
         if args.manage:
             manage_positions()
-
-if __name__ == '__main__':
-    main()

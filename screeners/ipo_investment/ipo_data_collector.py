@@ -341,6 +341,3 @@ def main():
     except Exception as e:
         logger.error(f"IPO 데이터 수집 중 오류 발생: {e}")
         raise
-
-if __name__ == "__main__":
-    main()

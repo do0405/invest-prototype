@@ -353,6 +353,4 @@ def run_leader_stock_screening():
     return screener.screen_leader_stocks()
 
 
-if __name__ == "__main__":
-    run_leader_stock_screening()
 

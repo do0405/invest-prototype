@@ -13,6 +13,7 @@ import time
 from typing import Dict, List
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+
 import pandas as pd
 import yfinance as yf
 
@@ -90,6 +91,7 @@ def collect_stock_metadata(symbols: List[str], max_workers: int = 5) -> pd.DataF
                 failures.append(sym)
     if failures:
         logger.warning(f"메타데이터 수집 실패 종목 {len(failures)}개: {', '.join(failures)}")
+
     return pd.DataFrame(records)
 
 
@@ -106,6 +108,7 @@ def main() -> None:
     df = collect_stock_metadata(symbols)
     df.to_csv(STOCK_METADATA_PATH, index=False)
     logger.info("✅ 메타데이터 저장 완료: %s (%d tickers)", STOCK_METADATA_PATH, len(df))
+
 
 
 if __name__ == "__main__":

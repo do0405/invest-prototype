@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import yfinance as yf
 import requests
+import time
 from datetime import datetime, timedelta
 from config import (
     YAHOO_FINANCE_MAX_RETRIES, YAHOO_FINANCE_DELAY,
@@ -348,8 +349,26 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
     return df
 
 def collect_real_financial_data(symbols, max_retries=3, delay=1):
-    """alpha_vantage를 사용한 재무 데이터 수집 예시 (placeholder)"""
-    return pd.DataFrame()
+    """FMP API를 활용한 실제 재무 데이터 수집"""
+    print("\n💰 실제 재무 데이터 수집 시작...")
+    results = []
+    total = len(symbols)
+    for i, symbol in enumerate(symbols):
+        print(f"진행 중: {i+1}/{total} - {symbol}")
+        for attempt in range(max_retries):
+            data = fetch_fmp_financials(symbol)
+            if data is not None:
+                results.append(data)
+                break
+            if attempt < max_retries - 1:
+                time.sleep(delay)
+        else:
+            results.append({
+                'symbol': symbol,
+                'has_error': True,
+                'error_details': ['데이터 수집 실패'],
+            })
+    return pd.DataFrame(results)
 
 def screen_advanced_financials(financial_data: pd.DataFrame) -> pd.DataFrame:
     """수집된 재무 데이터를 조건에 맞춰 스크리닝"""

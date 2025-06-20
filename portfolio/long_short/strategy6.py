@@ -167,22 +167,6 @@ def run_strategy6_screening():
 
 
 
-if __name__ == '__main__':
-    # 결과 디렉토리 생성
-    ensure_dir(RESULTS_VER2_DIR) # RESULTS_DIR 대신 RESULTS_VER2_DIR 사용
-    ensure_dir(os.path.join(RESULTS_VER2_DIR, 'results')) # 통합 results 디렉토리
-
-    # 총 자산 설정
-    CAPITAL = 100000
-
-    print("🚀 전략 6 스크리닝을 실행합니다. 개별 포트폴리오 관리는 portfolio_managing 모듈을 이용해주세요.")
-    try:
-        run_strategy(total_capital=CAPITAL)
-    except Exception as e:
-        print(f"❌ 전략 6 실행 중 오류 발생: {e}")
-        print(traceback.format_exc())
-
-    print("\n🎉 전략 6 실행 완료.")
 
 
 def run_strategy(total_capital=100000):

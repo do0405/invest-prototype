@@ -174,8 +174,3 @@ def track_new_tickers(advanced_financial_results_path):
         print(f"현재 추적 중인 티커 수: {len(new_tickers_df)}")
     except Exception as e:
         print(f"오류: 새로 추가된 티커 정보를 저장하는 중 오류가 발생했습니다: {e}")
-
-if __name__ == "__main__":
-    from config import ADVANCED_FINANCIAL_RESULTS_PATH
-    track_new_tickers(ADVANCED_FINANCIAL_RESULTS_PATH)
-    print("\n실행이 완료되었습니다. 터미널에서 실행하려면 'py ticker_tracker.py' 명령어를 사용하세요.")

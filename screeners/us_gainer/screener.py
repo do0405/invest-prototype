@@ -103,5 +103,3 @@ def screen_us_gainers() -> pd.DataFrame:
     return pd.DataFrame()
 
 
-if __name__ == '__main__':
-    screen_us_gainers()

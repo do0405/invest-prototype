@@ -357,5 +357,3 @@ def run_momentum_signals_screening():
     return screener.screen_momentum_signals()
 
 
-if __name__ == "__main__":
-    run_momentum_signals_screening()

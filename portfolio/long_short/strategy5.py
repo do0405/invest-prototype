@@ -172,7 +172,3 @@ def run_strategy(total_capital=100000):
     """Wrapper function for main.py compatibility"""
     return run_strategy5_screening()
 
-if __name__ == "__main__":
-    ensure_dir(RESULTS_VER2_DIR)
-    ensure_dir(os.path.join(RESULTS_VER2_DIR, 'results'))
-    print("\n📊 전략 5 스크리닝을 실행합니다. 개별 포트폴리오 관리는 portfolio_managing 모듈을 이용해주세요.")
