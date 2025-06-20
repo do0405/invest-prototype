@@ -32,6 +32,10 @@ from .yfinance_helpers import (
     fetch_market_cap,
     fetch_quarterly_eps_growth,
 )
+from .technical_indicators import (
+    calculate_macd,
+    calculate_stochastic,
+)
 
 __all__ = [
     'ensure_dir',
@@ -59,5 +63,7 @@ __all__ = [
     'calculate_rs_score',
     'fetch_market_cap',
     'fetch_quarterly_eps_growth',
+    'calculate_macd',
+    'calculate_stochastic',
 ]
 

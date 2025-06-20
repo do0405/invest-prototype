@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
 from scipy.signal import find_peaks
+from utils.technical_indicators import calculate_macd, calculate_stochastic
 
 __all__ = [
-    "calculate_macd",
-    "calculate_stochastic",
+"calculate_macd",
+"calculate_stochastic",
     "calculate_adx",
     "calculate_bollinger_bands",
     "calculate_moving_averages",
@@ -14,24 +15,6 @@ __all__ = [
     "calculate_ad",
     "detect_cup_and_handle",
 ]
-
-
-def calculate_macd(df: pd.DataFrame, fast: int = 12, slow: int = 26, signal: int = 9) -> pd.DataFrame:
-    df['ema_fast'] = df['close'].ewm(span=fast, adjust=False).mean()
-    df['ema_slow'] = df['close'].ewm(span=slow, adjust=False).mean()
-    df['macd'] = df['ema_fast'] - df['ema_slow']
-    df['macd_signal'] = df['macd'].ewm(span=signal, adjust=False).mean()
-    df['macd_hist'] = df['macd'] - df['macd_signal']
-    return df
-
-
-def calculate_stochastic(df: pd.DataFrame, k_period: int = 14, d_period: int = 3) -> pd.DataFrame:
-    df['lowest_low'] = df['low'].rolling(window=k_period).min()
-    df['highest_high'] = df['high'].rolling(window=k_period).max()
-    df['stoch_k'] = ((df['close'] - df['lowest_low']) / (df['highest_high'] - df['lowest_low'])) * 100
-    df['stoch_d'] = df['stoch_k'].rolling(window=d_period).mean()
-    return df
-
 
 def calculate_adx(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
     df['tr1'] = abs(df['high'] - df['low'])
