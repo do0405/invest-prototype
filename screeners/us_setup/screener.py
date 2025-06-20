@@ -118,5 +118,3 @@ def screen_us_setup() -> pd.DataFrame:
         return pd.DataFrame()
 
 
-if __name__ == '__main__':
-    screen_us_setup()

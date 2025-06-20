@@ -256,13 +256,6 @@ class DataManager:
         return status
 
 # 사용 예시
-if __name__ == "__main__":
-    manager = DataManager()
-    
-    # 데이터 상태 확인
-    status = manager.get_data_status()
-    print("데이터 소스 상태:")
-    print(json.dumps(status, indent=2, ensure_ascii=False))
     
     # IPO 데이터 가져오기
     ipo_data = manager.get_ipo_data()

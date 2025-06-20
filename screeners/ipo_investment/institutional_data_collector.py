@@ -198,14 +198,6 @@ class InstitutionalDataCollector:
             return pd.DataFrame()
 
 # 사용 예시
-if __name__ == "__main__":
-    collector = InstitutionalDataCollector()
-    
-    # 기관 보유 현황 조회
-    symbol = "AAPL"
-    holdings = collector.get_institutional_holdings(symbol)
-    print(f"{symbol} 기관 보유 현황:")
-    print(holdings)
     
     # 기관 자금 흐름 분석
     flow_analysis = collector.get_institutional_flow(symbol, 30)

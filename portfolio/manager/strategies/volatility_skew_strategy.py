@@ -141,16 +141,3 @@ def run_volatility_skew_portfolio_strategy(alpha_vantage_key: Optional[str] = No
     strategy = VolatilitySkewPortfolioStrategy(alpha_vantage_key=alpha_vantage_key)
     return strategy.run_screening_and_portfolio_creation()
 
-
-if __name__ == "__main__":
-    # 테스트 실행
-    print("🚀 변동성 스큐 포트폴리오 전략 테스트")
-    
-    strategy = VolatilitySkewPortfolioStrategy()
-    signals, file_path = strategy.run_screening_and_portfolio_creation()
-    
-    if signals:
-        print(f"\n✅ 포트폴리오 신호 생성 완료: {len(signals)}개")
-        print(f"📁 파일: {file_path}")
-    else:
-        print("\n❌ 포트폴리오 신호 생성 실패")

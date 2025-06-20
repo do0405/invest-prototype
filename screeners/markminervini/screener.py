@@ -419,21 +419,3 @@ def setup_scheduler(collect_hour=1, screen_hour=2):
     while True:
         schedule.run_pending()
         time.sleep(60)
-
-# 명령행 인터페이스
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Mark Minervini 스크리너 - 스크리닝")
-    parser.add_argument("--collect", action="store_true", help="데이터 수집 후 스크리닝 실행")
-    parser.add_argument("--schedule", action="store_true", help="스케줄러 설정 및 실행")
-    parser.add_argument("--collect-hour", type=int, default=1, help="데이터 수집 시간 (24시간제)")
-    parser.add_argument("--screen-hour", type=int, default=2, help="스크리닝 시간 (24시간제)")
-    
-    args = parser.parse_args()
-    
-    if args.schedule:
-        setup_scheduler(args.collect_hour, args.screen_hour)
-    elif args.collect:
-        collect_data()
-        run_screening()
-    else:
-        run_screening()
