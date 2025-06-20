@@ -18,6 +18,18 @@ from config import (
 from utils.calc_utils import get_us_market_today, calculate_rsi
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
 from screeners.leader_stock.screener import LeaderStockScreener
+from .indicators import (
+    calculate_macd,
+    calculate_stochastic,
+    calculate_adx,
+    calculate_bollinger_bands,
+    calculate_moving_averages,
+    calculate_volume_indicators,
+    calculate_vwap,
+    calculate_obv,
+    calculate_ad,
+    detect_cup_and_handle,
+)
 
 # 결과 저장 디렉토리 (config에서 가져옴)
 
@@ -37,174 +49,6 @@ class MomentumSignalsScreener:
         self._load_metadata()
         self.strong_sectors = self._load_sector_strength()
     
-    def _calculate_macd(self, df, fast=12, slow=26, signal=9):
-        """MACD 계산"""
-        # 지수 이동평균 계산
-        df['ema_fast'] = df['close'].ewm(span=fast, adjust=False).mean()
-        df['ema_slow'] = df['close'].ewm(span=slow, adjust=False).mean()
-        
-        # MACD 라인 = 빠른 EMA - 느린 EMA
-        df['macd'] = df['ema_fast'] - df['ema_slow']
-        
-        # 시그널 라인 = MACD의 9일 EMA
-        df['macd_signal'] = df['macd'].ewm(span=signal, adjust=False).mean()
-        
-        # MACD 히스토그램 = MACD 라인 - 시그널 라인
-        df['macd_hist'] = df['macd'] - df['macd_signal']
-        
-        return df
-    
-    def _calculate_stochastic(self, df, k_period=14, d_period=3):
-        """스토캐스틱 오실레이터 계산"""
-        # 최근 k_period 동안의 최고가와 최저가
-        df['lowest_low'] = df['low'].rolling(window=k_period).min()
-        df['highest_high'] = df['high'].rolling(window=k_period).max()
-        
-        # %K = (현재가 - 최저가) / (최고가 - 최저가) * 100
-        df['stoch_k'] = ((df['close'] - df['lowest_low']) / 
-                         (df['highest_high'] - df['lowest_low'])) * 100
-        
-        # %D = %K의 d_period 이동평균
-        df['stoch_d'] = df['stoch_k'].rolling(window=d_period).mean()
-        
-        return df
-    
-    def _calculate_adx(self, df, period=14):
-        """평균 방향성 지수(ADX) 계산"""
-        # True Range 계산
-        df['tr1'] = abs(df['high'] - df['low'])
-        df['tr2'] = abs(df['high'] - df['close'].shift(1))
-        df['tr3'] = abs(df['low'] - df['close'].shift(1))
-        df['tr'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
-        
-        # +DM, -DM 계산
-        df['up_move'] = df['high'] - df['high'].shift(1)
-        df['down_move'] = df['low'].shift(1) - df['low']
-        
-        df['+dm'] = np.where((df['up_move'] > df['down_move']) & (df['up_move'] > 0), 
-                             df['up_move'], 0)
-        df['-dm'] = np.where((df['down_move'] > df['up_move']) & (df['down_move'] > 0), 
-                             df['down_move'], 0)
-        
-        # ATR 계산 (Wilder's Smoothing Method)
-        df['atr'] = df['tr'].rolling(window=period).mean()
-        
-        # +DI, -DI 계산
-        df['+di'] = 100 * (df['+dm'].rolling(window=period).mean() / df['atr'])
-        df['-di'] = 100 * (df['-dm'].rolling(window=period).mean() / df['atr'])
-        
-        # DX 계산
-        df['dx'] = 100 * (abs(df['+di'] - df['-di']) / (df['+di'] + df['-di']))
-        
-        # ADX 계산 (DX의 이동평균)
-        df['adx'] = df['dx'].rolling(window=period).mean()
-        
-        return df
-    
-    def _calculate_bollinger_bands(self, df, window=20, num_std=2):
-        """볼린저 밴드 계산"""
-        df['sma_20'] = df['close'].rolling(window=window).mean()
-        df['std_20'] = df['close'].rolling(window=window).std()
-        df['upper_band'] = df['sma_20'] + (df['std_20'] * num_std)
-        df['lower_band'] = df['sma_20'] - (df['std_20'] * num_std)
-        df['bandwidth'] = (df['upper_band'] - df['lower_band']) / df['sma_20'] * 100
-        return df
-    
-    def _calculate_moving_averages(self, df):
-        """이동평균선 계산"""
-        # 단기 이동평균
-        df['sma_5'] = df['close'].rolling(window=5).mean()
-        df['sma_10'] = df['close'].rolling(window=10).mean()
-        df['sma_20'] = df['close'].rolling(window=20).mean()
-        
-        # 중기 이동평균
-        df['sma_50'] = df['close'].rolling(window=50).mean()
-        df['sma_100'] = df['close'].rolling(window=100).mean()
-        
-        # 장기 이동평균
-        df['sma_200'] = df['close'].rolling(window=200).mean()
-
-        # 주간 이동평균 (Stage 2A 판별용)
-        df['sma_30w'] = df['close'].rolling(window=150).mean()  # 30주 SMA
-
-        return df
-
-    def _calculate_volume_indicators(self, df):
-        """거래량 지표 계산"""
-        # 거래량 이동평균
-        df['volume_sma_20'] = df['volume'].rolling(window=20).mean()
-        df['volume_sma_50'] = df['volume'].rolling(window=50).mean()
-        
-        # 거래량 비율
-        df['volume_ratio'] = df['volume'] / df['volume_sma_20']
-        
-        # 거래량 증가율
-        df['volume_change'] = df['volume'].pct_change() * 100
-
-        return df
-
-    def _calculate_vwap(self, df, window=20):
-        """VWAP 계산"""
-        tp = (df['high'] + df['low'] + df['close']) / 3
-        vol = df['volume']
-        df['vwap'] = (tp * vol).rolling(window=window).sum() / vol.rolling(window=window).sum()
-        return df
-
-    def _calculate_obv(self, df):
-        """On-Balance Volume 계산"""
-        direction = np.sign(df['close'].diff()).fillna(0)
-        df['obv'] = (direction * df['volume']).cumsum()
-        return df
-
-    def _calculate_ad(self, df):
-        """Accumulation/Distribution 라인 계산"""
-        mfm = ((df['close'] - df['low']) - (df['high'] - df['close'])) / (df['high'] - df['low'])
-        mfm = mfm.replace([np.inf, -np.inf], 0).fillna(0)
-        df['ad'] = (mfm * df['volume']).cumsum()
-        return df
-
-    def _detect_cup_and_handle(self, df, window: int = 180) -> bool:
-        """단순 컵앤핸들 패턴 인식"""
-        try:
-            from scipy.signal import find_peaks
-
-            if len(df) < window:
-                return False
-
-            data = df.tail(window)
-            prices = data['close'].values
-            peaks, _ = find_peaks(prices)
-            troughs, _ = find_peaks(-prices)
-            if len(peaks) < 2 or len(troughs) == 0:
-                return False
-
-            left = peaks[0]
-            right = peaks[-1]
-            bottom = troughs[troughs > left]
-            bottom = bottom[bottom < right]
-            if len(bottom) == 0:
-                return False
-            bottom = bottom[prices[bottom].argmin()]
-
-            left_high = prices[left]
-            right_high = prices[right]
-            bottom_low = prices[bottom]
-            depth = min(left_high, right_high) - bottom_low
-            if depth <= 0:
-                return False
-
-            depth_pct = depth / min(left_high, right_high) * 100
-            handle_low = prices[right: ].min()
-            handle_pct = (right_high - handle_low) / depth * 100
-
-            return (
-                abs(left_high - right_high) / min(left_high, right_high) <= 0.1
-                and depth_pct >= 20
-                and handle_pct <= 30
-            )
-        except Exception as e:
-            logger.debug(f"Cup&Handle detection error: {e}")
-            return False
 
 
     def _load_metadata(self):
@@ -305,16 +149,16 @@ class MomentumSignalsScreener:
                 df = df.sort_values('date')
                 
                 # 기술적 지표 계산
-                df = self._calculate_moving_averages(df)
-                df = self._calculate_macd(df)
+                df = calculate_moving_averages(df)
+                df = calculate_macd(df)
                 df = calculate_rsi(df)
-                df = self._calculate_stochastic(df)
-                df = self._calculate_adx(df)
-                df = self._calculate_bollinger_bands(df)
-                df = self._calculate_volume_indicators(df)
-                df = self._calculate_vwap(df)
-                df = self._calculate_obv(df)
-                df = self._calculate_ad(df)
+                df = calculate_stochastic(df)
+                df = calculate_adx(df)
+                df = calculate_bollinger_bands(df)
+                df = calculate_volume_indicators(df)
+                df = calculate_vwap(df)
+                df = calculate_obv(df)
+                df = calculate_ad(df)
                 
                 # 최근 데이터
                 if len(df) < 5:  # 최소 5일 데이터 필요
@@ -388,7 +232,7 @@ class MomentumSignalsScreener:
                 signals['price_momentum'] = five_day_return >= 5
 
                 # 13-1. 컵앤핸들 패턴 돌파 여부
-                signals['cup_handle_breakout'] = self._detect_cup_and_handle(df)
+                signals['cup_handle_breakout'] = detect_cup_and_handle(df)
                 
                 # 14. 이격도 양호 (종가가 20일 이동평균선 대비 8% 이내)
                 price_to_ma = (recent['close'] / recent['sma_20'] - 1) * 100

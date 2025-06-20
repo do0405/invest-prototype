@@ -12,98 +12,13 @@ from datetime import datetime, timedelta
 from pytz import timezone
 from concurrent.futures import ThreadPoolExecutor
 
-# 유틸리티 함수 임포트
 from utils import (
-    ensure_dir, get_us_market_today, clean_tickers
+    ensure_dir, get_us_market_today, clean_tickers, safe_filename
 )
 
-# 설정 임포트
 from config import (
     DATA_DIR, DATA_US_DIR, RESULTS_DIR
 )
-
-# Windows 예약 파일명 처리 함수
-def safe_filename(ticker):
-    """
-    Windows에서 사용할 수 없는 예약 파일명(PRN, CON, NUL 등)을 안전하게 변환
-    또한 HTML 태그나 특수 문자가 포함된 티커를 안전하게 처리
-    """
-    # Windows 예약 파일명 목록
-    reserved_names = [
-        'CON', 'PRN', 'AUX', 'NUL',
-        'COM1', 'COM2', 'COM3', 'COM4', 'COM5', 'COM6', 'COM7', 'COM8', 'COM9',
-        'LPT1', 'LPT2', 'LPT3', 'LPT4', 'LPT5', 'LPT6', 'LPT7', 'LPT8', 'LPT9'
-    ]
-    
-    # NaN 값 처리
-    if ticker is None or pd.isna(ticker):
-        return "UNKNOWN"
-    
-    # 타입 확인 및 문자열로 변환 - 모든 타입을 문자열로 변환
-    if not isinstance(ticker, str):
-        try:
-            ticker = str(ticker)
-        except Exception as e:
-            print(f"⚠️ 티커 변환 오류: {e}, 기본값 사용")
-            return "UNKNOWN"
-    
-    # 유효한 티커 심볼 패턴 검사 (알파벳, 숫자, 일부 특수문자만 허용)
-    if not all(c.isalnum() or c in '.-$^' for c in ticker):
-        # 비정상적인 티커 감지 로그
-        print(f"⚠️ 비정상적인 티커 감지: {ticker}, 안전한 이름으로 변환")
-        
-        # 특정 패턴 감지 및 로깅
-        if '<' in ticker or '>' in ticker:
-            print(f"  - HTML 태그 패턴 감지")
-        if '{' in ticker or '}' in ticker or ':' in ticker or ';' in ticker:
-            print(f"  - CSS 스타일 패턴 감지")
-        if 'width' in ticker.lower() or 'position' in ticker.lower() or 'style' in ticker.lower():
-            print(f"  - CSS 속성 패턴 감지")
-        if '=' in ticker or '(' in ticker or ')' in ticker:
-            print(f"  - JavaScript 코드 패턴 감지")
-        if ticker.strip().startswith('//') or ticker.strip().startswith('/*'):
-            print(f"  - JavaScript 주석 패턴 감지")
-        
-        # 티커가 너무 길면 거부 (일반적인 티커는 1-5자)
-        if len(ticker) > 8:
-            print(f"  - 티커 길이 초과 ({len(ticker)}자)")
-            return "INVALID_TICKER_TOO_LONG"
-        
-        # 특수 문자를 언더스코어로 대체하고 알파벳과 숫자만 유지
-        safe_ticker = ''.join(c if c.isalnum() else '_' for c in ticker)
-        
-        # 언더스코어가 연속으로 있는 경우 하나로 통합
-        while '__' in safe_ticker:
-            safe_ticker = safe_ticker.replace('__', '_')
-        
-        # 앞뒤 언더스코어 제거
-        safe_ticker = safe_ticker.strip('_')
-        
-        # 빈 문자열이 되면 기본값 사용
-        if not safe_ticker:
-            return "INVALID_TICKER"
-        
-        # 안전한 티커가 원래 티커와 크게 다르면 거부
-        if len(safe_ticker) < len(ticker) * 0.5:
-            print(f"  - 변환 후 티커가 크게 변경됨 ({ticker} → {safe_ticker})")
-            return "INVALID_TICKER_TRANSFORMED"
-        
-        # 변환된 티커 반환
-        return safe_ticker
-    
-    # 티커가 너무 길면 거부 (일반적인 티커는 1-5자)
-    if len(ticker) > 8:
-        print(f"⚠️ 티커 길이 초과 ({len(ticker)}자): {ticker}")
-        return "INVALID_TICKER_TOO_LONG"
-    
-    # 대소문자 구분 없이 확인
-    try:
-        if ticker.upper() in reserved_names:
-            return f"STOCK_{ticker}"
-        return ticker
-    except Exception as e:
-        print(f"⚠️ 티커 처리 오류: {e}, 기본값 사용")
-        return "UNKNOWN"
 
 # NASDAQ, NYSE, ETF 티커 수집
 def load_nasdaq_ftp_symbols():
