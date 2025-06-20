@@ -23,9 +23,13 @@ from .indicators import (
     calculate_stochastic,
     calculate_track2_indicators
 )
+from utils.market_utils import (
+    get_vix_value,
+    calculate_sector_rs,
+    SECTOR_ETFS,
+)
 
-# 결과 저장 디렉토리
-IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
+# 결과 저장 디렉토리는 config에서 제공됨
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -45,11 +49,9 @@ class IPOInvestmentScreener:
         # IPO 데이터 로드 (실제 외부 데이터 소스 연동)
         self.ipo_data = self._load_ipo_data()
         
-        # VIX 계산
-        self.vix = self._get_vix()
-        
-        # 섹터 상대강도 계산
-        self.sector_rs = self._calculate_sector_rs()
+        # VIX 계산 및 섹터 상대강도 계산
+        self.vix = get_vix_value()
+        self.sector_rs = calculate_sector_rs(SECTOR_ETFS)
     
     def _load_ipo_data(self):
         """IPO 데이터 로드 (실제 외부 데이터 소스 연동)"""
@@ -97,70 +99,6 @@ class IPOInvestmentScreener:
         df['ipo_date'] = pd.to_datetime(df['ipo_date'])
         return df
 
-    def _get_vix(self):
-        """VIX 지수의 최신 값을 반환"""
-        vix_path = os.path.join(DATA_US_DIR, 'VIX.csv')
-        if os.path.exists(vix_path):
-            try:
-                vix = pd.read_csv(vix_path)
-                vix['date'] = pd.to_datetime(vix['date'])
-                vix = vix.sort_values('date')
-                if not vix.empty:
-                    return float(vix.iloc[-1]['close'])
-            except Exception as e:
-                logger.error(f"VIX 데이터 로드 오류: {e}")
-        return 20.0
-
-    def _calculate_sector_rs(self, sector_etfs):
-        """섹터별 상대 강도(RS) 계산"""
-        sector_rs = {}
-        try:
-            sp500_path = os.path.join(DATA_US_DIR, 'SPY.csv')
-            if not os.path.exists(sp500_path):
-                return {}
-
-            sp500 = pd.read_csv(sp500_path)
-            sp500['date'] = pd.to_datetime(sp500['date'])
-            sp500 = sp500.sort_values('date')
-
-            last_date = sp500['date'].max()
-            three_months_ago = last_date - timedelta(days=90)
-            sp500_3m = sp500[sp500['date'] >= three_months_ago]
-            if sp500_3m.empty or len(sp500_3m) < 2:
-                return {}
-
-            sp500_return = (sp500_3m['close'].iloc[-1] / sp500_3m['close'].iloc[0] - 1) * 100
-
-            for sector, etf in sector_etfs.items():
-                etf_path = os.path.join(DATA_US_DIR, f"{etf}.csv")
-                if not os.path.exists(etf_path):
-                    continue
-
-                etf_data = pd.read_csv(etf_path)
-                etf_data['date'] = pd.to_datetime(etf_data['date'])
-                etf_data = etf_data.sort_values('date')
-                etf_3m = etf_data[etf_data['date'] >= three_months_ago]
-                if etf_3m.empty or len(etf_3m) < 2:
-                    continue
-
-                etf_return = (etf_3m['close'].iloc[-1] / etf_3m['close'].iloc[0] - 1) * 100
-                if sp500_return > 0:
-                    rs_score = (etf_return / sp500_return) * 100
-                else:
-                    rs_score = (1 - (etf_return / sp500_return)) * 100 if etf_return < 0 else 100
-
-                sector_rs[sector] = {'rs_score': rs_score}
-
-            if sector_rs:
-                rs_scores = [v['rs_score'] for v in sector_rs.values()]
-                for sector in sector_rs:
-                    percentile = np.percentile(rs_scores,
-                                               np.searchsorted(np.sort(rs_scores), sector_rs[sector]['rs_score']) / len(rs_scores) * 100)
-                    sector_rs[sector]['percentile'] = percentile
-            return sector_rs
-        except Exception as e:
-            logger.error(f"섹터 RS 계산 오류: {e}")
-            return {}
     
     def _get_recent_ipos(self, days: int = 365) -> pd.DataFrame:
         """최근 IPO 종목을 ipo_data에서 필터링"""

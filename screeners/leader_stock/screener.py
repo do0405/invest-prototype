@@ -3,7 +3,6 @@
 
 import os
 import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 import logging
 
@@ -19,6 +18,7 @@ from utils.calc_utils import (
     check_sp500_condition,
 )
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
+from utils.market_utils import get_vix_value, calculate_sector_rs, SECTOR_ETFS
 
 # 결과 저장 디렉토리
 LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
@@ -132,24 +132,10 @@ class LeaderStockScreener:
             except Exception as e:
                 logger.warning(f"RS 메타데이터 로드 실패: {e}")
 
-    def _get_vix(self):
-        """최근 VIX 값을 반환"""
-        vix_path = os.path.join(DATA_US_DIR, 'VIX.csv')
-        if os.path.exists(vix_path):
-            try:
-                vix = pd.read_csv(vix_path)
-                vix['date'] = pd.to_datetime(vix['date'])
-                vix = vix.sort_values('date')
-                if not vix.empty:
-                    return float(vix.iloc[-1]['close'])
-            except Exception as e:
-                logger.warning(f"VIX 데이터 로드 오류: {e}")
-        return 20.0
-
     def _market_trend_ok(self):
         """SPY 200일 이동평균 및 VIX 조건 체크"""
         spy_ok = check_sp500_condition(DATA_US_DIR, ma_days=200)
-        vix_value = self._get_vix()
+        vix_value = get_vix_value()
         return spy_ok and vix_value < 30
 
     def _is_high_pe(self, ticker):
@@ -179,98 +165,14 @@ class LeaderStockScreener:
         score = rsi + roc5
         return max(min(score, 100), 0)
     
-    def calculate_sector_rs(self, sector_etfs):
-        """섹터별 상대 강도(RS) 계산"""
-        sector_rs = {}
-        
-        try:
-            # S&P 500 데이터 로드
-            sp500_path = os.path.join(DATA_US_DIR, 'SPY.csv')
-            if not os.path.exists(sp500_path):
-                logger.error(f"S&P 500 데이터 파일을 찾을 수 없습니다: {sp500_path}")
-                return {}
-                
-            sp500 = pd.read_csv(sp500_path)
-            sp500['date'] = pd.to_datetime(sp500['date'])
-            sp500 = sp500.sort_values('date')
-            
-            # 최근 3개월 S&P 500 성과
-            last_date = sp500['date'].max()
-            three_months_ago = last_date - timedelta(days=90)
-            sp500_3m = sp500[sp500['date'] >= three_months_ago]
-            
-            if sp500_3m.empty or len(sp500_3m) < 2:
-                logger.error("충분한 S&P 500 데이터가 없습니다.")
-                return {}
-                
-            sp500_return = (sp500_3m['close'].iloc[-1] / sp500_3m['close'].iloc[0] - 1) * 100
-            
-            # 각 섹터 ETF의 상대 강도 계산
-            for sector, etf in sector_etfs.items():
-                etf_path = os.path.join(DATA_US_DIR, f"{etf}.csv")
-                if not os.path.exists(etf_path):
-                    logger.warning(f"{sector} 섹터 ETF 데이터를 찾을 수 없습니다: {etf_path}")
-                    continue
-                    
-                etf_data = pd.read_csv(etf_path)
-                etf_data['date'] = pd.to_datetime(etf_data['date'])
-                etf_data = etf_data.sort_values('date')
-                
-                etf_3m = etf_data[etf_data['date'] >= three_months_ago]
-                if etf_3m.empty or len(etf_3m) < 2:
-                    logger.warning(f"{sector} 섹터 ETF의 충분한 데이터가 없습니다.")
-                    continue
-                    
-                etf_return = (etf_3m['close'].iloc[-1] / etf_3m['close'].iloc[0] - 1) * 100
-                
-                # 상대 강도 = (섹터 수익률 / S&P 500 수익률) * 100
-                # S&P 500 수익률이 음수인 경우 조정
-                if sp500_return > 0:
-                    rs_score = (etf_return / sp500_return) * 100
-                else:
-                    # S&P 500이 하락 중일 때는 덜 하락한 섹터가 더 강함
-                    rs_score = (1 - (etf_return / sp500_return)) * 100 if etf_return < 0 else 100
-                
-                sector_rs[sector] = {
-                    'etf': etf,
-                    'rs_score': rs_score,
-                    'return': etf_return
-                }
-            
-            # 상대 강도 점수에 따라 백분위 계산
-            rs_scores = [data['rs_score'] for data in sector_rs.values()]
-            for sector in sector_rs:
-                percentile = np.percentile(rs_scores, np.searchsorted(np.sort(rs_scores), sector_rs[sector]['rs_score']) / len(rs_scores) * 100)
-                sector_rs[sector]['percentile'] = percentile
-            
-            return sector_rs
-            
-        except Exception as e:
-            logger.error(f"섹터 상대 강도 계산 중 오류 발생: {e}")
-            return {}
     
     def screen_leader_stocks(self):
         """주도주 스크리닝 실행"""
         logger.info("주도주 투자 전략 스크리닝 시작...")
         logger.info(f"현재 시장 단계: {self.market_stage}")
         
-        # 섹터 ETF 정의
-        sector_etfs = {
-            'Technology': 'XLK',
-            'Healthcare': 'XLV',
-            'Consumer Discretionary': 'XLY',
-            'Financials': 'XLF',
-            'Communication Services': 'XLC',
-            'Industrials': 'XLI',
-            'Consumer Staples': 'XLP',
-            'Energy': 'XLE',
-            'Utilities': 'XLU',
-            'Real Estate': 'XLRE',
-            'Materials': 'XLB'
-        }
-        
         # 섹터 상대 강도 계산
-        sector_rs = self.calculate_sector_rs(sector_etfs)
+        sector_rs = calculate_sector_rs(SECTOR_ETFS)
         
         # 강한 섹터 선택 (상대 강도 점수 >= 70)
         strong_sectors = {sector: data for sector, data in sector_rs.items() 
@@ -296,7 +198,7 @@ class LeaderStockScreener:
                 ticker = extract_ticker_from_filename(file)
                 
                 # ETF 제외
-                if ticker in sector_etfs.values() or ticker in ['SPY', 'QQQ', 'DIA', 'IWM']:
+                if ticker in SECTOR_ETFS.values() or ticker in ['SPY', 'QQQ', 'DIA', 'IWM']:
                     continue
                 
                 # 데이터 로드
