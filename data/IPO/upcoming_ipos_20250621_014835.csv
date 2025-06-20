@@ -1,0 +1,5 @@
+ticker,company_name,date,price_range,volume,exchange,underwriters,source
+,"Jefferson Capital, Inc. / DE",6/26/2025,$15.00-17.00,"10,000,000",NASDAQ Global Select,,finance_calendars
+,Kandal M Venture Ltd,6/24/2025,$4.00-5.00,"2,000,000",NASDAQ Capital,,finance_calendars
+,Happy City Holdings Ltd,6/20/2025,$5.00-7.00,"1,000,000",NASDAQ Capital,,finance_calendars
+,"CapsoVision, Inc",7/01/2025,$5.00-5.50,"5,250,000",NASDAQ Capital,,finance_calendars_next_month
