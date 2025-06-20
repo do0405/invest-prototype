@@ -17,7 +17,7 @@ from config import (
 )
 from utils.calc_utils import get_us_market_today, calculate_rsi
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
-from screeners.leader_stock.screener import LeaderStockScreener
+from utils.market_utils import calculate_sector_rs, SECTOR_ETFS
 from .indicators import (
     calculate_macd,
     calculate_stochastic,
@@ -87,22 +87,8 @@ class MomentumSignalsScreener:
 
     def _load_sector_strength(self):
         """섹터별 상대 강도 계산"""
-        sector_etfs = {
-            'Technology': 'XLK',
-            'Healthcare': 'XLV',
-            'Consumer Discretionary': 'XLY',
-            'Financials': 'XLF',
-            'Communication Services': 'XLC',
-            'Industrials': 'XLI',
-            'Consumer Staples': 'XLP',
-            'Energy': 'XLE',
-            'Utilities': 'XLU',
-            'Real Estate': 'XLRE',
-            'Materials': 'XLB',
-        }
-        leader = LeaderStockScreener()
-        sector_rs = leader.calculate_sector_rs(sector_etfs)
-        self.all_sectors = list(sector_etfs.keys())
+        sector_rs = calculate_sector_rs(SECTOR_ETFS)
+        self.all_sectors = list(SECTOR_ETFS.keys())
         strong = {s: d for s, d in sector_rs.items() if d.get('percentile', 0) >= 60}
         return strong
     

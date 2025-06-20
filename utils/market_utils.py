@@ -11,7 +11,23 @@ import pandas as pd
 
 from config import DATA_US_DIR
 
-__all__ = ["get_vix_value", "calculate_sector_rs"]
+# Sector ETF mapping used across screeners
+SECTOR_ETFS = {
+    "Technology": "XLK",
+    "Healthcare": "XLV",
+    "Consumer Discretionary": "XLY",
+    "Financials": "XLF",
+    "Communication Services": "XLC",
+    "Industrials": "XLI",
+    "Consumer Staples": "XLP",
+    "Energy": "XLE",
+    "Utilities": "XLU",
+    "Real Estate": "XLRE",
+    "Materials": "XLB",
+}
+
+__all__ = ["get_vix_value", "calculate_sector_rs", "SECTOR_ETFS"]
+
 
 
 def get_vix_value(data_dir: str = DATA_US_DIR) -> float:

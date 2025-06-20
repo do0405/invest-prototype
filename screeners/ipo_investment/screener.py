@@ -22,12 +22,14 @@ from .indicators import (
     calculate_stochastic,
     calculate_track2_indicators
 )
-from utils.market_utils import get_vix_value, calculate_sector_rs
-from utils.calc_utils import get_us_market_today
+from utils.market_utils import (
+    get_vix_value,
+    calculate_sector_rs,
+    SECTOR_ETFS,
+)
 
 
-# 결과 저장 디렉토리
-IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
+# 결과 저장 디렉토리는 config에서 제공됨
 
 # 섹터 ETF 매핑 (relative strength 계산용)
 SECTOR_ETFS = {
@@ -112,14 +114,6 @@ class IPOInvestmentScreener:
         df = pd.DataFrame(sample_data)
         df['ipo_date'] = pd.to_datetime(df['ipo_date'])
         return df
-
-    def _get_vix(self):
-        """Wrapper around :func:`get_vix_value`."""
-        return get_vix_value()
-
-    def _calculate_sector_rs(self, sector_etfs):
-        """Wrapper around :func:`calculate_sector_rs`."""
-        return calculate_sector_rs(sector_etfs)
     
     def _get_recent_ipos(self, days: int = 365) -> pd.DataFrame:
         """최근 IPO 종목을 ipo_data에서 필터링"""

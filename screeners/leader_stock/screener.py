@@ -18,7 +18,8 @@ from utils.calc_utils import (
     check_sp500_condition,
 )
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
-from utils.market_utils import get_vix_value, calculate_sector_rs
+from utils.market_utils import get_vix_value, calculate_sector_rs, SECTOR_ETFS
+
 
 # 결과 저장 디렉토리
 LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
@@ -132,14 +133,11 @@ class LeaderStockScreener:
             except Exception as e:
                 logger.warning(f"RS 메타데이터 로드 실패: {e}")
 
-    def _get_vix(self):
-        """Wrapper around :func:`get_vix_value`."""
-        return get_vix_value()
 
     def _market_trend_ok(self):
         """SPY 200일 이동평균 및 VIX 조건 체크"""
         spy_ok = check_sp500_condition(DATA_US_DIR, ma_days=200)
-        vix_value = self._get_vix()
+        vix_value = get_vix_value()
         return spy_ok and vix_value < 30
 
     def _is_high_pe(self, ticker):
@@ -169,32 +167,15 @@ class LeaderStockScreener:
         score = rsi + roc5
         return max(min(score, 100), 0)
     
-    def calculate_sector_rs(self, sector_etfs):
-        """섹터별 상대 강도(RS) 계산."""
-        return calculate_sector_rs(sector_etfs)
+
     
     def screen_leader_stocks(self):
         """주도주 스크리닝 실행"""
         logger.info("주도주 투자 전략 스크리닝 시작...")
         logger.info(f"현재 시장 단계: {self.market_stage}")
         
-        # 섹터 ETF 정의
-        sector_etfs = {
-            'Technology': 'XLK',
-            'Healthcare': 'XLV',
-            'Consumer Discretionary': 'XLY',
-            'Financials': 'XLF',
-            'Communication Services': 'XLC',
-            'Industrials': 'XLI',
-            'Consumer Staples': 'XLP',
-            'Energy': 'XLE',
-            'Utilities': 'XLU',
-            'Real Estate': 'XLRE',
-            'Materials': 'XLB'
-        }
-        
         # 섹터 상대 강도 계산
-        sector_rs = self.calculate_sector_rs(sector_etfs)
+        sector_rs = calculate_sector_rs(SECTOR_ETFS)
         
         # 강한 섹터 선택 (상대 강도 점수 >= 70)
         strong_sectors = {sector: data for sector, data in sector_rs.items() 
@@ -220,7 +201,7 @@ class LeaderStockScreener:
                 ticker = extract_ticker_from_filename(file)
                 
                 # ETF 제외
-                if ticker in sector_etfs.values() or ticker in ['SPY', 'QQQ', 'DIA', 'IWM']:
+                if ticker in SECTOR_ETFS.values() or ticker in ['SPY', 'QQQ', 'DIA', 'IWM']:
                     continue
                 
                 # 데이터 로드
