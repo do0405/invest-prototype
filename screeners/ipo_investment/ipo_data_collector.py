@@ -16,12 +16,22 @@ logger = logging.getLogger(__name__)
 
 class IPODataCollector:
     """IPO 데이터 수집기"""
-    
+
     def __init__(self):
         self.sec_base_url = "https://www.sec.gov/files/company_tickers.json"
         self.headers = {
             'User-Agent': 'Investment Research Tool (contact@example.com)'
         }
+
+    def _safe_request(self, url: str) -> Optional[requests.Response]:
+        """Wrapper for HTTP GET with error handling."""
+        try:
+            resp = requests.get(url, headers=self.headers, timeout=10)
+            resp.raise_for_status()
+            return resp
+        except requests.RequestException as e:
+            logger.warning(f"HTTP 요청 실패: {e}")
+            return None
     
     def get_recent_ipos(self, days_back: int = 365) -> pd.DataFrame:
         """최근 IPO 목록을 가져옵니다.
@@ -35,10 +45,15 @@ class IPODataCollector:
         try:
             # SEC 데이터 수집 (실제 구현시 SEC EDGAR API 사용)
             ipo_data = self._get_sec_ipo_data(days_back)
-            
+
             # Yahoo Finance에서 추가 정보 수집
             enhanced_data = self._enhance_with_yahoo_data(ipo_data)
-            
+
+            if not enhanced_data.empty:
+                enhanced_data['ipo_date'] = pd.to_datetime(
+                    enhanced_data['ipo_date'], errors='coerce'
+                )
+
             return enhanced_data
             
         except Exception as e:
@@ -83,8 +98,10 @@ class IPODataCollector:
             # NASDAQ IPO 캘린더 URL
             url = "https://api.nasdaq.com/api/ipo/calendar"
 
-            response = requests.get(url, headers=self.headers, timeout=10)
-            response.raise_for_status()
+
+            response = self._safe_request(url)
+            if not response:
+                return []
             data = response.json()
 
             ipos = []
@@ -120,8 +137,12 @@ class IPODataCollector:
             from bs4 import BeautifulSoup
             
             url = "https://www.iposcoop.com/ipo-calendar/"
-            response = requests.get(url, headers=self.headers, timeout=10)
-            response.raise_for_status()
+
+            response = self._safe_request(url)
+            if not response:
+                return []
+            from bs4 import BeautifulSoup
+
             soup = BeautifulSoup(response.content, 'html.parser')
 
             ipos = []

@@ -62,6 +62,7 @@ __all__ = [
     "run_leader_stock_screener",
     "run_momentum_signals_screener",
     "run_ipo_investment_screener",
+    "run_qullamaggie_strategy_task",
     "run_market_regime_analysis",
     "load_strategy_module",
     "run_after_market_close",
@@ -367,6 +368,23 @@ def run_ipo_investment_screener() -> None:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ IPO 투자 전략 스크리너 실행 중 오류 발생: {e}")
+        print(traceback.format_exc())
+
+
+def run_qullamaggie_strategy_task(setups: Optional[list[str]] | None = None) -> None:
+    """Run the Qullamaggie trading strategy."""
+    try:
+        from qullamaggie import run_qullamaggie_strategy
+    except Exception as e:  # pragma: no cover - optional dependency
+        print(f"⚠️ 쿨라매기 모듈 로드 실패: {e}")
+        return
+
+    try:
+        print("\n📊 쿨라매기 전략 시작...")
+        run_qullamaggie_strategy(setups)
+        print("✅ 쿨라매기 전략 완료")
+    except Exception as e:  # pragma: no cover - runtime log
+        print(f"❌ 쿨라매기 전략 실행 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 

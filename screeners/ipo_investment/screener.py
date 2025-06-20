@@ -65,8 +65,9 @@ class IPOInvestmentScreener:
         try:
             # 데이터 매니저를 통해 실제 IPO 데이터 수집
             ipo_data = self.data_manager.get_ipo_data(days_back=365)
-            
+
             if not ipo_data.empty:
+                ipo_data['ipo_date'] = pd.to_datetime(ipo_data['ipo_date'], errors='coerce')
                 self.logger.info(f"IPO 데이터 로드 완료: {len(ipo_data)}개 종목")
                 return ipo_data
             else:
