@@ -29,6 +29,7 @@ SECTOR_ETFS = {
 __all__ = ["get_vix_value", "calculate_sector_rs", "SECTOR_ETFS"]
 
 
+
 def get_vix_value(data_dir: str = DATA_US_DIR) -> float:
     """Return latest VIX value from csv or 20.0 if unavailable."""
     vix_path = os.path.join(data_dir, "VIX.csv")

@@ -14,8 +14,7 @@ import sys
 from .data_manager import DataManager
 
 from config import (
-    IPO_INVESTMENT_RESULTS_DIR, 
-    IPO_INVESTMENT_CONFIG
+    IPO_INVESTMENT_RESULTS_DIR
 )
 from .indicators import (
     calculate_base_pattern,
@@ -29,7 +28,23 @@ from utils.market_utils import (
     SECTOR_ETFS,
 )
 
+
 # 결과 저장 디렉토리는 config에서 제공됨
+
+# 섹터 ETF 매핑 (relative strength 계산용)
+SECTOR_ETFS = {
+    'Technology': 'XLK',
+    'Healthcare': 'XLV',
+    'Consumer Discretionary': 'XLY',
+    'Financials': 'XLF',
+    'Communication Services': 'XLC',
+    'Industrials': 'XLI',
+    'Consumer Staples': 'XLP',
+    'Energy': 'XLE',
+    'Utilities': 'XLU',
+    'Real Estate': 'XLRE',
+    'Materials': 'XLB',
+}
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -38,10 +53,11 @@ logger = logging.getLogger(__name__)
 
 class IPOInvestmentScreener:
     """IPO 투자 전략 스크리너 클래스"""
-    
+
     def __init__(self):
         """IPO Investment 스크리너 초기화"""
         self.logger = logging.getLogger(__name__)
+        self.today = get_us_market_today()
         
         # 데이터 매니저 초기화
         self.data_manager = DataManager()
@@ -98,7 +114,6 @@ class IPOInvestmentScreener:
         df = pd.DataFrame(sample_data)
         df['ipo_date'] = pd.to_datetime(df['ipo_date'])
         return df
-
     
     def _get_recent_ipos(self, days: int = 365) -> pd.DataFrame:
         """최근 IPO 종목을 ipo_data에서 필터링"""

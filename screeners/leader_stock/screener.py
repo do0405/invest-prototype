@@ -20,6 +20,7 @@ from utils.calc_utils import (
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
 from utils.market_utils import get_vix_value, calculate_sector_rs, SECTOR_ETFS
 
+
 # 결과 저장 디렉토리
 LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
 
@@ -132,6 +133,7 @@ class LeaderStockScreener:
             except Exception as e:
                 logger.warning(f"RS 메타데이터 로드 실패: {e}")
 
+
     def _market_trend_ok(self):
         """SPY 200일 이동평균 및 VIX 조건 체크"""
         spy_ok = check_sp500_condition(DATA_US_DIR, ma_days=200)
@@ -165,6 +167,7 @@ class LeaderStockScreener:
         score = rsi + roc5
         return max(min(score, 100), 0)
     
+
     
     def screen_leader_stocks(self):
         """주도주 스크리닝 실행"""
