@@ -98,6 +98,7 @@ class IPODataCollector:
             # NASDAQ IPO 캘린더 URL
             url = "https://api.nasdaq.com/api/ipo/calendar"
 
+
             response = self._safe_request(url)
             if not response:
                 return []
@@ -136,10 +137,12 @@ class IPODataCollector:
             from bs4 import BeautifulSoup
             
             url = "https://www.iposcoop.com/ipo-calendar/"
+
             response = self._safe_request(url)
             if not response:
                 return []
             from bs4 import BeautifulSoup
+
             soup = BeautifulSoup(response.content, 'html.parser')
 
             ipos = []
