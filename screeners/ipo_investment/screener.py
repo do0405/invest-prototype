@@ -31,20 +31,7 @@ from utils.market_utils import (
 
 # 결과 저장 디렉토리는 config에서 제공됨
 
-# 섹터 ETF 매핑 (relative strength 계산용)
-SECTOR_ETFS = {
-    'Technology': 'XLK',
-    'Healthcare': 'XLV',
-    'Consumer Discretionary': 'XLY',
-    'Financials': 'XLF',
-    'Communication Services': 'XLC',
-    'Industrials': 'XLI',
-    'Consumer Staples': 'XLP',
-    'Energy': 'XLE',
-    'Utilities': 'XLU',
-    'Real Estate': 'XLRE',
-    'Materials': 'XLB',
-}
+
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')

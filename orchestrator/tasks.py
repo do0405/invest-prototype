@@ -17,7 +17,7 @@ except ImportError:  # pragma: no cover - optional dependency
 from portfolio.manager import create_portfolio_manager
 
 from data_collector import collect_data
-from utils import ensure_dir
+from utils import ensure_dir, create_required_dirs
 from utils.market_regime_indicator import analyze_market_regime
 from screeners.markminervini.filter_stock import run_integrated_screening
 from screeners.markminervini.advanced_financial import run_advanced_financial_screening
@@ -183,19 +183,22 @@ def check_strategy_file_status() -> List[str]:
 
 def ensure_directories() -> None:
     """Create required directories for the application."""
-    directories = [
-        RESULTS_DIR,
+    # 기본 디렉터리 생성
+    create_required_dirs()
+
+    # 추가 디렉터리 목록
+    additional = [
         SCREENER_RESULTS_DIR,
         PORTFOLIO_BUY_DIR,
         PORTFOLIO_SELL_DIR,
-        DATA_US_DIR,
         OPTION_VOLATILITY_DIR,
         MARKET_REGIME_DIR,
         os.path.join(RESULTS_DIR, "leader_stock"),
         os.path.join(RESULTS_DIR, "momentum_signals"),
         os.path.join(RESULTS_DIR, "ipo_investment"),
     ]
-    for directory in directories:
+
+    for directory in additional:
         ensure_dir(directory)
 
 
