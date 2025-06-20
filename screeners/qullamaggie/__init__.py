@@ -2,7 +2,7 @@
 # 쿨라매기 매매법 알고리즘 모듈
 
 # 주요 모듈 임포트
-from .screener import (
+from .core import (
     screen_breakout_setup,
     screen_episode_pivot_setup,
     screen_parabolic_short_setup,
