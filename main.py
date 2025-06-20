@@ -110,7 +110,6 @@ def main():
         if args.force_screening:
             print("\n🔄 2단계: 강제 스크리닝 모드...")
             run_all_screening_processes()
-            run_pattern_analysis()
             execute_strategies()
             run_volatility_skew_portfolio()
         else:

@@ -40,6 +40,7 @@ from config import (
     ADVANCED_FINANCIAL_RESULTS_PATH,
     ALPHA_VANTAGE_API_KEY,
     MARKET_REGIME_DIR,
+    MARKMINERVINI_RESULTS_DIR,
 )
 
 # Portfolio manager utilities
@@ -215,8 +216,8 @@ def run_pattern_analysis() -> None:
     """Run pattern analysis on previously screened tickers."""
     try:
         print("\n📊 패턴 분석 시작...")
-        output_dir = os.path.join(RESULTS_DIR, "results2")
-        analyze_tickers_from_results(RESULTS_DIR, DATA_US_DIR, output_dir)
+        output_dir = MARKMINERVINI_RESULTS_DIR
+        analyze_tickers_from_results(MARKMINERVINI_RESULTS_DIR, DATA_US_DIR, output_dir)
         print("✅ 패턴 분석 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 패턴 분석 중 오류 발생: {e}")
@@ -229,6 +230,7 @@ def collect_data_main() -> None:
     try:
         collect_data()
         run_market_breadth_collection()
+        run_market_regime_analysis()
         print("✅ 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 데이터 수집 중 오류 발생: {e}")
@@ -251,29 +253,41 @@ def run_all_screening_processes() -> None:
         track_new_tickers(ADVANCED_FINANCIAL_RESULTS_PATH)
         print("✅ 3단계: 새로운 티커 추적 완료.")
 
-        print("\n⏳ 4단계: 변동성 스큐 스크리닝 실행 중...")
+        print("\n⏳ 4단계: 패턴 분석 실행 중...")
+        run_pattern_analysis()
+        print("✅ 4단계: 패턴 분석 완료.")
+
+        print("\n⏳ 5단계: 변동성 스큐 스크리닝 실행 중...")
         run_volatility_skew_portfolio()
-        print("✅ 4단계: 변동성 스큐 스크리닝 완료.")
+        print("✅ 5단계: 변동성 스큐 스크리닝 완료.")
 
-        print("\n⏳ 5단계: US Setup 스크리닝 실행 중...")
+        print("\n⏳ 6단계: US Setup 스크리닝 실행 중...")
         run_setup_screener()
-        print("✅ 5단계: US Setup 스크리닝 완료.")
+        print("✅ 6단계: US Setup 스크리닝 완료.")
 
-        print("\n⏳ 6단계: US Gainers 스크리닝 실행 중...")
+        print("\n⏳ 7단계: US Gainers 스크리닝 실행 중...")
         run_gainers_screener()
-        print("✅ 6단계: US Gainers 스크리닝 완료.")
+        print("✅ 7단계: US Gainers 스크리닝 완료.")
 
-        print("\n⏳ 7단계: 주도주 투자 전략 스크리닝 실행 중...")
+        print("\n⏳ 8단계: 주도주 투자 전략 스크리닝 실행 중...")
         run_leader_stock_screener()
-        print("✅ 7단계: 주도주 투자 전략 스크리닝 완료.")
+        print("✅ 8단계: 주도주 투자 전략 스크리닝 완료.")
 
-        print("\n⏳ 8단계: 상승 모멘텀 신호 스크리닝 실행 중...")
+        print("\n⏳ 9단계: 상승 모멘텀 신호 스크리닝 실행 중...")
         run_momentum_signals_screener()
-        print("✅ 8단계: 상승 모멘텀 신호 스크리닝 완료.")
+        print("✅ 9단계: 상승 모멘텀 신호 스크리닝 완료.")
 
-        print("\n⏳ 9단계: IPO 투자 전략 스크리닝 실행 중...")
+        print("\n⏳ 10단계: IPO 투자 전략 스크리닝 실행 중...")
         run_ipo_investment_screener()
-        print("✅ 9단계: IPO 투자 전략 스크리닝 완료.")
+        print("✅ 10단계: IPO 투자 전략 스크리닝 완료.")
+
+        print("\n⏳ 11단계: 쿨라매기 전략 실행 중...")
+        run_qullamaggie_strategy_task()
+        print("✅ 11단계: 쿨라매기 전략 완료.")
+
+        print("\n⏳ 12단계: 시장 국면 분석 실행 중...")
+        run_market_regime_analysis()
+        print("✅ 12단계: 시장 국면 분석 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:  # pragma: no cover - runtime log
