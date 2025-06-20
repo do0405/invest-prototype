@@ -18,9 +18,7 @@ sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'por
 
 from orchestrator.tasks import (
     execute_strategies,
-    check_strategy_file_status,
     ensure_directories,
-    run_pattern_analysis,
     collect_data_main,
     run_all_screening_processes,
     run_volatility_skew_portfolio,
@@ -107,22 +105,9 @@ def main():
         else:
             print("\n⏭️ 데이터 수집 건너뛰기")
 
-        if args.force_screening:
-            print("\n🔄 2단계: 강제 스크리닝 모드...")
-            run_all_screening_processes()
-            run_pattern_analysis()
-            execute_strategies()
-            run_volatility_skew_portfolio()
-        else:
-            print("\n🔍 2단계: 전략 파일 상태 확인 및 조건부 스크리닝")
-            strategies_need_screening = check_strategy_file_status()
-            if strategies_need_screening:
-                print(f"\n🚨 스크리닝이 필요한 전략: {', '.join(strategies_need_screening)}")
-                run_all_screening_processes()
-                execute_strategies(strategies_need_screening)
-            else:
-                print("\n📊 패턴 분석 실행")
-                run_pattern_analysis()
+        print("\n🔄 2단계: 스크리닝 실행 중...")
+        run_all_screening_processes()
+        execute_strategies()
 
         print("\n🏦 3단계: 포트폴리오 관리 실행")
         create_portfolio_manager()

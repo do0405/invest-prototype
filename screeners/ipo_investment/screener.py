@@ -411,6 +411,7 @@ class IPOInvestmentScreener:
             base_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR, 
                                            f"ipo_base_{self.today.strftime('%Y%m%d')}.csv")
             base_df.to_csv(base_output_file, index=False)
+            base_df.to_json(base_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"IPO 베이스 패턴 결과 저장 완료: {base_output_file} ({len(base_df)}개 종목)")
         else:
             logger.info("IPO 베이스 패턴 조건을 만족하는 종목이 없습니다.")
@@ -420,6 +421,7 @@ class IPOInvestmentScreener:
             breakout_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
                                               f"ipo_breakout_{self.today.strftime('%Y%m%d')}.csv")
             breakout_df.to_csv(breakout_output_file, index=False)
+            breakout_df.to_json(breakout_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"IPO 브레이크아웃 결과 저장 완료: {breakout_output_file} ({len(breakout_df)}개 종목)")
         else:
             logger.info("IPO 브레이크아웃 조건을 만족하는 종목이 없습니다.")
@@ -428,6 +430,7 @@ class IPOInvestmentScreener:
             track1_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
                                              f"ipo_track1_{self.today.strftime('%Y%m%d')}.csv")
             track1_df.to_csv(track1_output_file, index=False)
+            track1_df.to_json(track1_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"Track1 결과 저장 완료: {track1_output_file} ({len(track1_df)}개 종목)")
         else:
             logger.info("Track1 조건을 만족하는 종목이 없습니다.")
@@ -436,6 +439,7 @@ class IPOInvestmentScreener:
             track2_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
                                              f"ipo_track2_{self.today.strftime('%Y%m%d')}.csv")
             track2_df.to_csv(track2_output_file, index=False)
+            track2_df.to_json(track2_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"Track2 결과 저장 완료: {track2_output_file} ({len(track2_df)}개 종목)")
         else:
             logger.info("Track2 조건을 만족하는 종목이 없습니다.")

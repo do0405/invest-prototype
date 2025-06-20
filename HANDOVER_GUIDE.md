@@ -44,7 +44,6 @@ invest_prototype/
 │   ├── advanced_financial.py   # 재무 스크리닝
 │   ├── ticker_tracker.py       # 종목 추적
 │   ├── pattern_detection.py    # 패턴 감지
-│   └── filter_tickers.py       # 종목 필터링
 ├──
 ├── 📁 long_short_portfolio/    # 포트폴리오 시스템
 │   ├── strategy1.py            # 트렌드 하이 모멘텀
@@ -54,7 +53,6 @@ invest_prototype/
 │   ├── strategy5.py            # 스몰캡 모멘텀
 │   ├── strategy6.py            # 디펜시브 모멘텀
 │   ├── portfolio_integration.py # 포트폴리오 통합
-│   └── run_screener.py         # 스크리너 실행기
 ├──
 ├── 📁 portfolio_management/    # 포트폴리오 관리
 │   ├── portfolio_manager.py    # 포트폴리오 매니저
@@ -239,7 +237,6 @@ python main.py --integrated
 3. 포트폴리오 업데이트 (저녁)
 
 cd long_short_portfolio
-python run_screener.py
 python portfolio_integration.py
 
 성과 모니터링 (다음날 아침)

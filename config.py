@@ -23,6 +23,8 @@ LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
 MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, 'momentum_signals')
 IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
 DATA_US_DIR = os.path.join(DATA_DIR, 'us')  # 미국 주식 데이터 디렉토리
+# IPO 데이터 디렉토리
+IPO_DATA_DIR = os.path.join(DATA_DIR, 'ipo')
 # 시장 폭(Breadth) 지표 및 옵션 데이터 디렉토리
 BREADTH_DATA_DIR = os.path.join(DATA_DIR, 'breadth')
 OPTION_DATA_DIR = os.path.join(DATA_DIR, 'options')

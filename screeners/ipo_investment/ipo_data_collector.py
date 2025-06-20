@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Union
 import time
 import os
 import json
+from config import IPO_DATA_DIR
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,15 +38,18 @@ class IPODataCollector:
         self.fmp_base_url = "https://financialmodelingprep.com/api/v3"
         self.sec_base_url = "https://www.sec.gov/files/company_tickers.json"
 
-    def _safe_request(self, url: str, params: Optional[Dict] = None) -> Optional[requests.Response]:
-        """안전한 HTTP 요청 래퍼"""
-        try:
-            resp = requests.get(url, headers=self.headers, params=params, timeout=10)
-            resp.raise_for_status()
-            return resp
-        except requests.RequestException as e:
-            logger.warning(f"HTTP 요청 실패: {e}")
-            return None
+    def _safe_request(self, url: str, params: Optional[Dict] = None,
+                      retries: int = 3, delay: float = 1.0) -> Optional[requests.Response]:
+        """안전한 HTTP 요청 래퍼 (재시도 및 지연 포함)"""
+        for attempt in range(1, retries + 1):
+            try:
+                resp = requests.get(url, headers=self.headers, params=params, timeout=10)
+                resp.raise_for_status()
+                return resp
+            except requests.RequestException as e:
+                logger.warning(f"HTTP 요청 실패 (시도 {attempt}/{retries}): {e}")
+                time.sleep(delay)
+        return None
     
     def get_recent_ipos(self, days_back: int = 365) -> pd.DataFrame:
         """최근 IPO 목록을 가져옵니다.
@@ -62,29 +66,34 @@ class IPODataCollector:
             # 여러 소스에서 IPO 데이터 수집
             ipo_data = []
             
-            # 1. Finnhub IPO 캘린더
+            # 1. NASDAQ 공식 API 또는 finance_calendars
+            nasdaq_data = self._get_nasdaq_ipo_data(days_back)
+            ipo_data.extend(nasdaq_data)
+            logger.info(f"NASDAQ에서 {len(nasdaq_data)}개 IPO 수집")
+
+            # 2. Investpy (Investing.com)
+            investpy_data = self._get_investpy_ipo_data(days_back)
+            ipo_data.extend(investpy_data)
+            logger.info(f"Investing.com에서 {len(investpy_data)}개 IPO 수집")
+
+            # 3. Finnhub IPO 캘린더
             if self.finnhub_api_key:
                 finnhub_data = self._get_finnhub_ipo_data(days_back)
                 ipo_data.extend(finnhub_data)
                 logger.info(f"Finnhub에서 {len(finnhub_data)}개 IPO 수집")
-            
-            # 2. Financial Modeling Prep IPO 캘린더
+
+            # 4. Financial Modeling Prep IPO 캘린더
             if self.fmp_api_key:
                 fmp_data = self._get_fmp_ipo_data(days_back)
                 ipo_data.extend(fmp_data)
                 logger.info(f"FMP에서 {len(fmp_data)}개 IPO 수집")
-            
-            # 3. NASDAQ IPO 캘린더 (무료)
-            nasdaq_data = self._get_nasdaq_ipo_data(days_back)
-            ipo_data.extend(nasdaq_data)
-            logger.info(f"NASDAQ에서 {len(nasdaq_data)}개 IPO 수집")
-            
-            # 4. SEC EDGAR 데이터
+
+            # 5. SEC EDGAR 데이터
             sec_data = self._get_sec_edgar_ipo_data(days_back)
             ipo_data.extend(sec_data)
             logger.info(f"SEC EDGAR에서 {len(sec_data)}개 IPO 수집")
-            
-            # 5. Yahoo Finance 데이터
+
+            # 6. Yahoo Finance 데이터
             yahoo_data = self._get_yahoo_finance_ipo_data(days_back)
             ipo_data.extend(yahoo_data)
             logger.info(f"Yahoo Finance에서 {len(yahoo_data)}개 IPO 수집")
@@ -192,52 +201,97 @@ class IPODataCollector:
             logger.warning(f"FMP IPO 데이터 수집 실패: {e}")
             return []
     
-    def _get_nasdaq_ipo_data(self, days_back: int) -> List[Dict]:
-        """NASDAQ IPO 캘린더에서 데이터 수집 (무료)"""
-        try:
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=days_back)
-            
-            # NASDAQ IPO 캘린더 API (무료)
-            url = "https://api.nasdaq.com/api/ipo/calendar"
-            params = {
-                'date': end_date.strftime('%Y-%m-%d')
-            }
-            
-            resp = self._safe_request(url, params)
-            if not resp:
-                return []
-                
-            data = resp.json()
-            ipo_list = []
-            
-            if 'data' in data and 'rows' in data['data']:
-                for row in data['data']['rows']:
+    
+        def _get_nasdaq_ipo_data(self, days_back: int) -> List[Dict]:
+            """NASDAQ IPO 캘린더에서 데이터 수집."""
+            try:
+                end_date = datetime.now()
+                start_date = end_date - timedelta(days=days_back)
+
+                try:
+                    from finance_calendars import nasdaq as nasdaq_cal
+                except Exception:
+                    nasdaq_cal = None
+
+                ipo_list: List[Dict] = []
+
+                if nasdaq_cal and hasattr(nasdaq_cal, "get_ipo_calendar"):
                     try:
-                        ipo_date = datetime.strptime(row.get('expectedPriceDate', ''), '%m/%d/%Y')
-                        if start_date <= ipo_date <= end_date:
+                        df = nasdaq_cal.get_ipo_calendar(start=start_date.date(), end=end_date.date())
+                        for _, row in df.iterrows():
                             ipo_list.append({
                                 'symbol': row.get('symbol', ''),
-                                'company_name': row.get('companyName', ''),
-                                'ipo_date': ipo_date.strftime('%Y-%m-%d'),
-                                'ipo_price': self._parse_number(row.get('proposedSharePrice', '0')),
-                                'market_cap': 0,  # 계산 필요
-                                'sector': '',
-                                'industry': '',
+                                'company_name': row.get('company', ''),
+                                'ipo_date': row.get('date', ''),
+                                'ipo_price': self._parse_number(row.get('price', '0')),
+                                'market_cap': 0,
+                                'sector': row.get('sector', ''),
+                                'industry': row.get('industry', ''),
                                 'volume': 0,
-                                'source': 'nasdaq'
+                                'source': 'nasdaq_official'
                             })
-                    except (ValueError, KeyError) as e:
-                        logger.debug(f"NASDAQ 데이터 파싱 오류: {e}")
-                        continue
-            
+                        return ipo_list
+                    except Exception as e:
+                        logger.warning(f"finance_calendars 사용 실패: {e}")
+
+                url = "https://api.nasdaq.com/api/ipo/calendar"
+                params = {'date': end_date.strftime('%Y-%m-%d')}
+                resp = self._safe_request(url, params, retries=3, delay=2)
+                if resp:
+                    data = resp.json()
+                    if 'data' in data and 'rows' in data['data']:
+                        for row in data['data']['rows']:
+                            try:
+                                ipo_date = datetime.strptime(row.get('expectedPriceDate', ''), '%m/%d/%Y')
+                                if start_date <= ipo_date <= end_date:
+                                    ipo_list.append({
+                                        'symbol': row.get('symbol', ''),
+                                        'company_name': row.get('companyName', ''),
+                                        'ipo_date': ipo_date.strftime('%Y-%m-%d'),
+                                        'ipo_price': self._parse_number(row.get('proposedSharePrice', '0')),
+                                        'market_cap': 0,
+                                        'sector': '',
+                                        'industry': '',
+                                        'volume': 0,
+                                        'source': 'nasdaq'
+                                    })
+                            except (ValueError, KeyError) as e:
+                                logger.debug(f"NASDAQ 데이터 파싱 오류: {e}")
+                                continue
+
+                return ipo_list
+            except Exception as e:
+                logger.warning(f"NASDAQ IPO 데이터 수집 실패: {e}")
+
+                return []
+    def _get_investpy_ipo_data(self, days_back: int) -> List[Dict]:
+        """Investing.com 데이터를 사용한 IPO 수집"""
+        try:
+            import investpy
+
+            end_date = datetime.now().date()
+            start_date = end_date - timedelta(days=days_back)
+
+            df = investpy.ipo.get_ipo_calendar(from_date=start_date.strftime('%d/%m/%Y'),
+                                               to_date=end_date.strftime('%d/%m/%Y'))
+            ipo_list: List[Dict] = []
+            for _, row in df.iterrows():
+                ipo_list.append({
+                    'symbol': row.get('symbol', ''),
+                    'company_name': row.get('name', ''),
+                    'ipo_date': row.get('date', ''),
+                    'ipo_price': self._parse_number(row.get('price', 0)),
+                    'market_cap': 0,
+                    'sector': row.get('sector', ''),
+                    'industry': row.get('industry', ''),
+                    'volume': 0,
+                    'source': 'investpy'
+                })
+            time.sleep(0.5)
             return ipo_list
-            
         except Exception as e:
-            logger.warning(f"NASDAQ IPO 데이터 수집 실패: {e}")
+            logger.warning(f"Investpy IPO 데이터 수집 실패: {e}")
             return []
-    
-    def _get_sec_edgar_ipo_data(self, days_back: int) -> List[Dict]:
         """SEC EDGAR에서 최근 상장 기업 데이터 수집"""
         try:
             # SEC의 최근 등록 기업 목록
@@ -401,7 +455,7 @@ class IPODataCollector:
         """
         try:
             # 저장 디렉터리 생성
-            save_dir = r"c:\Users\HOME\Desktop\invest_prototype\data\IPO"
+            save_dir = IPO_DATA_DIR
             os.makedirs(save_dir, exist_ok=True)
             
             # 타임스탬프 추가
