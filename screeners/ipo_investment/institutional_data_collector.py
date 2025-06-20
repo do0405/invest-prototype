@@ -49,15 +49,14 @@ class InstitutionalDataCollector:
             institutional_holders = ticker.institutional_holders
             
             if institutional_holders is not None and not institutional_holders.empty:
-                # 데이터 정제 및 추가 정보 수집
                 enhanced_data = self._enhance_institutional_data(institutional_holders, symbol)
                 return enhanced_data
             else:
-                return self._get_sample_institutional_data(symbol)
+                return pd.DataFrame()
                 
         except Exception as e:
             logger.error(f"{symbol} 기관 보유 데이터 수집 중 오류: {e}")
-            return self._get_sample_institutional_data(symbol)
+            return pd.DataFrame()
     
     def get_institutional_flow(self, symbol: str, days_back: int = 30) -> Dict:
         """기관 자금 흐름을 분석합니다.
@@ -187,42 +186,13 @@ class InstitutionalDataCollector:
         
         return max_consecutive
     
-    def _get_sample_institutional_data(self, symbol: str) -> pd.DataFrame:
-        """샘플 기관 보유 데이터를 반환합니다."""
-        sample_data = {
-            'Holder': [
-                'Vanguard Group Inc',
-                'BlackRock Inc.',
-                'State Street Corporation',
-                'Fidelity Management & Research Company LLC',
-                'Geode Capital Management LLC'
-            ],
-            'Shares': [50000000, 45000000, 30000000, 25000000, 20000000],
-            'Date Reported': ['2024-03-31'] * 5,
-            'Value': [1500000000, 1350000000, 900000000, 750000000, 600000000],
-            'Institution_Type': ['Asset Manager', 'Asset Manager', 'Asset Manager', 'Asset Manager', 'Asset Manager'],
-            'Ownership_Percentage': [29.41, 26.47, 17.65, 14.71, 11.76],
-            'Estimated_Change': ['Hold', 'Buy', 'Hold', 'Sell', 'Buy']
-        }
-        
-        return pd.DataFrame(sample_data)
     
     def get_insider_trading(self, symbol: str, months_back: int = 6) -> pd.DataFrame:
         """임원 거래 내역을 가져옵니다."""
         try:
-            # 실제 구현에서는 SEC Form 4 파일링 데이터 사용
-            # 현재는 샘플 데이터 반환
-            sample_insider_data = {
-                'Date': ['2024-01-15', '2024-02-20', '2024-03-10'],
-                'Insider': ['CEO John Smith', 'CFO Jane Doe', 'Director Bob Johnson'],
-                'Transaction': ['Sale', 'Purchase', 'Sale'],
-                'Shares': [10000, 5000, 2000],
-                'Price': [150.0, 145.0, 160.0],
-                'Value': [1500000, 725000, 320000]
-            }
-            
-            return pd.DataFrame(sample_insider_data)
-            
+            # TODO: SEC Form 4 등 외부 데이터를 연동하여 임원 거래 내역을 수집
+            return pd.DataFrame()
+
         except Exception as e:
             logger.error(f"{symbol} 임원 거래 데이터 수집 중 오류: {e}")
             return pd.DataFrame()

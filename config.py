@@ -104,6 +104,9 @@ SKEW_EXPECTED_RETURNS = {
 YAHOO_FINANCE_MAX_RETRIES = 3  # Yahoo Finance API 최대 재시도 횟수
 YAHOO_FINANCE_DELAY = 1        # Yahoo Finance API 재시도 간 지연 시간(초)
 
+# Financial Modeling Prep API (재무제표 보강용)
+FMP_API_KEY = os.environ.get("FMP_API_KEY", "demo")
+
 # Alpha Vantage API 설정 (옵션 데이터용)
 ALPHA_VANTAGE_API_KEY = "YOUR_ALPHA_VANTAGE_KEY"  # Alpha Vantage API 키
 ALPHA_VANTAGE_MAX_REQUESTS_PER_DAY = 500          # 무료 플랜 일일 요청 제한

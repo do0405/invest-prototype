@@ -10,6 +10,65 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Dict, Any
+import pandas as pd
+
+from screeners.momentum_signals.indicators import (
+    calculate_moving_averages,
+    calculate_volume_indicators,
+    detect_cup_and_handle,
+)
+
+
+def momentum_signal(df: pd.DataFrame, rs_score: float, sector_rs: float) -> Dict[str, bool]:
+    """Check Stan Weinstein Stage 2A momentum signal.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        Price dataframe containing ``close`` and ``volume`` columns.
+    rs_score : float
+        Relative strength score of the stock.
+    sector_rs : float
+        Relative strength percentile of the stock's sector.
+
+    Returns
+    -------
+    Dict[str, bool]
+        Dictionary with each condition and overall ``signal`` key.
+    """
+
+    df = df.copy()
+    if "sma_30w" not in df.columns:
+        df = calculate_moving_averages(df)
+    if "volume_sma_20" not in df.columns:
+        df = calculate_volume_indicators(df)
+
+    cond_30w = len(df) >= 3 and all(
+        df.iloc[-i]["close"] > df.iloc[-i]["sma_30w"] for i in range(1, 4)
+    )
+    cond_stage2a = (
+        len(df) >= 50
+        and df.iloc[-1]["sma_10"] > df.iloc[-10]["sma_10"]
+        and df.iloc[-1]["sma_30w"] >= df.iloc[-10]["sma_30w"]
+    )
+    cond_volume = (
+        df.iloc[-1]["volume"] >= df.iloc[-1]["volume_sma_20"] * 1.5
+    )
+    cond_rs = rs_score >= 70
+    cond_sector = sector_rs >= 60
+    cond_pattern = detect_cup_and_handle(df)
+
+    signal = cond_30w and cond_stage2a and cond_volume and cond_rs and cond_sector
+
+    return {
+        "above_30w_3d": cond_30w,
+        "stage_2a": cond_stage2a,
+        "volume_surge": cond_volume,
+        "rs_rank": cond_rs,
+        "sector_strong": cond_sector,
+        "cup_handle_breakout": cond_pattern,
+        "signal": signal,
+    }
 
 
 @dataclass

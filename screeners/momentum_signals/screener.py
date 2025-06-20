@@ -18,6 +18,7 @@ from config import (
 from utils.calc_utils import get_us_market_today, calculate_rsi
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
 from utils.market_utils import calculate_sector_rs, SECTOR_ETFS
+from utils.quantified_trading_rules import momentum_signal
 from .indicators import (
     calculate_macd,
     calculate_stochastic,
@@ -266,6 +267,15 @@ class MomentumSignalsScreener:
                 ad_max = df['ad'].iloc[-50:].max() if len(df) >= 50 else df['ad'].max()
                 signals['ad_new_high'] = recent['ad'] >= ad_max
                 
+                # 추가 규칙 기반 모멘텀 시그널 검사
+                rule_result = momentum_signal(
+                    df,
+                    rs_score,
+                    self.strong_sectors.get(sector, {}).get('percentile', 0),
+                )
+                if not rule_result["signal"]:
+                    continue
+
                 # 모멘텀 점수 계산 (각 신호당 1점)
                 momentum_score = sum(signals.values())
 
@@ -302,11 +312,14 @@ class MomentumSignalsScreener:
                         'adx': recent['adx'],
                         'date': self.today.strftime('%Y-%m-%d')
                     }
-                    
+
                     # 각 신호 결과 추가
                     for signal_name, signal_value in signals.items():
                         result[signal_name] = signal_value
-                    
+
+                    # 규칙 기반 결과 병합
+                    result.update(rule_result)
+
                     results.append(result)
             
             except Exception as e:
