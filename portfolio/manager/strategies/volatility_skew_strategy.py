@@ -75,7 +75,7 @@ class VolatilitySkewPortfolioStrategy:
         portfolio_signals = []
         for stock in selected_stocks:
             base_weight = 1.0 / len(selected_stocks)
-            confidence_multiplier = stock.get('confidence_score', 1.0)
+            confidence_multiplier = stock.get('confidence_numeric', stock.get('confidence_score', 100)) / 100
             final_weight = min(base_weight * confidence_multiplier, self.max_position_size)
 
             portfolio_signals.append({

@@ -40,6 +40,11 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
                     'quarterly_eps_growth': 0,
                     'annual_eps_growth': 0,
                     'eps_growth_acceleration': False,
+                    'revenue_growth_acceleration': False,
+                    'net_margin_improved': False,
+                    'eps_3q_accel': False,
+                    'sales_3q_accel': False,
+                    'margin_3q_accel': False,
                     'quarterly_revenue_growth': 0,
                     'annual_revenue_growth': 0,
                     'quarterly_op_margin_improved': False,
@@ -92,6 +97,9 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
                         growth_1 = ((income_quarterly.loc['Basic EPS'].iloc[0] - income_quarterly.loc['Basic EPS'].iloc[1]) / abs(income_quarterly.loc['Basic EPS'].iloc[1])) * 100 if income_quarterly.loc['Basic EPS'].iloc[1] != 0 else 0
                         growth_2 = ((income_quarterly.loc['Basic EPS'].iloc[1] - income_quarterly.loc['Basic EPS'].iloc[2]) / abs(income_quarterly.loc['Basic EPS'].iloc[2])) * 100 if income_quarterly.loc['Basic EPS'].iloc[2] != 0 else 0
                         data['eps_growth_acceleration'] = growth_1 > growth_2
+                        if len(income_quarterly) >= 4 and not pd.isna(income_quarterly.loc['Basic EPS'].iloc[3]):
+                            growth_3 = ((income_quarterly.loc['Basic EPS'].iloc[2] - income_quarterly.loc['Basic EPS'].iloc[3]) / abs(income_quarterly.loc['Basic EPS'].iloc[3])) * 100 if income_quarterly.loc['Basic EPS'].iloc[3] != 0 else 0
+                            data['eps_3q_accel'] = growth_1 > growth_2 > growth_3
                 except Exception as e:
                     data['has_error'] = True
                     data['error_details'].append(f'EPS 가속화 계산 오류: {str(e)[:100]}')
@@ -104,6 +112,12 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
                         recent_quarterly_revenue = income_quarterly.loc['Total Revenue'].iloc[0]
                         prev_quarterly_revenue = income_quarterly.loc['Total Revenue'].iloc[1]
                         data['quarterly_revenue_growth'] = ((recent_quarterly_revenue - prev_quarterly_revenue) / abs(prev_quarterly_revenue)) * 100 if prev_quarterly_revenue != 0 else 0
+                        if len(income_quarterly) >= 3 and not pd.isna(income_quarterly.loc['Total Revenue'].iloc[2]):
+                            growth_prev = (income_quarterly.loc['Total Revenue'].iloc[1] - income_quarterly.loc['Total Revenue'].iloc[2]) / abs(income_quarterly.loc['Total Revenue'].iloc[2]) if income_quarterly.loc['Total Revenue'].iloc[2] != 0 else 0
+                            data['revenue_growth_acceleration'] = data['quarterly_revenue_growth'] > growth_prev
+                            if len(income_quarterly) >= 4 and not pd.isna(income_quarterly.loc['Total Revenue'].iloc[3]):
+                                growth_earlier = (income_quarterly.loc['Total Revenue'].iloc[2] - income_quarterly.loc['Total Revenue'].iloc[3]) / abs(income_quarterly.loc['Total Revenue'].iloc[3]) if income_quarterly.loc['Total Revenue'].iloc[3] != 0 else 0
+                                data['sales_3q_accel'] = data['quarterly_revenue_growth'] > growth_prev > growth_earlier
                 except Exception as e:
                     data['has_error'] = True
                     data['error_details'].append(f'매출 성장률 계산 오류: {str(e)[:100]}')
@@ -128,6 +142,15 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
                         recent_op_margin = income_quarterly.loc['Operating Income'].iloc[0] / income_quarterly.loc['Total Revenue'].iloc[0]
                         prev_op_margin = income_quarterly.loc['Operating Income'].iloc[1] / income_quarterly.loc['Total Revenue'].iloc[1]
                         data['quarterly_op_margin_improved'] = recent_op_margin > prev_op_margin
+                        if len(income_quarterly) >= 3 and not pd.isna(income_quarterly.loc['Operating Income'].iloc[2]):
+                            prev_prev_margin = income_quarterly.loc['Operating Income'].iloc[2] / income_quarterly.loc['Total Revenue'].iloc[2]
+                            accel1 = recent_op_margin - prev_op_margin
+                            accel2 = prev_op_margin - prev_prev_margin
+                            data['net_margin_improved'] = accel1 > 0
+                            if len(income_quarterly) >= 4 and not pd.isna(income_quarterly.loc['Operating Income'].iloc[3]):
+                                prev3_margin = income_quarterly.loc['Operating Income'].iloc[3] / income_quarterly.loc['Total Revenue'].iloc[3]
+                                accel3 = prev_prev_margin - prev3_margin
+                                data['margin_3q_accel'] = accel1 > accel2 > accel3
                 except Exception as e:
                     data['has_error'] = True
                     data['error_details'].append(f'영업이익률 개선 계산 오류: {str(e)[:100]}')
@@ -314,6 +337,11 @@ def collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0):
             'quarterly_eps_growth': 0,
             'annual_eps_growth': 0,
             'eps_growth_acceleration': False,
+            'revenue_growth_acceleration': False,
+            'net_margin_improved': False,
+            'eps_3q_accel': False,
+            'sales_3q_accel': False,
+            'margin_3q_accel': False,
             'quarterly_revenue_growth': 0,
             'annual_revenue_growth': 0,
             'quarterly_op_margin_improved': False,

@@ -15,6 +15,7 @@ from config import (
     QULLAMAGGIE_RESULTS_DIR,
     US_GAINER_RESULTS_DIR,
     US_SETUP_RESULTS_DIR,
+    OPTION_RESULTS_DIR,
     BACKUP_DIR,
     MARKMINERVINI_DIR,
 )
@@ -51,6 +52,7 @@ def create_required_dirs(directories=None) -> None:
             QULLAMAGGIE_RESULTS_DIR,
             US_GAINER_RESULTS_DIR,
             US_SETUP_RESULTS_DIR,
+            OPTION_RESULTS_DIR,
             BACKUP_DIR,
             MARKMINERVINI_DIR,
         ]

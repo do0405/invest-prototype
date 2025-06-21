@@ -166,7 +166,10 @@ def detect_cup_and_handle(df: pd.DataFrame, window: int = 180) -> bool:
 # Batch analysis
 # -----------------------------------------------------
 
-def analyze_tickers_from_results(results_dir: str, data_dir: str, output_dir: str = "../results2") -> pd.DataFrame:
+from config import MARKMINERVINI_RESULTS_DIR
+
+
+def analyze_tickers_from_results(results_dir: str, data_dir: str, output_dir: str = MARKMINERVINI_RESULTS_DIR) -> pd.DataFrame:
     """Analyze tickers from a csv and detect patterns."""
     os.makedirs(output_dir, exist_ok=True)
     results_file = os.path.join(results_dir, "advanced_financial_results.csv")

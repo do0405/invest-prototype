@@ -98,10 +98,10 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
             # 4. 3일 RSI가 90 이상
             if len(recent_data) < 3:
                 continue
-            rsi_3_series = calculate_rsi(recent_data, window=3)
-            if rsi_3_series.empty or pd.isna(rsi_3_series.iloc[-1]):
+            rsi_3_df = calculate_rsi(recent_data, window=3)
+            if 'rsi_3' not in rsi_3_df.columns or pd.isna(rsi_3_df['rsi_3'].iloc[-1]):
                 continue
-            rsi_3 = rsi_3_series.iloc[-1]
+            rsi_3 = rsi_3_df['rsi_3'].iloc[-1]
             if rsi_3 < 90:
                 continue
             
@@ -139,7 +139,7 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
              
              # 결과 저장
             results.append({
-                 'symbol': ticker,
+                 'symbol': symbol,
                  'entry_price': round(entry_price, 2),
                  'stop_loss': round(stop_loss, 2),
                  'profit_target': round(profit_target, 2),

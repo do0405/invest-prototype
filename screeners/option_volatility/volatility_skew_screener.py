@@ -17,7 +17,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(os.path.dirname(current_dir))
 sys.path.insert(0, project_root)
 
-from config import RESULTS_VER2_DIR, OPTION_VOLATILITY_DIR
+from config import RESULTS_VER2_DIR, OPTION_RESULTS_DIR
 from utils import ensure_dir
 from screeners.option_volatility.skew_mixins import SkewCalculationsMixin
 
@@ -26,7 +26,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
 
     def __init__(self):
         self.target_stocks = self.get_large_cap_stocks()
-        self.results_dir = OPTION_VOLATILITY_DIR
+        self.results_dir = OPTION_RESULTS_DIR
         os.makedirs(self.results_dir, exist_ok=True)
         
         # 데이터 품질 등급 정의
