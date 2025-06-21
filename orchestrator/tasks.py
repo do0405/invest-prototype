@@ -3,17 +3,13 @@
 from __future__ import annotations
 
 import os
+import sys
 import time
 import traceback
 import pandas as pd
 import importlib.util
 from datetime import datetime
 from typing import List, Optional
-
-try:
-    import schedule
-except ImportError:  # pragma: no cover - optional dependency
-    schedule = None
 
 from portfolio.manager import create_portfolio_manager
 
@@ -74,6 +70,7 @@ __all__ = [
     "run_market_regime_analysis",
     "load_strategy_module",
     "run_after_market_close",
+    "run_keep_alive",
     "setup_scheduler",
     "run_scheduler",
 ]
@@ -245,8 +242,16 @@ def collect_data_main() -> None:
         print(traceback.format_exc())
 
 
-def run_all_screening_processes() -> None:
-    """Execute all screening steps sequentially."""
+def run_all_screening_processes(skip_data: bool = False) -> None:
+    """Execute all screening steps sequentially.
+
+    Parameters
+    ----------
+    skip_data : bool, optional
+        Currently unused flag that can be leveraged by scheduled keep alive
+        tasks to indicate that heavy data collection should be skipped, by
+        default False.
+    """
     print("\n⚙️ 스크리닝 프로세스 시작...")
     try:
         print("\n⏳ 1단계: 미국 주식 스크리닝 실행 중...")
@@ -526,23 +531,59 @@ def run_after_market_close() -> None:
         print(f"❌ 자동 포트폴리오 업데이트 실패: {e}")
 
 
-def setup_scheduler() -> None:
-    """Configure daily scheduler at 16:30."""
-    if schedule is None:
-        raise ImportError("schedule 패키지가 설치되어 있지 않습니다.")
-    schedule.every().day.at("16:30").do(run_after_market_close)
-    print("📅 스케줄러 설정 완료: 매일 오후 4시 30분에 포트폴리오 업데이트 실행")
+def run_keep_alive() -> None:
+    """Run a lightweight screening cycle used for keep-alive schedules."""
+    run_all_screening_processes(skip_data=True)
+
+
+def _convert_kst_to_local(time_str: str) -> str:
+    """Convert HH:MM KST time string to local server time string."""
+    try:
+        import pytz
+    except Exception:
+        return time_str
+    kst = pytz.timezone("Asia/Seoul")
+    local_tz = datetime.now().astimezone().tzinfo
+    dt = datetime.strptime(time_str, "%H:%M")
+    kst_dt = kst.localize(dt)
+    local_dt = kst_dt.astimezone(local_tz)
+    return local_dt.strftime("%H:%M")
+
+
+_SCHED_CONF = {"full_time": "14:30", "interval": 1}
+
+
+def setup_scheduler(full_run_time: str = "14:30", keep_alive_interval: int = 1) -> None:
+    """Configure parameters for the keep-alive scheduler."""
+    _SCHED_CONF["full_time"] = full_run_time
+    _SCHED_CONF["interval"] = keep_alive_interval
+    print(
+        f"📅 스케줄러 설정: 매일 {full_run_time} KST 이후 첫 실행 시 전체 모드,"
+        f" {keep_alive_interval}분 간격 keep-alive"
+    )
 
 
 def run_scheduler() -> None:
-    """Run the configured scheduler."""
-    if schedule is None:
-        raise ImportError("schedule 패키지가 설치되어 있지 않습니다.")
-    setup_scheduler()
+    """Run the keep-alive loop with a daily full run after the set time."""
+    try:
+        import pytz
+    except Exception:  # pragma: no cover - timezone optional
+        pytz = None
+
+    full_time = datetime.strptime(_SCHED_CONF["full_time"], "%H:%M").time()
+    interval = _SCHED_CONF["interval"]
+    kst_tz = pytz.timezone("Asia/Seoul") if pytz else None
+    last_full_date = None
+
     print("🔄 스케줄러 시작... (Ctrl+C로 종료)")
     try:
         while True:
-            schedule.run_pending()
-            time.sleep(60)
+            run_keep_alive()
+            end = datetime.now(kst_tz)
+            if end.time() >= full_time and (last_full_date != end.date()):
+                time.sleep(interval * 60)
+                os.system(f"{sys.executable} main.py")
+                last_full_date = (datetime.now(kst_tz)).date() if kst_tz else datetime.now().date()
+            time.sleep(interval * 60)
     except KeyboardInterrupt:
         print("\n⏹️ 스케줄러 종료")

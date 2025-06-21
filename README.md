@@ -65,6 +65,16 @@ python main.py --task setup
 python main.py --task portfolio --skip-data
 ```
 
+### 스케줄러 사용
+```bash
+# `--skip-data` 스크리너가 끝날 때마다 1분 후 다시 실행하며,
+# 한국 시각 14:30 이후 첫 실행이 완료되면 1분 뒤에 전체 모드를 한 번 수행합니다.
+python main.py --schedule
+
+# 간단한 유지용 실행을 수동으로 하려면
+python main.py --task screening --skip-data
+```
+
 ### 포트폴리오 관리
 ```bash
 # 개별 전략 실행
@@ -86,6 +96,9 @@ python api_server.py
 # GET http://localhost:5000/api/strategy-results
 
 ```
+각 스크리너 API는 `last_updated` 필드로 데이터 파일의 수정 시간을 함께 반환하므로
+프론트엔드에서 최신 여부를 쉽게 확인할 수 있습니다. 이 시간은 각 스크리닝
+작업이 완료된 시각을 기준으로 합니다.
 ### 주식 메타데이터 수집
 `leader_stock`과 `momentum_signals` 스크리너는 섹터, PER, 매출 성장률 등
 기본 메타데이터가 포함된 `data/stock_metadata.csv` 파일을 사용합니다.

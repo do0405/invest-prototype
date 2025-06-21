@@ -5,6 +5,7 @@ export interface ApiResponse<T> {
   data?: T;
   message?: string;
   total_count?: number;
+  last_updated?: string;
 }
 
 export interface ScreeningData {
