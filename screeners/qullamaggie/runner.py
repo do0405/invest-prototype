@@ -86,8 +86,8 @@ def run_signal_generation(args):
     if args.all or args.sell_signals:
         sell_signals = generate_sell_signals()
     
-    # 포지션 관리
-    if args.all or args.manage_positions:
+    # 포지션 관리는 요청된 경우에만 수행
+    if args.manage_positions:
         updated_buy_positions, updated_sell_positions = manage_positions()
     
     print("\n✅ 쿨라매기 매매법 시그널 생성 완료")
@@ -119,7 +119,7 @@ def run_qullamaggie_strategy(setups=None):
             self.parabolic_short = False
             self.buy_signals = True
             self.sell_signals = True
-            self.manage_positions = True
+            self.manage_positions = False
     
     args = Args()
     

@@ -4,7 +4,6 @@
 import os
 import sys
 import pandas as pd
-import numpy as np
 from datetime import datetime, timedelta
 import json
 
@@ -12,7 +11,7 @@ import json
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
 
 # 설정 및 유틸리티 임포트
-from config import QULLAMAGGIE_RESULTS_DIR
+from config import QULLAMAGGIE_RESULTS_DIR, DATA_US_DIR
 from utils import ensure_dir
 
 # 결과 저장 경로 설정
@@ -261,9 +260,18 @@ def manage_positions():
                     updated_positions.append(position)
                     continue
                 
-                # 현재 가격 업데이트 (실제로는 API 호출 등으로 최신 가격 가져와야 함)
-                # 여기서는 예시로 랜덤한 가격 변동 적용
-                current_price = position['current_price'] * (1 + np.random.uniform(-0.05, 0.1))
+                # 기존 OHLCV 데이터에서 최신 종가 사용
+                data_file = os.path.join(DATA_US_DIR, f"{position['symbol']}.csv")
+                current_price = position['current_price']
+                if os.path.exists(data_file):
+                    try:
+                        df = pd.read_csv(data_file)
+                        df.columns = [c.lower() for c in df.columns]
+                        df = df.sort_values('date')
+                        if 'close' in df.columns and not df.empty:
+                            current_price = float(df.iloc[-1]['close'])
+                    except Exception:
+                        pass
                 
                 # 손절 조건 확인
                 if current_price < position['stop_loss']:
@@ -318,9 +326,18 @@ def manage_positions():
                     updated_positions.append(position)
                     continue
                 
-                # 현재 가격 업데이트 (실제로는 API 호출 등으로 최신 가격 가져와야 함)
-                # 여기서는 예시로 랜덤한 가격 변동 적용
-                current_price = position['current_price'] * (1 + np.random.uniform(-0.1, 0.05))
+                # 기존 OHLCV 데이터에서 최신 종가 사용
+                data_file = os.path.join(DATA_US_DIR, f"{position['symbol']}.csv")
+                current_price = position['current_price']
+                if os.path.exists(data_file):
+                    try:
+                        df = pd.read_csv(data_file)
+                        df.columns = [c.lower() for c in df.columns]
+                        df = df.sort_values('date')
+                        if 'close' in df.columns and not df.empty:
+                            current_price = float(df.iloc[-1]['close'])
+                    except Exception:
+                        pass
                 
                 # 손절 조건 확인 (숏 포지션은 가격이 상승하면 손절)
                 if current_price > position['stop_loss']:
@@ -373,11 +390,10 @@ def main():
     
     args = parser.parse_args()
     
-    # 기본적으로 모든 기능 실행
+    # 기본적으로 매수/매도 시그널만 생성
     if not (args.buy or args.sell or args.manage):
         generate_buy_signals()
         generate_sell_signals()
-        manage_positions()
     else:
         # 선택적 기능 실행
         if args.buy:

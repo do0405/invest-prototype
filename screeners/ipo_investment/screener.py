@@ -31,6 +31,7 @@ from utils.market_utils import (
     calculate_sector_rs,
     SECTOR_ETFS,
 )
+from data_collectors.market_breadth_collector import MarketBreadthCollector
 
 
 # 결과 저장 디렉토리는 config에서 제공됨
@@ -58,6 +59,10 @@ class IPOInvestmentScreener:
         
         # VIX 계산 및 섹터 상대강도 계산
         self.vix = get_vix_value()
+        if self.vix is None:
+            collector = MarketBreadthCollector()
+            collector.collect_vix_data(days=30)
+            self.vix = get_vix_value()
         self.sector_rs = calculate_sector_rs(SECTOR_ETFS)
     
     def _load_ipo_data(self):

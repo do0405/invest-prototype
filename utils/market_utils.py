@@ -9,7 +9,7 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
-from config import DATA_US_DIR
+from config import DATA_US_DIR, OPTION_DATA_DIR
 
 # Sector ETF mapping used across screeners
 SECTOR_ETFS = {
@@ -30,23 +30,21 @@ __all__ = ["get_vix_value", "calculate_sector_rs", "SECTOR_ETFS"]
 
 
 
-def get_vix_value(data_dir: str = DATA_US_DIR) -> float:
-    """Return latest VIX value from csv or 20.0 if unavailable."""
-    vix_path = os.path.join(data_dir, "VIX.csv")
+def get_vix_value(data_dir: str = OPTION_DATA_DIR) -> float | None:
+    """Return latest VIX value from csv.``None`` if unavailable."""
+    vix_path = os.path.join(data_dir, "vix.csv")
     if os.path.exists(vix_path):
         try:
             vix = pd.read_csv(vix_path)
-            
-            # 컬럼명을 소문자로 변환
             vix.columns = [c.lower() for c in vix.columns]
-            
             vix["date"] = pd.to_datetime(vix["date"], utc=True)
             vix = vix.sort_values("date")
-            if not vix.empty and "close" in vix.columns:
-                return float(vix.iloc[-1]["close"])
+            close_col = next((c for c in vix.columns if "close" in c), None)
+            if close_col and not vix.empty:
+                return float(vix.iloc[-1][close_col])
         except Exception:
             pass
-    return 20.0
+    return None
 
 
 def calculate_sector_rs(

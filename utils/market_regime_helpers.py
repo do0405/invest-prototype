@@ -6,6 +6,7 @@ import numpy as np
 from typing import Dict, Optional
 
 from config import DATA_US_DIR, BREADTH_DATA_DIR, OPTION_DATA_DIR
+from data_collectors.market_breadth_collector import MarketBreadthCollector
 
 __all__ = [
     "load_index_data",
@@ -66,7 +67,13 @@ MARKET_REGIMES = {
 def load_index_data(ticker: str, days: int = 200) -> Optional[pd.DataFrame]:
     """Load index price data with moving averages."""
     try:
-        file_path = os.path.join(DATA_US_DIR, f"{ticker}.csv")
+        if ticker == 'VIX':
+            file_path = os.path.join(OPTION_DATA_DIR, 'vix.csv')
+            if not os.path.exists(file_path):
+                collector = MarketBreadthCollector()
+                collector.collect_vix_data(days)
+        else:
+            file_path = os.path.join(DATA_US_DIR, f"{ticker}.csv")
         if not os.path.exists(file_path):
             print(f"⚠️ {ticker} 데이터 파일을 찾을 수 없습니다.")
             return None
@@ -96,6 +103,9 @@ def calculate_high_low_index(index_data: Dict[str, pd.DataFrame]) -> float:
     """Calculate High-Low Index from breadth data."""
     file_path = os.path.join(BREADTH_DATA_DIR, "high_low.csv")
     try:
+        if not os.path.exists(file_path):
+            collector = MarketBreadthCollector()
+            collector.collect_high_low_index(days=200)
         if not os.path.exists(file_path):
             print(f"⚠️ High-Low 데이터 파일을 찾을 수 없습니다: {file_path}")
             return 50
@@ -128,6 +138,9 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
     file_path = os.path.join(BREADTH_DATA_DIR, "advance_decline.csv")
     try:
         if not os.path.exists(file_path):
+            collector = MarketBreadthCollector()
+            collector.collect_advance_decline_data(days=200)
+        if not os.path.exists(file_path):
             print(f"⚠️ Advance-Decline 데이터 파일을 찾을 수 없습니다: {file_path}")
             return 0
 
@@ -157,13 +170,16 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
         return 0
 
 
-def calculate_put_call_ratio() -> float:
-    """Return latest put/call ratio."""
+def calculate_put_call_ratio() -> float | None:
+    """Return latest put/call ratio. 데이터가 없으면 수집 시도 후 반환."""
     file_path = os.path.join(OPTION_DATA_DIR, "put_call_ratio.csv")
     try:
         if not os.path.exists(file_path):
+            collector = MarketBreadthCollector()
+            collector.collect_put_call_ratio(days=30)
+        if not os.path.exists(file_path):
             print(f"⚠️ Put/Call Ratio 데이터 파일을 찾을 수 없습니다: {file_path}")
-            return 0.9
+            return None
 
         df = pd.read_csv(file_path)
         df.columns = [c.lower() for c in df.columns]
@@ -174,11 +190,11 @@ def calculate_put_call_ratio() -> float:
         ratio_col = next((c for c in df.columns if 'ratio' in c), None)
         if not ratio_col:
             print("⚠️ Put/Call Ratio 데이터에 비율 컬럼이 없습니다.")
-            return 0.9
+            return None
         return float(df[ratio_col].iloc[-1])
     except Exception as e:
         print(f"❌ Put/Call Ratio 계산 오류: {e}")
-        return 0.9
+        return None
 
 
 def calculate_ma_distance(df: pd.DataFrame, ma_column: str = "ma200", price_column: str = "close") -> float:

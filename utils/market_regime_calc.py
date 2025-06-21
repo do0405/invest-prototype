@@ -67,7 +67,11 @@ def calculate_market_score(index_data: Dict[str, pd.DataFrame]) -> Tuple[int, Di
     tech_score_details = {}
     
     # VIX 점수 (8점 만점)
-    vix_value = index_data.get('VIX', {}).iloc[-1]['close'] if 'VIX' in index_data and index_data['VIX'] is not None else 20
+    vix_value = None
+    if 'VIX' in index_data and index_data['VIX'] is not None:
+        vix_value = index_data['VIX'].iloc[-1]['close']
+    if vix_value is None:
+        vix_value = 0
     vix_thresholds = MARKET_REGIME_CRITERIA['vix_thresholds']
     if vix_value < vix_thresholds[0]:
         vix_score = 8  # 매우 낮은 변동성 (강한 상승장)
