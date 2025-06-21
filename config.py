@@ -115,10 +115,10 @@ OPTION_DATA_SOURCES = [
 
 
 # 변동성 스큐 역전 전략 관련 설정 (새 디렉토리 구조)
-VOLATILITY_SKEW_RESULTS_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_results.csv')  # 변동성 스큐 스크리닝 결과
-VOLATILITY_SKEW_DETAILED_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_detailed.csv')  # 상세 분석 결과
-VOLATILITY_SKEW_PERFORMANCE_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'volatility_skew_performance.csv')  # 성과 분석 결과
-VOLATILITY_SKEW_LOG_PATH = os.path.join(OPTION_VOLATILITY_DIR, 'screening_log.txt')  # 스크리닝 로그
+VOLATILITY_SKEW_RESULTS_PATH = os.path.join(OPTION_RESULTS_DIR, 'volatility_skew_results.csv')  # 변동성 스큐 스크리닝 결과
+VOLATILITY_SKEW_DETAILED_PATH = os.path.join(OPTION_RESULTS_DIR, 'volatility_skew_detailed.csv')  # 상세 분석 결과
+VOLATILITY_SKEW_PERFORMANCE_PATH = os.path.join(OPTION_RESULTS_DIR, 'volatility_skew_performance.csv')  # 성과 분석 결과
+VOLATILITY_SKEW_LOG_PATH = os.path.join(OPTION_RESULTS_DIR, 'screening_log.txt')  # 스크리닝 로그
 
 # 시장 국면 판단 지표 관련 설정
 MARKET_REGIME_DIR = os.path.join(RESULTS_DIR, 'market_regime')  # 시장 국면 분석 결과 디렉토리
