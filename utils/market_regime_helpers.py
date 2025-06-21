@@ -12,6 +12,8 @@ __all__ = [
     "calculate_high_low_index",
     "calculate_advance_decline_trend",
     "calculate_put_call_ratio",
+    "calculate_ma_distance",
+    "count_consecutive_below_ma",
     "INDEX_TICKERS",
     "MARKET_REGIMES",
 ]
@@ -177,3 +179,51 @@ def calculate_put_call_ratio() -> float:
     except Exception as e:
         print(f"❌ Put/Call Ratio 계산 오류: {e}")
         return 0.9
+
+
+def calculate_ma_distance(df: pd.DataFrame, ma_column: str = "ma200", price_column: str = "close") -> float:
+    """Return latest close price distance (%) from given moving average.
+
+    If the moving average column or price column is missing, 0 is returned.
+    """
+    try:
+        if df is None or price_column not in df.columns or ma_column not in df.columns:
+            return 0.0
+
+        latest = df.iloc[-1]
+        ma_value = latest[ma_column]
+        price = latest[price_column]
+
+        if ma_value == 0 or pd.isna(ma_value) or pd.isna(price):
+            return 0.0
+
+        return (price - ma_value) / ma_value * 100
+    except Exception:
+        return 0.0
+
+
+def count_consecutive_below_ma(df: pd.DataFrame, ma_column: str = "ma50", price_column: str = "close") -> int:
+    """Return number of consecutive days the price closed below the given MA.
+
+    The check starts from the most recent date and stops when the price
+    closes above the moving average. Missing columns return 0.
+    """
+    try:
+        if df is None or price_column not in df.columns or ma_column not in df.columns:
+            return 0
+
+        closes = df[price_column].values[::-1]
+        mas = df[ma_column].values[::-1]
+        count = 0
+
+        for close, ma in zip(closes, mas):
+            if pd.isna(close) or pd.isna(ma):
+                break
+            if close <= ma:
+                count += 1
+            else:
+                break
+
+        return int(count)
+    except Exception:
+        return 0

@@ -147,6 +147,9 @@ MARKET_REGIME_CRITERIA = {
     'high_low_index_thresholds': [30, 50, 70, 90],  # High-Low Index 임계값
     'advance_decline_thresholds': [-50, -20, 20, 50],  # Advance-Decline 추세 임계값
     'biotech_return_thresholds': [-15, 0, 3, 10],  # 바이오텍 지수 월간 수익률 임계값
+    'ma200_distance_pct': 5,        # 200일 이동평균 대비 이격도(%) 기준
+    'correction_min_days': 5,       # 조정 지속 최소 기간 (거래일 기준)
+    'bear_trend_min_days': 40,      # 약세장 판단용 하락 지속 기간
 }
 
 # 주도주 투자 전략 기준
