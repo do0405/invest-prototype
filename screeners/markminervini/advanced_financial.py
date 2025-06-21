@@ -121,7 +121,7 @@ def run_advanced_financial_screening(force_update=False):
                     # 패턴 감지 실행
                     print("\n🔍 패턴 감지를 시작합니다...")
                     try:
-                        from .pattern_detection import run_pattern_detection_on_financial_results
+                        from pattern_detection import run_pattern_detection_on_financial_results
                         pattern_results = run_pattern_detection_on_financial_results()
                         if not pattern_results.empty:
                             print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 종목")

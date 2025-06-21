@@ -273,7 +273,7 @@ def get_investment_strategy(regime: str) -> str:
     return "현금 보유 및 투자 자제"
 
 
-def analyze_market_regime(save_result: bool = True) -> Dict:
+def analyze_market_regime(save_result: bool = True, skip_data: bool = False) -> Dict:
     """현재 시장 국면을 분석합니다.
     
     우선순위:

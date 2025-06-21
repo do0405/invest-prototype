@@ -291,7 +291,7 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         print("✅ 8단계: US Gainers 스크리닝 완료.")
 
         print("\n⏳ 9단계: 주도주 투자 전략 스크리닝 실행 중...")
-        run_leader_stock_screener()
+        run_leader_stock_screener(skip_data=skip_data)
         print("✅ 9단계: 주도주 투자 전략 스크리닝 완료.")
 
         print("\n⏳ 10단계: 상승 모멘텀 신호 스크리닝 실행 중...")
@@ -303,11 +303,11 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         print("✅ 11단계: IPO 투자 전략 스크리닝 완료.")
 
         print("\n⏳ 12단계: 쿨라매기 전략 실행 중...")
-        run_qullamaggie_strategy_task()
+        run_qullamaggie_strategy_task(skip_data=skip_data)
         print("✅ 12단계: 쿨라매기 전략 완료.")
 
         print("\n⏳ 13단계: 시장 국면 분석 실행 중...")
-        run_market_regime_analysis()
+        run_market_regime_analysis(skip_data=skip_data)
         print("✅ 13단계: 시장 국면 분석 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
@@ -366,11 +366,11 @@ def run_gainers_screener() -> None:
         print(traceback.format_exc())
 
 
-def run_leader_stock_screener() -> None:
+def run_leader_stock_screener(skip_data=False):
     """Run the leader stock screener."""
     try:
         print("\n📊 주도주 투자 전략 스크리너 시작...")
-        df = run_leader_stock_screening()
+        df = run_leader_stock_screening(skip_data=skip_data)
         if not df.empty:
             print(f"✅ 주도주 투자 전략 결과 저장 완료: {len(df)}개 종목")
         else:
@@ -449,7 +449,7 @@ def run_ipo_investment_screener() -> None:
         print(traceback.format_exc())
 
 
-def run_qullamaggie_strategy_task(setups: Optional[list[str]] | None = None) -> None:
+def run_qullamaggie_strategy_task(setups: Optional[list[str]] | None = None, skip_data: bool = False) -> None:
     """Run the Qullamaggie trading strategy."""
     try:
         from screeners.qullamaggie import run_qullamaggie_strategy
@@ -459,20 +459,20 @@ def run_qullamaggie_strategy_task(setups: Optional[list[str]] | None = None) -> 
 
     try:
         print("\n📊 쿨라매기 전략 시작...")
-        run_qullamaggie_strategy(setups)
+        run_qullamaggie_strategy(setups, skip_data=skip_data)
         print("✅ 쿨라매기 전략 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 쿨라매기 전략 실행 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
-def run_market_regime_analysis():
+def run_market_regime_analysis(skip_data=False):
     """Perform market regime analysis and print summary."""
     import time
     unique_id = int(time.time() * 1000) % 10000
     try:
         print(f"\n📊 시장 국면 분석 시작... [ID: {unique_id}]")
-        result = analyze_market_regime(save_result=True)
+        result = analyze_market_regime(save_result=True, skip_data=skip_data)
 
         print(f"\n📈 시장 국면 분석 결과:")
         print(f"  🔍 시장 점수: {result['score']}/100")

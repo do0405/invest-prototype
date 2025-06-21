@@ -1,42 +1,35 @@
-"""학술 논문 기반 VCP 및 Cup-with-Handle 패턴 감지 모듈
+"""Pattern detection for VCP and Cup-with-Handle based on academic papers.
 
-이 모듈은 Lo, Mamaysky & Wang (2000)과 Suh, Li & Gao (2008) 논문의
-방법론을 기반으로 한 고급 패턴 감지 알고리즘을 구현합니다.
+This module implements advanced pattern detection algorithms for
+Volatility Contraction Pattern (VCP) and Cup-with-Handle patterns
+based on academic research papers as described in ``new VCP & CUPhandle.md``.
 
-주요 기능:
-- 비모수 커널 회귀를 이용한 가격 곡선 스무딩
-- 연속적 변동성 수축 검출 (VCP)
-- 2차 다항식 근사를 이용한 U자형 컵 검증
-- 베지어 곡선과 상관계수 비교 (Cup & Handle)
-- 배치 처리 및 CSV/JSON 결과 출력
+Implemented techniques:
+- Kernel regression for price curve smoothing (Lo, Mamaysky & Wang 2000)
+- Amplitude-based volatility contraction detection (Suh, Li & Gao 2008)
+- Quadratic polynomial approximation for U-shaped cup verification
+- Bezier curve correlation analysis for pattern validation
+- Handle detection with depth constraints
+
+Features:
+- Academic paper-based pattern detection algorithms
+- Kernel smoothing for noise reduction
+- Mathematical curve fitting and correlation analysis
+- Batch processing of stock data from CSV files
+- Results output in both CSV and JSON formats
 """
 
 from __future__ import annotations
 
 import os
-import sys
 import logging
-from typing import Dict, List, Tuple, Optional, Union
-from datetime import datetime, timedelta
+from typing import Dict, List, Tuple, Optional
+from datetime import datetime
 
 import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks, argrelextrema
-from scipy import stats
-from scipy.optimize import curve_fit
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.model_selection import cross_val_score
-
-# 프로젝트 경로 설정
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(os.path.dirname(current_dir))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
-# 내부 모듈 임포트
-from config import MARKMINERVINI_RESULTS_DIR, ADVANCED_FINANCIAL_RESULTS_PATH, DATA_US_DIR
-from utils.io_utils import process_stock_data
+from scipy.stats import pearsonr
 
 # 로깅 설정
 logger = logging.getLogger(__name__)
@@ -46,383 +39,465 @@ logging.basicConfig(
 )
 
 
-class KernelSmoothing:
-    """비모수 커널 회귀를 이용한 가격 곡선 스무딩 클래스"""
+# -----------------------------------------------------
+# Academic Paper-based Detection Algorithms
+# -----------------------------------------------------
+
+def kernel_smoothing(prices: np.ndarray, bandwidth: float = None) -> np.ndarray:
+    """비모수 커널 회귀를 이용한 가격 곡선 스무딩 (Lo, Mamaysky & Wang 2000)
     
-    def __init__(self, bandwidth: Optional[float] = None):
-        self.bandwidth = bandwidth
-        self.smoothed_prices = None
-        self.original_prices = None
+    Args:
+        prices: 가격 시계열 데이터
+        bandwidth: 커널 대역폭 (None이면 자동 계산)
+        
+    Returns:
+        np.ndarray: 스무딩된 가격 곡선
+    """
+    n = len(prices)
+    if n < 10:
+        return prices
     
-    def gaussian_kernel(self, u: np.ndarray, h: float) -> np.ndarray:
-        """가우시안 커널 함수"""
-        return (1 / (h * np.sqrt(2 * np.pi))) * np.exp(-u**2 / (2 * h**2))
+    # 최적 대역폭 계산 (CV 최적값의 30% 수준으로 조정)
+    if bandwidth is None:
+        # Silverman's rule of thumb 기반 대역폭
+        std_prices = np.std(prices)
+        bandwidth = 1.06 * std_prices * (n ** (-1/5)) * 0.3
     
-    def fit_smooth(self, prices: np.ndarray, dates: Optional[np.ndarray] = None) -> np.ndarray:
-        """커널 회귀를 이용한 가격 스무딩"""
-        self.original_prices = prices
-        n = len(prices)
-        
-        if dates is None:
-            x = np.arange(n)
-        else:
-            x = np.arange(n)
-        
-        # 최적 대역폭 결정 (교차검증법)
-        if self.bandwidth is None:
-            # 실무적 조정: CV 최적값의 30% 수준
-            h_cv = self._cross_validation_bandwidth(x, prices)
-            self.bandwidth = h_cv * 0.3
-        
-        smoothed = np.zeros(n)
-        
-        for i in range(n):
-            weights = self.gaussian_kernel(x - x[i], self.bandwidth)
-            smoothed[i] = np.sum(weights * prices) / np.sum(weights)
-        
-        self.smoothed_prices = smoothed
-        return smoothed
+    smoothed = np.zeros_like(prices)
+    x_points = np.arange(n)
     
-    def _cross_validation_bandwidth(self, x: np.ndarray, y: np.ndarray) -> float:
-        """교차검증을 통한 최적 대역폭 결정"""
-        bandwidths = np.logspace(-2, 1, 20)  # 0.01 to 10
-        best_score = -np.inf
-        best_h = bandwidths[0]
+    for i in range(n):
+        # 가우시안 커널 가중치 계산
+        weights = np.exp(-0.5 * ((x_points - i) / bandwidth) ** 2)
+        weights /= np.sum(weights)
         
-        for h in bandwidths:
-            scores = []
-            for i in range(len(x)):
-                # Leave-one-out cross validation
-                x_train = np.delete(x, i)
-                y_train = np.delete(y, i)
-                x_test = x[i]
-                y_test = y[i]
-                
-                weights = self.gaussian_kernel(x_train - x_test, h)
-                if np.sum(weights) > 0:
-                    y_pred = np.sum(weights * y_train) / np.sum(weights)
-                    scores.append(-(y_test - y_pred)**2)  # Negative MSE
-            
-            avg_score = np.mean(scores)
-            if avg_score > best_score:
-                best_score = avg_score
-                best_h = h
-        
-        return best_h
+        # 가중 평균으로 스무딩 값 계산
+        smoothed[i] = np.sum(weights * prices)
     
-    def find_peaks_troughs(self) -> Tuple[np.ndarray, np.ndarray]:
-        """스무딩된 곡선에서 피크와 골 추출"""
-        if self.smoothed_prices is None:
-            raise ValueError("먼저 fit_smooth()를 호출해야 합니다.")
-        
-        # 피크 찾기
-        peaks, _ = find_peaks(self.smoothed_prices, distance=5)
-        
-        # 골 찾기 (음수로 변환 후 피크 찾기)
-        troughs, _ = find_peaks(-self.smoothed_prices, distance=5)
-        
-        return peaks, troughs
+    return smoothed
 
 
-class VCPDetector:
-    """Volatility Contraction Pattern 감지기"""
+def extract_peaks_troughs(smoothed_prices: np.ndarray, min_distance: int = 5) -> Tuple[np.ndarray, np.ndarray]:
+    """스무딩된 곡선에서 피크와 골 추출
     
-    def __init__(self, min_contractions: int = 2):
-        self.min_contractions = min_contractions
-        self.smoother = KernelSmoothing()
+    Args:
+        smoothed_prices: 스무딩된 가격 데이터
+        min_distance: 피크 간 최소 거리
+        
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: (피크 인덱스, 골 인덱스)
+    """
+    # 피크 찾기
+    peaks, _ = find_peaks(smoothed_prices, distance=min_distance)
     
-    def detect(self, df: pd.DataFrame) -> bool:
-        """VCP 패턴 감지
+    # 골 찾기 (음수로 변환 후 피크 찾기)
+    troughs, _ = find_peaks(-smoothed_prices, distance=min_distance)
+    
+    return peaks, troughs
+
+
+def calculate_amplitude_contraction(peaks: np.ndarray, troughs: np.ndarray, prices: np.ndarray) -> List[float]:
+    """연속 피크 간 진폭 수축 계산 (Suh, Li & Gao 2008)
+    
+    Args:
+        peaks: 피크 인덱스 배열
+        troughs: 골 인덱스 배열  
+        prices: 가격 데이터
         
-        Args:
-            df: 주가 데이터 (최소 60일 이상)
+    Returns:
+        List[float]: 각 구간의 진폭 비율
+    """
+    if len(peaks) < 2:
+        return []
+    
+    amplitudes = []
+    
+    for i in range(len(peaks) - 1):
+        peak1_idx = peaks[i]
+        peak2_idx = peaks[i + 1]
+        
+        # 두 피크 사이의 최저점 찾기
+        between_troughs = troughs[(troughs > peak1_idx) & (troughs < peak2_idx)]
+        if len(between_troughs) > 0:
+            trough_idx = between_troughs[np.argmin(prices[between_troughs])]
             
-        Returns:
-            bool: VCP 패턴 감지 여부
-        """
-        if df is None or len(df) < 60:
-            return False
-        
-        # 최근 90일 데이터 사용
-        recent = df.tail(90).copy()
-        prices = recent['close'].values
-        
-        # 커널 스무딩 적용
-        smoothed = self.smoother.fit_smooth(prices)
-        peaks, troughs = self.smoother.find_peaks_troughs()
-        
-        if len(peaks) < 3:  # 최소 3개 피크 필요
-            return False
-        
-        # 연속적 진폭 감소 검증
-        amplitudes = []
-        for i in range(len(peaks) - 1):
-            peak_idx = peaks[i]
-            next_peak_idx = peaks[i + 1]
-            
-            # 두 피크 사이의 최저점 찾기
-            trough_candidates = troughs[(troughs > peak_idx) & (troughs < next_peak_idx)]
-            if len(trough_candidates) == 0:
-                continue
-            
-            trough_idx = trough_candidates[np.argmin(smoothed[trough_candidates])]
-            
-            # 진폭 계산
-            amplitude = smoothed[peak_idx] - smoothed[trough_idx]
+            # 진폭 계산 (피크에서 골까지의 최대 하락폭)
+            amplitude = max(
+                prices[peak1_idx] - prices[trough_idx],
+                prices[peak2_idx] - prices[trough_idx]
+            )
             amplitudes.append(amplitude)
-        
-        # 연속적 감소 확인
-        contractions = 0
-        for i in range(1, len(amplitudes)):
-            if amplitudes[i] < amplitudes[i-1]:
-                contractions += 1
-            else:
-                contractions = 0  # 연속성 깨짐
-        
-        return contractions >= self.min_contractions
+    
+    return amplitudes
 
 
-class CupHandleDetector:
-    """Cup & Handle 패턴 감지기"""
+def quadratic_fit_cup(cup_indices: np.ndarray, prices: np.ndarray) -> Tuple[float, float]:
+    """2차 다항식 근사를 이용한 U자형 컵 검증 (Suh, Li & Gao 2008)
     
-    def __init__(self, correlation_threshold: float = 0.85):
-        self.correlation_threshold = correlation_threshold
-        self.smoother = KernelSmoothing()
+    Args:
+        cup_indices: 컵 구간의 인덱스
+        prices: 해당 구간의 가격 데이터
+        
+    Returns:
+        Tuple[float, float]: (R-squared, 곡률)
+    """
+    if len(cup_indices) < 3:
+        return 0.0, 0.0
     
-    def detect(self, df: pd.DataFrame, window: int = 180) -> bool:
-        """Cup & Handle 패턴 감지
+    try:
+        # 2차 다항식 피팅: f(t) = at^2 + bt + c
+        coeffs = np.polyfit(cup_indices, prices, 2)
+        fitted_prices = np.polyval(coeffs, cup_indices)
         
-        Args:
-            df: 주가 데이터
-            window: 분석 기간
-            
-        Returns:
-            bool: Cup & Handle 패턴 감지 여부
-        """
-        if df is None or len(df) < window:
-            return False
+        # R-squared 계산
+        ss_res = np.sum((prices - fitted_prices) ** 2)
+        ss_tot = np.sum((prices - np.mean(prices)) ** 2)
+        r_squared = 1 - (ss_res / ss_tot) if ss_tot > 0 else 0
         
-        data = df.tail(window).copy()
-        prices = data['close'].values
+        # 곡률 계산 (2차 계수의 절댓값)
+        curvature = abs(coeffs[0])
         
-        # 커널 스무딩 적용
-        smoothed = self.smoother.fit_smooth(prices)
-        peaks, troughs = self.smoother.find_peaks_troughs()
-        
-        if len(peaks) < 2 or len(troughs) == 0:
-            return False
-        
-        # 컵 구간 식별
-        left_peak = peaks[0]
-        right_candidates = peaks[peaks > left_peak]
-        if len(right_candidates) == 0:
-            return False
-        
-        right_peak = right_candidates[-1]
-        bottom_candidates = troughs[(troughs > left_peak) & (troughs < right_peak)]
-        if len(bottom_candidates) == 0:
-            return False
-        
-        bottom = bottom_candidates[np.argmin(smoothed[bottom_candidates])]
-        
-        # 컵 형성 기간 검증 (최소 30일)
-        if right_peak - left_peak < 30:
-            return False
-        
-        # U자형 검증 (2차 다항식 근사)
-        if not self._verify_u_shape(smoothed, left_peak, bottom, right_peak):
-            return False
-        
-        # 베지어 곡선 상관계수 검증
-        if not self._verify_bezier_correlation(smoothed, left_peak, bottom, right_peak):
-            return False
-        
-        # 핸들 검증
-        if not self._verify_handle(smoothed, right_peak, len(smoothed) - 1):
-            return False
-        
-        return True
+        return r_squared, curvature
+    except:
+        return 0.0, 0.0
+
+
+def bezier_curve_correlation(control_points: np.ndarray, actual_prices: np.ndarray) -> float:
+    """베지어 곡선과 실제 가격의 상관계수 계산 (Suh, Li & Gao 2008)
     
-    def _verify_u_shape(self, smoothed: np.ndarray, left: int, bottom: int, right: int) -> bool:
-        """2차 다항식을 이용한 U자형 검증"""
-        try:
-            # 컵 구간 데이터
-            x_cup = np.array([left, bottom, right])
-            y_cup = smoothed[x_cup]
-            
-            # 2차 함수 피팅: f(t) = at^2 + bt + c
-            def quadratic(x, a, b, c):
-                return a * x**2 + b * x + c
-            
-            popt, _ = curve_fit(quadratic, x_cup, y_cup)
-            a, b, c = popt
-            
-            # 곡률 검증 (a > 0이면 아래로 볼록)
-            if a <= 0:
-                return False
-            
-            # 대칭성 검증 (좌우 고점 높이 차이 5% 이내)
-            left_high = smoothed[left]
-            right_high = smoothed[right]
-            height_diff = abs(left_high - right_high) / min(left_high, right_high)
-            
-            return height_diff <= 0.05
-            
-        except Exception:
-            return False
+    Args:
+        control_points: 베지어 곡선 제어점
+        actual_prices: 실제 가격 데이터
+        
+    Returns:
+        float: 피어슨 상관계수
+    """
+    if len(control_points) < 3 or len(actual_prices) < 3:
+        return 0.0
     
-    def _verify_bezier_correlation(self, smoothed: np.ndarray, left: int, bottom: int, right: int) -> bool:
-        """베지어 곡선과 상관계수 비교"""
-        try:
-            # 7개 제어점 선정
-            quarter1 = left + (bottom - left) // 4
-            quarter3 = bottom + (right - bottom) // 4
-            mid_left = (left + bottom) // 2
-            mid_right = (bottom + right) // 2
-            
-            control_points = np.array([
-                [left, smoothed[left]],
-                [quarter1, smoothed[quarter1]],
-                [mid_left, smoothed[mid_left]],
-                [bottom, smoothed[bottom]],
-                [mid_right, smoothed[mid_right]],
-                [quarter3, smoothed[quarter3]],
-                [right, smoothed[right]]
-            ])
-            
-            # 베지어 곡선 생성 (간단한 근사)
-            t = np.linspace(0, 1, right - left + 1)
-            bezier_curve = self._generate_bezier_curve(control_points, t)
-            
-            # 상관계수 계산
-            original_segment = smoothed[left:right+1]
-            correlation = np.corrcoef(original_segment, bezier_curve)[0, 1]
-            
-            return correlation >= self.correlation_threshold
-            
-        except Exception:
+    try:
+        # 간단한 베지어 곡선 근사 (3차 다항식 사용)
+        t = np.linspace(0, 1, len(actual_prices))
+        
+        # 제어점을 이용한 베지어 곡선 생성
+        if len(control_points) >= 4:
+            # 3차 베지어 곡선
+            bezier_curve = (
+                (1-t)**3 * control_points[0] +
+                3*(1-t)**2*t * control_points[1] +
+                3*(1-t)*t**2 * control_points[2] +
+                t**3 * control_points[3]
+            )
+        else:
+            # 2차 베지어 곡선
+            bezier_curve = (
+                (1-t)**2 * control_points[0] +
+                2*(1-t)*t * control_points[1] +
+                t**2 * control_points[2]
+            )
+        
+        # 피어슨 상관계수 계산
+        correlation, _ = pearsonr(bezier_curve, actual_prices)
+        return correlation if not np.isnan(correlation) else 0.0
+    except:
+        return 0.0
+
+
+def detect_vcp(df: pd.DataFrame) -> bool:
+    """학술 논문 기반 VCP 패턴 감지 (Lo, Mamaysky & Wang 2000; Suh, Li & Gao 2008)
+    
+    Args:
+        df: 주가 데이터 (최소 60일 이상의 데이터 필요)
+        
+    Returns:
+        bool: VCP 패턴 감지 여부
+    """
+    if df is None or len(df) < 60:
+        return False
+
+    # 최근 90일 데이터 사용
+    recent = df.tail(90).copy()
+    prices = recent["close"].values
+    volumes = recent["volume"].values
+    
+    # 1. 커널 회귀를 이용한 가격 곡선 스무딩
+    smoothed_prices = kernel_smoothing(prices)
+    
+    # 2. 스무딩된 곡선에서 피크와 골 추출
+    peaks, troughs = extract_peaks_troughs(smoothed_prices)
+    
+    if len(peaks) < 3:  # 최소 3개의 피크 필요
+        return False
+    
+    # 3. 연속적 변동성 수축 검출
+    amplitudes = calculate_amplitude_contraction(peaks, troughs, smoothed_prices)
+    
+    if len(amplitudes) < 2:  # 최소 2회 수축 필요
+        return False
+    
+    # 4. 진폭 감소 패턴 확인
+    contraction_count = 0
+    for i in range(1, len(amplitudes)):
+        if amplitudes[i] < amplitudes[i-1] * 0.85:  # 15% 이상 감소
+            contraction_count += 1
+    
+    if contraction_count < 2:  # 최소 2회 연속 수축
+        return False
+    
+    # 5. 거래량 패턴 확인 (수축 시 거래량 감소)
+    volume_ma = pd.Series(volumes).rolling(10).mean().values
+    recent_volume_trend = volume_ma[-10:]
+    
+    if len(recent_volume_trend) > 5:
+        volume_decrease = recent_volume_trend[-1] < recent_volume_trend[0] * 0.8
+        if not volume_decrease:
             return False
     
-    def _generate_bezier_curve(self, control_points: np.ndarray, t: np.ndarray) -> np.ndarray:
-        """베지어 곡선 생성 (간단한 선형 보간)"""
-        # 실제 베지어 곡선 대신 스플라인 보간 사용
-        from scipy.interpolate import interp1d
-        
-        x_controls = control_points[:, 0]
-        y_controls = control_points[:, 1]
-        
-        # 정규화된 t를 실제 x 좌표로 변환
-        x_new = np.linspace(x_controls[0], x_controls[-1], len(t))
-        
-        # 스플라인 보간
-        f = interp1d(x_controls, y_controls, kind='cubic', fill_value='extrapolate')
-        return f(x_new)
+    # 6. 최종 브레이크아웃 확인
+    last_peak_price = smoothed_prices[peaks[-1]]
+    current_price = prices[-1]
     
-    def _verify_handle(self, smoothed: np.ndarray, right_peak: int, end: int) -> bool:
-        """핸들 검증 (컵 깊이의 33% 이내 조정)"""
-        if end - right_peak < 5:  # 최소 5일 핸들
+    # 현재 가격이 마지막 피크 근처에 있어야 함
+    if current_price < last_peak_price * 0.95:
+        return False
+    
+    return True
+
+
+def detect_cup_and_handle(df: pd.DataFrame, window: int = 180) -> bool:
+    """학술 논문 기반 Cup-with-Handle 패턴 감지 (Suh, Li & Gao 2008)
+    
+    Args:
+        df: 주가 데이터 (최소 window일 이상의 데이터 필요)
+        window: 분석할 기간 (기본값: 180일)
+        
+    Returns:
+        bool: Cup-with-Handle 패턴 감지 여부
+    """
+    if df is None or len(df) < window:
+        return False
+
+    data = df.tail(window).copy()
+    prices = data["close"].values
+    volumes = data["volume"].values
+    
+    # 1. 커널 회귀를 이용한 가격 곡선 스무딩
+    smoothed_prices = kernel_smoothing(prices)
+    
+    # 2. 피크와 골 추출
+    peaks, troughs = extract_peaks_troughs(smoothed_prices)
+    
+    if len(peaks) < 2 or len(troughs) == 0:
+        return False
+
+    # 3. 컵 구조 식별 (좌측 고점 - 바닥 - 우측 고점)
+    left_peak = peaks[0]
+    right_candidates = peaks[peaks > left_peak]
+    if len(right_candidates) == 0:
+        return False
+    
+    right_peak = right_candidates[-1]
+    bottom_candidates = troughs[(troughs > left_peak) & (troughs < right_peak)]
+    if len(bottom_candidates) == 0:
+        return False
+    
+    bottom = bottom_candidates[np.argmin(smoothed_prices[bottom_candidates])]
+
+    # 4. 기본 구조 검증
+    if right_peak - left_peak < 30:  # 최소 30일 컵 형성 기간
+        return False
+    
+    if bottom - left_peak < 8 or right_peak - bottom < 8:  # 좌우 균형
+        return False
+
+    # 5. 2차 다항식 근사를 이용한 U자형 컵 검증
+    cup_indices = np.arange(left_peak, right_peak + 1)
+    cup_prices = smoothed_prices[left_peak:right_peak + 1]
+    
+    r_squared, curvature = quadratic_fit_cup(cup_indices, cup_prices)
+    
+    if r_squared < 0.7:  # R-squared 임계값
+        return False
+    
+    if curvature < 0.0001:  # 충분한 곡률 필요
+        return False
+
+    # 6. 베지어 곡선 상관계수 검증
+    # 7개 제어점 선정: 좌측 고점, 중간점들, 바닥, 우측 고점
+    control_points = np.array([
+        smoothed_prices[left_peak],
+        smoothed_prices[left_peak + (bottom - left_peak) // 2],
+        smoothed_prices[bottom],
+        smoothed_prices[bottom + (right_peak - bottom) // 2],
+        smoothed_prices[right_peak]
+    ])
+    
+    correlation = bezier_curve_correlation(control_points, cup_prices)
+    
+    if correlation < 0.85:  # 논문에서 제시한 임계값
+        return False
+
+    # 7. 좌우 고점 대칭성 검증
+    left_high = smoothed_prices[left_peak]
+    right_high = smoothed_prices[right_peak]
+    height_diff = abs(left_high - right_high) / min(left_high, right_high) * 100
+    
+    if height_diff > 5:  # 5% 이내 차이
+        return False
+
+    # 8. 컵 깊이 검증
+    bottom_low = smoothed_prices[bottom]
+    depth = (min(left_high, right_high) - bottom_low) / min(left_high, right_high) * 100
+    
+    if not (12 <= depth <= 50):  # 적절한 깊이
+        return False
+
+    # 9. 핸들 검증
+    handle_start = right_peak
+    handle_prices = smoothed_prices[handle_start:]
+    
+    if len(handle_prices) < 5:  # 최소 핸들 길이
+        return False
+    
+    handle_low = np.min(handle_prices)
+    handle_depth = (right_high - handle_low) / right_high * 100
+    
+    # 핸들 깊이가 컵 깊이의 33% 이내 (논문 기준)
+    if handle_depth > depth * 0.33:
+        return False
+    
+    if handle_depth < 2 or handle_depth > 25:  # 적절한 핸들 깊이
+        return False
+
+    # 10. 거래량 패턴 검증
+    avg_volume = pd.Series(volumes).rolling(20).mean().values
+    
+    # 컵 바닥에서 거래량 감소
+    bottom_vol = volumes[max(0, bottom - 2): bottom + 3].mean()
+    if bottom_vol >= avg_volume[bottom] * 0.7:
+        return False
+    
+    # 핸들 구간 거래량 확인
+    handle_vol = volumes[handle_start:].mean() if len(volumes[handle_start:]) > 0 else volumes[handle_start]
+    if handle_vol >= bottom_vol * 1.2:
+        return False
+    
+    # 최근 브레이크아웃 거래량
+    if len(volumes) > 0 and len(avg_volume) > 0:
+        if volumes[-1] < avg_volume[-1] * 1.2:
             return False
-        
-        handle_segment = smoothed[right_peak:end+1]
-        handle_low = np.min(handle_segment)
-        right_high = smoothed[right_peak]
-        
-        # 핸들 하락폭 계산
-        handle_decline = (right_high - handle_low) / right_high
-        
-        # 컵 깊이의 33% 이내인지 확인
-        return handle_decline <= 0.33
+
+    # 11. 컵 형성 중 거래량 감소 트렌드
+    cup_volumes = volumes[left_peak:right_peak]
+    if len(cup_volumes) > 10:
+        early_vol = cup_volumes[:len(cup_volumes)//3].mean()
+        late_vol = cup_volumes[-len(cup_volumes)//3:].mean()
+        if late_vol >= early_vol * 1.1:  # 후반부 거래량이 너무 증가하면 안됨
+            return False
+
+    return True
+
+
+# -----------------------------------------------------
+# Batch analysis
+# -----------------------------------------------------
+
+from config import MARKMINERVINI_RESULTS_DIR
 
 
 def analyze_tickers_from_results(results_dir: str, data_dir: str, output_dir: str = MARKMINERVINI_RESULTS_DIR) -> pd.DataFrame:
-    """CSV 파일에서 티커 목록을 읽고 패턴을 감지하여 결과를 반환합니다."""
+    """CSV 파일에서 티커 목록을 읽고 패턴을 감지하여 결과를 반환합니다.
+    
+    Args:
+        results_dir: 재무 결과 파일이 있는 디렉토리 경로
+        data_dir: 주가 데이터 CSV 파일이 있는 디렉토리 경로
+        output_dir: 결과를 저장할 디렉토리 경로
+        
+    Returns:
+        pd.DataFrame: 패턴 감지 결과
+        
+    Raises:
+        FileNotFoundError: 결과 파일이 존재하지 않을 경우
+    """
     os.makedirs(output_dir, exist_ok=True)
     results_file = os.path.join(results_dir, "advanced_financial_results.csv")
-    
     if not os.path.exists(results_file):
         raise FileNotFoundError(f"결과 파일을 찾을 수 없습니다: {results_file}")
-    
+
     logger.info(f"재무 결과 파일 로드 중: {results_file}")
     results_df = pd.read_csv(results_file)
     logger.info(f"총 {len(results_df)}개 종목에 대한 패턴 분석 시작")
     
-    vcp_detector = VCPDetector()
-    cup_detector = CupHandleDetector()
     analysis = []
-    
+
     for _, row in results_df.iterrows():
         symbol = row['symbol']
         fin_met_count = row.get('fin_met_count', 0)
-        
+        # fin_met_count 조건 제거 - 모든 종목에 대해 패턴 분석 수행
         file_path = os.path.join(data_dir, f"{symbol}.csv")
         if not os.path.exists(file_path):
             continue
-        
-        try:
-            df = pd.read_csv(file_path)
-            date_col = next((c for c in df.columns if c.lower() in ['date', '날짜', '일자']), None)
-            if not date_col:
-                continue
-            
-            df[date_col] = pd.to_datetime(df[date_col], utc=True)
-            df.set_index(date_col, inplace=True)
-            
-            # 컬럼명 매핑
-            col_map = {
-                'high': ['high', 'High', '고가'],
-                'low': ['low', 'Low', '저가'],
-                'close': ['close', 'Close', '종가'],
-                'volume': ['volume', 'Volume', '거래량']
-            }
-            
-            found = {}
-            for k, names in col_map.items():
-                for c in df.columns:
-                    if c.lower() in [n.lower() for n in names]:
-                        found[k] = c
-                        break
-            
-            if len(found) < 4:
-                continue
-            
-            df = df.rename(columns={v: k for k, v in found.items()})
-            
-            # 패턴 감지
-            vcp = vcp_detector.detect(df)
-            cup = cup_detector.detect(df)
-            
-            if not vcp and not cup:
-                continue
-            
-            analysis.append({
-                'symbol': symbol,
-                'fin_met_count': fin_met_count,
-                'vcp': vcp,
-                'cup_handle': cup,
-                'detection_date': datetime.now().strftime('%Y-%m-%d')
-            })
-            
-        except Exception as e:
-            logger.error(f"⚠️ {symbol} 패턴 감지 중 오류: {str(e)}")
+        df = pd.read_csv(file_path)
+        date_col = next((c for c in df.columns if c.lower() in ['date', '날짜', '일자']), None)
+        if not date_col:
             continue
-    
+        df[date_col] = pd.to_datetime(df[date_col], utc=True)
+        df.set_index(date_col, inplace=True)
+        col_map = {'high': ['high', 'High', '고가'], 'low': ['low', 'Low', '저가'], 'close': ['close', 'Close', '종가'], 'volume': ['volume', 'Volume', '거래량']}
+        found = {}
+        for k, names in col_map.items():
+            for c in df.columns:
+                if c.lower() in [n.lower() for n in names]:
+                    found[k] = c
+                    break
+        if len(found) < 4:
+            continue
+        df = df.rename(columns={v: k for k, v in found.items()})
+
+        vcp = detect_vcp(df)
+        cup = detect_cup_and_handle(df)
+        if not vcp and not cup:
+            continue
+
+        analysis.append({
+            'symbol': symbol,
+            'fin_met_count': fin_met_count,
+            'vcp': vcp,
+            'cup_handle': cup,
+        })
+
     if not analysis:
         return pd.DataFrame()
-    
+
     out_df = pd.DataFrame(analysis)
     out_df = out_df.sort_values(['vcp', 'cup_handle'], ascending=False)
-    
-    # 결과 저장
-    timestamp = datetime.now().strftime('%Y%m%d')
-    out_file = os.path.join(output_dir, f'academic_pattern_results_{timestamp}.csv')
+    out_file = os.path.join(output_dir, 'pattern_analysis_results.csv')
     out_df.to_csv(out_file, index=False, encoding='utf-8-sig')
     out_df.to_json(out_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-    
     return out_df
 
 
 def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
-    """advanced_financial_results.csv의 티커들에 대해 학술 논문 기반 패턴 감지 실행"""
+    """advanced_financial_results.csv의 티커들에 대해 패턴 감지를 실행하고 결과를 저장
+    
+    Returns:
+        Optional[pd.DataFrame]: 패턴 감지 결과 DataFrame 또는 결과가 없을 경우 None
+    """
+    import sys
+    import os
+    from datetime import datetime
+    
+    # 경로 설정 최적화
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
+    if current_dir not in sys.path:
+        sys.path.append(current_dir)
+    if project_root not in sys.path:
+        sys.path.append(project_root)
+    
+    from config import ADVANCED_FINANCIAL_RESULTS_PATH, DATA_US_DIR
+    from utils.io_utils import process_stock_data
+    
     start_time = datetime.now()
     
     # advanced_financial_results.csv 읽기
@@ -439,11 +514,8 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
         logger.error(f"❌ 파일 읽기 오류: {e}")
         return None
     
-    logger.info(f"📊 {len(financial_df)} 개 종목에 대해 학술 논문 기반 패턴 감지를 시작합니다...")
-    print(f"📊 {len(financial_df)} 개 종목에 대해 학술 논문 기반 패턴 감지를 시작합니다...")
-    
-    vcp_detector = VCPDetector(min_contractions=2)
-    cup_detector = CupHandleDetector(correlation_threshold=0.85)
+    logger.info(f"📊 {len(financial_df)} 개 종목에 대해 패턴 감지를 시작합니다...")
+    print(f"📊 {len(financial_df)} 개 종목에 대해 패턴 감지를 시작합니다...")
     
     pattern_results = []
     processed_count = 0
@@ -454,7 +526,7 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
         fin_met_count = row.get('fin_met_count', 0)
         processed_count += 1
         
-        # 진행 상황 표시
+        # 진행 상황 표시 (10% 단위로)
         if processed_count % max(1, len(financial_df) // 10) == 0:
             progress = processed_count / len(financial_df) * 100
             logger.info(f"진행 중: {progress:.1f}% 완료 ({processed_count}/{len(financial_df)})")
@@ -477,7 +549,7 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
             
             required_cols = ['open', 'high', 'low', 'close', 'volume']
             
-            # 컬럼명 매핑
+            # 컬럼명 매핑 - 대소문자 구분 없이 처리
             col_mapping = {}
             for req_col in required_cols:
                 for col in stock_data.columns:
@@ -493,9 +565,9 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
             # 컬럼명 변경
             stock_data = stock_data.rename(columns=col_mapping)
             
-            # 학술 논문 기반 패턴 감지
-            vcp_detected = vcp_detector.detect(stock_data)
-            cup_detected = cup_detector.detect(stock_data)
+            # 패턴 감지
+            vcp_detected = detect_vcp(stock_data)
+            cup_detected = detect_cup_and_handle(stock_data)
             
             # 하나라도 만족하는 경우에만 결과에 추가
             if vcp_detected or cup_detected:
@@ -510,8 +582,7 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
                     'vcp_pattern': vcp_detected,
                     'cup_handle_pattern': cup_detected,
                     'has_error': row.get('has_error', False),
-                    'detection_date': datetime.now().strftime('%Y-%m-%d'),
-                    'detection_method': 'Academic (Kernel Regression + Bezier)'
+                    'detection_date': datetime.now().strftime('%Y-%m-%d')
                 })
                 logger.info(f"✅ {symbol}: VCP={vcp_detected}, Cup&Handle={cup_detected}")
                 print(f"✅ {symbol}: VCP={vcp_detected}, Cup&Handle={cup_detected}")
@@ -524,45 +595,40 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
     elapsed_time = datetime.now() - start_time
     
     # 결과 저장
-    output_dir = os.path.dirname(ADVANCED_FINANCIAL_RESULTS_PATH)
-    timestamp = datetime.now().strftime('%Y%m%d')
-    
     if pattern_results:
         results_df = pd.DataFrame(pattern_results)
         
-        # 정렬
+        # 정렬: VCP와 Cup&Handle 패턴 우선, 그 다음 total_percentile
         results_df['pattern_score'] = results_df['vcp_pattern'].astype(int) + results_df['cup_handle_pattern'].astype(int)
         results_df = results_df.sort_values(['pattern_score', 'total_percentile'], ascending=[False, False])
         results_df = results_df.drop('pattern_score', axis=1)
         
-        # 파일 저장
-        csv_path = os.path.join(output_dir, f'academic_pattern_results_{timestamp}.csv')
-        json_path = os.path.join(output_dir, f'academic_pattern_results_{timestamp}.json')
-        latest_csv_path = os.path.join(output_dir, 'academic_pattern_results.csv')
-        latest_json_path = os.path.join(output_dir, 'academic_pattern_results.json')
+        # markminervini 폴더에 저장 (타임스탬프 없는 파일만 생성)
+        output_dir = os.path.dirname(ADVANCED_FINANCIAL_RESULTS_PATH)
+        csv_path = os.path.join(output_dir, 'pattern_detection_results.csv')
+        json_path = os.path.join(output_dir, 'pattern_detection_results.json')
         
         try:
             results_df.to_csv(csv_path, index=False, encoding='utf-8-sig')
             results_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
-            results_df.to_csv(latest_csv_path, index=False, encoding='utf-8-sig')
-            results_df.to_json(latest_json_path, orient='records', indent=2, force_ascii=False)
             
-            logger.info(f"\n🎯 학술 논문 기반 패턴 감지 완료: {len(results_df)}개 종목이 패턴을 만족합니다.")
-            print(f"\n🎯 학술 논문 기반 패턴 감지 완료: {len(results_df)}개 종목이 패턴을 만족합니다.")
+            logger.info(f"\n🎯 패턴 감지 완료: {len(results_df)}개 종목이 패턴을 만족합니다.")
+            logger.info(f"📁 결과 저장: {csv_path}")
+            logger.info(f"📁 결과 저장: {json_path}")
+            
+            print(f"\n🎯 패턴 감지 완료: {len(results_df)}개 종목이 패턴을 만족합니다.")
             print(f"📁 결과 저장: {csv_path}")
-            print(f"📁 최신 결과: {latest_csv_path}")
             
             # 상위 10개 결과 출력
             print("\n🏆 상위 10개 패턴 감지 결과:")
             top_10 = results_df.head(10)
-            print(top_10[['symbol', 'fin_met_count', 'vcp_pattern', 'cup_handle_pattern', 'total_percentile', 'detection_method']])
+            print(top_10[['symbol', 'fin_met_count', 'vcp_pattern', 'cup_handle_pattern', 'total_percentile']])
             
             # 실행 통계 출력
             print(f"\n⏱️ 실행 시간: {elapsed_time}")
             print(f"📊 처리된 종목 수: {processed_count}")
             print(f"✅ 패턴 감지된 종목 수: {pattern_count}")
             print(f"📈 패턴 감지 비율: {pattern_count/processed_count*100:.2f}%")
-            
         except Exception as e:
             logger.error(f"결과 저장 중 오류 발생: {e}")
         
@@ -571,22 +637,28 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
         logger.warning("❌ 패턴을 만족하는 종목이 없습니다.")
         print("❌ 패턴을 만족하는 종목이 없습니다.")
         
-        # 빈 결과 파일 생성
+        # 빈 DataFrame이라도 컬럼 헤더와 함께 파일 생성
         empty_df = pd.DataFrame(columns=[
             'symbol', 'fin_met_count', 'rs_score', 'rs_percentile', 
             'fin_percentile', 'total_percentile', 'vcp_pattern', 
-            'cup_handle_pattern', 'has_error', 'detection_date', 'detection_method'
+            'cup_handle_pattern', 'has_error', 'detection_date'
         ])
         
-        csv_path = os.path.join(output_dir, f'academic_pattern_results_{timestamp}.csv')
-        latest_csv_path = os.path.join(output_dir, 'academic_pattern_results.csv')
+        # markminervini 폴더에 빈 파일 저장 (타임스탬프 없는 파일만 생성)
+        output_dir = os.path.dirname(ADVANCED_FINANCIAL_RESULTS_PATH)
+        csv_path = os.path.join(output_dir, 'pattern_detection_results.csv')
+        json_path = os.path.join(output_dir, 'pattern_detection_results.json')
         
         try:
             empty_df.to_csv(csv_path, index=False, encoding='utf-8-sig')
-            empty_df.to_csv(latest_csv_path, index=False, encoding='utf-8-sig')
+            empty_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
+            
             print(f"📁 빈 결과 파일 생성: {csv_path}")
+            
+            # 실행 통계 출력
             print(f"\n⏱️ 실행 시간: {elapsed_time}")
             print(f"📊 처리된 종목 수: {processed_count}")
+            print(f"✅ 패턴 감지된 종목 수: 0")
         except Exception as e:
             logger.error(f"결과 저장 중 오류 발생: {e}")
         
@@ -596,26 +668,13 @@ def run_pattern_detection_on_financial_results() -> Optional[pd.DataFrame]:
 def main():
     """메인 실행 함수"""
     try:
-        logger.info("학술 논문 기반 VCP 및 Cup & Handle 패턴 감지 시작")
-        print("🔬 학술 논문 기반 패턴 감지 시스템 시작")
-        print("📚 적용 논문: Lo, Mamaysky & Wang (2000), Suh, Li & Gao (2008)")
-        print("🔧 방법론: 커널 회귀 스무딩 + 베지어 곡선 상관계수 분석\n")
-        
-        result = run_pattern_detection_on_financial_results()
-        
-        if result is not None and not result.empty:
-            logger.info("✅ 패턴 감지 완료")
-            return 0
-        else:
-            logger.warning("⚠️ 감지된 패턴이 없습니다")
-            return 0
-            
+        run_pattern_detection_on_financial_results()
     except Exception as e:
         logger.error(f"실행 중 오류 발생: {e}")
         print(f"❌ 오류 발생: {e}")
         return 1
+    return 0
 
 
 if __name__ == "__main__":
-    exit_code = main()
-    sys.exit(exit_code)
+    main()

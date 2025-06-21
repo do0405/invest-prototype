@@ -76,7 +76,7 @@ def main():
             return
         if task == 'leader-stock':
             print("\n🎯 주도주 전략 모드")
-            run_leader_stock_screener()
+            run_leader_stock_screener(skip_data=args.skip_data)
             return
         if task == 'screening':
             print("\n🎯 스크리닝 전용 모드")
@@ -91,10 +91,10 @@ def main():
             run_ipo_investment_screener()
             return
         if task == 'qullamaggie':
-            run_qullamaggie_strategy_task()
+            run_qullamaggie_strategy_task(skip_data=args.skip_data)
             return
         if task == 'market-regime':
-            run_market_regime_analysis()
+            run_market_regime_analysis(skip_data=args.skip_data)
             return
         if task == 'portfolio':
             create_portfolio_manager()

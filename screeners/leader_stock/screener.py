@@ -179,7 +179,7 @@ class LeaderStockScreener:
     
 
     
-    def screen_leader_stocks(self):
+    def screen_leader_stocks(self, skip_data=False):
         """주도주 스크리닝 실행"""
         logger.info("주도주 투자 전략 스크리닝 시작...")
         logger.info(f"현재 시장 단계: {self.market_stage}")
@@ -361,10 +361,10 @@ class LeaderStockScreener:
         return conditions
 
 
-def run_leader_stock_screening():
+def run_leader_stock_screening(skip_data=False):
     """주도주 투자 전략 스크리닝 실행 함수"""
     screener = LeaderStockScreener()
-    return screener.screen_leader_stocks()
+    return screener.screen_leader_stocks(skip_data=skip_data)
 
 
 

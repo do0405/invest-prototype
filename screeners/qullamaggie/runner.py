@@ -93,7 +93,7 @@ def run_signal_generation(args):
     print("\n✅ 쿨라매기 매매법 시그널 생성 완료")
 
 # 외부에서 호출 가능한 함수
-def run_qullamaggie_strategy(setups=None):
+def run_qullamaggie_strategy(setups=None, skip_data=False):
     """
     쿨라매기 매매법 전략 실행 - 외부에서 호출 가능한 인터페이스
     
