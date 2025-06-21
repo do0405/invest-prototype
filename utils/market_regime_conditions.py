@@ -9,6 +9,27 @@ from .market_regime_helpers import (
     calculate_advance_decline_trend,
 )
 
+from config import MARKET_REGIME_CRITERIA
+from .market_regime_helpers import (
+    calculate_high_low_index,
+    calculate_advance_decline_trend,
+    calculate_put_call_ratio,
+)
+
+
+def _strength_above(value: float, threshold: float) -> float:
+    """Return normalized strength for values above ``threshold``."""
+    if threshold == 0:
+        return 0.0
+    return max(0.0, min(1.0, (value - threshold) / abs(threshold)))
+
+
+def _strength_below(value: float, threshold: float) -> float:
+    """Return normalized strength for values below ``threshold``."""
+    if threshold == 0:
+        return 0.0
+    return max(0.0, min(1.0, (threshold - value) / abs(threshold)))
+
 
 def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Dict]:
     """공격적 상승장 필수조건 및 부가조건을 검사합니다.
@@ -79,9 +100,10 @@ def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     
     # 부가조건들
     # VIX < 20
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
+
         vix_condition = vix_value < 20
     additional_conditions.append(vix_condition)
     details['vix_below_20'] = vix_condition
@@ -196,12 +218,13 @@ def check_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     
     # 부가조건들 (60% 이상 충족)
     # VIX 20-25 구간
-    vix_condition = False
+    vix_condition = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
-        vix_condition = 20 <= vix_value <= 25
+        vix_condition = 1.0 if 20 <= vix_value <= 25 else 0.0
     additional_conditions.append(vix_condition)
     details['vix_moderate'] = vix_condition
+
     
     # Put/Call Ratio 0.7-0.9
     pc_ratio = calculate_put_call_ratio()
@@ -237,6 +260,7 @@ def check_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     additional_conditions.append(ad_condition)
     details['ad_line_flat_up'] = ad_condition
     details['ad_trend'] = ad_trend
+
     
     # 필수조건 모두 충족 여부
     essential_met = all(essential_conditions)
@@ -315,9 +339,10 @@ def check_correction_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bo
     
     # 부가조건들
     # VIX 25-35 구간
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
+
         vix_condition = 25 <= vix_value <= 35
     additional_conditions.append(vix_condition)
     details['vix_elevated'] = vix_condition
@@ -422,9 +447,10 @@ def check_risk_management_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     
     # 부가조건들
     # VIX > 35
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
+
         vix_condition = vix_value > 35
     additional_conditions.append(vix_condition)
     details['vix_high'] = vix_condition
@@ -536,7 +562,7 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     
     # 부가조건들
     # VIX > 40
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
         vix_condition = vix_value > 40
@@ -565,7 +591,7 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     details['ad_trend'] = ad_trend
     
     # 바이오텍 지수 급락
-    biotech_crash = False
+    biotech_crash = 0.0
     for ticker in ['IBB', 'XBI']:
         if ticker in index_data and index_data[ticker] is not None:
             df = index_data[ticker]
@@ -574,11 +600,10 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
                 high_price = df.iloc[-60:]['close'].max()
                 decline = (current_price - high_price) / high_price
                 if decline <= -0.30:
-                    biotech_crash = True
+                    biotech_crash = 1.0
                     break
     additional_conditions.append(biotech_crash)
     details['biotech_crash'] = biotech_crash
-    
     
     # 필수조건 모두 충족 여부
     essential_met = all(essential_conditions)
