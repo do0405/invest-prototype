@@ -253,7 +253,7 @@ class IPOInvestmentScreener:
         price_momentum = len(df) >= 5 and (df['close'].iloc[4] / df['close'].iloc[0] - 1) >= 0.20
         macd_signal = recent['macd'] > recent['macd_signal']
         volume_surge = recent['volume'] >= recent['volume_sma_20'] * 3
-        institutional_buy = self.data_manager.check_institutional_buying_streak(ticker, min_days=3)
+        institutional_buy = False
 
         ema_break = df.iloc[-2]['close'] > df.iloc[-2]['ema_5'] and recent['close'] > recent['ema_5']
         rsi_strong = recent['rsi_7'] > 70
@@ -267,7 +267,6 @@ class IPOInvestmentScreener:
             'price_momentum': price_momentum,
             'macd_signal': macd_signal,
             'volume_surge': volume_surge,
-            'institutional_buy': institutional_buy,
             'ema_break': ema_break,
             'rsi_strong': rsi_strong,
             'stoch_cond': stoch_cond,
@@ -278,7 +277,7 @@ class IPOInvestmentScreener:
             'current_price': recent['close']
         }
 
-        return all([price_momentum, macd_signal, volume_surge, institutional_buy,
+        return all([price_momentum, macd_signal, volume_surge,
                     ema_break, rsi_strong, stoch_cond, roc_cond, environment_cond]), info
     
     def screen_ipo_investments(self):
@@ -341,7 +340,6 @@ class IPOInvestmentScreener:
                         'pattern_type': 'base',
                         'current_price': base_info['current_price'],
                         'score': base_info['base_score'],
-                        'institutional_interest': ipo_analysis.get('institutional_interest', {}).get('total_institutions', 0),
                         'date': self.today.strftime('%Y-%m-%d')
                     }
                     base_result.update(base_info)
@@ -357,7 +355,6 @@ class IPOInvestmentScreener:
                         'pattern_type': 'breakout',
                         'current_price': breakout_info['current_price'],
                         'score': breakout_info['breakout_score'],
-                        'institutional_flow': ipo_analysis.get('institutional_interest', {}).get('recent_flow', 0),
                         'date': self.today.strftime('%Y-%m-%d')
                     }
                     breakout_result.update(breakout_info)
@@ -373,7 +370,6 @@ class IPOInvestmentScreener:
                         'days_since_ipo': ipo['days_since_ipo'],
                         'current_price': track1_info['current_price'],
                         'price_vs_ipo': (track1_info['current_price'] / ipo['ipo_price'] - 1) * 100,
-                        'institutional_ownership': ipo_analysis.get('institutional_interest', {}).get('institutional_ownership', 0),
                         'date': self.today.strftime('%Y-%m-%d')
                     }
                     t1.update(track1_info)
@@ -389,7 +385,6 @@ class IPOInvestmentScreener:
                         'days_since_ipo': ipo['days_since_ipo'],
                         'current_price': track2_info['current_price'],
                         'price_vs_ipo': (track2_info['current_price'] / ipo['ipo_price'] - 1) * 100,
-                        'institutional_buying_streak': self.data_manager.check_institutional_buying_streak(ticker, min_days=3),
                         'date': self.today.strftime('%Y-%m-%d')
                     }
                     t2.update(track2_info)
