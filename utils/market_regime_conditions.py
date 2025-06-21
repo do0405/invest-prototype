@@ -30,6 +30,9 @@ def _strength_below(value: float, threshold: float) -> float:
         return 0.0
     return max(0.0, min(1.0, (threshold - value) / abs(threshold)))
 
+from config import MARKET_REGIME_CRITERIA
+from .market_regime_helpers import calculate_ma_distance, count_consecutive_below_ma
+
 
 def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Dict]:
     """공격적 상승장 필수조건 및 부가조건을 검사합니다.
@@ -66,19 +69,23 @@ def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     essential_conditions.append(essential_1)
     details['all_above_ma50'] = essential_1
     
-    # 필수조건 2: 모든 지수가 200일 이동평균보다 5% 이상 위
-    above_ma200_count = 0
+
+    # 필수조건 2: 4개 주요 지수 모두 200일 이동평균 대비 일정 비율 이상
+    above_ma200_distance = 0
+
 
     for ticker in main_indices:
         if ticker in index_data and index_data[ticker] is not None:
             df = index_data[ticker]
-            latest = df.iloc[-1]
-            if latest['ma200'] > 0 and latest['close'] >= latest['ma200'] * 1.05:
-                above_ma200_count += 1
+            distance = calculate_ma_distance(df, 'ma200')
+            if distance >= MARKET_REGIME_CRITERIA['ma200_distance_pct']:
+                above_ma200_distance += 1
 
-    essential_2 = above_ma200_count == len(main_indices)
+    essential_2 = above_ma200_distance == len(main_indices)
     essential_conditions.append(essential_2)
-    details['above_ma200_plus5_count'] = above_ma200_count
+    details['ma200_distance_count'] = above_ma200_distance
+    details['ma200_distance_requirement_met'] = essential_2
+
     
     # 필수조건 3: 바이오텍 지수 상승세 (월간 3% 이상)
     biotech_positive = False
@@ -325,16 +332,21 @@ def check_correction_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bo
     essential_conditions.append(essential_2)
     details['correction_range_count'] = correction_range_count
     
-    # 필수조건 3: 조정이 1주일 이상 지속
+    # 필수조건 3: 조정이 일정 기간 이상 지속
+
     correction_duration_count = 0
     for ticker in main_indices:
         if ticker in index_data and index_data[ticker] is not None:
             df = index_data[ticker]
-            if len(df) >= 7 and all(df.iloc[-i]['close'] <= df.iloc[-i]['ma50'] for i in range(1, 6)):
+            days_below = count_consecutive_below_ma(df, 'ma50')
+            if days_below >= MARKET_REGIME_CRITERIA['correction_min_days']:
+
                 correction_duration_count += 1
 
     essential_3 = correction_duration_count >= 2
     essential_conditions.append(essential_3)
+    details['correction_duration_met'] = essential_3
+
     details['correction_duration_count'] = correction_duration_count
     
     # 부가조건들
@@ -548,17 +560,21 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     essential_conditions.append(essential_2)
     details['severe_decline_count'] = severe_decline_count
     
-    # 필수조건 3: 하락 추세 2개월 이상 지속
-    prolonged_count = 0
+
+    # 필수조건 3: 하락 추세가 일정 기간 이상 지속
+    downtrend_count = 0
     for ticker in main_indices:
         if ticker in index_data and index_data[ticker] is not None:
             df = index_data[ticker]
-            if len(df) >= 44 and all(df.iloc[-i]['close'] <= df.iloc[-i]['ma50'] for i in range(1, 44)):
-                prolonged_count += 1
+            days_below = count_consecutive_below_ma(df, 'ma200')
+            if days_below >= MARKET_REGIME_CRITERIA['bear_trend_min_days']:
+                downtrend_count += 1
 
-    essential_3 = prolonged_count >= 2
-    essential_conditions.append(essential_3)
-    details['prolonged_decline_count'] = prolonged_count
+    prolonged_decline = downtrend_count >= 3
+    essential_conditions.append(prolonged_decline)
+    details['prolonged_decline'] = prolonged_decline
+    details['downtrend_count'] = downtrend_count
+
     
     # 부가조건들
     # VIX > 40
