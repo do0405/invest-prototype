@@ -11,7 +11,7 @@ import time
 import traceback
 from config import (
     BASE_DIR, DATA_DIR, RESULTS_DIR,
-    US_WITH_RS_PATH, ADVANCED_FINANCIAL_RESULTS_PATH,
+    US_WITH_RS_PATH, ADVANCED_FINANCIAL_RESULTS_PATH, INTEGRATED_RESULTS_PATH,
     ADVANCED_FINANCIAL_CRITERIA,
     YAHOO_FINANCE_MAX_RETRIES, YAHOO_FINANCE_DELAY
 )
@@ -112,6 +112,23 @@ def run_advanced_financial_screening(force_update=False):
                     # JSON 파일 생성 추가
                     json_path = ADVANCED_FINANCIAL_RESULTS_PATH.replace('.csv', '.json')
                     final_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
+                    
+                    # integrated_results 저장
+                    final_df.to_csv(INTEGRATED_RESULTS_PATH, index=False, mode='w')
+                    integrated_json_path = INTEGRATED_RESULTS_PATH.replace('.csv', '.json')
+                    final_df.to_json(integrated_json_path, orient='records', indent=2, force_ascii=False)
+                    
+                    # 패턴 감지 실행
+                    print("\n🔍 패턴 감지를 시작합니다...")
+                    try:
+                        from pattern_detection import run_pattern_detection_on_financial_results
+                        pattern_results = run_pattern_detection_on_financial_results()
+                        if not pattern_results.empty:
+                            print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 종목")
+                        else:
+                            print("⚠️ 패턴을 만족하는 종목이 없습니다.")
+                    except Exception as e:
+                        print(f"⚠️ 패턴 감지 중 오류: {e}")
                     
                     # 에러가 있는 종목 출력
                     error_df = final_df[final_df['has_error'] == True]

@@ -17,7 +17,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(os.path.dirname(current_dir))
 sys.path.insert(0, project_root)
 
-from config import RESULTS_VER2_DIR, OPTION_RESULTS_DIR
+from config import RESULTS_VER2_DIR, OPTION_VOLATILITY_DIR
 from utils import ensure_dir
 from screeners.option_volatility.skew_mixins import SkewCalculationsMixin
 
@@ -26,7 +26,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
 
     def __init__(self):
         self.target_stocks = self.get_large_cap_stocks()
-        self.results_dir = OPTION_RESULTS_DIR
+        self.results_dir = OPTION_VOLATILITY_DIR
         os.makedirs(self.results_dir, exist_ok=True)
         
         # 데이터 품질 등급 정의
@@ -315,18 +315,10 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         
         report.append("")
         report.append("📋 데이터 품질 분포")
-        
-        # 등급별 설명 매핑
-        grade_descriptions = {
-            'A': '최고 품질 프리미엄 데이터',
-            'B': '양호한 품질 무료 데이터', 
-            'C': '품질 부족하지만 사용 가능한 데이터'
-        }
-        
         for grade in ['A', 'B', 'C']:
             count = quality_counts.get(grade, 0)
             if count > 0:
-                description = grade_descriptions[grade]
+                description = list(self.data_quality_grades.values())[ord(grade) - ord('A')]['description']
                 report.append(f"• {grade}등급: {count}개 종목 ({description})")
         
         # 품질 경고

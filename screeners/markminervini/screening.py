@@ -54,7 +54,7 @@ def screen_advanced_financials(financial_data: pd.DataFrame) -> pd.DataFrame:
         except Exception as e:
             print(f"⚠️ {row.get('symbol', 'Unknown')} 재무 조건 체크 중 오류: {e}")
 
-        if met_count >= 5:
-            results.append({'symbol': row['symbol'], 'fin_met_count': met_count, 'has_error': row.get('has_error', False)})
+        # 모든 종목을 포함하되 fin_met_count 값을 그대로 유지
+        results.append({'symbol': row['symbol'], 'fin_met_count': met_count, 'has_error': row.get('has_error', False)})
 
     return pd.DataFrame(results)

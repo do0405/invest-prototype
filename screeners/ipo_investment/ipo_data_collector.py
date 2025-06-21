@@ -31,6 +31,9 @@ except ImportError:
     logging.warning("finance_calendars 라이브러리를 찾을 수 없습니다.")
 
 try:
+    import warnings
+    # pkg_resources 경고 억제
+    warnings.filterwarnings("ignore", message="pkg_resources is deprecated")
     import investpy
 except ImportError:
     investpy = None
