@@ -82,13 +82,12 @@ def run_strategy5_screening():
             # 설정 조건 2: 7일 ADX ≥ 55
             # ADX 계산을 위해 high, low, close 데이터 필요
             # ADX 계산 (7일)
-            adx_7d = pd.NA # Initialize adx_7d
-            if len(recent_data) >= 20: # ADX 계산에 충분한 데이터가 있는지 확인 (일반적으로 ADX는 최소 14일 필요, 여유있게 20일)
-                # logger.debug(f"{ticker}: Calculating ADX as data length {len(recent_data)} >= 20")
-                adx_7d_series = calculate_adx(recent_data, window=7)
-                if adx_7d_series.empty:
+            adx_7d = pd.NA  # Initialize adx_7d
+            if len(recent_data) >= 20:  # ADX 계산에 충분한 데이터가 있는지 확인 (일반적으로 ADX는 최소 14일 필요, 여유있게 20일)
+                adx_7d_df = calculate_adx(recent_data, window=7)
+                if 'adx' not in adx_7d_df.columns or adx_7d_df['adx'].empty:
                     continue
-                adx_7d = adx_7d_series.iloc[-1]
+                adx_7d = adx_7d_df['adx'].iloc[-1]
             else:
                 continue
             # logger.debug(f"{ticker}: 7-day ADX: {adx_7d}")
@@ -96,10 +95,10 @@ def run_strategy5_screening():
                 continue
 
             # 설정 조건 3: 3일 RSI ≤ 50
-            rsi_3d_series = calculate_rsi(recent_data[['close']], window=3)
-            if rsi_3d_series.empty or pd.isna(rsi_3d_series.iloc[-1]) or rsi_3d_series.iloc[-1] > 50:
+            rsi_3d_df = calculate_rsi(recent_data[['close']], window=3)
+            if 'rsi_3' not in rsi_3d_df.columns or pd.isna(rsi_3d_df['rsi_3'].iloc[-1]) or rsi_3d_df['rsi_3'].iloc[-1] > 50:
                 continue
-            rsi_3d = rsi_3d_series.iloc[-1]
+            rsi_3d = rsi_3d_df['rsi_3'].iloc[-1]
 
             # 시장 진입: 직전 종가보다 최대 3% 낮은 가격에 지정가 매수
             entry_price = latest_close * 0.97

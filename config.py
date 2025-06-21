@@ -11,6 +11,7 @@ SCREENER_RESULTS_DIR = os.path.join(RESULTS_DIR, 'screeners')
 PORTFOLIO_RESULTS_DIR = os.path.join(RESULTS_DIR, 'portfolio')
 PORTFOLIO_BUY_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy')
 PORTFOLIO_SELL_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell')
+OPTION_RESULTS_DIR = os.path.join(RESULTS_DIR, 'option')
 
 # 기존 코드 호환성을 위한 별칭
 RESULTS_VER2_DIR = PORTFOLIO_RESULTS_DIR

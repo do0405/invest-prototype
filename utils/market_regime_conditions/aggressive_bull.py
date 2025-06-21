@@ -83,9 +83,9 @@ def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     # 부가조건들
     # VIX < 20
     vix_strength = 0.0
+    vix_condition = False
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
-
         vix_condition = vix_value < 20
     additional_conditions.append(vix_condition)
     details['vix_below_20'] = vix_condition

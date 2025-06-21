@@ -300,6 +300,38 @@ class RealIPODataCollector:
             }
         }
 
+    def get_recent_ipos(self, days_back: int = 365) -> pd.DataFrame:
+        """최근 IPO 데이터를 파일에서 로드"""
+        csv_files = sorted(self.data_dir.glob('recent_ipos_*.csv'))
+        if not csv_files:
+            return pd.DataFrame()
+
+        df_list = []
+        for file in csv_files:
+            df = pd.read_csv(file)
+            df.columns = [c.lower() for c in df.columns]
+            if 'ticker' in df.columns and 'symbol' not in df.columns:
+                df.rename(columns={'ticker': 'symbol'}, inplace=True)
+            if 'date' in df.columns and 'ipo_date' not in df.columns:
+                df.rename(columns={'date': 'ipo_date'}, inplace=True)
+            if 'price_range' in df.columns and 'ipo_price' not in df.columns:
+                df['ipo_price'] = (
+                    df['price_range']
+                    .astype(str)
+                    .str.replace('$', '')
+                    .str.split('-')
+                    .str[0]
+                    .str.replace(',', '')
+                )
+            df_list.append(df)
+
+        df_all = pd.concat(df_list, ignore_index=True)
+        if 'ipo_date' in df_all.columns:
+            df_all['ipo_date'] = pd.to_datetime(df_all['ipo_date'], errors='coerce')
+            cutoff = pd.Timestamp.utcnow() - pd.Timedelta(days=days_back)
+            df_all = df_all[df_all['ipo_date'] >= cutoff]
+        return df_all
+
 def main():
     """메인 실행 함수"""
     collector = RealIPODataCollector()

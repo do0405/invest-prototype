@@ -56,6 +56,7 @@ class LeaderStockScreener:
                 return "unknown"
                 
             sp500 = pd.read_csv(sp500_path)
+            sp500.columns = [c.lower() for c in sp500.columns]
             sp500['date'] = pd.to_datetime(sp500['date'], utc=True)
             sp500 = sp500.sort_values('date')
             

@@ -35,6 +35,7 @@ from config import (
     PORTFOLIO_BUY_DIR,
     PORTFOLIO_SELL_DIR,
     OPTION_VOLATILITY_DIR,
+    OPTION_RESULTS_DIR,
     ADVANCED_FINANCIAL_RESULTS_PATH,
     MARKET_REGIME_DIR,
     IPO_DATA_DIR,
@@ -203,6 +204,7 @@ def ensure_directories() -> None:
         PORTFOLIO_BUY_DIR,
         PORTFOLIO_SELL_DIR,
         OPTION_VOLATILITY_DIR,
+        OPTION_RESULTS_DIR,
         MARKET_REGIME_DIR,
         IPO_DATA_DIR,
         os.path.join(RESULTS_DIR, "leader_stock"),
@@ -450,7 +452,7 @@ def run_ipo_investment_screener() -> None:
 def run_qullamaggie_strategy_task(setups: Optional[list[str]] | None = None) -> None:
     """Run the Qullamaggie trading strategy."""
     try:
-        from qullamaggie import run_qullamaggie_strategy
+        from screeners.qullamaggie import run_qullamaggie_strategy
     except Exception as e:  # pragma: no cover - optional dependency
         print(f"⚠️ 쿨라매기 모듈 로드 실패: {e}")
         return
