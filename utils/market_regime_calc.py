@@ -348,14 +348,16 @@ def analyze_market_regime(save_result: bool = True) -> Dict:
             if not os.path.exists(MARKET_REGIME_DIR):
                 os.makedirs(MARKET_REGIME_DIR)
                 
-            # JSON 형식으로 저장
-            result_path = os.path.join(MARKET_REGIME_DIR, f"market_regime_{today.strftime('%Y%m%d')}.json")
-            pd.Series(result).to_json(result_path)
+            # JSON 및 CSV 형식으로 저장
+            result_path = os.path.join(MARKET_REGIME_DIR, f"market_regime_{today.strftime('%Y%m%d')}")
+            pd.Series(result).to_json(result_path + ".json")
+            pd.DataFrame([result]).to_csv(result_path + ".csv", index=False)
             # 출력은 tasks.py에서 담당
-            
+
             # 최신 결과 별도 저장
-            latest_path = os.path.join(MARKET_REGIME_DIR, "latest_market_regime.json")
-            pd.Series(result).to_json(latest_path)
+            latest_base = os.path.join(MARKET_REGIME_DIR, "latest_market_regime")
+            pd.Series(result).to_json(latest_base + ".json")
+            pd.DataFrame([result]).to_csv(latest_base + ".csv", index=False)
         except Exception as e:
             print(f"❌ 결과 저장 오류: {e}")
     

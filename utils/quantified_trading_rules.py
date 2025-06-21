@@ -11,6 +11,15 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, Any
 import pandas as pd
+import os
+
+from utils.market_utils import (
+    calculate_sector_rs,
+    get_vix_value,
+    SECTOR_ETFS,
+)
+from data_collectors.market_breadth_collector import MarketBreadthCollector
+from config import DATA_US_DIR
 
 from screeners.momentum_signals.indicators import (
     calculate_moving_averages,
@@ -79,14 +88,28 @@ class QuantifiedTradingSystem:
     market_stage: str = ""
     sector_rs_threshold: int = 70
 
+    _sector_rs_cache: Dict[str, Dict[str, float]] | None = None
+
     def get_sector_rs(self, sector: str) -> float:
-        """Placeholder for sector relative strength."""
-        # In real use this should fetch actual RS score
-        return 0.0
+        """섹터 상대 강도 값을 반환합니다."""
+        if self._sector_rs_cache is None:
+            self._sector_rs_cache = calculate_sector_rs(SECTOR_ETFS)
+            if not self._sector_rs_cache:
+                # 데이터가 없으면 필요한 파일 수집
+                collector = MarketBreadthCollector()
+                collector.collect_advance_decline_data(days=252)
+                self._sector_rs_cache = calculate_sector_rs(SECTOR_ETFS)
+        return self._sector_rs_cache.get(sector, {}).get("rs_score", 0.0)
 
     def get_vix(self) -> float:
-        """Placeholder for market volatility index."""
-        return 0.0
+        """현재 VIX 값을 반환합니다."""
+        value = get_vix_value()
+        vix_path = os.path.join(DATA_US_DIR, "VIX.csv")
+        if value == 20.0 and not os.path.exists(vix_path):
+            collector = MarketBreadthCollector()
+            collector.collect_vix_data(days=30)
+            value = get_vix_value()
+        return value
 
     def check_leader_stock_conditions(self, stock_data: Dict[str, Any]) -> bool:
         """Return True if leader stock conditions are met."""

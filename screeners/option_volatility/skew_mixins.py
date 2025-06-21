@@ -15,8 +15,6 @@ class SkewCalculationsMixin:
         try:
             if source == "yfinance":
                 return self.calculate_skew_from_yfinance(options_data)
-            elif source == "alpha_vantage":
-                return self.calculate_skew_from_alpha_vantage(options_data)
         except Exception as e:
             print(f"스큐 계산 오류 ({symbol}): {e}")
             return None
@@ -66,50 +64,6 @@ class SkewCalculationsMixin:
         
         return None
     
-    def calculate_skew_from_alpha_vantage(self, options_data: Dict) -> Optional[float]:
-        """Alpha Vantage 데이터로부터 스큐 지수 계산"""
-        options_list = options_data.get('data', [])
-        
-        atm_call_iv = None
-        otm_put_iv = None
-        min_call_distance = float('inf')
-        min_put_distance = float('inf')
-        
-        for opt in options_list:
-            try:
-                strike = float(opt.get('strike', 0))
-                underlying_price = float(opt.get('underlying_price', 1))
-                iv = float(opt.get('implied_volatility', 0))
-                opt_type = opt.get('type', '')
-                
-                if iv <= 0:
-                    continue
-                
-                moneyness = strike / underlying_price
-                
-                # ATM 콜옵션 찾기
-                if opt_type == 'call' and 0.95 <= moneyness <= 1.05:
-                    distance = abs(moneyness - 1.0)
-                    if distance < min_call_distance:
-                        min_call_distance = distance
-                        atm_call_iv = iv
-                
-                # OTM 풋옵션 찾기
-                elif opt_type == 'put' and 0.80 < moneyness < 0.95:
-                    distance = abs(moneyness - 0.95)
-                    if distance < min_put_distance:
-                        min_put_distance = distance
-                        otm_put_iv = iv
-                        
-            except (ValueError, TypeError):
-                continue
-        
-        if atm_call_iv is not None and otm_put_iv is not None:
-            # 스큐 지수 = OTM 풋 IV - ATM 콜 IV (이미 백분율)
-            skew_index = otm_put_iv - atm_call_iv
-            return skew_index
-        
-        return None
     
     def meets_basic_criteria(self, symbol: str) -> bool:
         """기본 조건 체크 (논문 Table 1 기준)"""
@@ -252,8 +206,6 @@ class SkewCalculationsMixin:
         try:
             if source in ["yfinance", "yfinance_fallback"]:
                 skew = self.calculate_skew_from_yfinance(options_data)
-            elif source == "alpha_vantage":
-                skew = self.calculate_skew_from_alpha_vantage(options_data)
             else:
                 return None, source
                 

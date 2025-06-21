@@ -23,8 +23,8 @@ class VolatilitySkewPortfolioStrategy:
     변동성 스큐 역전 전략을 포트폴리오 시스템에 통합하는 클래스
     """
     
-    def __init__(self, alpha_vantage_key: Optional[str] = None):
-        self.screener = VolatilitySkewScreener(alpha_vantage_key=alpha_vantage_key)
+    def __init__(self):
+        self.screener = VolatilitySkewScreener()
         self.strategy_name = "volatility_skew"
         
         # 결과 저장 경로
@@ -134,10 +134,10 @@ class VolatilitySkewPortfolioStrategy:
     
 
 
-def run_volatility_skew_portfolio_strategy(alpha_vantage_key: Optional[str] = None) -> Tuple[List[Dict], str]:
+def run_volatility_skew_portfolio_strategy() -> Tuple[List[Dict], str]:
     """
     변동성 스큐 포트폴리오 전략 실행 함수 (main.py에서 호출용)
     """
-    strategy = VolatilitySkewPortfolioStrategy(alpha_vantage_key=alpha_vantage_key)
+    strategy = VolatilitySkewPortfolioStrategy()
     return strategy.run_screening_and_portfolio_creation()
 
