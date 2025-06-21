@@ -106,19 +106,16 @@ def calculate_market_score(index_data: Dict[str, pd.DataFrame]) -> Tuple[int, Di
         'score': pc_score
     }
     
-    # High-Low Index 점수 (8점 만점)
+    # High-Low Index 점수 (8점 만점, 비례식)
     hl_index = calculate_high_low_index(index_data)
     hl_thresholds = MARKET_REGIME_CRITERIA['high_low_index_thresholds']
-    if hl_index > hl_thresholds[3]:
-        hl_score = 8  # 매우 강세 (강한 상승장)
-    elif hl_index > hl_thresholds[2]:
-        hl_score = 6  # 강세 (상승장)
-    elif hl_index > hl_thresholds[1]:
-        hl_score = 4  # 중립 (조정장)
-    elif hl_index > hl_thresholds[0]:
-        hl_score = 2  # 약세 (위험 관리장)
+    if hl_index <= hl_thresholds[0]:
+        hl_score = 0
+    elif hl_index >= hl_thresholds[3]:
+        hl_score = 8
     else:
-        hl_score = 0  # 매우 약세 (약세장)
+        range_total = hl_thresholds[3] - hl_thresholds[0]
+        hl_score = (hl_index - hl_thresholds[0]) / range_total * 8
     
     tech_score += hl_score
     tech_score_details['high_low_index'] = {
@@ -126,19 +123,16 @@ def calculate_market_score(index_data: Dict[str, pd.DataFrame]) -> Tuple[int, Di
         'score': hl_score
     }
     
-    # Advance-Decline Line 추세 점수 (8점 만점)
+    # Advance-Decline Line 추세 점수 (8점 만점, 비례식)
     ad_trend = calculate_advance_decline_trend(index_data)
     ad_thresholds = MARKET_REGIME_CRITERIA['advance_decline_thresholds']
-    if ad_trend > ad_thresholds[3]:
-        ad_score = 8  # 매우 강한 상승 추세
-    elif ad_trend > ad_thresholds[2]:
-        ad_score = 6  # 상승 추세
-    elif ad_trend > ad_thresholds[1]:
-        ad_score = 4  # 중립 추세
-    elif ad_trend > ad_thresholds[0]:
-        ad_score = 2  # 하락 추세
+    if ad_trend <= ad_thresholds[0]:
+        ad_score = 0
+    elif ad_trend >= ad_thresholds[3]:
+        ad_score = 8
     else:
-        ad_score = 0  # 매우 강한 하락 추세
+        range_total = ad_thresholds[3] - ad_thresholds[0]
+        ad_score = (ad_trend - ad_thresholds[0]) / range_total * 8
     
     tech_score += ad_score
     tech_score_details['advance_decline_trend'] = {

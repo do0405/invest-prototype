@@ -1,8 +1,34 @@
 """시장 국면 판단을 위한 필수조건 및 부가조건 검사 모듈"""
 
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Tuple
 import pandas as pd
-from datetime import datetime, timedelta
+
+from .market_regime_helpers import (
+    calculate_put_call_ratio,
+    calculate_high_low_index,
+    calculate_advance_decline_trend,
+)
+
+from config import MARKET_REGIME_CRITERIA
+from .market_regime_helpers import (
+    calculate_high_low_index,
+    calculate_advance_decline_trend,
+    calculate_put_call_ratio,
+)
+
+
+def _strength_above(value: float, threshold: float) -> float:
+    """Return normalized strength for values above ``threshold``."""
+    if threshold == 0:
+        return 0.0
+    return max(0.0, min(1.0, (value - threshold) / abs(threshold)))
+
+
+def _strength_below(value: float, threshold: float) -> float:
+    """Return normalized strength for values below ``threshold``."""
+    if threshold == 0:
+        return 0.0
+    return max(0.0, min(1.0, (threshold - value) / abs(threshold)))
 
 from config import MARKET_REGIME_CRITERIA
 from .market_regime_helpers import calculate_ma_distance, count_consecutive_below_ma
@@ -43,8 +69,10 @@ def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     essential_conditions.append(essential_1)
     details['all_above_ma50'] = essential_1
     
+
     # 필수조건 2: 4개 주요 지수 모두 200일 이동평균 대비 일정 비율 이상
     above_ma200_distance = 0
+
 
     for ticker in main_indices:
         if ticker in index_data and index_data[ticker] is not None:
@@ -57,8 +85,9 @@ def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     essential_conditions.append(essential_2)
     details['ma200_distance_count'] = above_ma200_distance
     details['ma200_distance_requirement_met'] = essential_2
+
     
-    # 필수조건 3: 바이오텍 지수 상승세 (월간 0% 이상)
+    # 필수조건 3: 바이오텍 지수 상승세 (월간 3% 이상)
     biotech_positive = False
     biotech_tickers = ['IBB', 'XBI']
     
@@ -69,7 +98,7 @@ def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
                 current_price = df.iloc[-1]['close']
                 month_ago_price = df.iloc[-22]['close']
                 monthly_return = (current_price - month_ago_price) / month_ago_price
-                if monthly_return >= 0.0:  # 0% 이상
+                if monthly_return >= 0.03:  # 3% 이상
                     biotech_positive = True
                     break
     
@@ -78,28 +107,34 @@ def check_aggressive_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     
     # 부가조건들
     # VIX < 20
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
+
         vix_condition = vix_value < 20
     additional_conditions.append(vix_condition)
     details['vix_below_20'] = vix_condition
     
-    # Put/Call Ratio < 0.7 (임시로 1.0 미만으로 설정)
-    put_call_condition = False
-    # 실제 Put/Call 데이터가 있다면 여기서 계산
+    # Put/Call Ratio < 0.7
+    pc_ratio = calculate_put_call_ratio()
+    put_call_condition = pc_ratio < 0.7
     additional_conditions.append(put_call_condition)
     details['put_call_low'] = put_call_condition
+    details['put_call_ratio'] = pc_ratio
     
-    # High-Low Index > 70 (임시로 True)
-    high_low_condition = True  # 실제 데이터로 계산 필요
+    # High-Low Index > 70
+    hl_index = calculate_high_low_index(index_data)
+    high_low_condition = hl_index > 70
     additional_conditions.append(high_low_condition)
     details['high_low_strong'] = high_low_condition
+    details['high_low_index'] = hl_index
     
-    # Advance-Decline Line 상승 추세 (임시로 True)
-    ad_line_condition = True  # 실제 데이터로 계산 필요
+    # Advance-Decline Line 상승 추세
+    ad_trend = calculate_advance_decline_trend(index_data)
+    ad_line_condition = ad_trend > 0
     additional_conditions.append(ad_line_condition)
     details['ad_line_rising'] = ad_line_condition
+    details['ad_trend'] = ad_trend
     
     # 소형주(IWM) vs 대형주(SPY) 아웃퍼폼
     iwm_outperform = False
@@ -159,10 +194,7 @@ def check_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     essential_conditions.append(essential_1)
     details['large_cap_above_ma50'] = essential_1
     
-    # 필수조건 2: 중소형주 (IWM, MDY) 상대적 약세 (대형주 대비 언더퍼폼 또는 50일 MA 하회)
-    mid_small_weakness = False
-    
-    # 방법 1: 50일 이동평균 하회
+    # 필수조건 2: 중소형주 중 하나 이상이 50일 이동평균 하회
     mid_small_below_ma50 = 0
     for ticker in ['IWM', 'MDY']:
         if ticker in index_data and index_data[ticker] is not None:
@@ -170,28 +202,10 @@ def check_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
             latest = df.iloc[-1]
             if latest['close'] <= latest['ma50']:
                 mid_small_below_ma50 += 1
-    
-    # 방법 2: 대형주 대비 언더퍼폼 (월간 기준)
-    underperform_count = 0
-    if 'SPY' in index_data and index_data['SPY'] is not None:
-        spy_df = index_data['SPY']
-        if len(spy_df) >= 22:
-            spy_return = (spy_df.iloc[-1]['close'] - spy_df.iloc[-22]['close']) / spy_df.iloc[-22]['close']
-            
-            for ticker in ['IWM', 'MDY']:
-                if ticker in index_data and index_data[ticker] is not None:
-                    df = index_data[ticker]
-                    if len(df) >= 22:
-                        ticker_return = (df.iloc[-1]['close'] - df.iloc[-22]['close']) / df.iloc[-22]['close']
-                        if ticker_return < spy_return:
-                            underperform_count += 1
-    
-    # 둘 중 하나라도 충족하면 조건 만족
-    essential_2 = (mid_small_below_ma50 >= 1) or (underperform_count >= 1)
+
+    essential_2 = mid_small_below_ma50 >= 1
     essential_conditions.append(essential_2)
-    details['mid_small_weakening'] = essential_2
     details['mid_small_below_ma50_count'] = mid_small_below_ma50
-    details['underperform_vs_spy_count'] = underperform_count
     
     # 필수조건 3: 바이오텍 지수 모멘텀 둔화 (0~3%)
     biotech_momentum_slow = False
@@ -211,17 +225,49 @@ def check_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     
     # 부가조건들 (60% 이상 충족)
     # VIX 20-25 구간
-    vix_condition = False
+    vix_condition = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
-        vix_condition = 20 <= vix_value <= 25
+        vix_condition = 1.0 if 20 <= vix_value <= 25 else 0.0
     additional_conditions.append(vix_condition)
     details['vix_moderate'] = vix_condition
+
     
-    # 기타 부가조건들 (임시로 True 설정)
-    for condition_name in ['put_call_moderate', 'high_low_moderate', 'large_cap_leadership']:
-        additional_conditions.append(True)
-        details[condition_name] = True
+    # Put/Call Ratio 0.7-0.9
+    pc_ratio = calculate_put_call_ratio()
+    pc_condition = 0.7 <= pc_ratio <= 0.9
+    additional_conditions.append(pc_condition)
+    details['put_call_moderate'] = pc_condition
+    details['put_call_ratio'] = pc_ratio
+
+    # High-Low Index 50-70
+    hl_index = calculate_high_low_index(index_data)
+    hl_condition = 50 <= hl_index <= 70
+    additional_conditions.append(hl_condition)
+    details['high_low_moderate'] = hl_condition
+    details['high_low_index'] = hl_index
+
+    # 대형주 > 중형주 > 소형주 상대적 강세
+    leadership_condition = False
+    if all(ticker in index_data and index_data[ticker] is not None for ticker in ['SPY', 'MDY', 'IWM']):
+        spy_df = index_data['SPY']
+        mdy_df = index_data['MDY']
+        iwm_df = index_data['IWM']
+        if len(spy_df) >= 22 and len(mdy_df) >= 22 and len(iwm_df) >= 22:
+            spy_ret = (spy_df.iloc[-1]['close'] - spy_df.iloc[-22]['close']) / spy_df.iloc[-22]['close']
+            mdy_ret = (mdy_df.iloc[-1]['close'] - mdy_df.iloc[-22]['close']) / mdy_df.iloc[-22]['close']
+            iwm_ret = (iwm_df.iloc[-1]['close'] - iwm_df.iloc[-22]['close']) / iwm_df.iloc[-22]['close']
+            leadership_condition = spy_ret > mdy_ret > iwm_ret
+    additional_conditions.append(leadership_condition)
+    details['large_cap_leadership'] = leadership_condition
+
+    # Advance-Decline Line 횡보 또는 완만한 상승
+    ad_trend = calculate_advance_decline_trend(index_data)
+    ad_condition = ad_trend >= -5
+    additional_conditions.append(ad_condition)
+    details['ad_line_flat_up'] = ad_condition
+    details['ad_trend'] = ad_trend
+
     
     # 필수조건 모두 충족 여부
     essential_met = all(essential_conditions)
@@ -287,32 +333,61 @@ def check_correction_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bo
     details['correction_range_count'] = correction_range_count
     
     # 필수조건 3: 조정이 일정 기간 이상 지속
+
     correction_duration_count = 0
     for ticker in main_indices:
         if ticker in index_data and index_data[ticker] is not None:
             df = index_data[ticker]
             days_below = count_consecutive_below_ma(df, 'ma50')
             if days_below >= MARKET_REGIME_CRITERIA['correction_min_days']:
+
                 correction_duration_count += 1
 
     essential_3 = correction_duration_count >= 2
     essential_conditions.append(essential_3)
     details['correction_duration_met'] = essential_3
+
     details['correction_duration_count'] = correction_duration_count
     
     # 부가조건들
     # VIX 25-35 구간
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
+
         vix_condition = 25 <= vix_value <= 35
     additional_conditions.append(vix_condition)
     details['vix_elevated'] = vix_condition
     
-    # 기타 부가조건들
-    for condition_name in ['put_call_elevated', 'high_low_weak', 'ad_line_declining']:
-        additional_conditions.append(True)  # 임시로 True
-        details[condition_name] = True
+    # Put/Call Ratio 0.9-1.2
+    pc_ratio = calculate_put_call_ratio()
+    pc_condition = 0.9 <= pc_ratio <= 1.2
+    additional_conditions.append(pc_condition)
+    details['put_call_elevated'] = pc_condition
+    details['put_call_ratio'] = pc_ratio
+
+    # High-Low Index 30-50
+    hl_index = calculate_high_low_index(index_data)
+    hl_condition = 30 <= hl_index <= 50
+    additional_conditions.append(hl_condition)
+    details['high_low_weak'] = hl_condition
+    details['high_low_index'] = hl_index
+
+    # Advance-Decline Line 하락 추세
+    ad_trend = calculate_advance_decline_trend(index_data)
+    ad_condition = ad_trend < 0
+    additional_conditions.append(ad_condition)
+    details['ad_line_declining'] = ad_condition
+    details['ad_trend'] = ad_trend
+
+    # 단기 반등 후 재하락 패턴
+    retest_condition = False
+    if 'SPY' in index_data and index_data['SPY'] is not None:
+        df = index_data['SPY']
+        if len(df) >= 10:
+            retest_condition = df['close'].iloc[-5] > df['close'].iloc[-10] and df['close'].iloc[-1] < df['close'].iloc[-5]
+    additional_conditions.append(retest_condition)
+    details['retest_after_bounce'] = retest_condition
     
     # 필수조건 모두 충족 여부
     essential_met = all(essential_conditions)
@@ -384,17 +459,43 @@ def check_risk_management_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     
     # 부가조건들
     # VIX > 35
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
+
         vix_condition = vix_value > 35
     additional_conditions.append(vix_condition)
     details['vix_high'] = vix_condition
-    
-    # 기타 부가조건들
-    for condition_name in ['put_call_very_high', 'high_low_very_weak', 'ma_inversion']:
-        additional_conditions.append(False)  # 위험 관리장은 더 엄격하게
-        details[condition_name] = False
+
+    # Put/Call Ratio > 1.2
+    pc_ratio = calculate_put_call_ratio()
+    pc_condition = pc_ratio > 1.2
+    additional_conditions.append(pc_condition)
+    details['put_call_very_high'] = pc_condition
+    details['put_call_ratio'] = pc_ratio
+
+    # High-Low Index < 30
+    hl_index = calculate_high_low_index(index_data)
+    hl_condition = hl_index < 30
+    additional_conditions.append(hl_condition)
+    details['high_low_very_weak'] = hl_condition
+    details['high_low_index'] = hl_index
+
+    # Advance-Decline Line 급락
+    ad_trend = calculate_advance_decline_trend(index_data)
+    ad_condition = ad_trend <= -20
+    additional_conditions.append(ad_condition)
+    details['ad_line_plunge'] = ad_condition
+    details['ad_trend'] = ad_trend
+
+    # 이동평균선 역배열 (50일 < 200일)
+    ma_inversion = False
+    if 'SPY' in index_data and index_data['SPY'] is not None:
+        df = index_data['SPY']
+        latest = df.iloc[-1]
+        ma_inversion = latest['ma50'] < latest['ma200']
+    additional_conditions.append(ma_inversion)
+    details['ma_inversion'] = ma_inversion
     
     # 필수조건 모두 충족 여부
     essential_met = all(essential_conditions)
@@ -459,6 +560,7 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     essential_conditions.append(essential_2)
     details['severe_decline_count'] = severe_decline_count
     
+
     # 필수조건 3: 하락 추세가 일정 기간 이상 지속
     downtrend_count = 0
     for ticker in main_indices:
@@ -472,18 +574,40 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     essential_conditions.append(prolonged_decline)
     details['prolonged_decline'] = prolonged_decline
     details['downtrend_count'] = downtrend_count
+
     
     # 부가조건들
     # VIX > 40
-    vix_condition = False
+    vix_strength = 0.0
     if 'VIX' in index_data and index_data['VIX'] is not None:
         vix_value = index_data['VIX'].iloc[-1]['close']
         vix_condition = vix_value > 40
     additional_conditions.append(vix_condition)
     details['vix_extreme'] = vix_condition
+
+    # Put/Call Ratio > 1.5
+    pc_ratio = calculate_put_call_ratio()
+    pc_condition = pc_ratio > 1.5
+    additional_conditions.append(pc_condition)
+    details['put_call_extreme'] = pc_condition
+    details['put_call_ratio'] = pc_ratio
+
+    # High-Low Index < 20
+    hl_index = calculate_high_low_index(index_data)
+    hl_condition = hl_index < 20
+    additional_conditions.append(hl_condition)
+    details['high_low_collapse'] = hl_condition
+    details['high_low_index'] = hl_index
+
+    # Advance-Decline Line 지속적 하락
+    ad_trend = calculate_advance_decline_trend(index_data)
+    ad_condition = ad_trend <= -20
+    additional_conditions.append(ad_condition)
+    details['ad_line_decline'] = ad_condition
+    details['ad_trend'] = ad_trend
     
     # 바이오텍 지수 급락
-    biotech_crash = False
+    biotech_crash = 0.0
     for ticker in ['IBB', 'XBI']:
         if ticker in index_data and index_data[ticker] is not None:
             df = index_data[ticker]
@@ -492,15 +616,10 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
                 high_price = df.iloc[-60:]['close'].max()
                 decline = (current_price - high_price) / high_price
                 if decline <= -0.30:
-                    biotech_crash = True
+                    biotech_crash = 1.0
                     break
     additional_conditions.append(biotech_crash)
     details['biotech_crash'] = biotech_crash
-    
-    # 기타 부가조건들
-    for condition_name in ['put_call_extreme', 'high_low_collapse']:
-        additional_conditions.append(False)
-        details[condition_name] = False
     
     # 필수조건 모두 충족 여부
     essential_met = all(essential_conditions)
