@@ -25,6 +25,7 @@ from utils.market_regime_indicator import analyze_market_regime
 from screeners.markminervini.filter_stock import run_integrated_screening
 from screeners.markminervini.advanced_financial import run_advanced_financial_screening
 from screeners.markminervini.pattern_detection import analyze_tickers_from_results
+from screeners.markminervini.screener import run_us_screening
 from screeners.us_setup.screener import screen_us_setup
 from screeners.us_gainer.screener import screen_us_gainers
 from screeners.leader_stock.screener import run_leader_stock_screening
@@ -248,53 +249,57 @@ def run_all_screening_processes() -> None:
     """Execute all screening steps sequentially."""
     print("\n⚙️ 스크리닝 프로세스 시작...")
     try:
-        print("\n⏳ 1단계: 통합 스크리닝 실행 중...")
+        print("\n⏳ 1단계: 미국 주식 스크리닝 실행 중...")
+        run_us_screening()
+        print("✅ 1단계: 미국 주식 스크리닝 완료.")
+
+        print("\n⏳ 2단계: 통합 스크리닝 실행 중...")
         run_integrated_screening()
-        print("✅ 1단계: 통합 스크리닝 완료.")
+        print("✅ 2단계: 통합 스크리닝 완료.")
 
-        print("\n⏳ 2단계: 고급 재무 스크리닝 실행 중...")
+        print("\n⏳ 3단계: 고급 재무 스크리닝 실행 중...")
         run_advanced_financial_screening()
-        print("✅ 2단계: 고급 재무 스크리닝 완료.")
+        print("✅ 3단계: 고급 재무 스크리닝 완료.")
 
-        print("\n⏳ 3단계: 새로운 티커 추적 실행 중...")
+        print("\n⏳ 4단계: 새로운 티커 추적 실행 중...")
         track_new_tickers(ADVANCED_FINANCIAL_RESULTS_PATH)
-        print("✅ 3단계: 새로운 티커 추적 완료.")
+        print("✅ 4단계: 새로운 티커 추적 완료.")
 
-        print("\n⏳ 4단계: 패턴 분석 실행 중...")
+        print("\n⏳ 5단계: 패턴 분석 실행 중...")
         run_pattern_analysis()
-        print("✅ 4단계: 패턴 분석 완료.")
+        print("✅ 5단계: 패턴 분석 완료.")
 
-        print("\n⏳ 5단계: 변동성 스큐 스크리닝 실행 중...")
+        print("\n⏳ 6단계: 변동성 스큐 스크리닝 실행 중...")
         run_volatility_skew_portfolio()
-        print("✅ 5단계: 변동성 스큐 스크리닝 완료.")
+        print("✅ 6단계: 변동성 스큐 스크리닝 완료.")
 
-        print("\n⏳ 6단계: US Setup 스크리닝 실행 중...")
+        print("\n⏳ 7단계: US Setup 스크리닝 실행 중...")
         run_setup_screener()
-        print("✅ 6단계: US Setup 스크리닝 완료.")
+        print("✅ 7단계: US Setup 스크리닝 완료.")
 
-        print("\n⏳ 7단계: US Gainers 스크리닝 실행 중...")
+        print("\n⏳ 8단계: US Gainers 스크리닝 실행 중...")
         run_gainers_screener()
-        print("✅ 7단계: US Gainers 스크리닝 완료.")
+        print("✅ 8단계: US Gainers 스크리닝 완료.")
 
-        print("\n⏳ 8단계: 주도주 투자 전략 스크리닝 실행 중...")
+        print("\n⏳ 9단계: 주도주 투자 전략 스크리닝 실행 중...")
         run_leader_stock_screener()
-        print("✅ 8단계: 주도주 투자 전략 스크리닝 완료.")
+        print("✅ 9단계: 주도주 투자 전략 스크리닝 완료.")
 
-        print("\n⏳ 9단계: 상승 모멘텀 신호 스크리닝 실행 중...")
+        print("\n⏳ 10단계: 상승 모멘텀 신호 스크리닝 실행 중...")
         run_momentum_signals_screener()
-        print("✅ 9단계: 상승 모멘텀 신호 스크리닝 완료.")
+        print("✅ 10단계: 상승 모멘텀 신호 스크리닝 완료.")
 
-        print("\n⏳ 10단계: IPO 투자 전략 스크리닝 실행 중...")
+        print("\n⏳ 11단계: IPO 투자 전략 스크리닝 실행 중...")
         run_ipo_investment_screener()
-        print("✅ 10단계: IPO 투자 전략 스크리닝 완료.")
+        print("✅ 11단계: IPO 투자 전략 스크리닝 완료.")
 
-        print("\n⏳ 11단계: 쿨라매기 전략 실행 중...")
+        print("\n⏳ 12단계: 쿨라매기 전략 실행 중...")
         run_qullamaggie_strategy_task()
-        print("✅ 11단계: 쿨라매기 전략 완료.")
+        print("✅ 12단계: 쿨라매기 전략 완료.")
 
-        print("\n⏳ 12단계: 시장 국면 분석 실행 중...")
+        print("\n⏳ 13단계: 시장 국면 분석 실행 중...")
         run_market_regime_analysis()
-        print("✅ 12단계: 시장 국면 분석 완료.")
+        print("✅ 13단계: 시장 국면 분석 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:  # pragma: no cover - runtime log
