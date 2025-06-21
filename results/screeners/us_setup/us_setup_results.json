@@ -1,38 +1,18 @@
 [
   {
-    "symbol":"AAP",
-    "price":48.4700012207,
-    "market_cap":2909387776,
-    "adr_percent":6.2925503616,
-    "perf_1w_pct":-6.9673653738,
-    "perf_1m_pct":40.8193021475,
-    "volume":2127400,
-    "avg_volume60":2975243.3333333335
-  },
-  {
     "symbol":"ABCL",
     "price":3.4700000286,
-    "market_cap":1035742912,
+    "market_cap":1017833856,
     "adr_percent":11.5273801749,
     "perf_1w_pct":10.1587277319,
     "perf_1m_pct":66.0287163212,
-    "volume":8628600,
-    "avg_volume60":4872995.0
-  },
-  {
-    "symbol":"ABUS",
-    "price":3.5299999714,
-    "market_cap":664598720,
-    "adr_percent":3.1161443622,
-    "perf_1w_pct":0.5698000279,
-    "perf_1m_pct":13.141028874,
-    "volume":515400,
-    "avg_volume60":945771.6666666666
+    "volume":8600594,
+    "avg_volume60":4872528.2333333334
   },
   {
     "symbol":"ACDC",
     "price":9.6199998856,
-    "market_cap":1540912384,
+    "market_cap":1500867840,
     "adr_percent":11.5904343491,
     "perf_1w_pct":6.1810092716,
     "perf_1m_pct":48.2280466075,
@@ -41,18 +21,18 @@
   },
   {
     "symbol":"ADPT",
-    "price":10.3199996948,
-    "market_cap":1590571008,
-    "adr_percent":5.5232622612,
-    "perf_1w_pct":-1.2440202566,
-    "perf_1m_pct":15.8249143834,
-    "volume":979200,
-    "avg_volume60":2153488.3333333335
+    "price":10.470000267,
+    "market_cap":1576898432,
+    "adr_percent":6.9340956412,
+    "perf_1w_pct":0.5763729154,
+    "perf_1m_pct":11.8589813148,
+    "volume":2894400,
+    "avg_volume60":2120916.6666666665
   },
   {
     "symbol":"AEVA",
     "price":27.6100006104,
-    "market_cap":1519174016,
+    "market_cap":1382717952,
     "adr_percent":7.3161912825,
     "perf_1w_pct":16.6455450839,
     "perf_1m_pct":84.5588271387,
@@ -62,7 +42,7 @@
   {
     "symbol":"AFRM",
     "price":61.6800003052,
-    "market_cap":19897968640,
+    "market_cap":20020555776,
     "adr_percent":4.1018138242,
     "perf_1w_pct":1.0319427944,
     "perf_1m_pct":24.0048215195,
@@ -72,7 +52,7 @@
   {
     "symbol":"AG",
     "price":8.3500003815,
-    "market_cap":4046326784,
+    "market_cap":3937572096,
     "adr_percent":4.7904143743,
     "perf_1w_pct":1.3349589006,
     "perf_1m_pct":41.0473019233,
@@ -81,28 +61,28 @@
   },
   {
     "symbol":"AGIO",
-    "price":34.2999992371,
-    "market_cap":2055989632,
-    "adr_percent":3.3236134548,
-    "perf_1w_pct":1.9013648026,
-    "perf_1m_pct":21.3729616393,
-    "volume":482100,
-    "avg_volume60":612270.0
+    "price":35.5,
+    "market_cap":1992862080,
+    "adr_percent":3.7464732855,
+    "perf_1w_pct":2.8985507246,
+    "perf_1m_pct":17.6665558841,
+    "volume":549400,
+    "avg_volume60":597203.3333333334
   },
   {
     "symbol":"AKBA",
     "price":3.5599999428,
-    "market_cap":934984128,
-    "adr_percent":5.3370803448,
-    "perf_1w_pct":-7.0496079975,
-    "perf_1m_pct":40.1574801671,
-    "volume":6476400,
-    "avg_volume60":5447931.666666667
+    "market_cap":966500480,
+    "adr_percent":3.9325805825,
+    "perf_1w_pct":-2.4657575407,
+    "perf_1m_pct":21.9178030741,
+    "volume":3604500,
+    "avg_volume60":4943118.333333333
   },
   {
     "symbol":"AKRO",
     "price":54.9000015259,
-    "market_cap":4376496128,
+    "market_cap":4320693760,
     "adr_percent":3.1420805845,
     "perf_1w_pct":2.5018672857,
     "perf_1m_pct":15.4088750853,
@@ -112,7 +92,7 @@
   {
     "symbol":"ALT",
     "price":6.7800002098,
-    "market_cap":549905472,
+    "market_cap":570182208,
     "adr_percent":8.702059845,
     "perf_1w_pct":-5.1748235052,
     "perf_1m_pct":15.8974413733,
@@ -120,19 +100,9 @@
     "avg_volume60":2665920.6833333331
   },
   {
-    "symbol":"AMC",
-    "price":3.1500000954,
-    "market_cap":1308094848,
-    "adr_percent":4.7619076453,
-    "perf_1w_pct":-5.9701437301,
-    "perf_1m_pct":12.0996498047,
-    "volume":7925100,
-    "avg_volume60":10464500.0
-  },
-  {
     "symbol":"AMSC",
     "price":30.8299999237,
-    "market_cap":1345042048,
+    "market_cap":1326282112,
     "adr_percent":6.3898839623,
     "perf_1w_pct":5.4738296494,
     "perf_1m_pct":24.9189608691,
@@ -142,7 +112,7 @@
   {
     "symbol":"ANAB",
     "price":23.3899993896,
-    "market_cap":687209856,
+    "market_cap":680746176,
     "adr_percent":4.5532302772,
     "perf_1w_pct":-0.0854355314,
     "perf_1m_pct":10.8530756719,
@@ -152,7 +122,7 @@
   {
     "symbol":"APA",
     "price":20.3099994659,
-    "market_cap":7328761344,
+    "market_cap":7206074368,
     "adr_percent":5.0713969164,
     "perf_1w_pct":1.8045047079,
     "perf_1m_pct":17.7391273388,
@@ -161,28 +131,18 @@
   },
   {
     "symbol":"APLD",
-    "price":11.1800003052,
-    "market_cap":2387992576,
-    "adr_percent":12.8801390078,
-    "perf_1w_pct":-14.1321051298,
-    "perf_1m_pct":100.0,
-    "volume":62480600,
-    "avg_volume60":50424818.3333333358
-  },
-  {
-    "symbol":"AS",
-    "price":36.2400016785,
-    "market_cap":20069924864,
-    "adr_percent":3.3388494162,
-    "perf_1w_pct":-3.7961151048,
-    "perf_1m_pct":17.4716409412,
-    "volume":4981100,
-    "avg_volume60":4726865.2999999998
+    "price":10.6099996567,
+    "market_cap":2324973056,
+    "adr_percent":4.1470362705,
+    "perf_1w_pct":-15.1878540163,
+    "perf_1m_pct":57.6522975722,
+    "volume":29145400,
+    "avg_volume60":51115911.6666666642
   },
   {
     "symbol":"ASM",
     "price":3.5299999714,
-    "market_cap":512626592,
+    "market_cap":506817792,
     "adr_percent":5.09914532,
     "perf_1w_pct":-4.8517537711,
     "perf_1m_pct":21.3058373633,
@@ -191,18 +151,28 @@
   },
   {
     "symbol":"ASPI",
-    "price":8.0699996948,
-    "market_cap":655066880,
-    "adr_percent":6.3197056774,
-    "perf_1w_pct":-16.1122682866,
-    "perf_1m_pct":26.8867849908,
-    "volume":3346400,
-    "avg_volume60":3041818.6499999999
+    "price":7.8099999428,
+    "market_cap":634936768,
+    "adr_percent":5.1216401831,
+    "perf_1w_pct":-6.5789442163,
+    "perf_1m_pct":11.571427754,
+    "volume":3582900,
+    "avg_volume60":3161093.6499999999
+  },
+  {
+    "symbol":"ASTL",
+    "price":6.6599998474,
+    "market_cap":720113216,
+    "adr_percent":5.1651632215,
+    "perf_1w_pct":7.0739561425,
+    "perf_1m_pct":19.1413178107,
+    "volume":1263300,
+    "avg_volume60":1021091.6666666666
   },
   {
     "symbol":"ASTS",
     "price":44.3499984741,
-    "market_cap":14555227136,
+    "market_cap":15077049344,
     "adr_percent":8.6133028777,
     "perf_1w_pct":20.1245955408,
     "perf_1m_pct":77.1873641929,
@@ -210,29 +180,19 @@
     "avg_volume60":11581136.666666666
   },
   {
-    "symbol":"ATI",
-    "price":84.9700012207,
-    "market_cap":11592968192,
-    "adr_percent":3.648344627,
-    "perf_1w_pct":0.4611011837,
-    "perf_1m_pct":13.2631365274,
-    "volume":1975600,
-    "avg_volume60":2457090.0
-  },
-  {
     "symbol":"AVAV",
-    "price":195.1000061035,
-    "market_cap":8674318336,
-    "adr_percent":3.859558454,
-    "perf_1w_pct":-0.3167765754,
-    "perf_1m_pct":17.8923195525,
-    "volume":774000,
-    "avg_volume60":479510.0
+    "price":190.0399932861,
+    "market_cap":8656517120,
+    "adr_percent":3.1888011854,
+    "perf_1w_pct":-0.0420796513,
+    "perf_1m_pct":12.2570741467,
+    "volume":800800,
+    "avg_volume60":495113.3333333333
   },
   {
     "symbol":"BBAI",
     "price":3.9600000381,
-    "market_cap":1153108480,
+    "market_cap":1164755968,
     "adr_percent":9.5959623934,
     "perf_1w_pct":3.3942589303,
     "perf_1m_pct":11.5492983475,
@@ -241,18 +201,18 @@
   },
   {
     "symbol":"BBIO",
-    "price":39.7799987793,
-    "market_cap":7595239424,
-    "adr_percent":3.1171390192,
-    "perf_1w_pct":1.9215988303,
-    "perf_1m_pct":17.901590991,
-    "volume":2644800,
-    "avg_volume60":2910028.3333333335
+    "price":40.0,
+    "market_cap":7923733504,
+    "adr_percent":5.1499938965,
+    "perf_1w_pct":0.8827199512,
+    "perf_1m_pct":18.6591548097,
+    "volume":3259600,
+    "avg_volume60":2903726.6666666665
   },
   {
     "symbol":"BBNX",
     "price":17.7800006866,
-    "market_cap":770875072,
+    "market_cap":775644160,
     "adr_percent":7.3678257331,
     "perf_1w_pct":-8.7737255236,
     "perf_1m_pct":12.2474780011,
@@ -262,7 +222,7 @@
   {
     "symbol":"BSGM",
     "price":6.5,
-    "market_cap":886372480,
+    "market_cap":913645440,
     "adr_percent":14.9215331444,
     "perf_1w_pct":-5.9334277347,
     "perf_1m_pct":112.4183046257,
@@ -272,27 +232,17 @@
   {
     "symbol":"BTG",
     "price":3.7000000477,
-    "market_cap":4889069056,
+    "market_cap":4813754880,
     "adr_percent":3.2432401084,
     "perf_1w_pct":-0.2695415191,
     "perf_1m_pct":15.2647976235,
-    "volume":51117900,
-    "avg_volume60":51991577.200000003
-  },
-  {
-    "symbol":"BVN",
-    "price":16.8899993896,
-    "market_cap":4201520384,
-    "adr_percent":3.0787363482,
-    "perf_1w_pct":-0.2951661324,
-    "perf_1m_pct":16.4827544114,
-    "volume":1147600,
-    "avg_volume60":1189695.0
+    "volume":49563206,
+    "avg_volume60":51965665.6333333328
   },
   {
     "symbol":"BYRN",
     "price":30.9500007629,
-    "market_cap":701899584,
+    "market_cap":687838912,
     "adr_percent":5.8481402951,
     "perf_1w_pct":-1.9638864044,
     "perf_1m_pct":24.2971937233,
@@ -300,19 +250,9 @@
     "avg_volume60":523238.8
   },
   {
-    "symbol":"CAR",
-    "price":121.9100036621,
-    "market_cap":4570059264,
-    "adr_percent":3.4943827481,
-    "perf_1w_pct":-3.3227556405,
-    "perf_1m_pct":15.3686058243,
-    "volume":963600,
-    "avg_volume60":1639593.3333333333
-  },
-  {
     "symbol":"CHRD",
     "price":104.5899963379,
-    "market_cap":6040574464,
+    "market_cap":6011119616,
     "adr_percent":3.4898189633,
     "perf_1w_pct":2.1486443611,
     "perf_1m_pct":10.5252027619,
@@ -320,19 +260,9 @@
     "avg_volume60":832466.0
   },
   {
-    "symbol":"CIFR",
-    "price":3.7200000286,
-    "market_cap":1414321536,
-    "adr_percent":6.5860183784,
-    "perf_1w_pct":-10.1449239474,
-    "perf_1m_pct":17.3501558069,
-    "volume":21618500,
-    "avg_volume60":16951403.3333333321
-  },
-  {
     "symbol":"CLMT",
     "price":16.4300003052,
-    "market_cap":1423191296,
+    "market_cap":1417994112,
     "adr_percent":4.4430890364,
     "perf_1w_pct":15.9491899556,
     "perf_1m_pct":19.2307737559,
@@ -340,19 +270,9 @@
     "avg_volume60":1135030.0
   },
   {
-    "symbol":"CLS",
-    "price":125.3300018311,
-    "market_cap":15778022400,
-    "adr_percent":3.8618018568,
-    "perf_1w_pct":2.1850797161,
-    "perf_1m_pct":12.4136731837,
-    "volume":2718300,
-    "avg_volume60":4335961.7166666668
-  },
-  {
     "symbol":"COGT",
     "price":7.2399997711,
-    "market_cap":824317440,
+    "market_cap":823178880,
     "adr_percent":6.8370217962,
     "perf_1w_pct":0.2770080541,
     "perf_1m_pct":36.3465131664,
@@ -360,19 +280,19 @@
     "avg_volume60":1621223.3333333333
   },
   {
-    "symbol":"CRDO",
-    "price":73.4899978638,
-    "market_cap":14533266432,
-    "adr_percent":6.0008215952,
-    "perf_1w_pct":3.376004571,
-    "perf_1m_pct":23.3467532817,
-    "volume":4562700,
-    "avg_volume60":4797950.0
+    "symbol":"CVI",
+    "price":27.4099998474,
+    "market_cap":2765607936,
+    "adr_percent":4.8522434553,
+    "perf_1w_pct":6.736758262,
+    "perf_1m_pct":17.9432018819,
+    "volume":1279900,
+    "avg_volume60":1005658.3333333334
   },
   {
     "symbol":"CW",
     "price":462.8099975586,
-    "market_cap":17442983936,
+    "market_cap":17594871808,
     "adr_percent":3.1071076594,
     "perf_1w_pct":-2.3998829212,
     "perf_1m_pct":10.4453007162,
@@ -380,19 +300,9 @@
     "avg_volume60":302148.7833333333
   },
   {
-    "symbol":"DHC",
-    "price":3.4800000191,
-    "market_cap":890216256,
-    "adr_percent":3.4482725546,
-    "perf_1w_pct":2.6548646426,
-    "perf_1m_pct":14.4736862744,
-    "volume":1510300,
-    "avg_volume60":848603.3333333334
-  },
-  {
     "symbol":"DK",
     "price":21.3500003815,
-    "market_cap":1296527872,
+    "market_cap":1322033408,
     "adr_percent":7.8688448141,
     "perf_1w_pct":5.6407785682,
     "perf_1m_pct":14.6001145638,
@@ -402,22 +312,12 @@
   {
     "symbol":"DOMO",
     "price":12.6300001144,
-    "market_cap":508169312,
+    "market_cap":510985760,
     "adr_percent":4.9881243763,
     "perf_1w_pct":-7.7428743494,
     "perf_1m_pct":47.7192962888,
     "volume":595300,
     "avg_volume60":579625.0
-  },
-  {
-    "symbol":"EAT",
-    "price":174.5700073242,
-    "market_cap":7926093312,
-    "adr_percent":3.6489630807,
-    "perf_1w_pct":0.6457252209,
-    "perf_1m_pct":17.4448385637,
-    "volume":1316400,
-    "avg_volume60":1627071.6666666667
   },
   {
     "symbol":"ECVT",
@@ -432,7 +332,7 @@
   {
     "symbol":"ELF",
     "price":122.2399978638,
-    "market_cap":6885583360,
+    "market_cap":6750958592,
     "adr_percent":3.5503959777,
     "perf_1w_pct":-4.9011947654,
     "perf_1m_pct":49.9693223655,
@@ -442,17 +342,17 @@
   {
     "symbol":"ELVN",
     "price":21.5699996948,
-    "market_cap":1272418560,
+    "market_cap":1256491264,
     "adr_percent":5.5169153618,
     "perf_1w_pct":9.7151569798,
     "perf_1m_pct":24.1081745476,
-    "volume":423900,
-    "avg_volume60":434488.3333333333
+    "volume":420654,
+    "avg_volume60":434434.2333333333
   },
   {
     "symbol":"ETNB",
     "price":10.0,
-    "market_cap":1459840000,
+    "market_cap":1471518720,
     "adr_percent":4.3000030518,
     "perf_1w_pct":3.9501051867,
     "perf_1m_pct":10.7419744819,
@@ -462,7 +362,7 @@
   {
     "symbol":"ETSY",
     "price":55.2999992371,
-    "market_cap":5766794752,
+    "market_cap":5856477184,
     "adr_percent":3.1103096644,
     "perf_1w_pct":-6.7296367294,
     "perf_1m_pct":17.2603889228,
@@ -472,7 +372,7 @@
   {
     "symbol":"EVGO",
     "price":4.3299999237,
-    "market_cap":1329171456,
+    "market_cap":1200244864,
     "adr_percent":5.5427199849,
     "perf_1w_pct":-0.6880781855,
     "perf_1m_pct":16.3978465162,
@@ -480,9 +380,19 @@
     "avg_volume60":4365522.3166666664
   },
   {
+    "symbol":"EYE",
+    "price":23.0,
+    "market_cap":1808748544,
+    "adr_percent":3.6521745765,
+    "perf_1w_pct":7.6275109815,
+    "perf_1m_pct":18.6790557069,
+    "volume":2613700,
+    "avg_volume60":2501473.3333333335
+  },
+  {
     "symbol":"EYPT",
     "price":8.9200000763,
-    "market_cap":613800320,
+    "market_cap":579394496,
     "adr_percent":5.8296014946,
     "perf_1w_pct":0.6772056653,
     "perf_1m_pct":43.6392918116,
@@ -490,9 +400,19 @@
     "avg_volume60":819440.3
   },
   {
+    "symbol":"FIGS",
+    "price":5.25,
+    "market_cap":853392768,
+    "adr_percent":3.8095201765,
+    "perf_1w_pct":0.7677535808,
+    "perf_1m_pct":15.1315803921,
+    "volume":2466800,
+    "avg_volume60":1869150.0
+  },
+  {
     "symbol":"FIP",
     "price":6.5100002289,
-    "market_cap":747094144,
+    "market_cap":714961024,
     "adr_percent":3.3026062702,
     "perf_1w_pct":1.2441742252,
     "perf_1m_pct":22.8301885774,
@@ -502,7 +422,7 @@
   {
     "symbol":"FLR",
     "price":50.0400009155,
-    "market_cap":8239836160,
+    "market_cap":8173969920,
     "adr_percent":3.1514780884,
     "perf_1w_pct":3.4097986086,
     "perf_1m_pct":30.4824065359,
@@ -510,9 +430,19 @@
     "avg_volume60":3402599.4833333334
   },
   {
+    "symbol":"FWRD",
+    "price":22.1299991608,
+    "market_cap":674786560,
+    "adr_percent":5.1965642212,
+    "perf_1w_pct":8.4803900715,
+    "perf_1m_pct":22.6718294771,
+    "volume":652900,
+    "avg_volume60":716054.6
+  },
+  {
     "symbol":"GH",
     "price":50.5699996948,
-    "market_cap":6265016320,
+    "market_cap":6087856128,
     "adr_percent":6.0707923934,
     "perf_1w_pct":3.1619731183,
     "perf_1m_pct":26.5198852899,
@@ -522,7 +452,7 @@
   {
     "symbol":"GRPN",
     "price":37.0299987793,
-    "market_cap":1474390144,
+    "market_cap":1450898688,
     "adr_percent":5.0769676751,
     "perf_1w_pct":14.5375709312,
     "perf_1m_pct":39.3677049477,
@@ -530,9 +460,19 @@
     "avg_volume60":1689313.3333333333
   },
   {
+    "symbol":"GRRR",
+    "price":18.8099994659,
+    "market_cap":510206112,
+    "adr_percent":4.3062275188,
+    "perf_1w_pct":-8.6449765588,
+    "perf_1m_pct":18.6750726387,
+    "volume":2443200,
+    "avg_volume60":1838035.0
+  },
+  {
     "symbol":"GSAT",
     "price":23.8400001526,
-    "market_cap":3017738752,
+    "market_cap":2972168704,
     "adr_percent":4.0268497721,
     "perf_1w_pct":7.4357799857,
     "perf_1m_pct":24.360981,
@@ -540,9 +480,19 @@
     "avg_volume60":600523.3333333334
   },
   {
+    "symbol":"HIMX",
+    "price":9.3800001144,
+    "market_cap":1558474752,
+    "adr_percent":3.5181228111,
+    "perf_1w_pct":2.9637812068,
+    "perf_1m_pct":11.1374476397,
+    "volume":1786300,
+    "avg_volume60":1379375.0
+  },
+  {
     "symbol":"HLF",
     "price":8.0900001526,
-    "market_cap":823942272,
+    "market_cap":818849856,
     "adr_percent":3.9554967712,
     "perf_1w_pct":-2.0581122468,
     "perf_1m_pct":16.907515367,
@@ -552,7 +502,7 @@
   {
     "symbol":"HOOD",
     "price":78.3499984741,
-    "market_cap":69141446656,
+    "market_cap":69273812992,
     "adr_percent":5.360557792,
     "perf_1w_pct":6.107803846,
     "perf_1m_pct":20.7055831979,
@@ -561,18 +511,18 @@
   },
   {
     "symbol":"HPK",
-    "price":11.8999996185,
-    "market_cap":1467419904,
-    "adr_percent":4.7478957857,
-    "perf_1w_pct":6.918234467,
-    "perf_1m_pct":19.9596726513,
-    "volume":415600,
-    "avg_volume60":338716.6666666667
+    "price":11.6400003433,
+    "market_cap":1447249152,
+    "adr_percent":3.0927886575,
+    "perf_1w_pct":2.7361025746,
+    "perf_1m_pct":22.1406156293,
+    "volume":237500,
+    "avg_volume60":336370.0
   },
   {
     "symbol":"HROW",
     "price":31.5200004578,
-    "market_cap":1156771456,
+    "market_cap":1125209728,
     "adr_percent":5.7423840091,
     "perf_1w_pct":1.1553293072,
     "perf_1m_pct":12.2907046685,
@@ -580,29 +530,9 @@
     "avg_volume60":493196.6666666667
   },
   {
-    "symbol":"HUT",
-    "price":17.4799995422,
-    "market_cap":1774866688,
-    "adr_percent":5.406187797,
-    "perf_1w_pct":-5.7681926622,
-    "perf_1m_pct":12.1951195625,
-    "volume":4831600,
-    "avg_volume60":6344240.0
-  },
-  {
-    "symbol":"IBRX",
-    "price":3.0699999332,
-    "market_cap":2506640896,
-    "adr_percent":4.7231265172,
-    "perf_1w_pct":-10.7558173786,
-    "perf_1m_pct":14.9812676224,
-    "volume":16731800,
-    "avg_volume60":9384166.666666666
-  },
-  {
     "symbol":"IDYA",
     "price":21.8600006104,
-    "market_cap":1914542592,
+    "market_cap":1897901952,
     "adr_percent":4.1171070146,
     "perf_1w_pct":-1.8850990276,
     "perf_1m_pct":11.360170886,
@@ -612,7 +542,7 @@
   {
     "symbol":"IE",
     "price":8.5200004578,
-    "market_cap":1129666816,
+    "market_cap":1042157440,
     "adr_percent":7.1596255955,
     "perf_1w_pct":6.2344136092,
     "perf_1m_pct":25.1101399318,
@@ -622,7 +552,7 @@
   {
     "symbol":"INOD",
     "price":46.3300018311,
-    "market_cap":1470759808,
+    "market_cap":1562821120,
     "adr_percent":9.9071875052,
     "perf_1w_pct":9.2173593373,
     "perf_1m_pct":24.4760889618,
@@ -632,7 +562,7 @@
   {
     "symbol":"IONQ",
     "price":39.6300010681,
-    "market_cap":10368516096,
+    "market_cap":10559507456,
     "adr_percent":5.9550762858,
     "perf_1w_pct":2.3766520419,
     "perf_1m_pct":12.2344931374,
@@ -642,7 +572,7 @@
   {
     "symbol":"IREN",
     "price":9.8000001907,
-    "market_cap":2370296832,
+    "market_cap":2532347648,
     "adr_percent":4.7122409448,
     "perf_1w_pct":-3.6381502732,
     "perf_1m_pct":13.8211449653,
@@ -651,18 +581,18 @@
   },
   {
     "symbol":"JOBY",
-    "price":8.6000003815,
-    "market_cap":7438860288,
-    "adr_percent":4.7674398747,
-    "perf_1w_pct":-6.8255600435,
-    "perf_1m_pct":20.1117397311,
-    "volume":24914500,
-    "avg_volume60":17565760.0
+    "price":8.8400001526,
+    "market_cap":7186410496,
+    "adr_percent":5.0905062802,
+    "perf_1w_pct":-0.3382157087,
+    "perf_1m_pct":26.8292742997,
+    "volume":20283000,
+    "avg_volume60":18047113.3333333321
   },
   {
     "symbol":"KLAC",
     "price":871.1599731445,
-    "market_cap":115203063808,
+    "market_cap":112404848640,
     "adr_percent":3.5400966224,
     "perf_1w_pct":-0.4388602121,
     "perf_1m_pct":10.2329521271,
@@ -671,18 +601,18 @@
   },
   {
     "symbol":"KRUS",
-    "price":78.2099990845,
-    "market_cap":930341824,
-    "adr_percent":6.0350355146,
-    "perf_1w_pct":-3.7533878557,
-    "perf_1m_pct":16.574755334,
-    "volume":333100,
-    "avg_volume60":313983.3333333333
+    "price":76.9800033569,
+    "market_cap":958621888,
+    "adr_percent":4.1335399685,
+    "perf_1w_pct":-4.6805332829,
+    "perf_1m_pct":17.5446722675,
+    "volume":173700,
+    "avg_volume60":312376.6666666667
   },
   {
     "symbol":"KTOS",
     "price":42.1599998474,
-    "market_cap":6469157376,
+    "market_cap":6614928384,
     "adr_percent":5.7637578605,
     "perf_1w_pct":2.2308393101,
     "perf_1m_pct":17.9630606252,
@@ -692,7 +622,7 @@
   {
     "symbol":"KYMR",
     "price":46.4399986267,
-    "market_cap":3024154112,
+    "market_cap":2987035904,
     "adr_percent":3.8329001549,
     "perf_1w_pct":-1.7974249786,
     "perf_1m_pct":47.7099167871,
@@ -702,7 +632,7 @@
   {
     "symbol":"LASR",
     "price":18.3700008392,
-    "market_cap":908203648,
+    "market_cap":860247296,
     "adr_percent":6.5323936207,
     "perf_1w_pct":0.9340663141,
     "perf_1m_pct":32.7312184733,
@@ -712,17 +642,27 @@
   {
     "symbol":"LEU",
     "price":180.9600067139,
-    "market_cap":3083069952,
-    "adr_percent":4.2882373005,
+    "market_cap":3237768448,
+    "adr_percent":4.2329815307,
     "perf_1w_pct":14.2135849062,
     "perf_1m_pct":90.3039369892,
-    "volume":1096800,
-    "avg_volume60":961761.6666666666
+    "volume":1089546,
+    "avg_volume60":961640.7666666667
+  },
+  {
+    "symbol":"LITE",
+    "price":88.4599990845,
+    "market_cap":6222404096,
+    "adr_percent":4.0978973971,
+    "perf_1w_pct":3.4619872333,
+    "perf_1m_pct":14.7192301703,
+    "volume":2434800,
+    "avg_volume60":2600486.6666666665
   },
   {
     "symbol":"LMND",
     "price":40.5,
-    "market_cap":2967281152,
+    "market_cap":3246425344,
     "adr_percent":8.6666719413,
     "perf_1w_pct":-3.8689794132,
     "perf_1m_pct":27.4787517043,
@@ -732,7 +672,7 @@
   {
     "symbol":"LVWR",
     "price":5.8000001907,
-    "market_cap":1180682880,
+    "market_cap":1117577344,
     "adr_percent":17.2413787434,
     "perf_1w_pct":-7.3482431522,
     "perf_1m_pct":395.7265302118,
@@ -741,18 +681,28 @@
   },
   {
     "symbol":"MEG",
-    "price":22.9599990845,
-    "market_cap":765416448,
-    "adr_percent":4.5731675912,
-    "perf_1w_pct":3.7974602774,
-    "perf_1m_pct":19.2107934144,
-    "volume":443000,
-    "avg_volume60":491200.0
+    "price":22.3700008392,
+    "market_cap":745228864,
+    "adr_percent":5.632544397,
+    "perf_1w_pct":-4.5648450104,
+    "perf_1m_pct":13.5532993548,
+    "volume":397000,
+    "avg_volume60":464718.3333333333
+  },
+  {
+    "symbol":"METC",
+    "price":11.3900003433,
+    "market_cap":565572608,
+    "adr_percent":12.4670766768,
+    "perf_1w_pct":11.121954569,
+    "perf_1m_pct":23.0021604945,
+    "volume":1332900,
+    "avg_volume60":788401.6666666666
   },
   {
     "symbol":"MGNI",
     "price":18.8199996948,
-    "market_cap":2655709184,
+    "market_cap":2641597952,
     "adr_percent":5.3666325465,
     "perf_1w_pct":6.8104358595,
     "perf_1m_pct":17.3316622233,
@@ -762,7 +712,7 @@
   {
     "symbol":"MGTX",
     "price":6.4800000191,
-    "market_cap":520767808,
+    "market_cap":509516640,
     "adr_percent":4.9382742395,
     "perf_1w_pct":-1.6691977385,
     "perf_1m_pct":17.818182165,
@@ -772,7 +722,7 @@
   {
     "symbol":"MIR",
     "price":19.5499992371,
-    "market_cap":4503713792,
+    "market_cap":4524446720,
     "adr_percent":4.3989705195,
     "perf_1w_pct":-4.2605329872,
     "perf_1m_pct":12.0986160458,
@@ -782,7 +732,7 @@
   {
     "symbol":"MODG",
     "price":8.3599996567,
-    "market_cap":1536166656,
+    "market_cap":1526979200,
     "adr_percent":3.9473676706,
     "perf_1w_pct":5.8227791868,
     "perf_1m_pct":23.3038259288,
@@ -792,7 +742,7 @@
   {
     "symbol":"MOMO",
     "price":8.5900001526,
-    "market_cap":1380146688,
+    "market_cap":1330339200,
     "adr_percent":4.0163010582,
     "perf_1w_pct":2.9976018636,
     "perf_1m_pct":39.6747970631,
@@ -800,19 +750,9 @@
     "avg_volume60":1227440.3
   },
   {
-    "symbol":"MRCY",
-    "price":52.9799995422,
-    "market_cap":3073199616,
-    "adr_percent":5.5492685293,
-    "perf_1w_pct":-1.652124387,
-    "perf_1m_pct":15.5003287027,
-    "volume":1008400,
-    "avg_volume60":585516.6666666666
-  },
-  {
     "symbol":"MRUS",
     "price":52.5900001526,
-    "market_cap":3916729856,
+    "market_cap":3955085312,
     "adr_percent":3.9456184767,
     "perf_1w_pct":-5.0550627693,
     "perf_1m_pct":19.4955740929,
@@ -822,7 +762,7 @@
   {
     "symbol":"MTDR",
     "price":51.0699996948,
-    "market_cap":6394117120,
+    "market_cap":6431677952,
     "adr_percent":3.1329592684,
     "perf_1w_pct":3.1717165552,
     "perf_1m_pct":15.334239166,
@@ -830,19 +770,9 @@
     "avg_volume60":1981935.0
   },
   {
-    "symbol":"MTSR",
-    "price":29.3799991608,
-    "market_cap":2911101696,
-    "adr_percent":18.7542559097,
-    "perf_1w_pct":-3.3234624849,
-    "perf_1m_pct":14.7208061717,
-    "volume":811600,
-    "avg_volume60":1083630.0
-  },
-  {
     "symbol":"MTUS",
     "price":14.4899997711,
-    "market_cap":608917632,
+    "market_cap":601353472,
     "adr_percent":3.6576997586,
     "perf_1w_pct":3.0583167757,
     "perf_1m_pct":11.0344793819,
@@ -850,9 +780,19 @@
     "avg_volume60":377156.6666666667
   },
   {
+    "symbol":"MUR",
+    "price":25.0599994659,
+    "market_cap":3543638272,
+    "adr_percent":3.6312843847,
+    "perf_1w_pct":2.662841551,
+    "perf_1m_pct":15.9648253501,
+    "volume":2442400,
+    "avg_volume60":3127217.2333333334
+  },
+  {
     "symbol":"MVST",
     "price":4.3299999237,
-    "market_cap":1408726528,
+    "market_cap":1272083328,
     "adr_percent":6.3510415754,
     "perf_1w_pct":3.0952409606,
     "perf_1m_pct":14.8541099632,
@@ -862,7 +802,7 @@
   {
     "symbol":"NAGE",
     "price":13.779999733,
-    "market_cap":1085446400,
+    "market_cap":1058664704,
     "adr_percent":6.023221624,
     "perf_1w_pct":-2.5459731373,
     "perf_1m_pct":28.0669092923,
@@ -871,28 +811,18 @@
   },
   {
     "symbol":"NBIS",
-    "price":47.1300010681,
-    "market_cap":11575007232,
-    "adr_percent":6.0471003809,
-    "perf_1w_pct":-10.3651589447,
-    "perf_1m_pct":31.6848277801,
-    "volume":14336500,
-    "avg_volume60":12544416.666666666
-  },
-  {
-    "symbol":"NE",
-    "price":29.1100006104,
-    "market_cap":4588828672,
-    "adr_percent":4.1909972098,
-    "perf_1w_pct":3.3368850959,
-    "perf_1m_pct":19.3032830552,
-    "volume":2494800,
-    "avg_volume60":2642008.3333333335
+    "price":48.3199996948,
+    "market_cap":11491165184,
+    "adr_percent":5.5049666064,
+    "perf_1w_pct":-3.8981685204,
+    "perf_1m_pct":23.4542678802,
+    "volume":10999800,
+    "avg_volume60":12713620.0
   },
   {
     "symbol":"NEXT",
     "price":8.4600000381,
-    "market_cap":2206994176,
+    "market_cap":2201776384,
     "adr_percent":3.486998522,
     "perf_1w_pct":0.2369722602,
     "perf_1m_pct":14.6341450807,
@@ -901,23 +831,23 @@
   },
   {
     "symbol":"NG",
-    "price":4.4299998283,
-    "market_cap":1774075264,
-    "adr_percent":5.6433410765,
-    "perf_1w_pct":1.1415459496,
-    "perf_1m_pct":24.788729235,
-    "volume":3886300,
-    "avg_volume60":5074726.666666667
+    "price":4.3600001335,
+    "market_cap":1684557568,
+    "adr_percent":3.4403690545,
+    "perf_1w_pct":0.4608290374,
+    "perf_1m_pct":17.8378399277,
+    "volume":2528900,
+    "avg_volume60":5089971.666666667
   },
   {
     "symbol":"NGL",
     "price":4.5300002098,
-    "market_cap":598018944,
-    "adr_percent":7.5055217846,
+    "market_cap":616500736,
+    "adr_percent":7.0640211223,
     "perf_1w_pct":4.3778813489,
     "perf_1m_pct":21.7741982518,
-    "volume":418800,
-    "avg_volume60":447411.6666666667
+    "volume":418767,
+    "avg_volume60":447411.1166666666
   },
   {
     "symbol":"NOG",
@@ -931,18 +861,18 @@
   },
   {
     "symbol":"NTRA",
-    "price":165.3399963379,
-    "market_cap":23346806784,
-    "adr_percent":3.3869639697,
-    "perf_1w_pct":0.7004043361,
-    "perf_1m_pct":10.6693461129,
-    "volume":729300,
-    "avg_volume60":1357999.0
+    "price":170.9799957275,
+    "market_cap":23466969088,
+    "adr_percent":3.5150278729,
+    "perf_1w_pct":4.0340671602,
+    "perf_1m_pct":10.6451802745,
+    "volume":1980700,
+    "avg_volume60":1333879.0
   },
   {
     "symbol":"NVTS",
     "price":7.0,
-    "market_cap":1343888000,
+    "market_cap":1345807872,
     "adr_percent":5.7142802647,
     "perf_1w_pct":-10.3713181654,
     "perf_1m_pct":250.0,
@@ -950,19 +880,9 @@
     "avg_volume60":34060118.3333333358
   },
   {
-    "symbol":"NXE",
-    "price":6.6300001144,
-    "market_cap":3896536064,
-    "adr_percent":4.6757154967,
-    "perf_1w_pct":1.2213728454,
-    "perf_1m_pct":17.9715346877,
-    "volume":9206900,
-    "avg_volume60":9958696.666666666
-  },
-  {
     "symbol":"OKLO",
     "price":62.0200004578,
-    "market_cap":9140569088,
+    "market_cap":8540728832,
     "adr_percent":6.997742858,
     "perf_1w_pct":-3.815140774,
     "perf_1m_pct":65.0785226552,
@@ -972,7 +892,7 @@
   {
     "symbol":"ORIC",
     "price":9.220000267,
-    "market_cap":785713664,
+    "market_cap":793383360,
     "adr_percent":7.4967384236,
     "perf_1w_pct":-4.6535657261,
     "perf_1m_pct":62.6102317984,
@@ -982,7 +902,7 @@
   {
     "symbol":"ORLA",
     "price":11.0600004196,
-    "market_cap":3596059392,
+    "market_cap":3657645056,
     "adr_percent":3.9782962359,
     "perf_1w_pct":0.3629760453,
     "perf_1m_pct":15.8115204055,
@@ -992,7 +912,7 @@
   {
     "symbol":"OST",
     "price":7.2699999809,
-    "market_cap":781016128,
+    "market_cap":825062400,
     "adr_percent":5.9147222325,
     "perf_1w_pct":9.9848688968,
     "perf_1m_pct":52.0920431344,
@@ -1001,18 +921,18 @@
   },
   {
     "symbol":"PGY",
-    "price":17.9400005341,
-    "market_cap":1427088256,
-    "adr_percent":5.2954226717,
-    "perf_1w_pct":3.6395210142,
-    "perf_1m_pct":27.7777819288,
-    "volume":2083400,
-    "avg_volume60":2011098.3333333333
+    "price":18.8500003815,
+    "market_cap":1398319360,
+    "adr_percent":4.1909862045,
+    "perf_1w_pct":2.1126831871,
+    "perf_1m_pct":29.5532655283,
+    "volume":1407800,
+    "avg_volume60":2033670.0
   },
   {
     "symbol":"PHAT",
     "price":10.8999996185,
-    "market_cap":760973632,
+    "market_cap":727462912,
     "adr_percent":6.192662517,
     "perf_1w_pct":8.6739771557,
     "perf_1m_pct":148.858432277,
@@ -1020,29 +940,19 @@
     "avg_volume60":2766885.7666666666
   },
   {
-    "symbol":"PHH",
-    "price":19.7999992371,
-    "market_cap":631666880,
-    "adr_percent":15.1515157353,
-    "perf_1w_pct":7.027022903,
-    "perf_1m_pct":49.2087306258,
-    "volume":357200,
-    "avg_volume60":389675.0
-  },
-  {
     "symbol":"PL",
-    "price":5.3699998856,
-    "market_cap":1550532480,
-    "adr_percent":6.3314741124,
-    "perf_1w_pct":-7.8902237421,
-    "perf_1m_pct":38.0462658289,
-    "volume":8412400,
-    "avg_volume60":6122483.333333333
+    "price":5.1100001335,
+    "market_cap":1526258048,
+    "adr_percent":3.7181912998,
+    "perf_1w_pct":-6.4102546188,
+    "perf_1m_pct":32.3834267459,
+    "volume":5442300,
+    "avg_volume60":6035331.666666667
   },
   {
     "symbol":"PSNL",
     "price":6.5300002098,
-    "market_cap":576762944,
+    "market_cap":567047168,
     "adr_percent":9.9540593336,
     "perf_1w_pct":12.3924315683,
     "perf_1m_pct":31.6532290239,
@@ -1050,9 +960,19 @@
     "avg_volume60":775304.6
   },
   {
+    "symbol":"PUMP",
+    "price":6.6500000954,
+    "market_cap":680610496,
+    "adr_percent":3.233084955,
+    "perf_1w_pct":6.2300295883,
+    "perf_1m_pct":16.0558477004,
+    "volume":1958900,
+    "avg_volume60":1671460.0
+  },
+  {
     "symbol":"PZZA",
     "price":48.9799995422,
-    "market_cap":1603526784,
+    "market_cap":1622187648,
     "adr_percent":4.0424732042,
     "perf_1w_pct":-3.2589403339,
     "perf_1m_pct":20.0784467832,
@@ -1062,17 +982,17 @@
   {
     "symbol":"QSG",
     "price":13.4899997711,
-    "market_cap":689514368,
+    "market_cap":598022080,
     "adr_percent":20.311347452,
     "perf_1w_pct":17.2024283481,
     "perf_1m_pct":89.2005547629,
-    "volume":4750400,
-    "avg_volume60":1512496.6666666667
+    "volume":4733151,
+    "avg_volume60":1512209.1833333333
   },
   {
     "symbol":"QUBT",
     "price":19.0900001526,
-    "market_cap":2689857280,
+    "market_cap":2660267520,
     "adr_percent":14.9554815441,
     "perf_1w_pct":9.0234146377,
     "perf_1m_pct":65.8557756123,
@@ -1080,19 +1000,9 @@
     "avg_volume60":24727603.3333333321
   },
   {
-    "symbol":"QURE",
-    "price":15.3400001526,
-    "market_cap":826702400,
-    "adr_percent":6.1277677382,
-    "perf_1w_pct":-9.230766279,
-    "perf_1m_pct":15.7735860573,
-    "volume":740000,
-    "avg_volume60":1851955.0
-  },
-  {
     "symbol":"RDW",
     "price":16.6100006104,
-    "market_cap":2368187392,
+    "market_cap":2261255424,
     "adr_percent":4.966891828,
     "perf_1w_pct":-14.0269105967,
     "perf_1m_pct":35.150534271,
@@ -1100,9 +1010,19 @@
     "avg_volume60":2216913.0333333332
   },
   {
+    "symbol":"RIG",
+    "price":3.0899999142,
+    "market_cap":2570289664,
+    "adr_percent":5.5016207449,
+    "perf_1w_pct":-3.7383215748,
+    "perf_1m_pct":21.1764694883,
+    "volume":54208800,
+    "avg_volume60":43836228.3333333358
+  },
+  {
     "symbol":"RIOT",
     "price":9.9399995804,
-    "market_cap":3551204096,
+    "market_cap":3415443968,
     "adr_percent":6.0362213964,
     "perf_1w_pct":-2.6444706832,
     "perf_1m_pct":11.3101818666,
@@ -1112,7 +1032,7 @@
   {
     "symbol":"RLAY",
     "price":3.3599998951,
-    "market_cap":576055168,
+    "market_cap":546909504,
     "adr_percent":14.7321399111,
     "perf_1w_pct":-2.608700039,
     "perf_1m_pct":10.1639327091,
@@ -1122,7 +1042,7 @@
   {
     "symbol":"SA",
     "price":14.7700004578,
-    "market_cap":1485020160,
+    "market_cap":1463906176,
     "adr_percent":3.5206529563,
     "perf_1w_pct":0.8191183779,
     "perf_1m_pct":20.8674315467,
@@ -1130,19 +1050,9 @@
     "avg_volume60":862385.0
   },
   {
-    "symbol":"SBSW",
-    "price":6.9400000572,
-    "market_cap":4939341312,
-    "adr_percent":3.1700257691,
-    "perf_1w_pct":1.4619868772,
-    "perf_1m_pct":47.0339060532,
-    "volume":11284600,
-    "avg_volume60":12093636.666666666
-  },
-  {
     "symbol":"SDRL",
     "price":28.4699993134,
-    "market_cap":1771554304,
+    "market_cap":1742930688,
     "adr_percent":3.898843123,
     "perf_1w_pct":0.0,
     "perf_1m_pct":19.6721236558,
@@ -1152,7 +1062,7 @@
   {
     "symbol":"SEI",
     "price":28.9899997711,
-    "market_cap":1958062976,
+    "market_cap":1945229824,
     "adr_percent":5.2776777902,
     "perf_1w_pct":3.9068106362,
     "perf_1m_pct":28.8444434272,
@@ -1162,7 +1072,7 @@
   {
     "symbol":"SEZL",
     "price":143.0299987793,
-    "market_cap":4760939520,
+    "market_cap":4894417408,
     "adr_percent":6.2120543901,
     "perf_1w_pct":2.091357993,
     "perf_1m_pct":44.2852847193,
@@ -1170,29 +1080,9 @@
     "avg_volume60":1076520.7
   },
   {
-    "symbol":"SHLS",
-    "price":5.1100001335,
-    "market_cap":873489408,
-    "adr_percent":6.8493130232,
-    "perf_1w_pct":0.1960829229,
-    "perf_1m_pct":11.5720571755,
-    "volume":6292300,
-    "avg_volume60":6601998.333333333
-  },
-  {
-    "symbol":"SIG",
-    "price":76.4899978638,
-    "market_cap":3350860800,
-    "adr_percent":3.8044237722,
-    "perf_1w_pct":-4.0396452863,
-    "perf_1m_pct":14.113082585,
-    "volume":731200,
-    "avg_volume60":1343210.0
-  },
-  {
     "symbol":"SKE",
     "price":14.8100004196,
-    "market_cap":1729408128,
+    "market_cap":1732743296,
     "adr_percent":3.5449058564,
     "perf_1w_pct":2.8472278607,
     "perf_1m_pct":20.2110453447,
@@ -1200,9 +1090,19 @@
     "avg_volume60":446210.0
   },
   {
+    "symbol":"SM",
+    "price":27.5499992371,
+    "market_cap":3154572544,
+    "adr_percent":3.9564434946,
+    "perf_1w_pct":1.5481020615,
+    "perf_1m_pct":16.0977655647,
+    "volume":2408300,
+    "avg_volume60":2474881.6666666665
+  },
+  {
     "symbol":"SMR",
     "price":39.1599998474,
-    "market_cap":5223434752,
+    "market_cap":4961996288,
     "adr_percent":5.5413738307,
     "perf_1w_pct":-3.0213006152,
     "perf_1m_pct":66.7802411025,
@@ -1212,7 +1112,7 @@
   {
     "symbol":"SSRM",
     "price":13.0699996948,
-    "market_cap":2650308352,
+    "market_cap":2593660160,
     "adr_percent":4.1315988865,
     "perf_1w_pct":5.1488284307,
     "perf_1m_pct":16.3846859091,
@@ -1222,7 +1122,7 @@
   {
     "symbol":"STOK",
     "price":11.5699996948,
-    "market_cap":631686144,
+    "market_cap":632232128,
     "adr_percent":6.2921322938,
     "perf_1w_pct":-2.1150592763,
     "perf_1m_pct":15.124372888,
@@ -1232,7 +1132,7 @@
   {
     "symbol":"STR",
     "price":19.7099990845,
-    "market_cap":2972996864,
+    "market_cap":2960930048,
     "adr_percent":3.2470797533,
     "perf_1w_pct":-1.2030158862,
     "perf_1m_pct":11.9886287345,
@@ -1242,7 +1142,7 @@
   {
     "symbol":"SU",
     "price":40.0499992371,
-    "market_cap":49417695232,
+    "market_cap":49470824448,
     "adr_percent":3.2334631918,
     "perf_1w_pct":2.4558687151,
     "perf_1m_pct":13.7137928704,
@@ -1252,7 +1152,7 @@
   {
     "symbol":"SVM",
     "price":4.3099999428,
-    "market_cap":939381696,
+    "market_cap":889478144,
     "adr_percent":4.6403668659,
     "perf_1w_pct":1.4117633595,
     "perf_1m_pct":15.2406398874,
@@ -1260,19 +1160,9 @@
     "avg_volume60":6457800.0
   },
   {
-    "symbol":"TAC",
-    "price":11.0900001526,
-    "market_cap":3373600768,
-    "adr_percent":3.4265113545,
-    "perf_1w_pct":6.5321836229,
-    "perf_1m_pct":21.8681284362,
-    "volume":2592800,
-    "avg_volume60":1359503.0166666666
-  },
-  {
     "symbol":"TALO",
     "price":9.2399997711,
-    "market_cap":1648924288,
+    "market_cap":1672123392,
     "adr_percent":5.1948106905,
     "perf_1w_pct":1.4270046031,
     "perf_1m_pct":13.6531321163,
@@ -1282,7 +1172,7 @@
   {
     "symbol":"TDW",
     "price":47.0499992371,
-    "market_cap":2327859968,
+    "market_cap":2300647936,
     "adr_percent":3.0845942577,
     "perf_1w_pct":-2.4263831481,
     "perf_1m_pct":14.6442450962,
@@ -1292,7 +1182,7 @@
   {
     "symbol":"TEM",
     "price":69.0999984741,
-    "market_cap":11962315776,
+    "market_cap":11825553408,
     "adr_percent":7.2648288769,
     "perf_1w_pct":-2.9903197844,
     "perf_1m_pct":10.6839630568,
@@ -1302,7 +1192,7 @@
   {
     "symbol":"TLN",
     "price":290.3800048828,
-    "market_cap":13215135744,
+    "market_cap":13136859136,
     "adr_percent":3.2440191307,
     "perf_1w_pct":5.5965726735,
     "perf_1m_pct":20.3847256749,
@@ -1312,7 +1202,7 @@
   {
     "symbol":"TNGX",
     "price":4.8000001907,
-    "market_cap":520291232,
+    "market_cap":559313024,
     "adr_percent":13.4583308912,
     "perf_1w_pct":-4.9504948625,
     "perf_1m_pct":131.8840746635,
@@ -1320,19 +1210,29 @@
     "avg_volume60":2378453.3333333335
   },
   {
+    "symbol":"TPC",
+    "price":41.9799995422,
+    "market_cap":2237748224,
+    "adr_percent":3.4540275816,
+    "perf_1w_pct":-1.7322136173,
+    "perf_1m_pct":15.3930684709,
+    "volume":425300,
+    "avg_volume60":688801.7
+  },
+  {
     "symbol":"TRUP",
-    "price":50.8300018311,
-    "market_cap":2340696064,
-    "adr_percent":5.9216962682,
-    "perf_1w_pct":-0.3724002842,
-    "perf_1m_pct":11.886421945,
-    "volume":326200,
-    "avg_volume60":568703.3333333334
+    "price":54.7099990845,
+    "market_cap":2398026240,
+    "adr_percent":4.9168317889,
+    "perf_1w_pct":8.1225310954,
+    "perf_1m_pct":20.7726269446,
+    "volume":394800,
+    "avg_volume60":570196.6666666666
   },
   {
     "symbol":"TSSI",
     "price":23.7700004578,
-    "market_cap":594612160,
+    "market_cap":640775040,
     "adr_percent":10.3071128135,
     "perf_1w_pct":16.1779155494,
     "perf_1m_pct":103.1624003869,
@@ -1341,18 +1241,18 @@
   },
   {
     "symbol":"TTMI",
-    "price":35.3800010681,
-    "market_cap":3757261312,
-    "adr_percent":3.0525771579,
-    "perf_1w_pct":-0.8963576694,
-    "perf_1m_pct":21.5807580905,
-    "volume":1268300,
-    "avg_volume60":929828.3333333334
+    "price":36.9700012207,
+    "market_cap":3728804608,
+    "adr_percent":3.0835795294,
+    "perf_1w_pct":1.5101677084,
+    "perf_1m_pct":25.9196200686,
+    "volume":1502600,
+    "avg_volume60":956293.3333333334
   },
   {
     "symbol":"TWI",
     "price":9.0600004196,
-    "market_cap":577160064,
+    "market_cap":586715712,
     "adr_percent":3.5320052981,
     "perf_1w_pct":-0.3300300601,
     "perf_1m_pct":22.7642314244,
@@ -1362,7 +1262,7 @@
   {
     "symbol":"TXG",
     "price":10.8699998856,
-    "market_cap":1338466560,
+    "market_cap":1331078528,
     "adr_percent":6.6237375769,
     "perf_1w_pct":2.7410204532,
     "perf_1m_pct":19.7136561332,
@@ -1370,19 +1270,9 @@
     "avg_volume60":3801001.0166666666
   },
   {
-    "symbol":"U",
-    "price":23.6599998474,
-    "market_cap":9939267584,
-    "adr_percent":5.4099775778,
-    "perf_1w_pct":-4.171732136,
-    "perf_1m_pct":11.4985891282,
-    "volume":11177600,
-    "avg_volume60":11213748.333333334
-  },
-  {
     "symbol":"UEC",
     "price":6.6500000954,
-    "market_cap":2954920960,
+    "market_cap":2870494464,
     "adr_percent":4.2105294104,
     "perf_1w_pct":6.7415742377,
     "perf_1m_pct":28.1310216195,
@@ -1391,28 +1281,48 @@
   },
   {
     "symbol":"UPB",
-    "price":11.3599996567,
-    "market_cap":572364992,
-    "adr_percent":5.193655077,
-    "perf_1w_pct":0.6200150138,
-    "perf_1m_pct":29.3849658562,
-    "volume":221700,
-    "avg_volume60":340388.3333333333
+    "price":10.6400003433,
+    "market_cap":585275456,
+    "adr_percent":8.4304537957,
+    "perf_1w_pct":-7.9584778797,
+    "perf_1m_pct":16.5388851036,
+    "volume":605700,
+    "avg_volume60":344738.3333333333
+  },
+  {
+    "symbol":"UPST",
+    "price":59.0800018311,
+    "market_cap":5519355392,
+    "adr_percent":7.7860499857,
+    "perf_1w_pct":8.2447780305,
+    "perf_1m_pct":26.6723898032,
+    "volume":11023900,
+    "avg_volume60":6395916.666666667
   },
   {
     "symbol":"USAR",
-    "price":13.2399997711,
-    "market_cap":1199900928,
-    "adr_percent":13.6329330542,
-    "perf_1w_pct":1.2232404308,
-    "perf_1m_pct":39.9577137181,
-    "volume":3558000,
-    "avg_volume60":2006953.3333333333
+    "price":12.6700000763,
+    "market_cap":1149707776,
+    "adr_percent":8.6819287675,
+    "perf_1w_pct":-12.8010990424,
+    "perf_1m_pct":34.5010612917,
+    "volume":2442000,
+    "avg_volume60":2133230.0
+  },
+  {
+    "symbol":"USO",
+    "price":82.2699966431,
+    "market_cap":9899592704,
+    "adr_percent":4.0111772906,
+    "perf_1w_pct":9.6202442341,
+    "perf_1m_pct":19.8223015657,
+    "volume":36772300,
+    "avg_volume60":7149418.333333333
   },
   {
     "symbol":"UUUU",
     "price":5.7699999809,
-    "market_cap":1303229568,
+    "market_cap":1226809472,
     "adr_percent":7.1733084904,
     "perf_1w_pct":7.4487915064,
     "perf_1m_pct":31.1363603606,
@@ -1421,18 +1331,18 @@
   },
   {
     "symbol":"VAL",
-    "price":46.5099983215,
-    "market_cap":3249274880,
-    "adr_percent":4.8591666375,
-    "perf_1w_pct":6.7232592184,
-    "perf_1m_pct":18.9514069989,
-    "volume":1870900,
-    "avg_volume60":1845473.3333333333
+    "price":45.7200012207,
+    "market_cap":3226532608,
+    "adr_percent":3.1058576794,
+    "perf_1w_pct":0.2631639267,
+    "perf_1m_pct":22.0501931076,
+    "volume":1888500,
+    "avg_volume60":1861145.0
   },
   {
     "symbol":"VG",
     "price":18.2800006866,
-    "market_cap":44235042816,
+    "market_cap":46001537024,
     "adr_percent":4.4857854014,
     "perf_1w_pct":9.3955816169,
     "perf_1m_pct":75.7692438188,
@@ -1442,7 +1352,7 @@
   {
     "symbol":"VRNA",
     "price":90.9199981689,
-    "market_cap":7726281216,
+    "market_cap":8015209472,
     "adr_percent":4.9560017541,
     "perf_1w_pct":-1.7027996442,
     "perf_1m_pct":21.6646515251,
@@ -1452,7 +1362,7 @@
   {
     "symbol":"VRT",
     "price":119.0800018311,
-    "market_cap":45381984256,
+    "market_cap":45176184832,
     "adr_percent":4.2576415997,
     "perf_1w_pct":4.0000015992,
     "perf_1m_pct":11.9278151276,
@@ -1462,7 +1372,7 @@
   {
     "symbol":"VSAT",
     "price":13.3100004196,
-    "market_cap":1734559232,
+    "market_cap":1679824896,
     "adr_percent":5.7099940265,
     "perf_1w_pct":16.7543935526,
     "perf_1m_pct":26.4007669244,
@@ -1472,7 +1382,7 @@
   {
     "symbol":"VST",
     "price":181.1300048828,
-    "market_cap":61463207936,
+    "market_cap":62810353664,
     "adr_percent":3.7790542904,
     "perf_1w_pct":4.1755391784,
     "perf_1m_pct":15.347389856,
@@ -1482,7 +1392,7 @@
   {
     "symbol":"VTLE",
     "price":21.1100006104,
-    "market_cap":818394624,
+    "market_cap":808702592,
     "adr_percent":4.9265702421,
     "perf_1w_pct":4.7642730025,
     "perf_1m_pct":36.811407601,
@@ -1492,7 +1402,7 @@
   {
     "symbol":"VZLA",
     "price":3.3900001049,
-    "market_cap":996009152,
+    "market_cap":975961984,
     "adr_percent":5.6047212785,
     "perf_1w_pct":-3.1428541456,
     "perf_1m_pct":32.9411830704,
@@ -1500,19 +1410,19 @@
     "avg_volume60":2972691.1000000001
   },
   {
-    "symbol":"WRBY",
-    "price":22.0599994659,
-    "market_cap":2593232128,
-    "adr_percent":4.1659140882,
-    "perf_1w_pct":-1.8683277796,
-    "perf_1m_pct":25.5549223057,
-    "volume":2235500,
-    "avg_volume60":2747425.0
+    "symbol":"WBD",
+    "price":10.5699996948,
+    "market_cap":26027216896,
+    "adr_percent":3.1220428877,
+    "perf_1w_pct":4.0354316296,
+    "perf_1m_pct":14.5178788629,
+    "volume":45179700,
+    "avg_volume60":45091260.0
   },
   {
     "symbol":"XYZ",
     "price":63.0900001526,
-    "market_cap":38801547264,
+    "market_cap":39109058560,
     "adr_percent":4.0735452348,
     "perf_1w_pct":-1.1902871413,
     "perf_1m_pct":10.0279037054,

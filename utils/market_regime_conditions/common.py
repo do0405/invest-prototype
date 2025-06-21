@@ -1,7 +1,7 @@
 from typing import Dict, Tuple
 import pandas as pd
 from config import MARKET_REGIME_CRITERIA
-from .market_regime_helpers import (
+from ..market_regime_helpers import (
     calculate_high_low_index,
     calculate_advance_decline_trend,
     calculate_put_call_ratio,

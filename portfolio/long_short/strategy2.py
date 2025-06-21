@@ -73,94 +73,93 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
             if symbol is None or df is None or recent_data is None:
                 continue
                 
-            # 조건 1: 최근 10일 평균 종가가 5달러 이상
-            recent_10d = recent_data.iloc[-10:]
-            avg_price_10d = recent_10d['close'].mean()
-            if avg_price_10d < 5.0:
+            # 스크리닝 조건들
+            # 1. 10일 평균 종가가 5달러 이상
+            if len(recent_data) < 10:
+                continue
+            avg_close_10 = recent_data['close'].tail(10).mean()
+            if avg_close_10 < 5:
                 continue
             
-            # 조건 2: 최근 20일간 거래대금이 2500만 달러 이상
-            avg_volume_value = (recent_data['close'] * recent_data['volume']).mean()
-            if avg_volume_value <= 25000000:  # 2500만 달러
+            # 2. 20일 평균 일일 거래대금이 2500만 달러 이상
+            if len(recent_data) < 20:
+                continue
+            recent_data_copy = recent_data.copy()
+            recent_data_copy['daily_value'] = recent_data_copy['close'] * recent_data_copy['volume']
+            avg_daily_value_20 = recent_data_copy['daily_value'].tail(20).mean()
+            if avg_daily_value_20 < 25_000_000:
                 continue
             
-            # 조건 3: 지난 10일 동안의 ATR은 주식 종가의 13% 이상
-            atr_10d_series = calculate_atr(recent_data, window=10)
-            if atr_10d_series.empty or pd.isna(atr_10d_series.iloc[-1]):
-                continue
-            atr_10d = atr_10d_series.iloc[-1]
-            
-            latest_close = recent_data.iloc[-1]['close']
-            if latest_close == 0: # 0으로 나누기 방지
-                continue
-            atr_percentage = (atr_10d / latest_close) * 100
-            if atr_percentage < 13.0:
+            # 3. 10일 ATR이 종가의 13% 이상
+            atr_10 = calculate_atr(recent_data, window=10)
+            if len(atr_10) == 0 or pd.isna(atr_10.iloc[-1]) or atr_10.iloc[-1] < (recent_data['close'].iloc[-1] * 0.13):
                 continue
             
-            # 조건 4: 3일 RSI는 90 이상
-            rsi_3d_series = calculate_rsi(recent_data, window=3)
-            if rsi_3d_series.empty or pd.isna(rsi_3d_series.iloc[-1]):
+            # 4. 3일 RSI가 90 이상
+            if len(recent_data) < 3:
                 continue
-            rsi_3d = rsi_3d_series.iloc[-1]
-            if rsi_3d < 90.0:
+            rsi_3_series = calculate_rsi(recent_data, window=3)
+            if rsi_3_series.empty or pd.isna(rsi_3_series.iloc[-1]):
+                continue
+            rsi_3 = rsi_3_series.iloc[-1]
+            if rsi_3 < 90:
                 continue
             
-            # 조건 5: 최근 2일간 종가는 직전일 종가보다 높아야 함
-            if len(recent_data) < 3:  # 최소 3일 데이터 필요 (오늘, 어제, 그제)
+            # 5. 최근 2일간 종가가 연속으로 전일보다 높음
+            if len(recent_data) < 3:
                 continue
-                
-            today_close = recent_data.iloc[-1]['close']
-            yesterday_close = recent_data.iloc[-2]['close']
-            day_before_yesterday_close = recent_data.iloc[-3]['close']
-            
-            if not (today_close > yesterday_close and yesterday_close > day_before_yesterday_close):
+            recent_closes = recent_data['close'].tail(3).values
+            if len(recent_closes) < 3 or recent_closes[-1] <= recent_closes[-2] or recent_closes[-2] <= recent_closes[-3]:
                 continue
             
             # 조건 6: 7일 ADX 계산
-            adx_7d_series = calculate_adx(recent_data, window=7)
-            if adx_7d_series.empty or pd.isna(adx_7d_series.iloc[-1]):
-                continue # ADX is crucial for sorting, skip if not available
-            adx_7d = adx_7d_series.iloc[-1]
-            
-            # 매도가 설정 (전일 종가 대비 4% 높은 가격)
-            entry_price = today_close * 1.04
-            
-            # 손절매: 매도가 기준 직전 10일 ATR의 3배 위 지점
-            stop_loss = entry_price + (atr_10d * 3)
-            
-            # 수익실현: 매도가 대비 4% 하락 시
-            profit_target = entry_price * 0.96
-            
-            # 포지션 크기: 포지션별 총자산 대비 2%의 위험비율, 최대 10개 포지션
-            risk_amount = stop_loss - entry_price
-            if risk_amount <= 0:  # 위험 금액이 0 이하인 경우 처리
-                position_size = 0  # 0%
+            if len(recent_data) < 7:
+                continue
+            adx_7d_df = calculate_adx(recent_data, window=7)
+            if 'adx' not in adx_7d_df.columns or pd.isna(adx_7d_df['adx'].iloc[-1]):
+                adx_7d = 0
             else:
-                position_size_by_risk = 0.02 / (risk_amount / entry_price)  # 2% 위험 비율
-                position_size = min(position_size_by_risk, 0.1)  # 10%와 비교하여 작은 값 선택
+                adx_7d = adx_7d_df['adx'].iloc[-1]
             
-            # 모든 조건을 충족하는 종목 결과에 추가
+            # 매매 정보 계산
+            if len(recent_data) < 2:
+                continue
+            entry_price = recent_data['close'].iloc[-2] * 1.04  # 전일 종가의 4% 위
+            stop_loss = entry_price + (atr_10.iloc[-1] * 3)  # 진입가 + (10일 ATR * 3)
+            profit_target = entry_price * 0.96  # 진입가의 4% 아래
+            
+            # 포지션 크기 계산 (2% 리스크 기준, 총 자산의 10% 제한)
+            total_capital = 100000  # 10만 달러 기준
+            risk_amount = total_capital * 0.02  # 총 자본의 2%
+            risk_per_share = stop_loss - entry_price
+            if risk_per_share > 0:
+                position_size = min(risk_amount / risk_per_share, total_capital * 0.1 / entry_price)
+            else:
+                position_size = total_capital * 0.1 / entry_price
+             
+             # 결과 저장
             results.append({
-                '종목명': symbol,
-                '매수일': datetime.now().strftime('%Y-%m-%d'),
-                '매수가': round(entry_price, 2), # 지정가 공매도
-                '비중(%)': round(position_size * 100, 2), # % 기호 없이 숫자만 저장
-                '수익률': 0.0, # 초기 수익률
-                '차익실현': round(profit_target, 2), # 계산된 차익실현 가격 (4% 하락)
-                '손절매': round(stop_loss, 2), # 계산된 손절매 가격 (ATR 3배)
-                '수익보호': '없음', # 이 전략에서는 수익보호 없음
-                '롱여부': False,
-                'adx_7d': adx_7d  # 정렬용 (결과에는 포함되지 않음)
-            })
+                 'symbol': ticker,
+                 'entry_price': round(entry_price, 2),
+                 'stop_loss': round(stop_loss, 2),
+                 'profit_target': round(profit_target, 2),
+                 'position_size': int(position_size),
+                 'adx_7': round(adx_7d, 2),
+                 'rsi_3': round(rsi_3, 2),
+                 'atr_10': round(atr_10.iloc[-1], 4),
+                 'avg_close_10': round(avg_close_10, 2),
+                 'avg_daily_value_20': round(avg_daily_value_20, 0),
+                 'adx_7d': adx_7d  # 정렬용
+             })
         
         if not results:
             print("❌ 스크리닝 결과가 없습니다.")
-            # 빈 결과 파일 생성 (두 번째 위치)
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
-            # JSON 파일 생성 추가
+            # 빈 결과 파일 생성
+            empty_columns = ['symbol', 'entry_price', 'stop_loss', 'profit_target', 'position_size', 'adx_7', 'rsi_3', 'atr_10', 'avg_close_10', 'avg_daily_value_20']
+            pd.DataFrame(columns=empty_columns).to_csv(result_file, index=False, encoding='utf-8-sig')
+            # JSON 파일 생성
             json_file = result_file.replace('.csv', '.json')
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_json(json_file, orient='records', indent=2, force_ascii=False)
-            
+            pd.DataFrame(columns=empty_columns).to_json(json_file, orient='records', indent=2, force_ascii=False)
             return
         
         # 결과 데이터프레임 생성
@@ -173,8 +172,8 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
         result_df = result_df.head(10)
         
         # 결과 CSV에 포함할 컬럼 선택
-        strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
-        result_df_to_save = result_df[strategy_result_columns]
+        columns_to_save = ['symbol', 'entry_price', 'stop_loss', 'profit_target', 'position_size', 'adx_7', 'rsi_3', 'atr_10', 'avg_close_10', 'avg_daily_value_20']
+        result_df_to_save = result_df[columns_to_save]
 
         # 결과 저장
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')

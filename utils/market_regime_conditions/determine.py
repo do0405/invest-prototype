@@ -1,5 +1,5 @@
 __all__ = ["determine_regime_by_conditions"]
-from typing import Optional, Dict
+from typing import Optional, Dict, Tuple
 import pandas as pd
 from .aggressive_bull import check_aggressive_bull_conditions
 from .bull import check_bull_conditions

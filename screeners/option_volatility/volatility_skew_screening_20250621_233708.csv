@@ -1,0 +1,45 @@
+﻿symbol,company_name,skew_index,expected_return,confidence_score,base_confidence,data_source,data_quality_grade,confidence_numeric,quality_description
+LNT,Alliant Energy Corporation,-25.268302001953113,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+HSIC,"Henry Schein, Inc.",-19.506640869140647,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+CPT,Camden Property Trust,-17.260569580078126,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
+EQT,EQT Corporation,-16.21077539062501,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+TRMB,Trimble Inc.,-12.71959936523438,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+BSX,Boston Scientific Corporation,-8.984285156250005,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+CF,"CF Industries Holdings, Inc.",-8.691319335937497,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+ALL,The Allstate Corporation,-7.153248779296895,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+COF,Capital One Financial Corporation,-7.067800415039066,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+ORLY,"O'Reilly Automotive, Inc.",-5.737247314453126,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+MPC,Marathon Petroleum Corporation,-5.395453857421878,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+IDXX,"IDEXX Laboratories, Inc.",-5.154367401123039,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+HII,"Huntington Ingalls Industries, Inc.",-4.821729125976571,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+TRV,"The Travelers Companies, Inc.",-3.7841418457031315,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+ELV,"Elevance Health, Inc.",-3.7414176635742313,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+EXE,Expand Energy Corporation,-3.5033829345703205,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+PH,Parker-Hannifin Corporation,-2.9357616577148526,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+IFF,International Flavors & Fragrances Inc.,-2.9052443847656315,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+RMD,ResMed Inc.,-2.6183820190429694,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+VRSK,"Verisk Analytics, Inc.",-2.435278381347655,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+KLAC,KLA Corporation,-2.430700790405277,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+COIN,"Coinbase Global, Inc.",-1.9714158325195408,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+HAS,"Hasbro, Inc.",-1.9286916503906237,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+NOC,Northrop Grumman Corporation,-1.6204671936035198,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+SMCI,"Super Micro Computer, Inc.",-1.513656738281255,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+CTVA,"Corteva, Inc.",-1.220690917968753,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+NEM,Newmont Corporation,-1.196277099609383,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+WAB,Westinghouse Air Brake Technologies Corporation,-1.1901736450195377,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+CRWD,"CrowdStrike Holdings, Inc.",-1.1535529174804604,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+NTRS,Northern Trust Corporation,-1.0375872802734387,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+VST,Vistra Corp.,-1.0009665527343836,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+WBD,"Warner Bros. Discovery, Inc.",-0.9765527343750025,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+NRG,"NRG Energy, Inc.",-0.8300698242187543,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+HPE,Hewlett Packard Enterprise Company,-0.7812421874999975,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CI,The Cigna Group,-0.7385180053711027,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+FOXA,Fox Corporation,-0.7324145507812463,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+MU,"Micron Technology, Inc.",-0.6225523681640643,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+YUM,"Yum! Brands, Inc.",-0.5248970947265619,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+INTC,Intel Corporation,-0.39062109374999876,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+JBL,Jabil Inc.,-0.2685520019531318,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+AMAT,"Applied Materials, Inc.",-0.24413818359374506,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+EL,The Estée Lauder Companies Inc.,-0.24413818359374506,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+MOS,The Mosaic Company,-0.1464829101562537,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+PLTR,Palantir Technologies Inc.,-0.13427600097657422,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터

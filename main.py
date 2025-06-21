@@ -110,7 +110,7 @@ def main():
             print("\n⏭️ 데이터 수집 건너뛰기")
 
         print("\n🔄 2단계: 스크리닝 실행 중...")
-        run_all_screening_processes()
+        run_all_screening_processes(skip_data=args.skip_data)
         execute_strategies()
 
         print("\n🏦 3단계: 포트폴리오 관리 실행")

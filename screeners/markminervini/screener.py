@@ -383,18 +383,33 @@ def run_us_screening():
         except Exception as e:
             print(f"❌ 조건 8 계산 오류: {e}")
         
+        # symbol을 컬럼으로 추가 (인덱스에서 컬럼으로 변환)
+        result_df = result_df.reset_index()
+        if 'index' in result_df.columns:
+            result_df = result_df.rename(columns={'index': 'symbol'})
+        
+        # 모든 조건(cond1~cond8)을 만족하는 종목만 필터링
+        conditions = [f'cond{i}' for i in range(1, 9)]  # cond1부터 cond8까지
+        filtered_df = result_df[result_df[conditions].all(axis=1)]
+        
+        # RS 점수 기준으로 내림차순 정렬
+        filtered_df = filtered_df.sort_values(by='rs_score', ascending=False)
+        
         # 결과 저장
         ensure_dir(os.path.dirname(US_WITH_RS_PATH))
-        result_df.to_csv(US_WITH_RS_PATH)
+        filtered_df.to_csv(US_WITH_RS_PATH, index=False)
         # JSON 파일 생성 추가
         json_path = US_WITH_RS_PATH.replace('.csv', '.json')
-        result_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
-        print(f"✅ 결과 저장 완료: {len(result_df)}개 종목, 경로: {US_WITH_RS_PATH}")
+        filtered_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
+        print(f"✅ 결과 저장 완료: 전체 {len(result_df)}개 중 모든 조건 만족 {len(filtered_df)}개 종목, 경로: {US_WITH_RS_PATH}")
         
-        # 상위 10개 종목 출력
-        top_10 = result_df.sort_values('met_count', ascending=False).head(10)
-        print("\n🏆 미국 주식 상위 10개 종목:")
-        print(top_10[[f'cond{i}' for i in range(1, 9)] + ['rs_score', 'met_count']])
+        # 상위 10개 종목 출력 (모든 조건을 만족하는 종목 중에서)
+        if len(filtered_df) > 0:
+            top_10 = filtered_df.head(10)
+            print("\n🏆 모든 조건을 만족하는 미국 주식 상위 10개 종목:")
+            print(top_10[['symbol'] + [f'cond{i}' for i in range(1, 9)] + ['rs_score', 'met_count']])
+        else:
+            print("\n⚠️ 모든 조건을 만족하는 종목이 없습니다.")
     except Exception as e:
         print(f"❌ 미국 주식 스크리닝 오류: {e}")
 

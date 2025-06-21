@@ -32,6 +32,12 @@ def track_new_tickers(advanced_financial_results_path):
     # us_with_rs.csv 파일 로드
     try:
         current_us_with_rs = pd.read_csv(US_WITH_RS_PATH)
+        
+        # symbol 컬럼이 이미 존재하는지 확인
+        if 'symbol' not in current_us_with_rs.columns:
+            print(f"경고: {US_WITH_RS_PATH} 파일에 symbol 컬럼이 없습니다.")
+            return
+                
     except FileNotFoundError:
         print(f"경고: {US_WITH_RS_PATH} 파일을 찾을 수 없습니다.")
         return
@@ -53,6 +59,12 @@ def track_new_tickers(advanced_financial_results_path):
     if os.path.exists(PREVIOUS_US_WITH_RS_PATH):
         try:
             previous_us_with_rs = pd.read_csv(PREVIOUS_US_WITH_RS_PATH)
+            
+            # symbol 컬럼이 이미 존재하는지 확인
+            if 'symbol' not in previous_us_with_rs.columns:
+                print(f"경고: {PREVIOUS_US_WITH_RS_PATH} 파일에 symbol 컬럼이 없습니다.")
+                previous_us_with_rs = pd.DataFrame()  # 빈 DataFrame으로 설정
+                    
             previous_symbols = set(previous_us_with_rs['symbol'].tolist())
         except Exception as e:
             print(f"경고: 이전 us_with_rs.csv 파일을 로드하는 중 오류가 발생했습니다: {e}")

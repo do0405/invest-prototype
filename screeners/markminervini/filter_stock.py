@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 import argparse
+import pandas as pd
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
@@ -60,6 +61,14 @@ def run_integrated_screening():
         tech_df = pd.read_csv(US_WITH_RS_PATH)
         print(f"✅ 기술적 스크리닝 결과 로드 완료: {len(tech_df)}개 종목")
         
+        # tech_df에 symbol 컬럼이 없으면 인덱스에서 생성
+        if 'symbol' not in tech_df.columns:
+            if tech_df.index.name is None:
+                tech_df = tech_df.reset_index()
+                tech_df = tech_df.rename(columns={'index': 'symbol'})
+            else:
+                tech_df = tech_df.reset_index()
+        
         # 재무제표 스크리닝 결과 로드
         if not os.path.exists(ADVANCED_FINANCIAL_RESULTS_PATH):
             print(f"⚠️ 재무제표 스크리닝 결과 파일이 없습니다: {ADVANCED_FINANCIAL_RESULTS_PATH}")
@@ -67,6 +76,14 @@ def run_integrated_screening():
         
         fin_df = pd.read_csv(ADVANCED_FINANCIAL_RESULTS_PATH)
         print(f"✅ 재무제표 스크리닝 결과 로드 완료: {len(fin_df)}개 종목")
+        
+        # fin_df에 symbol 컬럼이 없으면 인덱스에서 생성
+        if 'symbol' not in fin_df.columns:
+            if fin_df.index.name is None:
+                fin_df = fin_df.reset_index()
+                fin_df = fin_df.rename(columns={'index': 'symbol'})
+            else:
+                fin_df = fin_df.reset_index()
         
         # 두 결과 병합 (중복 컬럼 처리)
         # 'rs_score' 컬럼이 중복될 경우 tech_df의 것을 사용

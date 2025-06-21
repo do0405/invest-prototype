@@ -5,8 +5,17 @@
     "change_pct":17.8188298496,
     "volume":10371100,
     "relative_volume":2.5812358005,
-    "market_cap":1109870080,
+    "market_cap":1316461952,
     "eps_growth_qoq":92.3369342724
+  },
+  {
+    "symbol":"CTRE",
+    "price":29.8799991608,
+    "change_pct":2.4691334606,
+    "volume":3868300,
+    "relative_volume":2.511059685,
+    "market_cap":5760253952,
+    "eps_growth_qoq":26.214635082
   },
   {
     "symbol":"ENLT",
@@ -14,17 +23,17 @@
     "change_pct":4.3257017708,
     "volume":78900,
     "relative_volume":3.4709289537,
-    "market_cap":2539191552,
+    "market_cap":2539205632,
     "eps_growth_qoq":1732.0015515904
   },
   {
-    "symbol":"ESLT",
-    "price":454.8999938965,
-    "change_pct":5.4278256962,
-    "volume":370700,
-    "relative_volume":2.9759455772,
-    "market_cap":20306012160,
-    "eps_growth_qoq":18.9903659173
+    "symbol":"GMS",
+    "price":81.0100021362,
+    "change_pct":10.6089629971,
+    "volume":2170600,
+    "relative_volume":5.6868387384,
+    "market_cap":3816185856,
+    "eps_growth_qoq":221.883320099
   },
   {
     "symbol":"GNW",
@@ -32,17 +41,44 @@
     "change_pct":13.7426905885,
     "volume":22738100,
     "relative_volume":3.0012486449,
-    "market_cap":3224475392,
+    "market_cap":3220330752,
     "eps_growth_qoq":5500.0
+  },
+  {
+    "symbol":"GOGO",
+    "price":14.3999996185,
+    "change_pct":14.924181368,
+    "volume":7330600,
+    "relative_volume":3.7372133275,
+    "market_cap":1871535488,
+    "eps_growth_qoq":142.6824513522
   },
   {
     "symbol":"HPP",
     "price":2.8199999332,
     "change_pct":2.1739109778,
-    "volume":13776000,
-    "relative_volume":2.5990327263,
-    "market_cap":1083342464,
+    "volume":13775753,
+    "relative_volume":2.5989881449,
+    "market_cap":1087184128,
     "eps_growth_qoq":56.7201728569
+  },
+  {
+    "symbol":"JBL",
+    "price":204.6600036621,
+    "change_pct":3.9463681734,
+    "volume":3556200,
+    "relative_volume":2.51287517,
+    "market_cap":22134538240,
+    "eps_growth_qoq":17.0
+  },
+  {
+    "symbol":"NEU",
+    "price":648.799987793,
+    "change_pct":2.1362353386,
+    "volume":159000,
+    "relative_volume":2.042170609,
+    "market_cap":6141771776,
+    "eps_growth_qoq":13.73499851
   },
   {
     "symbol":"NHC",
@@ -50,8 +86,17 @@
     "change_pct":4.124120904,
     "volume":135476,
     "relative_volume":2.6710778476,
-    "market_cap":1640544896,
+    "market_cap":1622289024,
     "eps_growth_qoq":429.6003946719
+  },
+  {
+    "symbol":"OSCR",
+    "price":18.7700004578,
+    "change_pct":16.5114819779,
+    "volume":49622700,
+    "relative_volume":5.6372904308,
+    "market_cap":5404245504,
+    "eps_growth_qoq":279.2747497509
   },
   {
     "symbol":"PAA",
@@ -59,25 +104,43 @@
     "change_pct":3.776776127,
     "volume":7343447,
     "relative_volume":2.0494765852,
-    "market_cap":12947734528,
+    "market_cap":12968834048,
     "eps_growth_qoq":1130.5555555556
   },
   {
     "symbol":"RUN",
-    "price":10.0,
-    "change_pct":18.0637507053,
-    "volume":42841200,
-    "relative_volume":2.4237966716,
-    "market_cap":1400619264,
+    "price":6.1300001144,
+    "change_pct":6.055361452,
+    "volume":47017800,
+    "relative_volume":2.3142957766,
+    "market_cap":1423467776,
     "eps_growth_qoq":101.7774376905
   },
   {
-    "symbol":"SEDG",
-    "price":16.9799995422,
-    "change_pct":6.3909743211,
-    "volume":13011314,
-    "relative_volume":2.4940476201,
-    "market_cap":1002570496,
-    "eps_growth_qoq":68.5136478251
+    "symbol":"SSII",
+    "price":4.8800001144,
+    "change_pct":42.6900586426,
+    "volume":898700,
+    "relative_volume":11.5431546409,
+    "market_cap":1339739648,
+    "eps_growth_qoq":23.7619330121
+  },
+  {
+    "symbol":"SXI",
+    "price":157.2599945068,
+    "change_pct":2.9390522412,
+    "volume":294900,
+    "relative_volume":3.3139175547,
+    "market_cap":1884376832,
+    "eps_growth_qoq":2453.0921820303
+  },
+  {
+    "symbol":"TSAT",
+    "price":19.8899993896,
+    "change_pct":5.9105360086,
+    "volume":242200,
+    "relative_volume":3.018030928,
+    "market_cap":1171996800,
+    "eps_growth_qoq":87.6986169059
   }
 ]

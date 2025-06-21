@@ -85,9 +85,12 @@ def run_strategy5_screening():
             adx_7d = pd.NA # Initialize adx_7d
             if len(recent_data) >= 20: # ADX 계산에 충분한 데이터가 있는지 확인 (일반적으로 ADX는 최소 14일 필요, 여유있게 20일)
                 # logger.debug(f"{ticker}: Calculating ADX as data length {len(recent_data)} >= 20")
-                adx_7d = calculate_adx(recent_data, window=7).iloc[-1]
-            # else:
-                # logger.debug(f"{ticker}: Not enough data for ADX calculation (need 20, got {len(recent_data)})")
+                adx_7d_series = calculate_adx(recent_data, window=7)
+                if adx_7d_series.empty:
+                    continue
+                adx_7d = adx_7d_series.iloc[-1]
+            else:
+                continue
             # logger.debug(f"{ticker}: 7-day ADX: {adx_7d}")
             if pd.isna(adx_7d) or adx_7d < 55:
                 continue
@@ -107,7 +110,8 @@ def run_strategy5_screening():
             # 수익보호: 없음 (마크다운 문서에 따라)
             profit_protection = '없음'
             
-            # 포지션 크기
+            # 포지션 크기 계산 (2% 리스크 기준, 총 자산의 10% 제한)
+            total_capital = 100000  # 10만 달러 기준
             risk_per_share = entry_price - stop_loss_price
             if risk_per_share <= 0:
                 position_allocation = 0 # 기본값
@@ -133,27 +137,34 @@ def run_strategy5_screening():
         if not results:
             print("❌ 스크리닝 결과가 없습니다.")
             # 빈 결과 파일 생성
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_csv(result_file, index=False, encoding='utf-8-sig')
-            # JSON 파일 생성 추가
+            empty_columns = ['symbol', 'entry_price', 'stop_loss', 'position_size', 'adx_7', 'rsi_3', 'atr_10', 'avg_volume_50', 'avg_daily_value_50', 'ma_100']
+            pd.DataFrame(columns=empty_columns).to_csv(result_file, index=False, encoding='utf-8-sig')
+            # JSON 파일 생성
             json_file = result_file.replace('.csv', '.json')
-            pd.DataFrame(columns=['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']).to_json(json_file, orient='records', indent=2, force_ascii=False)
-            
+            pd.DataFrame(columns=empty_columns).to_json(json_file, orient='records', indent=2, force_ascii=False)
             return
-
+        
+        # 결과 데이터프레임 생성
         result_df = pd.DataFrame(results)
-        result_df = result_df.sort_values(['adx_7d', 'rsi_3d'], ascending=[False, True]) # ADX 높은 순, RSI 낮은 순
-        result_df = result_df.head(10) # 최대 10개 포지션
+        
+        # ADX 내림차순, RSI 오름차순으로 정렬
+        result_df = result_df.sort_values(['adx_7', 'rsi_3'], ascending=[False, True])
+        
+        # 상위 10개 종목만 선택
+        result_df = result_df.head(10)
+        
+        # 결과 CSV에 포함할 컬럼 선택
+        columns_to_save = ['symbol', 'entry_price', 'stop_loss', 'position_size', 'adx_7', 'rsi_3', 'atr_10', 'avg_volume_50', 'avg_daily_value_50', 'ma_100']
+        result_df_to_save = result_df[columns_to_save]
 
-        strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
-        result_df_to_save = result_df[strategy_result_columns]
-
+        # 결과 저장
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')
         
         # JSON 파일도 저장
         json_file = result_file.replace('.csv', '.json')
         result_df_to_save.to_json(json_file, orient='records', force_ascii=False, indent=2)
         
-        print(f"✅ 전략 4 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
+        print(f"✅ 전략 5 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
         print("\n🏆 전략 5 상위 종목 (스크리닝 결과):")
         print(result_df_to_save)
 

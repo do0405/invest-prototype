@@ -315,10 +315,18 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         
         report.append("")
         report.append("📋 데이터 품질 분포")
+        
+        # 등급별 설명 매핑
+        grade_descriptions = {
+            'A': '최고 품질 프리미엄 데이터',
+            'B': '양호한 품질 무료 데이터', 
+            'C': '품질 부족하지만 사용 가능한 데이터'
+        }
+        
         for grade in ['A', 'B', 'C']:
             count = quality_counts.get(grade, 0)
             if count > 0:
-                description = list(self.data_quality_grades.values())[ord(grade) - ord('A')]['description']
+                description = grade_descriptions[grade]
                 report.append(f"• {grade}등급: {count}개 종목 ({description})")
         
         # 품질 경고

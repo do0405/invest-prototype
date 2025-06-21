@@ -1,4454 +1,3614 @@
 [
   {
-    "symbol":"DCTH",
-    "met_count":8,
-    "fin_met_count":7,
-    "total_met_count":15,
-    "rs_score":97.15815486
-  },
-  {
-    "symbol":"MSGM",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":98.9394563427
-  },
-  {
-    "symbol":"DAVE",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":98.7232289951
-  },
-  {
-    "symbol":"PLTR",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":98.2084019769
-  },
-  {
-    "symbol":"LEDS",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":98.1569192751
-  },
-  {
-    "symbol":"FENC",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":98.0230642504
-  },
-  {
-    "symbol":"XPEV",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":97.1993410214
-  },
-  {
-    "symbol":"PLMR",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":96.3550247117
-  },
-  {
-    "symbol":"FEIM",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":96.3241350906
-  },
-  {
-    "symbol":"HCI",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":96.2932454695
-  },
-  {
-    "symbol":"UGI",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":96.0152388797
-  },
-  {
-    "symbol":"BCRX",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":95.8504942339
-  },
-  {
-    "symbol":"SE",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":95.510708402
-  },
-  {
-    "symbol":"PLYA",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":95.5004118616
-  },
-  {
-    "symbol":"ZLAB",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":92.1746293245
-  },
-  {
-    "symbol":"PHYS",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":92.102553542
-  },
-  {
-    "symbol":"ZS",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":91.9995881384
-  },
-  {
-    "symbol":"BTSG",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":91.7936573311
-  },
-  {
-    "symbol":"CEF",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":89.8373146623
-  },
-  {
-    "symbol":"TG",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":88.1589785832
-  },
-  {
-    "symbol":"AJG",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":87.7985996705
-  },
-  {
-    "symbol":"DASH",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":87.3970345964
-  },
-  {
-    "symbol":"HG",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":85.7495881384
-  },
-  {
-    "symbol":"CRMD",
-    "met_count":8,
-    "fin_met_count":6,
-    "total_met_count":14,
-    "rs_score":84.6993410214
-  },
-  {
-    "symbol":"QURE",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":98.8673805601
-  },
-  {
-    "symbol":"LFMD",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":98.4143327842
-  },
-  {
-    "symbol":"ATRO",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.9098023064
-  },
-  {
-    "symbol":"AS",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.8789126853
-  },
-  {
-    "symbol":"ICCC",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.5906095552
-  },
-  {
-    "symbol":"ODD",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.4876441516
-  },
-  {
-    "symbol":"OKTA",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.4052718287
-  },
-  {
-    "symbol":"EYE",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.3846787479
-  },
-  {
-    "symbol":"DUOL",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.0345963756
-  },
-  {
-    "symbol":"SIEB",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":97.0242998353
-  },
-  {
-    "symbol":"CGNT",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":96.59184514
-  },
-  {
-    "symbol":"TME",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":96.478583196
-  },
-  {
-    "symbol":"KGC",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":95.9225700165
-  },
-  {
-    "symbol":"SEZL",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":95.7475288303
-  },
-  {
-    "symbol":"TIGO",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":95.6136738056
-  },
-  {
-    "symbol":"ZK",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":95.3562602965
-  },
-  {
-    "symbol":"BROS",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":94.9958813839
-  },
-  {
-    "symbol":"NFLX",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":94.8929159802
-  },
-  {
-    "symbol":"GROY",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":94.5428336079
-  },
-  {
-    "symbol":"ISSC",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":94.4810543657
-  },
-  {
-    "symbol":"CHWY",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":94.3060131796
-  },
-  {
-    "symbol":"BSAC",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":93.5543657331
-  },
-  {
-    "symbol":"CAH",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":93.4925864909
-  },
-  {
-    "symbol":"STRT",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":93.1116144975
-  },
-  {
-    "symbol":"FSEA",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":92.9571663921
-  },
-  {
-    "symbol":"KEP",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":92.2775947282
-  },
-  {
-    "symbol":"NEXN",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":92.2261120264
-  },
-  {
-    "symbol":"TTMI",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":92.2055189456
-  },
-  {
-    "symbol":"NTGR",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":91.9378088962
-  },
-  {
-    "symbol":"COMM",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":91.2376441516
-  },
-  {
-    "symbol":"AHR",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":91.165568369
-  },
-  {
-    "symbol":"WWD",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":90.9802306425
-  },
-  {
-    "symbol":"PAYC",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":90.9596375618
-  },
-  {
-    "symbol":"TWLO",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":90.8360790774
-  },
-  {
-    "symbol":"EHC",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":90.4139209226
-  },
-  {
-    "symbol":"SKWD",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":89.5593080725
-  },
-  {
-    "symbol":"CTVA",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":89.5078253707
-  },
-  {
-    "symbol":"MMM",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":88.9106260297
-  },
-  {
-    "symbol":"RELY",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":86.9954695222
-  },
-  {
-    "symbol":"MNDY",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":86.5115321252
-  },
-  {
-    "symbol":"DRVN",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":82.186985173
-  },
-  {
-    "symbol":"ROAD",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":82.0531301483
-  },
-  {
-    "symbol":"SAH",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":81.5691927512
-  },
-  {
-    "symbol":"C",
-    "met_count":8,
-    "fin_met_count":5,
-    "total_met_count":13,
-    "rs_score":81.1264415157
-  },
-  {
-    "symbol":"QBTS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.886738056
+    "symbol":"BOLT",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":99.8
   },
   {
     "symbol":"TDUP",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.7631795717
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":99.37
   },
   {
-    "symbol":"MVST",
+    "symbol":"TSSI",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.6808072488
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":99.28
   },
   {
-    "symbol":"NUTX",
+    "symbol":"BTM",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.6705107084
-  },
-  {
-    "symbol":"RGLS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.6499176277
-  },
-  {
-    "symbol":"CURI",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.3822075783
-  },
-  {
-    "symbol":"OCFT",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.2071663921
-  },
-  {
-    "symbol":"ALTS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.1659802306
-  },
-  {
-    "symbol":"TVRD",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.1350906096
-  },
-  {
-    "symbol":"XYF",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":99.0012355848
-  },
-  {
-    "symbol":"ASM",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":98.805601318
-  },
-  {
-    "symbol":"JFIN",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":98.2804777595
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":99.01
   },
   {
     "symbol":"VRNA",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":98.1054365733
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":98.55
   },
   {
-    "symbol":"HRTG",
+    "symbol":"CNVS",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":98.0951400329
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":98.49
   },
   {
-    "symbol":"HOOD",
+    "symbol":"HIMS",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.9406919275
-  },
-  {
-    "symbol":"CPSH",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.6523887974
-  },
-  {
-    "symbol":"UTI",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.6009060956
-  },
-  {
-    "symbol":"AU",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.5494233937
-  },
-  {
-    "symbol":"CVAC",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.4258649094
-  },
-  {
-    "symbol":"NET",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.2508237232
-  },
-  {
-    "symbol":"NRG",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.1890444811
-  },
-  {
-    "symbol":"FARO",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.1684514003
-  },
-  {
-    "symbol":"GOGO",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":97.1066721582
-  },
-  {
-    "symbol":"PRPO",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":96.9625205931
-  },
-  {
-    "symbol":"FTEK",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":96.8595551895
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":98.25
   },
   {
     "symbol":"AKBA",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":96.7154036244
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":98.1
   },
   {
-    "symbol":"NXT",
+    "symbol":"JFIN",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":96.6536243822
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":97.94
   },
   {
-    "symbol":"OSIS",
+    "symbol":"CRDO",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":96.2829489292
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":97.93
   },
   {
-    "symbol":"FROG",
+    "symbol":"GOGO",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":95.6960461285
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":97.12
   },
   {
-    "symbol":"SLM",
+    "symbol":"CRMD",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":95.4592257002
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":97.03
   },
   {
-    "symbol":"BA",
+    "symbol":"ISSC",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":95.2635914333
-  },
-  {
-    "symbol":"AEM",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":95.17092257
-  },
-  {
-    "symbol":"CLS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.8826194399
-  },
-  {
-    "symbol":"MELI",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.8414332784
-  },
-  {
-    "symbol":"ELVA",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.8105436573
-  },
-  {
-    "symbol":"OLO",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.7693574959
-  },
-  {
-    "symbol":"WPM",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.686985173
-  },
-  {
-    "symbol":"BCS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.6252059308
-  },
-  {
-    "symbol":"IPI",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.4501647446
-  },
-  {
-    "symbol":"AGX",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":94.1412685338
-  },
-  {
-    "symbol":"COOP",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":93.7294069193
-  },
-  {
-    "symbol":"NFG",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":93.6779242175
-  },
-  {
-    "symbol":"JBL",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":93.5852553542
-  },
-  {
-    "symbol":"DE",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":93.5028830313
-  },
-  {
-    "symbol":"ATAT",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":93.379324547
-  },
-  {
-    "symbol":"PBI",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":93.266062603
-  },
-  {
-    "symbol":"CCEC",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":92.9983525535
-  },
-  {
-    "symbol":"MNSO",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":92.8233113674
-  },
-  {
-    "symbol":"OR",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":92.7203459638
-  },
-  {
-    "symbol":"COE",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":92.6173805601
-  },
-  {
-    "symbol":"ASR",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":92.6070840198
-  },
-  {
-    "symbol":"IFS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":92.442339374
-  },
-  {
-    "symbol":"CEG",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":92.1643327842
-  },
-  {
-    "symbol":"PODD",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":91.7112850082
-  },
-  {
-    "symbol":"AR",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":91.6598023064
-  },
-  {
-    "symbol":"CVNA",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":91.2170510708
-  },
-  {
-    "symbol":"BOSC",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":91.1552718287
-  },
-  {
-    "symbol":"APH",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":90.7742998353
-  },
-  {
-    "symbol":"BLX",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":90.4448105437
-  },
-  {
-    "symbol":"CYBR",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":90.0432454695
-  },
-  {
-    "symbol":"AXON",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":90.0123558484
-  },
-  {
-    "symbol":"BTSGU",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":89.971169687
-  },
-  {
-    "symbol":"TPB",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":89.9196869852
-  },
-  {
-    "symbol":"BHF",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":89.1989291598
-  },
-  {
-    "symbol":"MAG",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":88.9929983526
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":96.95
   },
   {
     "symbol":"ATAI",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":88.8694398682
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":96.68
   },
   {
-    "symbol":"PRDO",
+    "symbol":"TPB",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":88.7252883031
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":95.76
   },
   {
-    "symbol":"IDCC",
+    "symbol":"BOSC",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":88.6223228995
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":95.07
+  },
+  {
+    "symbol":"IPI",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":94.32
+  },
+  {
+    "symbol":"PLYA",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":92.77
+  },
+  {
+    "symbol":"TKO",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":92.13
+  },
+  {
+    "symbol":"RBKB",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":92.1
+  },
+  {
+    "symbol":"UGI",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":91.83
+  },
+  {
+    "symbol":"NFG",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":91.44
+  },
+  {
+    "symbol":"ELVA",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":91.42
+  },
+  {
+    "symbol":"CALM",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":90.83
+  },
+  {
+    "symbol":"AR",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":90.61
   },
   {
     "symbol":"GPOR",
     "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":88.3752059308
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":88.75
   },
   {
-    "symbol":"BMI",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":88.3031301483
-  },
-  {
-    "symbol":"IBN",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":87.0469522241
-  },
-  {
-    "symbol":"META",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":86.9851729819
-  },
-  {
-    "symbol":"LLYVA",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":86.9336902801
-  },
-  {
-    "symbol":"CPRX",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":86.5218286656
-  },
-  {
-    "symbol":"LLYVK",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":86.3261943987
-  },
-  {
-    "symbol":"TLN",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":85.142092257
-  },
-  {
-    "symbol":"ONON",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":84.2359967051
-  },
-  {
-    "symbol":"AVPT",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":83.3504942339
-  },
-  {
-    "symbol":"TGS",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":82.9592257002
-  },
-  {
-    "symbol":"CXDO",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":82.6606260297
-  },
-  {
-    "symbol":"BWAY",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":81.8986820428
-  },
-  {
-    "symbol":"NRIM",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":81.3220757825
-  },
-  {
-    "symbol":"OPY",
-    "met_count":8,
-    "fin_met_count":4,
-    "total_met_count":12,
-    "rs_score":80.8587314662
-  },
-  {
-    "symbol":"TOI",
+    "symbol":"DE",
     "met_count":8,
     "fin_met_count":3,
     "total_met_count":11,
-    "rs_score":99.9176276771
+    "rs_score":88.45
   },
   {
-    "symbol":"TGEN",
+    "symbol":"INTU",
     "met_count":8,
     "fin_met_count":3,
     "total_met_count":11,
-    "rs_score":99.5984349259
+    "rs_score":88.1
+  },
+  {
+    "symbol":"CR",
+    "met_count":8,
+    "fin_met_count":3,
+    "total_met_count":11,
+    "rs_score":85.59
+  },
+  {
+    "symbol":"ASPS",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":99.79
   },
   {
     "symbol":"AEVA",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":99.4748764415
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":99.64
   },
   {
-    "symbol":"PRCH",
+    "symbol":"MVST",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":99.2174629325
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":99.59
   },
   {
-    "symbol":"DVS",
+    "symbol":"RGLS",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":99.1968698517
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":99.35
   },
   {
-    "symbol":"NCL",
+    "symbol":"OKLO",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":99.1865733114
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":99.3
   },
   {
-    "symbol":"MBOT",
+    "symbol":"TGEN",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.9806425041
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":99.27
   },
   {
-    "symbol":"XNET",
+    "symbol":"PDYNW",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.9291598023
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":99.11
   },
   {
-    "symbol":"EOSE",
+    "symbol":"PLTR",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.8467874794
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":98.62
   },
   {
-    "symbol":"BSGM",
+    "symbol":"NVTS",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.5172981878
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":98.44
   },
   {
-    "symbol":"CFSB",
+    "symbol":"LFMD",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.3731466227
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":98.41
   },
   {
-    "symbol":"ALLT",
+    "symbol":"MASS",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.3113673806
-  },
-  {
-    "symbol":"ADPT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.2701812191
-  },
-  {
-    "symbol":"URBN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.2186985173
-  },
-  {
-    "symbol":"ETON",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.1466227348
-  },
-  {
-    "symbol":"FORD",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":98.1157331137
-  },
-  {
-    "symbol":"FTK",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":97.9303953871
-  },
-  {
-    "symbol":"DAO",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":97.7656507414
-  },
-  {
-    "symbol":"MPAA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":97.4773476112
-  },
-  {
-    "symbol":"VEON",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":97.4670510708
-  },
-  {
-    "symbol":"CDTX",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":97.271416804
-  },
-  {
-    "symbol":"IONQ",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":97.2611202636
-  },
-  {
-    "symbol":"GRND",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":97.0037067545
-  },
-  {
-    "symbol":"CPS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.8492586491
-  },
-  {
-    "symbol":"DUOT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.7565897858
-  },
-  {
-    "symbol":"BBVA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.7462932455
-  },
-  {
-    "symbol":"APEI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.4991762768
-  },
-  {
-    "symbol":"LRN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.4888797364
-  },
-  {
-    "symbol":"NGD",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.447693575
-  },
-  {
-    "symbol":"WOR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.3756177924
-  },
-  {
-    "symbol":"SNT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.3653212521
-  },
-  {
-    "symbol":"SIBN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.334431631
-  },
-  {
-    "symbol":"SOC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.3138385502
-  },
-  {
-    "symbol":"CHEF",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.2005766063
-  },
-  {
-    "symbol":"ATGE",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.0873146623
-  },
-  {
-    "symbol":"VZLA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.0564250412
-  },
-  {
-    "symbol":"HNRG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":96.0255354201
-  },
-  {
-    "symbol":"PRA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.6651565074
-  },
-  {
-    "symbol":"CCRD",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.6548599671
-  },
-  {
-    "symbol":"RDVT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.6445634267
-  },
-  {
-    "symbol":"FPH",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.5827841845
-  },
-  {
-    "symbol":"HWM",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.3871499176
-  },
-  {
-    "symbol":"KD",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.3459637562
-  },
-  {
-    "symbol":"NEUE",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.2121087315
-  },
-  {
-    "symbol":"ODC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.1812191104
-  },
-  {
-    "symbol":"MOS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":95.0370675453
-  },
-  {
-    "symbol":"SPOT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.9855848435
-  },
-  {
-    "symbol":"ULS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.9752883031
-  },
-  {
-    "symbol":"TGI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.9546952224
-  },
-  {
-    "symbol":"AZ",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.944398682
-  },
-  {
-    "symbol":"SRAD",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.9032125206
-  },
-  {
-    "symbol":"PM",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.7281713344
-  },
-  {
-    "symbol":"GEV",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.6457990115
-  },
-  {
-    "symbol":"WILC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.5119439868
-  },
-  {
-    "symbol":"BJ",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.5016474465
-  },
-  {
-    "symbol":"FER",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.3163097199
-  },
-  {
-    "symbol":"LARK",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.1515650741
-  },
-  {
-    "symbol":"TISI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.1000823723
-  },
-  {
-    "symbol":"NCSM",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":94.0280065898
-  },
-  {
-    "symbol":"ATEC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":93.8014827018
-  },
-  {
-    "symbol":"FUTU",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":93.3587314662
-  },
-  {
-    "symbol":"SPNT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":93.3381383855
-  },
-  {
-    "symbol":"APG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":93.2248764415
-  },
-  {
-    "symbol":"REVG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":93.0807248764
-  },
-  {
-    "symbol":"BZ",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":93.0292421746
-  },
-  {
-    "symbol":"EMX",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.9674629325
-  },
-  {
-    "symbol":"LZ",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.9468698517
-  },
-  {
-    "symbol":"DRI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.9365733114
-  },
-  {
-    "symbol":"LMB",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.8747940692
-  },
-  {
-    "symbol":"HURN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.555601318
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":98.03
   },
   {
     "symbol":"YSG",
     "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.4011532125
-  },
-  {
-    "symbol":"EXEL",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.2467051071
-  },
-  {
-    "symbol":"NC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.2364085667
-  },
-  {
-    "symbol":"AZO",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.1231466227
-  },
-  {
-    "symbol":"RNW",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":92.0613673806
-  },
-  {
-    "symbol":"BBAR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.9069192751
-  },
-  {
-    "symbol":"CKPT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.8966227348
-  },
-  {
-    "symbol":"DGICB",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.8554365733
-  },
-  {
-    "symbol":"WRLD",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.8039538715
-  },
-  {
-    "symbol":"SXT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.7421746293
-  },
-  {
-    "symbol":"CRS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.6906919275
-  },
-  {
-    "symbol":"IDT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.618616145
-  },
-  {
-    "symbol":"ESE",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.6083196046
-  },
-  {
-    "symbol":"EAT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.5465403624
-  },
-  {
-    "symbol":"LOMA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.4847611203
-  },
-  {
-    "symbol":"BJRI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.3303130148
-  },
-  {
-    "symbol":"PAC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.3097199341
-  },
-  {
-    "symbol":"JOYY",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.2273476112
-  },
-  {
-    "symbol":"EPSN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":91.0831960461
-  },
-  {
-    "symbol":"COR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.8875617792
-  },
-  {
-    "symbol":"FOXA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.794892916
-  },
-  {
-    "symbol":"NATH",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.6713344316
-  },
-  {
-    "symbol":"TPC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.4962932455
-  },
-  {
-    "symbol":"EXE",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.3727347611
-  },
-  {
-    "symbol":"MGYR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.2594728171
-  },
-  {
-    "symbol":"FFIV",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":90.0741350906
-  },
-  {
-    "symbol":"CNM",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.8990939044
-  },
-  {
-    "symbol":"FORTY",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.8887973641
-  },
-  {
-    "symbol":"PSMT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.857907743
-  },
-  {
-    "symbol":"AL",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.8476112026
-  },
-  {
-    "symbol":"UVE",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.6828665568
-  },
-  {
-    "symbol":"ESP",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.6519769357
-  },
-  {
-    "symbol":"TXNM",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.518121911
-  },
-  {
-    "symbol":"CBNK",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.3018945634
-  },
-  {
-    "symbol":"AMPL",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.2710049423
-  },
-  {
-    "symbol":"EPR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.2504118616
-  },
-  {
-    "symbol":"CSGS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":89.1886326194
-  },
-  {
-    "symbol":"FOX",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.9415156507
-  },
-  {
-    "symbol":"AXS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.8900329489
-  },
-  {
-    "symbol":"NTNX",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.8385502471
-  },
-  {
-    "symbol":"HFFG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.7561779242
-  },
-  {
-    "symbol":"DRS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.550247117
-  },
-  {
-    "symbol":"RBA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.5296540362
-  },
-  {
-    "symbol":"PEGA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.4678747941
-  },
-  {
-    "symbol":"UAN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.2928336079
-  },
-  {
-    "symbol":"PSIX",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.2825370675
-  },
-  {
-    "symbol":"MUFG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.1486820428
-  },
-  {
-    "symbol":"HDB",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":88.1177924217
-  },
-  {
-    "symbol":"BK",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":87.9427512356
-  },
-  {
-    "symbol":"KAR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":87.5617792422
-  },
-  {
-    "symbol":"USFD",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":87.4485172982
-  },
-  {
-    "symbol":"UI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":87.4073311367
-  },
-  {
-    "symbol":"SSYS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":87.2425864909
-  },
-  {
-    "symbol":"RTX",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":86.5012355848
-  },
-  {
-    "symbol":"CAKE",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":86.3158978583
-  },
-  {
-    "symbol":"NIC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":85.852553542
-  },
-  {
-    "symbol":"LBRDK",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":85.8422570016
-  },
-  {
-    "symbol":"RBC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":85.5024711697
-  },
-  {
-    "symbol":"LBRDA",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":85.4406919275
-  },
-  {
-    "symbol":"IBKR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":85.4200988468
-  },
-  {
-    "symbol":"LOGC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":85.3789126853
-  },
-  {
-    "symbol":"PAYX",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":84.9979406919
-  },
-  {
-    "symbol":"VIASP",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":84.4419275124
-  },
-  {
-    "symbol":"BMO",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":84.2462932455
-  },
-  {
-    "symbol":"MIR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":83.5564250412
-  },
-  {
-    "symbol":"GGAL",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":83.3401976936
-  },
-  {
-    "symbol":"FVRR",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":83.2887149918
-  },
-  {
-    "symbol":"KEN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":83.0210049423
-  },
-  {
-    "symbol":"DOCU",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.8150741351
-  },
-  {
-    "symbol":"CSV",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.7224052718
-  },
-  {
-    "symbol":"UPWK",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.67092257
-  },
-  {
-    "symbol":"SOLV",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.4649917628
-  },
-  {
-    "symbol":"SSNC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.3620263591
-  },
-  {
-    "symbol":"ADP",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.1972817133
-  },
-  {
-    "symbol":"DLO",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.1663920923
-  },
-  {
-    "symbol":"MFG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":82.1355024712
-  },
-  {
-    "symbol":"MYRG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":81.9501647446
-  },
-  {
-    "symbol":"LYV",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":81.589785832
-  },
-  {
-    "symbol":"BKNG",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":81.4971169687
-  },
-  {
-    "symbol":"TW",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":81.2705930807
-  },
-  {
-    "symbol":"GAN",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":81.1779242175
-  },
-  {
-    "symbol":"PLNT",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":81.1470345964
-  },
-  {
-    "symbol":"KEYS",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":80.4159802306
-  },
-  {
-    "symbol":"GPI",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":80.3850906096
-  },
-  {
-    "symbol":"SEIC",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":80.3644975288
-  },
-  {
-    "symbol":"MO",
-    "met_count":8,
-    "fin_met_count":3,
-    "total_met_count":11,
-    "rs_score":80.0967874794
-  },
-  {
-    "symbol":"DFDV",
-    "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":100.0
-  },
-  {
-    "symbol":"QVCGB",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":99.9794069193
-  },
-  {
-    "symbol":"CTEV",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":99.660214168
-  },
-  {
-    "symbol":"HSAI",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":99.5881383855
-  },
-  {
-    "symbol":"SATX",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":99.2998352554
-  },
-  {
-    "symbol":"PNBK",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":99.1453871499
-  },
-  {
-    "symbol":"GRPN",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":99.1247940692
-  },
-  {
-    "symbol":"RPID",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":99.0424217463
-  },
-  {
-    "symbol":"VGZ",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.4761120264
-  },
-  {
-    "symbol":"ACHR",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.4040362438
-  },
-  {
-    "symbol":"RBRK",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.3937397035
-  },
-  {
-    "symbol":"DAN",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.3834431631
-  },
-  {
-    "symbol":"NPCE",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.2289950577
-  },
-  {
-    "symbol":"NVCT",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.1878088962
-  },
-  {
-    "symbol":"SSRM",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.1363261944
-  },
-  {
-    "symbol":"IRTC",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":98.0745469522
-  },
-  {
-    "symbol":"AP",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":97.8480230643
-  },
-  {
-    "symbol":"THM",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":97.7965403624
-  },
-  {
-    "symbol":"DB",
-    "met_count":8,
-    "fin_met_count":2,
-    "total_met_count":10,
-    "rs_score":97.4979406919
+    "rs_score":97.96
   },
   {
     "symbol":"CRK",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":97.3537891269
+    "rs_score":97.92
   },
   {
-    "symbol":"XERS",
+    "symbol":"ORLA",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":97.0860790774
+    "rs_score":97.64
   },
   {
-    "symbol":"RBLX",
+    "symbol":"CFSB",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":96.8286655684
+    "rs_score":97.61
   },
   {
-    "symbol":"SNOW",
+    "symbol":"FARO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":96.7359967051
+    "rs_score":97.47
   },
   {
-    "symbol":"LYG",
+    "symbol":"PRE",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":96.5300658979
+    "rs_score":97.35
   },
   {
-    "symbol":"SAND",
+    "symbol":"EYE",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":96.4065074135
+    "rs_score":97.31
   },
   {
-    "symbol":"FRHC",
+    "symbol":"OSS",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":96.1799835255
+    "rs_score":97.0
   },
   {
-    "symbol":"IBEX",
+    "symbol":"EVLV",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":95.9534596376
+    "rs_score":96.77
   },
   {
-    "symbol":"CTRN",
+    "symbol":"PL",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":95.9431630972
+    "rs_score":96.71
   },
   {
-    "symbol":"TITN",
+    "symbol":"CAR",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":95.7887149918
+    "rs_score":96.66
   },
   {
-    "symbol":"SUPV",
+    "symbol":"TTMI",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":95.7166392092
+    "rs_score":96.63
   },
   {
-    "symbol":"KTOS",
+    "symbol":"TPC",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":95.3768533773
+    "rs_score":96.52
   },
   {
-    "symbol":"AVGO",
+    "symbol":"VZLA",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":95.2327018122
+    "rs_score":96.44
   },
   {
-    "symbol":"PHAR",
+    "symbol":"NIU",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":95.2018121911
+    "rs_score":96.31
   },
   {
-    "symbol":"LEU",
+    "symbol":"TLN",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":94.8517298188
+    "rs_score":96.2
   },
   {
-    "symbol":"NAGE",
+    "symbol":"SLNO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":94.6972817133
+    "rs_score":96.14
   },
   {
-    "symbol":"SONY",
+    "symbol":"ATRO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":94.4398682043
+    "rs_score":96.02
   },
   {
-    "symbol":"FMS",
+    "symbol":"ZS",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":94.1721581549
+    "rs_score":95.59
   },
   {
-    "symbol":"DC",
+    "symbol":"JBL",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":94.0074135091
+    "rs_score":95.58
   },
   {
-    "symbol":"NRSN",
+    "symbol":"STRT",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":93.9353377265
+    "rs_score":95.54
   },
   {
-    "symbol":"KARO",
+    "symbol":"TEM",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":93.8838550247
+    "rs_score":95.53
   },
   {
-    "symbol":"CMP",
+    "symbol":"FEIM",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":93.6470345964
+    "rs_score":95.51
   },
   {
-    "symbol":"NOK",
+    "symbol":"LLYVA",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":93.5337726524
+    "rs_score":95.23
   },
   {
-    "symbol":"EXEEL",
+    "symbol":"LLYVK",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":93.410214168
+    "rs_score":95.18
   },
   {
-    "symbol":"HSBC",
+    "symbol":"AHR",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":93.2763591433
+    "rs_score":95.05
   },
   {
-    "symbol":"TFPM",
+    "symbol":"TME",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":92.9880560132
+    "rs_score":95.01
   },
   {
-    "symbol":"TENX",
+    "symbol":"ASA",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":92.8953871499
+    "rs_score":94.94
+  },
+  {
+    "symbol":"CMPO",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.88
+  },
+  {
+    "symbol":"NFLX",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.75
+  },
+  {
+    "symbol":"YYGH",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.74
+  },
+  {
+    "symbol":"ARLO",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.71
+  },
+  {
+    "symbol":"GFI",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.69
+  },
+  {
+    "symbol":"TSAT",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.51
+  },
+  {
+    "symbol":"CTLP",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.4
+  },
+  {
+    "symbol":"GWRE",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.3
+  },
+  {
+    "symbol":"AEM",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.24
+  },
+  {
+    "symbol":"DASH",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.09
+  },
+  {
+    "symbol":"WPM",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":94.02
+  },
+  {
+    "symbol":"ZLAB",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.99
+  },
+  {
+    "symbol":"CEG",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.78
+  },
+  {
+    "symbol":"CAH",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.75
+  },
+  {
+    "symbol":"RCL",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.54
+  },
+  {
+    "symbol":"JOYY",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.51
+  },
+  {
+    "symbol":"BPMC",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.46
+  },
+  {
+    "symbol":"ERJ",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.31
+  },
+  {
+    "symbol":"NXT",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":93.15
   },
   {
     "symbol":"EQT",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":92.8644975288
+    "rs_score":93.06
   },
   {
-    "symbol":"RKLB",
+    "symbol":"TIGO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":92.7409390445
+    "rs_score":92.97
   },
   {
-    "symbol":"EXEEZ",
+    "symbol":"SNEX",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":92.699752883
+    "rs_score":92.93
   },
   {
-    "symbol":"EXEEW",
+    "symbol":"LITE",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":92.6791598023
+    "rs_score":92.79
   },
   {
-    "symbol":"CRWD",
+    "symbol":"ESE",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":92.6379736409
+    "rs_score":92.65
   },
   {
-    "symbol":"BKTI",
+    "symbol":"BBIO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":91.989291598
+    "rs_score":92.59
   },
   {
-    "symbol":"WDH",
+    "symbol":"MOS",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":91.9789950577
+    "rs_score":92.57
   },
   {
-    "symbol":"SRBK",
+    "symbol":"WWD",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":91.3200164745
+    "rs_score":92.08
   },
   {
-    "symbol":"WLDN",
+    "symbol":"BJRI",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":91.2685337727
+    "rs_score":91.95
   },
   {
-    "symbol":"PHX",
+    "symbol":"APG",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":91.1861614498
+    "rs_score":91.81
   },
   {
-    "symbol":"FWONA",
+    "symbol":"DCO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":90.7022240527
+    "rs_score":91.51
   },
   {
-    "symbol":"LPLA",
+    "symbol":"MYRG",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":90.6507413509
+    "rs_score":91.49
   },
   {
-    "symbol":"SGI",
+    "symbol":"HCSG",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":90.455107084
+    "rs_score":91.48
   },
   {
-    "symbol":"FWONK",
+    "symbol":"RDWR",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":90.3933278418
+    "rs_score":91.37
   },
   {
-    "symbol":"CCB",
+    "symbol":"EXE",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":90.0947281713
+    "rs_score":91.31
   },
   {
-    "symbol":"MNST",
+    "symbol":"ELTX",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":89.0032948929
+    "rs_score":91.13
   },
   {
-    "symbol":"BSX",
+    "symbol":"WRLD",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":88.4163920923
+    "rs_score":91.09
   },
   {
-    "symbol":"MCK",
+    "symbol":"NGS",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":88.2722405272
+    "rs_score":90.93
+  },
+  {
+    "symbol":"RSI",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.82
+  },
+  {
+    "symbol":"SAH",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.73
+  },
+  {
+    "symbol":"CYBR",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.62
+  },
+  {
+    "symbol":"OCS",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.59
+  },
+  {
+    "symbol":"DRI",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.52
+  },
+  {
+    "symbol":"CTVA",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.42
+  },
+  {
+    "symbol":"LOGC",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.34
+  },
+  {
+    "symbol":"CSV",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":90.28
+  },
+  {
+    "symbol":"LENZ",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":89.98
+  },
+  {
+    "symbol":"RNXT",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":89.82
+  },
+  {
+    "symbol":"CAE",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":89.67
+  },
+  {
+    "symbol":"PHYS",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":89.17
+  },
+  {
+    "symbol":"MGYR",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":89.08
+  },
+  {
+    "symbol":"BLX",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.85
+  },
+  {
+    "symbol":"COF",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.71
+  },
+  {
+    "symbol":"MIRM",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.7
+  },
+  {
+    "symbol":"CEF",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.66
+  },
+  {
+    "symbol":"TASK",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.13
+  },
+  {
+    "symbol":"EPR",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.12
+  },
+  {
+    "symbol":"BAP",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.06
+  },
+  {
+    "symbol":"ROK",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":88.03
   },
   {
     "symbol":"RRC",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":87.8603789127
+    "rs_score":87.85
   },
   {
-    "symbol":"CCLDO",
+    "symbol":"NEXT",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":87.7059308072
+    "rs_score":87.78
   },
   {
-    "symbol":"CPNG",
+    "symbol":"UAN",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":86.5527182867
+    "rs_score":87.71
   },
   {
-    "symbol":"EQH",
+    "symbol":"RBC",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":85.8319604613
+    "rs_score":87.66
   },
   {
-    "symbol":"CBOE",
+    "symbol":"MTSI",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":85.4303953871
+    "rs_score":87.55
   },
   {
-    "symbol":"RDCM",
+    "symbol":"SGI",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":84.771416804
+    "rs_score":87.29
   },
   {
-    "symbol":"HIG",
+    "symbol":"RCG",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":84.4728171334
+    "rs_score":86.98
   },
   {
-    "symbol":"CAAP",
+    "symbol":"AORT",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":84.3389621087
+    "rs_score":86.8
   },
   {
-    "symbol":"VSEC",
+    "symbol":"WELL",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":84.0506589786
+    "rs_score":86.79
   },
   {
-    "symbol":"CART",
+    "symbol":"SHCO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":83.9991762768
+    "rs_score":86.51
   },
   {
-    "symbol":"BBUC",
+    "symbol":"C",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":82.5885502471
+    "rs_score":86.39
   },
   {
-    "symbol":"ASPI",
+    "symbol":"RMCO",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":81.7133443163
+    "rs_score":86.26
   },
   {
-    "symbol":"JPM",
+    "symbol":"FLUT",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":81.3529654036
+    "rs_score":86.01
   },
   {
-    "symbol":"HMN",
+    "symbol":"DIS",
     "met_count":8,
     "fin_met_count":2,
     "total_met_count":10,
-    "rs_score":80.4365733114
+    "rs_score":85.87
   },
   {
-    "symbol":"RGC",
+    "symbol":"GPI",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":85.36
+  },
+  {
+    "symbol":"LH",
+    "met_count":8,
+    "fin_met_count":2,
+    "total_met_count":10,
+    "rs_score":85.03
+  },
+  {
+    "symbol":"AMZE",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":99.9897034596
+    "rs_score":99.98
+  },
+  {
+    "symbol":"SNSE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.97
+  },
+  {
+    "symbol":"ARBB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.92
   },
   {
     "symbol":"TMCWW",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":99.8970345964
+    "rs_score":99.85
   },
   {
-    "symbol":"AREN",
+    "symbol":"JFBR",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":99.6087314662
+    "rs_score":99.84
+  },
+  {
+    "symbol":"UNCY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.83
+  },
+  {
+    "symbol":"INUV",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.78
+  },
+  {
+    "symbol":"CLRO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.76
+  },
+  {
+    "symbol":"PXLW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.7
+  },
+  {
+    "symbol":"QSG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.56
+  },
+  {
+    "symbol":"DBVT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":99.47
   },
   {
     "symbol":"TMC",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":99.516062603
+    "rs_score":99.42
   },
   {
-    "symbol":"ROMA",
+    "symbol":"SEZL",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":99.0218286656
+    "rs_score":99.38
   },
   {
-    "symbol":"MATH",
+    "symbol":"QNTM",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":98.9909390445
+    "rs_score":99.34
   },
   {
-    "symbol":"ICAD",
+    "symbol":"DVS",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":98.6820428336
+    "rs_score":99.25
   },
   {
-    "symbol":"SJT",
+    "symbol":"MFI",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":98.0024711697
+    "rs_score":99.19
   },
   {
-    "symbol":"BGM",
+    "symbol":"AZ",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.981878089
+    "rs_score":99.18
   },
   {
-    "symbol":"HTZ",
+    "symbol":"SVT",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.8892092257
+    "rs_score":99.14
   },
   {
-    "symbol":"OKYO",
+    "symbol":"PSIX",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.8377265239
+    "rs_score":99.13
   },
   {
-    "symbol":"YALA",
+    "symbol":"PRCH",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.7347611203
+    "rs_score":99.07
   },
   {
-    "symbol":"PMEC",
+    "symbol":"NEON",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.6112026359
+    "rs_score":99.02
   },
   {
-    "symbol":"HEES",
+    "symbol":"AMBR",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.5185337727
+    "rs_score":98.98
   },
   {
-    "symbol":"RDUS",
+    "symbol":"HOVR",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.4567545305
+    "rs_score":98.95
   },
   {
-    "symbol":"SAN",
+    "symbol":"CTEV",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.3640856672
+    "rs_score":98.93
   },
   {
-    "symbol":"BROG",
+    "symbol":"LEU",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":97.2096375618
+    "rs_score":98.9
   },
   {
-    "symbol":"VRSN",
+    "symbol":"NAK",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.9522240527
+    "rs_score":98.86
   },
   {
-    "symbol":"AKRO",
+    "symbol":"APPS",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.9007413509
+    "rs_score":98.84
   },
   {
-    "symbol":"PCRX",
+    "symbol":"ABVC",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.7257001647
+    "rs_score":98.77
   },
   {
-    "symbol":"JNUG",
+    "symbol":"SMR",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.705107084
+    "rs_score":98.76
   },
   {
-    "symbol":"OMAB",
+    "symbol":"ASM",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.6845140033
+    "rs_score":98.68
   },
   {
-    "symbol":"NUGT",
+    "symbol":"NAGE",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.6433278418
+    "rs_score":98.63
+  },
+  {
+    "symbol":"RKLB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.61
+  },
+  {
+    "symbol":"GRPN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.53
+  },
+  {
+    "symbol":"AMPX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.47
+  },
+  {
+    "symbol":"JUNE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.35
+  },
+  {
+    "symbol":"HOOD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.32
+  },
+  {
+    "symbol":"GRAL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.28
+  },
+  {
+    "symbol":"NRSN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.21
+  },
+  {
+    "symbol":"ALLT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.17
+  },
+  {
+    "symbol":"SRRK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.14
+  },
+  {
+    "symbol":"XGN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":98.12
   },
   {
     "symbol":"USAS",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.6330313015
+    "rs_score":98.08
   },
   {
-    "symbol":"GDMN",
+    "symbol":"RAYA",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.5403624382
+    "rs_score":97.89
   },
   {
-    "symbol":"DADA",
+    "symbol":"ICAD",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.4682866557
+    "rs_score":97.84
   },
   {
-    "symbol":"DRD",
+    "symbol":"RBLX",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.4373970346
+    "rs_score":97.77
   },
   {
-    "symbol":"ASA",
+    "symbol":"IDN",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":96.3962108731
-  },
-  {
-    "symbol":"DGP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":96.3859143328
-  },
-  {
-    "symbol":"FCAP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":96.2623558484
-  },
-  {
-    "symbol":"LANV",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":96.2520593081
-  },
-  {
-    "symbol":"GFI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":96.1490939044
-  },
-  {
-    "symbol":"GTX",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.8401976936
-  },
-  {
-    "symbol":"AUMI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.8196046129
-  },
-  {
-    "symbol":"III",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.7990115321
-  },
-  {
-    "symbol":"SKE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.7269357496
-  },
-  {
-    "symbol":"PUK",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.6857495881
-  },
-  {
-    "symbol":"TPR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.623970346
-  },
-  {
-    "symbol":"SGDM",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.5621911038
-  },
-  {
-    "symbol":"FGM",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.5415980231
-  },
-  {
-    "symbol":"LINC",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.4901153213
-  },
-  {
-    "symbol":"NWG",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.4077429984
-  },
-  {
-    "symbol":"GREK",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.397446458
-  },
-  {
-    "symbol":"SBSW",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.1606260297
-  },
-  {
-    "symbol":"NTES",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.1503294893
-  },
-  {
-    "symbol":"GF",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":95.1194398682
-  },
-  {
-    "symbol":"MGIC",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.9649917628
-  },
-  {
-    "symbol":"EWO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.8723228995
-  },
-  {
-    "symbol":"ITRN",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.7075782537
-  },
-  {
-    "symbol":"RL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.6560955519
-  },
-  {
-    "symbol":"UNFI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.5943163097
-  },
-  {
-    "symbol":"TESL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.573723229
-  },
-  {
-    "symbol":"EUFN",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.4913509061
-  },
-  {
-    "symbol":"DAX",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.4707578254
-  },
-  {
-    "symbol":"BCH",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.3266062603
-  },
-  {
-    "symbol":"RING",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.2751235585
-  },
-  {
-    "symbol":"DMYY",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.2648270181
-  },
-  {
-    "symbol":"FLGR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.2442339374
-  },
-  {
-    "symbol":"QTUM",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.233937397
-  },
-  {
-    "symbol":"GOEX",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.2030477759
-  },
-  {
-    "symbol":"CLBR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.1824546952
-  },
-  {
-    "symbol":"EWG",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.1103789127
-  },
-  {
-    "symbol":"EWP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.089785832
-  },
-  {
-    "symbol":"GOAU",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":94.0588962109
-  },
-  {
-    "symbol":"SENEB",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.9559308072
-  },
-  {
-    "symbol":"EWI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.9250411862
-  },
-  {
-    "symbol":"FDD",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.7911861614
-  },
-  {
-    "symbol":"GDXJ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.7808896211
-  },
-  {
-    "symbol":"PERI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.7397034596
-  },
-  {
-    "symbol":"CEE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.6882207578
-  },
-  {
-    "symbol":"GDX",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.6573311367
-  },
-  {
-    "symbol":"GE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.6058484349
-  },
-  {
-    "symbol":"NTR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.5440691928
-  },
-  {
-    "symbol":"SENEA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.523476112
-  },
-  {
-    "symbol":"CHKP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.4616968699
-  },
-  {
-    "symbol":"SAP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.3690280066
-  },
-  {
-    "symbol":"ECH",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.3278418451
-  },
-  {
-    "symbol":"XPP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.3175453048
-  },
-  {
-    "symbol":"FEUZ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.2866556837
-  },
-  {
-    "symbol":"SII",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.2454695222
-  },
-  {
-    "symbol":"OLLI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":93.1939868204
-  },
-  {
-    "symbol":"MLYS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":92.9777594728
-  },
-  {
-    "symbol":"FEP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":92.8850906096
-  },
-  {
-    "symbol":"GVAL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":92.7615321252
-  },
-  {
-    "symbol":"KFS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":92.7512355848
-  },
-  {
-    "symbol":"SGDJ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":92.5967874794
-  },
-  {
-    "symbol":"SSSS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":92.4938220758
+    "rs_score":97.72
   },
   {
     "symbol":"ATYR",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.4629324547
+    "rs_score":97.71
   },
   {
-    "symbol":"PFIX",
+    "symbol":"BLBX",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.4526359143
+    "rs_score":97.7
   },
   {
-    "symbol":"GLDM",
+    "symbol":"ADPT",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.4320428336
+    "rs_score":97.62
   },
   {
-    "symbol":"SGOL",
+    "symbol":"COE",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.4217462932
+    "rs_score":97.39
   },
   {
-    "symbol":"IAUM",
+    "symbol":"CLS",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.4114497529
+    "rs_score":97.38
   },
   {
-    "symbol":"OUNZ",
+    "symbol":"GORO",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.3908566722
+    "rs_score":97.36
   },
   {
-    "symbol":"AAAU",
+    "symbol":"OPOF",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.3805601318
+    "rs_score":97.29
   },
   {
-    "symbol":"SLAB",
+    "symbol":"GRNQ",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.3599670511
+    "rs_score":97.26
   },
   {
-    "symbol":"BAR",
+    "symbol":"GEV",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.3496705107
+    "rs_score":97.24
   },
   {
-    "symbol":"IAU",
+    "symbol":"BYRN",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.3393739703
+    "rs_score":97.21
   },
   {
-    "symbol":"GLD",
+    "symbol":"NET",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.2672981878
+    "rs_score":97.2
   },
   {
-    "symbol":"FGDL",
+    "symbol":"LMB",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.1849258649
+    "rs_score":97.19
   },
   {
-    "symbol":"DOMO",
+    "symbol":"SSRM",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":92.0098846787
+    "rs_score":97.18
   },
   {
-    "symbol":"LI",
+    "symbol":"SKE",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":91.9584019769
-  },
-  {
-    "symbol":"HERO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.9481054366
-  },
-  {
-    "symbol":"ESQ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.8348434926
-  },
-  {
-    "symbol":"IBM",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.7833607908
-  },
-  {
-    "symbol":"CME",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.76276771
-  },
-  {
-    "symbol":"FOSLL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.731878089
-  },
-  {
-    "symbol":"RYAAY",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.7215815486
-  },
-  {
-    "symbol":"UCYB",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.5774299835
-  },
-  {
-    "symbol":"GSIB",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.5568369028
-  },
-  {
-    "symbol":"GILD",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.4332784185
-  },
-  {
-    "symbol":"STN",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.2891268534
-  },
-  {
-    "symbol":"ESPO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.2479406919
-  },
-  {
-    "symbol":"NEU",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.1758649094
-  },
-  {
-    "symbol":"JOF",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.1449752883
-  },
-  {
-    "symbol":"BTI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.052306425
-  },
-  {
-    "symbol":"BTRN",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":91.0317133443
-  },
-  {
-    "symbol":"BTCW",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.7331136738
-  },
-  {
-    "symbol":"BRRR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.7228171334
-  },
-  {
-    "symbol":"ARKB",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.7125205931
-  },
-  {
-    "symbol":"LOPE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.681630972
-  },
-  {
-    "symbol":"HODL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.6610378913
-  },
-  {
-    "symbol":"IBIT",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.6404448105
-  },
-  {
-    "symbol":"BTCO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.6301482702
-  },
-  {
-    "symbol":"ULTA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.5992586491
-  },
-  {
-    "symbol":"EZBC",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.5786655684
-  },
-  {
-    "symbol":"FBTC",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.5580724876
-  },
-  {
-    "symbol":"BITB",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.5477759473
-  },
-  {
-    "symbol":"NERD",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.5271828666
-  },
-  {
-    "symbol":"JEQ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.5065897858
-  },
-  {
-    "symbol":"GDE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.3315485997
-  },
-  {
-    "symbol":"CIEN",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.3109555189
-  },
-  {
-    "symbol":"AM",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.2903624382
-  },
-  {
-    "symbol":"GBTC",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.2800658979
-  },
-  {
-    "symbol":"DEFI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.2697693575
-  },
-  {
-    "symbol":"AADR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.2388797364
-  },
-  {
-    "symbol":"UAE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.2079901153
-  },
-  {
-    "symbol":"RSG",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.197693575
-  },
-  {
-    "symbol":"HDMV",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.1256177924
-  },
-  {
-    "symbol":"IDMO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.0329489292
-  },
-  {
-    "symbol":"BKGI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":90.0020593081
-  },
-  {
-    "symbol":"KGRN",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.8785008237
-  },
-  {
-    "symbol":"CBRL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.8682042834
-  },
-  {
-    "symbol":"FXI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.7240527183
-  },
-  {
-    "symbol":"EBAY",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.6725700165
-  },
-  {
-    "symbol":"TMV",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.6622734761
-  },
-  {
-    "symbol":"BH",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.6004942339
-  },
-  {
-    "symbol":"PIZ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.3842668863
-  },
-  {
-    "symbol":"GLTR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.2195222405
-  },
-  {
-    "symbol":"JCI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.1680395387
-  },
-  {
-    "symbol":"AFK",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.0753706755
-  },
-  {
-    "symbol":"AER",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.0650741351
-  },
-  {
-    "symbol":"CNH",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":89.0547775947
-  },
-  {
-    "symbol":"SPR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.9827018122
-  },
-  {
-    "symbol":"GAMR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.8179571664
-  },
-  {
-    "symbol":"IROQ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.7458813839
-  },
-  {
-    "symbol":"KEMQ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.6532125206
-  },
-  {
-    "symbol":"ARGT",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.5193574959
-  },
-  {
-    "symbol":"CIBR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.4266886326
-  },
-  {
-    "symbol":"BNGE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.3134266886
-  },
-  {
-    "symbol":"JIVE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.2413509061
-  },
-  {
-    "symbol":"CGRO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.2310543657
-  },
-  {
-    "symbol":"DBP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.210461285
-  },
-  {
-    "symbol":"WTS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.0663097199
-  },
-  {
-    "symbol":"BMA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.0354200988
-  },
-  {
-    "symbol":"EIS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":88.0148270181
-  },
-  {
-    "symbol":"CW",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.9736408567
-  },
-  {
-    "symbol":"IZRL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.9221581549
-  },
-  {
-    "symbol":"MCHI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.8912685338
-  },
-  {
-    "symbol":"V",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.8809719934
-  },
-  {
-    "symbol":"SIL",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.6441515651
-  },
-  {
-    "symbol":"RXD",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.3146622735
-  },
-  {
-    "symbol":"FPXE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.2631795717
-  },
-  {
-    "symbol":"HACK",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.0984349259
-  },
-  {
-    "symbol":"SLVP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":87.0366556837
-  },
-  {
-    "symbol":"FDNI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.9645799012
-  },
-  {
-    "symbol":"ARKX",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.902800659
-  },
-  {
-    "symbol":"CHIQ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.8719110379
-  },
-  {
-    "symbol":"FLCH",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.8410214168
-  },
-  {
-    "symbol":"DBD",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.7174629325
-  },
-  {
-    "symbol":"ARKW",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.6042009885
-  },
-  {
-    "symbol":"MUSQ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.5733113674
-  },
-  {
-    "symbol":"RCG",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.5424217463
-  },
-  {
-    "symbol":"ITA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.5321252059
-  },
-  {
-    "symbol":"TGLS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.449752883
-  },
-  {
-    "symbol":"ISRA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.4188632619
-  },
-  {
-    "symbol":"EWS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.3879736409
-  },
-  {
-    "symbol":"TTT",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.1614497529
-  },
-  {
-    "symbol":"UFO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.07907743
-  },
-  {
-    "symbol":"MAXI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":86.0687808896
-  },
-  {
-    "symbol":"ECNS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.9246293245
-  },
-  {
-    "symbol":"TBT",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.7907742998
-  },
-  {
-    "symbol":"GNTY",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.7701812191
-  },
-  {
-    "symbol":"BBW",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.6157331137
-  },
-  {
-    "symbol":"FJP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.5951400329
-  },
-  {
-    "symbol":"BFC",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.5333607908
-  },
-  {
-    "symbol":"ARKQ",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.3995057661
-  },
-  {
-    "symbol":"WCBR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.2450576606
-  },
-  {
-    "symbol":"PCCE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.1935749588
-  },
-  {
-    "symbol":"ARVR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.1523887974
-  },
-  {
-    "symbol":"CSCO",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.1317957166
-  },
-  {
-    "symbol":"ISBA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.1009060956
-  },
-  {
-    "symbol":"BITU",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":85.0803130148
-  },
-  {
-    "symbol":"FLEX",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.9464579901
-  },
-  {
-    "symbol":"GXC",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.915568369
-  },
-  {
-    "symbol":"LEGR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.7199341021
-  },
-  {
-    "symbol":"XAR",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.6787479407
-  },
-  {
-    "symbol":"OND",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.6684514003
-  },
-  {
-    "symbol":"ARKA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.431630972
-  },
-  {
-    "symbol":"X",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.3492586491
-  },
-  {
-    "symbol":"ICE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.2565897858
-  },
-  {
-    "symbol":"METV",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.1021416804
-  },
-  {
-    "symbol":"NFLP",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.0403624382
-  },
-  {
-    "symbol":"NTCT",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":84.0300658979
-  },
-  {
-    "symbol":"KWEB",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":83.9579901153
-  },
-  {
-    "symbol":"ODDS",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":83.8756177924
-  },
-  {
-    "symbol":"SANM",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":83.8447281713
-  },
-  {
-    "symbol":"MA",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":83.834431631
-  },
-  {
-    "symbol":"CXSE",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":83.6696869852
-  },
-  {
-    "symbol":"AGMI",
-    "met_count":8,
-    "fin_met_count":1,
-    "total_met_count":9,
-    "rs_score":83.6490939044
+    "rs_score":97.16
   },
   {
     "symbol":"UUU",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":83.3607907743
+    "rs_score":96.99
   },
   {
-    "symbol":"FNGS",
+    "symbol":"ISBA",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":83.3299011532
+    "rs_score":96.98
   },
   {
-    "symbol":"FNGO",
+    "symbol":"OPRT",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":83.2784184514
+    "rs_score":96.96
   },
   {
-    "symbol":"SPMO",
+    "symbol":"CYD",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":83.1136738056
+    "rs_score":96.92
   },
   {
-    "symbol":"PSO",
+    "symbol":"KFS",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":83.0415980231
+    "rs_score":96.91
   },
   {
-    "symbol":"SCHW",
+    "symbol":"AKRO",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.9077429984
+    "rs_score":96.83
   },
   {
-    "symbol":"IXG",
+    "symbol":"EAT",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.7635914333
+    "rs_score":96.8
   },
   {
-    "symbol":"GCAD",
+    "symbol":"NGD",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.7121087315
+    "rs_score":96.78
   },
   {
-    "symbol":"BUZZ",
+    "symbol":"CVAC",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.6297364086
+    "rs_score":96.69
   },
   {
-    "symbol":"RAYJ",
+    "symbol":"JNUG",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.5061779242
+    "rs_score":96.67
   },
   {
-    "symbol":"EBIZ",
+    "symbol":"PRPO",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.413509061
+    "rs_score":96.59
   },
   {
-    "symbol":"BITX",
+    "symbol":"SMDD",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.2693574959
+    "rs_score":96.56
   },
   {
-    "symbol":"IMAX",
+    "symbol":"AXON",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.1766886326
+    "rs_score":96.48
   },
   {
-    "symbol":"ECBK",
+    "symbol":"AU",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":82.0428336079
+    "rs_score":96.42
   },
   {
-    "symbol":"OGIG",
+    "symbol":"ESLT",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.8780889621
+    "rs_score":96.39
   },
   {
-    "symbol":"FDRV",
+    "symbol":"PPIH",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.733937397
+    "rs_score":96.37
   },
   {
-    "symbol":"FDN",
+    "symbol":"SNT",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.4559308072
+    "rs_score":96.33
   },
   {
-    "symbol":"MTUM",
+    "symbol":"STRL",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.3735584843
+    "rs_score":96.27
   },
   {
-    "symbol":"FNGG",
+    "symbol":"CRS",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.3117792422
+    "rs_score":96.19
+  },
+  {
+    "symbol":"PGY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":96.18
+  },
+  {
+    "symbol":"CKPT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":96.16
+  },
+  {
+    "symbol":"GROY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":96.12
+  },
+  {
+    "symbol":"NUGT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":96.04
+  },
+  {
+    "symbol":"LMND",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.99
+  },
+  {
+    "symbol":"SPOT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.97
+  },
+  {
+    "symbol":"SBSW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.96
+  },
+  {
+    "symbol":"KTOS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.94
+  },
+  {
+    "symbol":"VST",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.91
+  },
+  {
+    "symbol":"SHNY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.9
+  },
+  {
+    "symbol":"TLSA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.87
+  },
+  {
+    "symbol":"SRAD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.85
+  },
+  {
+    "symbol":"ARMN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.77
+  },
+  {
+    "symbol":"NYAX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.6
+  },
+  {
+    "symbol":"CCRD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.55
+  },
+  {
+    "symbol":"ESP",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.48
+  },
+  {
+    "symbol":"THM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.47
+  },
+  {
+    "symbol":"KGC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.46
+  },
+  {
+    "symbol":"IHS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.44
+  },
+  {
+    "symbol":"CRPT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.33
+  },
+  {
+    "symbol":"BBW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.32
+  },
+  {
+    "symbol":"GDMN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.2
+  },
+  {
+    "symbol":"HEES",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.17
+  },
+  {
+    "symbol":"TPR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.16
+  },
+  {
+    "symbol":"CLBR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.13
+  },
+  {
+    "symbol":"APEI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.11
+  },
+  {
+    "symbol":"SII",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.1
+  },
+  {
+    "symbol":"SSSS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.04
+  },
+  {
+    "symbol":"SAND",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":95.0
+  },
+  {
+    "symbol":"DC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.98
+  },
+  {
+    "symbol":"FUTU",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.96
+  },
+  {
+    "symbol":"SLSR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.93
+  },
+  {
+    "symbol":"RDVT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.91
+  },
+  {
+    "symbol":"ARKW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.9
+  },
+  {
+    "symbol":"COOP",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.89
+  },
+  {
+    "symbol":"MOBBW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.87
+  },
+  {
+    "symbol":"CCJ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.86
+  },
+  {
+    "symbol":"MIR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.84
+  },
+  {
+    "symbol":"IDT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.83
+  },
+  {
+    "symbol":"AUMI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.8
+  },
+  {
+    "symbol":"SNOW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.77
+  },
+  {
+    "symbol":"RDUS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.76
+  },
+  {
+    "symbol":"JOBY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.66
+  },
+  {
+    "symbol":"MAG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.61
+  },
+  {
+    "symbol":"GH",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.6
+  },
+  {
+    "symbol":"DHX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.59
+  },
+  {
+    "symbol":"SHLD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.58
+  },
+  {
+    "symbol":"GOSS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.52
+  },
+  {
+    "symbol":"DRS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.47
+  },
+  {
+    "symbol":"SGDM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.44
+  },
+  {
+    "symbol":"SAN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.41
+  },
+  {
+    "symbol":"REVG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.38
+  },
+  {
+    "symbol":"ALNT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.29
+  },
+  {
+    "symbol":"TCI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.25
+  },
+  {
+    "symbol":"CW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.22
+  },
+  {
+    "symbol":"EVEX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.21
+  },
+  {
+    "symbol":"NUKZ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.12
+  },
+  {
+    "symbol":"TFPM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.08
+  },
+  {
+    "symbol":"PEGA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":94.04
   },
   {
     "symbol":"ARKF",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.2088138386
+    "rs_score":94.03
   },
   {
-    "symbol":"RAYD",
+    "symbol":"PSIL",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.1985172982
+    "rs_score":94.0
   },
   {
-    "symbol":"EMQQ",
+    "symbol":"PBI",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.1573311367
+    "rs_score":93.96
   },
   {
-    "symbol":"GGME",
+    "symbol":"GOEX",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":81.0955518946
+    "rs_score":93.95
   },
   {
-    "symbol":"FUSB",
+    "symbol":"WHLRP",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.7506177924
+    "rs_score":93.89
   },
   {
-    "symbol":"XNTK",
+    "symbol":"EXEEL",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.6836902801
+    "rs_score":93.88
   },
   {
-    "symbol":"CHTR",
+    "symbol":"IAG",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.6322075783
+    "rs_score":93.87
+  },
+  {
+    "symbol":"ELPC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.86
+  },
+  {
+    "symbol":"NN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.85
+  },
+  {
+    "symbol":"COIN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.82
+  },
+  {
+    "symbol":"FINV",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.81
+  },
+  {
+    "symbol":"ODC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.69
+  },
+  {
+    "symbol":"NTES",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.66
+  },
+  {
+    "symbol":"OR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.63
+  },
+  {
+    "symbol":"X",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.6
+  },
+  {
+    "symbol":"GDXJ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.59
+  },
+  {
+    "symbol":"FPH",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.47
+  },
+  {
+    "symbol":"ACAD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.45
+  },
+  {
+    "symbol":"AMSC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.43
+  },
+  {
+    "symbol":"BWXT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.39
+  },
+  {
+    "symbol":"CRWD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.38
+  },
+  {
+    "symbol":"ICL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.33
+  },
+  {
+    "symbol":"QFIN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.32
+  },
+  {
+    "symbol":"MGIC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.27
+  },
+  {
+    "symbol":"VRSN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.16
+  },
+  {
+    "symbol":"APH",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.11
+  },
+  {
+    "symbol":"RING",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.07
+  },
+  {
+    "symbol":"DAN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":93.01
+  },
+  {
+    "symbol":"ISRLU",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.99
+  },
+  {
+    "symbol":"FIX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.91
+  },
+  {
+    "symbol":"SITM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.85
+  },
+  {
+    "symbol":"KD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.81
+  },
+  {
+    "symbol":"NLR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.74
+  },
+  {
+    "symbol":"NERD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.71
+  },
+  {
+    "symbol":"PLTM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.67
+  },
+  {
+    "symbol":"INSM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.64
+  },
+  {
+    "symbol":"PPLT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.63
+  },
+  {
+    "symbol":"IDCC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.6
+  },
+  {
+    "symbol":"MGNI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.56
+  },
+  {
+    "symbol":"MRCY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.52
+  },
+  {
+    "symbol":"GDX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.48
+  },
+  {
+    "symbol":"FLEX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.43
+  },
+  {
+    "symbol":"NEUE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.38
+  },
+  {
+    "symbol":"SGDJ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.37
+  },
+  {
+    "symbol":"SIL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.31
+  },
+  {
+    "symbol":"APYX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.29
+  },
+  {
+    "symbol":"EM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.28
+  },
+  {
+    "symbol":"MTZ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.25
+  },
+  {
+    "symbol":"CBRL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.23
+  },
+  {
+    "symbol":"SLVP",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.22
+  },
+  {
+    "symbol":"FIVE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.21
+  },
+  {
+    "symbol":"ARKK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.17
+  },
+  {
+    "symbol":"FORTY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.16
+  },
+  {
+    "symbol":"VSEC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.15
+  },
+  {
+    "symbol":"ESPO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.07
+  },
+  {
+    "symbol":"HIPO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":92.05
+  },
+  {
+    "symbol":"IMAX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.98
+  },
+  {
+    "symbol":"BH",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.94
+  },
+  {
+    "symbol":"JCI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.92
+  },
+  {
+    "symbol":"TTWO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.88
+  },
+  {
+    "symbol":"HERO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.86
+  },
+  {
+    "symbol":"BTI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.84
+  },
+  {
+    "symbol":"EMX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.76
+  },
+  {
+    "symbol":"FBL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.71
+  },
+  {
+    "symbol":"LYV",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.7
+  },
+  {
+    "symbol":"UFO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.64
+  },
+  {
+    "symbol":"VIRT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.62
+  },
+  {
+    "symbol":"EPRX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.6
+  },
+  {
+    "symbol":"PBPB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.58
+  },
+  {
+    "symbol":"AVGO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.56
+  },
+  {
+    "symbol":"PUK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.55
+  },
+  {
+    "symbol":"CAKE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.54
+  },
+  {
+    "symbol":"IBM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.5
+  },
+  {
+    "symbol":"NATH",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.45
+  },
+  {
+    "symbol":"BLOK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.41
+  },
+  {
+    "symbol":"VIK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.38
+  },
+  {
+    "symbol":"SBS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.36
+  },
+  {
+    "symbol":"VEEV",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.23
+  },
+  {
+    "symbol":"WILC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":91.11
+  },
+  {
+    "symbol":"BWAY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.98
+  },
+  {
+    "symbol":"STN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.94
+  },
+  {
+    "symbol":"KEN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.88
+  },
+  {
+    "symbol":"ARKQ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.85
+  },
+  {
+    "symbol":"CASY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.79
+  },
+  {
+    "symbol":"METU",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.77
+  },
+  {
+    "symbol":"LAUR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.72
+  },
+  {
+    "symbol":"NCSM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.7
+  },
+  {
+    "symbol":"FSM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.68
+  },
+  {
+    "symbol":"IFS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.63
+  },
+  {
+    "symbol":"FTI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.51
+  },
+  {
+    "symbol":"NC",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.49
+  },
+  {
+    "symbol":"FNGO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.47
+  },
+  {
+    "symbol":"WINA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.41
+  },
+  {
+    "symbol":"SXT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.4
+  },
+  {
+    "symbol":"PAAS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.39
+  },
+  {
+    "symbol":"ARKX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.35
+  },
+  {
+    "symbol":"UCYB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.32
+  },
+  {
+    "symbol":"CF",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.25
+  },
+  {
+    "symbol":"BWEB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.23
+  },
+  {
+    "symbol":"BNGE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.22
+  },
+  {
+    "symbol":"IMMX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.15
+  },
+  {
+    "symbol":"CNK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.13
+  },
+  {
+    "symbol":"PWR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.12
+  },
+  {
+    "symbol":"AGMI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":90.07
+  },
+  {
+    "symbol":"BASE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.99
+  },
+  {
+    "symbol":"ENLT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.96
+  },
+  {
+    "symbol":"FNGG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.91
+  },
+  {
+    "symbol":"NTR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.74
+  },
+  {
+    "symbol":"BUZZ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.7
+  },
+  {
+    "symbol":"FGDL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.64
+  },
+  {
+    "symbol":"IAUM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.58
+  },
+  {
+    "symbol":"BAR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.57
+  },
+  {
+    "symbol":"GLDM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.56
+  },
+  {
+    "symbol":"SGOL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.55
+  },
+  {
+    "symbol":"AAAU",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.54
+  },
+  {
+    "symbol":"OUNZ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.51
+  },
+  {
+    "symbol":"BITQ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.5
   },
   {
     "symbol":"FPX",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.4880560132
+    "rs_score":89.49
   },
   {
-    "symbol":"BUG",
+    "symbol":"GLD",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.4674629325
+    "rs_score":89.47
   },
   {
-    "symbol":"FDCF",
+    "symbol":"XAR",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.4571663921
+    "rs_score":89.44
   },
   {
-    "symbol":"QTJL",
+    "symbol":"EIS",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.4056836903
+    "rs_score":89.36
+  },
+  {
+    "symbol":"EBAY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.35
+  },
+  {
+    "symbol":"BK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.34
+  },
+  {
+    "symbol":"GSIB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.29
+  },
+  {
+    "symbol":"AIBU",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.27
+  },
+  {
+    "symbol":"RFIL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.19
+  },
+  {
+    "symbol":"QTUM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.18
+  },
+  {
+    "symbol":"NTRA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.11
+  },
+  {
+    "symbol":"KMDA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.1
+  },
+  {
+    "symbol":"GAMR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":89.06
+  },
+  {
+    "symbol":"META",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.99
+  },
+  {
+    "symbol":"ALGM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.96
+  },
+  {
+    "symbol":"AAMI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.93
+  },
+  {
+    "symbol":"GB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.92
+  },
+  {
+    "symbol":"JPM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.89
+  },
+  {
+    "symbol":"KT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.73
+  },
+  {
+    "symbol":"KEMQ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.69
+  },
+  {
+    "symbol":"FOX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.64
+  },
+  {
+    "symbol":"ALAI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.63
+  },
+  {
+    "symbol":"CHAT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.61
+  },
+  {
+    "symbol":"SPRX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.6
+  },
+  {
+    "symbol":"BPAY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.55
+  },
+  {
+    "symbol":"MCK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.5
+  },
+  {
+    "symbol":"FDD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.34
+  },
+  {
+    "symbol":"SCHW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.32
+  },
+  {
+    "symbol":"GLTR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.2
+  },
+  {
+    "symbol":"ATFV",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.19
+  },
+  {
+    "symbol":"TGS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.18
+  },
+  {
+    "symbol":"SANM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.17
+  },
+  {
+    "symbol":"ITA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.14
+  },
+  {
+    "symbol":"GDE",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.09
+  },
+  {
+    "symbol":"GS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.07
+  },
+  {
+    "symbol":"PLNT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.05
+  },
+  {
+    "symbol":"ACMR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.04
+  },
+  {
+    "symbol":"FWONA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":88.01
+  },
+  {
+    "symbol":"CSCO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.99
+  },
+  {
+    "symbol":"RTX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.87
+  },
+  {
+    "symbol":"RPRX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.84
+  },
+  {
+    "symbol":"CIB",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.81
+  },
+  {
+    "symbol":"UTES",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.62
+  },
+  {
+    "symbol":"CM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.59
+  },
+  {
+    "symbol":"NEU",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.54
+  },
+  {
+    "symbol":"DGII",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.53
+  },
+  {
+    "symbol":"ISRA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.49
+  },
+  {
+    "symbol":"EVRI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.44
+  },
+  {
+    "symbol":"NDAQ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.31
+  },
+  {
+    "symbol":"NFLP",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.26
+  },
+  {
+    "symbol":"AEIS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.25
+  },
+  {
+    "symbol":"ROKT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.23
+  },
+  {
+    "symbol":"OGIG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.22
+  },
+  {
+    "symbol":"ODDS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.19
+  },
+  {
+    "symbol":"CUK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.15
+  },
+  {
+    "symbol":"BKGI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.13
+  },
+  {
+    "symbol":"JOF",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.09
+  },
+  {
+    "symbol":"IROQ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":87.02
+  },
+  {
+    "symbol":"CCL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.97
+  },
+  {
+    "symbol":"GAN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.96
+  },
+  {
+    "symbol":"DBP",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.95
+  },
+  {
+    "symbol":"GOLY",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.93
+  },
+  {
+    "symbol":"DBD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.88
+  },
+  {
+    "symbol":"GLNG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.87
+  },
+  {
+    "symbol":"GCAD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.86
+  },
+  {
+    "symbol":"GEG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.84
+  },
+  {
+    "symbol":"METV",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.83
+  },
+  {
+    "symbol":"FTWO",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.81
+  },
+  {
+    "symbol":"PRIM",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.76
+  },
+  {
+    "symbol":"CNEQ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.74
+  },
+  {
+    "symbol":"RXD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.69
+  },
+  {
+    "symbol":"PPA",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.67
+  },
+  {
+    "symbol":"FNGS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.65
+  },
+  {
+    "symbol":"FDT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.62
+  },
+  {
+    "symbol":"PIZ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.59
+  },
+  {
+    "symbol":"MS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.57
+  },
+  {
+    "symbol":"SOCL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.48
+  },
+  {
+    "symbol":"TMAT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.44
+  },
+  {
+    "symbol":"CIBR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.41
+  },
+  {
+    "symbol":"TBPH",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.38
+  },
+  {
+    "symbol":"IAI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.37
+  },
+  {
+    "symbol":"IZRL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.33
   },
   {
     "symbol":"BETZ",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.1894563427
+    "rs_score":86.31
   },
   {
-    "symbol":"ONLN",
+    "symbol":"ITRI",
     "met_count":8,
     "fin_met_count":1,
     "total_met_count":9,
-    "rs_score":80.0247116969
+    "rs_score":86.27
+  },
+  {
+    "symbol":"GXG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.24
+  },
+  {
+    "symbol":"BYD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.23
+  },
+  {
+    "symbol":"ECNS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.22
+  },
+  {
+    "symbol":"IRMD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.17
+  },
+  {
+    "symbol":"EME",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.15
+  },
+  {
+    "symbol":"AFK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.12
+  },
+  {
+    "symbol":"ASND",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.07
+  },
+  {
+    "symbol":"ARVR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.04
+  },
+  {
+    "symbol":"PAX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":86.0
+  },
+  {
+    "symbol":"EFAS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.96
+  },
+  {
+    "symbol":"NTRS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.95
+  },
+  {
+    "symbol":"CPBI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.92
+  },
+  {
+    "symbol":"LOUP",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.9
+  },
+  {
+    "symbol":"BNT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.83
+  },
+  {
+    "symbol":"GTES",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.82
+  },
+  {
+    "symbol":"FDTS",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.79
+  },
+  {
+    "symbol":"HACK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.75
+  },
+  {
+    "symbol":"SYF",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.69
+  },
+  {
+    "symbol":"PWRD",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.68
+  },
+  {
+    "symbol":"PHX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.67
+  },
+  {
+    "symbol":"BN",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.65
+  },
+  {
+    "symbol":"LTL",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.62
+  },
+  {
+    "symbol":"FDNI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.57
+  },
+  {
+    "symbol":"NORW",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.47
+  },
+  {
+    "symbol":"TRI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.28
+  },
+  {
+    "symbol":"NTCT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.25
+  },
+  {
+    "symbol":"TRFK",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.24
+  },
+  {
+    "symbol":"SIVR",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.23
+  },
+  {
+    "symbol":"JEQ",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.22
+  },
+  {
+    "symbol":"USG",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.13
+  },
+  {
+    "symbol":"OLLI",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.11
+  },
+  {
+    "symbol":"DGX",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.1
+  },
+  {
+    "symbol":"SFYF",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.09
+  },
+  {
+    "symbol":"SLV",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.06
+  },
+  {
+    "symbol":"SAMT",
+    "met_count":8,
+    "fin_met_count":1,
+    "total_met_count":9,
+    "rs_score":85.04
   }
 ]
