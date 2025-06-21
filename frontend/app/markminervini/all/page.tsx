@@ -12,6 +12,7 @@ interface ScreenerData {
   name: string;
   data: ScreenerResult[];
   type: string;
+  lastUpdated?: string;
 }
 
 interface SliderFilter {
@@ -56,7 +57,8 @@ export default function AllMarkminerviniPage() {
                 results.push({
                   name: screener.name,
                   data: Array.isArray(result.data) ? result.data : [],
-                  type: screener.id
+                  type: screener.id,
+                  lastUpdated: result.last_updated || undefined
                 });
               } else {
                 console.warn(`API call for ${screener.id} was successful but data was not valid:`, result); // ADDED LOG
@@ -381,6 +383,11 @@ export default function AllMarkminerviniPage() {
                   }));
                   return filteredData.length > 0 ? (
                     <>
+                      {screenerData.lastUpdated && (
+                        <div className="text-right text-xs text-gray-400 pr-4 pt-2">
+                          Last updated: {new Date(screenerData.lastUpdated).toLocaleString()}
+                        </div>
+                      )}
                       <DataTable data={filteredData.slice(0, 10)} columns={columns} headerRowClassName="bg-gray-50" />
                       {filteredData.length > 10 && (
                         <div className="p-4 text-center text-gray-500 text-sm">

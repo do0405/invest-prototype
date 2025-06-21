@@ -35,6 +35,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [description, setDescription] = useState('');
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const getScreenerName = (id: string) => {
     const names: { [key: string]: string } = {
@@ -61,6 +62,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
             const dataArray = Array.isArray(result.data) ? result.data : [];
             setData(dataArray);
             initializeSliderFilters(dataArray);
+            setLastUpdated(result.last_updated || null);
             setError(null);
           } else {
             setError(result.error || 'Failed to fetch screener data');
@@ -334,6 +336,11 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       
       {filteredData.length > 0 ? (
         <div className="bg-white rounded-lg shadow overflow-hidden">
+          {lastUpdated && (
+            <div className="text-right text-xs text-gray-400 pr-4 pt-2">
+              Last updated: {new Date(lastUpdated).toLocaleString()}
+            </div>
+          )}
           <DataTable
             data={filteredData}
             columns={columns}

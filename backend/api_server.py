@@ -6,6 +6,7 @@ import os
 import sys
 import glob
 import json  # 추가된 import
+from datetime import datetime
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
@@ -32,10 +33,12 @@ def get_screening_results():
         json_file = os.path.join(RESULTS_DIR, 'us_with_rs.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
+            mtime = os.path.getmtime(json_file)
             return jsonify({
                 'success': True,
                 'data': df.to_dict('records'),
-                'total_count': len(df)
+                'total_count': len(df),
+                'last_updated': datetime.fromtimestamp(mtime).isoformat()
             })
         else:
             return jsonify({'success': False, 'message': 'Data not found'}), 404
@@ -49,10 +52,12 @@ def get_financial_results():
         json_file = os.path.join(RESULTS_DIR, 'advanced_financial_results.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
+            mtime = os.path.getmtime(json_file)
             return jsonify({
                 'success': True,
                 'data': df.to_dict('records'),
-                'total_count': len(df)
+                'total_count': len(df),
+                'last_updated': datetime.fromtimestamp(mtime).isoformat()
             })
         else:
             return jsonify({'success': False, 'message': 'Data not found'}), 404
@@ -66,10 +71,12 @@ def get_integrated_results():
         json_file = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_results.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
+            mtime = os.path.getmtime(json_file)
             return jsonify({
                 'success': True,
                 'data': df.to_dict('records'),
-                'total_count': len(df)
+                'total_count': len(df),
+                'last_updated': datetime.fromtimestamp(mtime).isoformat()
             })
         else:
             return jsonify({'success': False, 'message': 'Data not found'}), 404
@@ -135,11 +142,12 @@ def get_volatility_skew_results():
         if files:
             latest_file = max(files, key=os.path.getctime)
             df = pd.read_json(latest_file)
+            mtime = os.path.getmtime(latest_file)
             return jsonify({
                 'success': True,
                 'data': df.to_dict('records'),
                 'total_count': len(df),
-                'file_timestamp': os.path.basename(latest_file)
+                'last_updated': datetime.fromtimestamp(mtime).isoformat()
             })
         else:
             return jsonify({'success': False, 'message': 'Volatility skew data not found'}), 404
@@ -148,25 +156,27 @@ def get_volatility_skew_results():
 
 # --- New screener result endpoints ---
 
-def _load_latest_csv(directory: str) -> Optional[pd.DataFrame]:
+def _load_latest_csv(directory: str) -> tuple[Optional[pd.DataFrame], Optional[float]]:
     pattern = os.path.join(directory, '*.csv')
     files = glob.glob(pattern)
     if not files:
-        return None
+        return None, None
     latest = max(files, key=os.path.getctime)
     try:
-        return pd.read_csv(latest)
+        df = pd.read_csv(latest)
+        return df, os.path.getmtime(latest)
     except Exception:
-        return None
+        return None, None
 
 
 @app.route('/api/ipo-investment', methods=['GET'])
 def get_ipo_investment_results():
     """Return latest IPO investment screener results."""
     try:
-        df = _load_latest_csv(IPO_INVESTMENT_RESULTS_DIR)
+        df, mtime = _load_latest_csv(IPO_INVESTMENT_RESULTS_DIR)
         if df is not None:
-            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df)})
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
+                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
         return jsonify({'success': False, 'message': 'IPO data not found'}), 404
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
@@ -176,9 +186,10 @@ def get_ipo_investment_results():
 def get_leader_stock_results():
     """Return latest leader stock screener results."""
     try:
-        df = _load_latest_csv(LEADER_STOCK_RESULTS_DIR)
+        df, mtime = _load_latest_csv(LEADER_STOCK_RESULTS_DIR)
         if df is not None:
-            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df)})
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
+                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
         return jsonify({'success': False, 'message': 'Leader stock data not found'}), 404
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
@@ -188,9 +199,10 @@ def get_leader_stock_results():
 def get_momentum_signals_results():
     """Return latest momentum signals screener results."""
     try:
-        df = _load_latest_csv(MOMENTUM_SIGNALS_RESULTS_DIR)
+        df, mtime = _load_latest_csv(MOMENTUM_SIGNALS_RESULTS_DIR)
         if df is not None:
-            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df)})
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
+                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
         return jsonify({'success': False, 'message': 'Momentum signals data not found'}), 404
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
@@ -244,10 +256,12 @@ def get_markminervini_results(screener_name):
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
+            mtime = os.path.getmtime(json_file)
             return jsonify({
                 'success': True,
                 'data': data,
-                'total_count': len(data) if isinstance(data, list) else 0
+                'total_count': len(data) if isinstance(data, list) else 0,
+                'last_updated': datetime.fromtimestamp(mtime).isoformat()
             })
         else:
             return jsonify({'success': False, 'error': f'File not found: {screener_name}'}), 404

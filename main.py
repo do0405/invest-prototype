@@ -39,7 +39,7 @@ def main():
     parser.add_argument('--skip-data', action='store_true', help='데이터 수집 건너뛰기')
     parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 실행')
     parser.add_argument('--task', default='all',
-                        choices=['all', 'volatility-skew', 'setup', 'gainers', 'leader-stock',
+                        choices=['all', 'screening', 'volatility-skew', 'setup', 'gainers', 'leader-stock',
                                  'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime'],
                         help='실행할 작업 선택')
     parser.add_argument('--schedule', action='store_true', help='스케줄러 모드 실행')
@@ -77,6 +77,10 @@ def main():
         if task == 'leader-stock':
             print("\n🎯 주도주 전략 모드")
             run_leader_stock_screener()
+            return
+        if task == 'screening':
+            print("\n🎯 스크리닝 전용 모드")
+            run_all_screening_processes(skip_data=args.skip_data)
             return
         if task == 'momentum':
             print("\n🎯 상승 모멘텀 신호 모드")
