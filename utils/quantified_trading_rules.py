@@ -19,7 +19,7 @@ from utils.market_utils import (
     SECTOR_ETFS,
 )
 from data_collectors.market_breadth_collector import MarketBreadthCollector
-from config import DATA_US_DIR
+from config import DATA_US_DIR, OPTION_DATA_DIR
 
 from screeners.momentum_signals.indicators import (
     calculate_moving_averages,
@@ -104,8 +104,8 @@ class QuantifiedTradingSystem:
     def get_vix(self) -> float:
         """현재 VIX 값을 반환합니다."""
         value = get_vix_value()
-        vix_path = os.path.join(DATA_US_DIR, "VIX.csv")
-        if value == 20.0 and not os.path.exists(vix_path):
+        vix_path = os.path.join(OPTION_DATA_DIR, "vix.csv")
+        if value is None and not os.path.exists(vix_path):
             collector = MarketBreadthCollector()
             collector.collect_vix_data(days=30)
             value = get_vix_value()
@@ -127,7 +127,7 @@ class QuantifiedTradingSystem:
             "price_below_ipo": ipo_data.get("current_price", 0) < ipo_data.get("ipo_price", 0) * 0.9,
             "rsi_oversold": ipo_data.get("rsi_14", 0) < 30,
             "low_volume": ipo_data.get("volume", 0) < ipo_data.get("avg_volume", 0) * 0.5,
-            "market_vix": self.get_vix() < 25,
+            "market_vix": (self.get_vix() or 0) < 25,
         }
 
     def check_ipo_track2_conditions(self, ipo_data: Dict[str, Any]) -> Dict[str, bool]:

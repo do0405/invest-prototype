@@ -16,6 +16,7 @@ from config import (
     RESULTS_DIR,
     US_WITH_RS_PATH,
     STOCK_METADATA_PATH,
+    OPTION_DATA_DIR,
 )
 from utils.calc_utils import (
     get_us_market_today,
@@ -24,6 +25,7 @@ from utils.calc_utils import (
 )
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
 from utils.market_utils import get_vix_value, calculate_sector_rs, SECTOR_ETFS
+from data_collectors.market_breadth_collector import MarketBreadthCollector
 
 
 # 결과 저장 디렉토리
@@ -70,15 +72,20 @@ class LeaderStockScreener:
             recent = sp500.iloc[-1]
             
             # VIX 데이터 로드 (변동성 지수)
-            vix_path = os.path.join(DATA_US_DIR, 'VIX.csv')
-            vix_value = 20  # 기본값
-            
+            vix_path = os.path.join(OPTION_DATA_DIR, 'vix.csv')
+            vix_value = None
+
             if os.path.exists(vix_path):
                 vix = pd.read_csv(vix_path)
                 vix['date'] = pd.to_datetime(vix['date'], utc=True)
                 vix = vix.sort_values('date')
                 if not vix.empty:
-                    vix_value = vix.iloc[-1]['close']
+                    close_col = next((c for c in vix.columns if 'close' in c.lower()), None)
+                    if close_col:
+                        vix_value = float(vix.iloc[-1][close_col])
+
+            if vix_value is None:
+                vix_value = 0
             
             # 시장 단계 결정
             if recent['close'] > recent['sma_30w'] and recent['sma_10w'] > recent['sma_30w']:
@@ -139,6 +146,12 @@ class LeaderStockScreener:
         """SPY 200일 이동평균 및 VIX 조건 체크"""
         spy_ok = check_sp500_condition(DATA_US_DIR, ma_days=200)
         vix_value = get_vix_value()
+        if vix_value is None:
+            collector = MarketBreadthCollector()
+            collector.collect_vix_data(days=30)
+            vix_value = get_vix_value()
+        if vix_value is None:
+            vix_value = 0
         return spy_ok and vix_value < 30
 
     def _is_high_pe(self, ticker):
