@@ -58,15 +58,8 @@ print(f"- 기관 관심도: {ipo_analysis['institutional_interest']}")
 ### 캐시 관리
 
 ```python
-# 데이터 상태 확인
-status = manager.get_data_status()
-print(f"캐시 크기: {status['cache_size_mb']} MB")
-
-# 캐시 업데이트
-manager.update_all_cache()
-
-# 오래된 캐시 정리
-manager.clear_cache(older_than_hours=24)
+# 데이터 매니저 사용 예시
+manager.get_ipo_data(days_back=365)
 ```
 
 ## 스크리너에서 사용
@@ -179,12 +172,9 @@ ipo_data = manager.get_ipo_data()
 
 ### 디버깅
 ```python
-# 데이터 상태 확인
-status = manager.get_data_status()
-print(json.dumps(status, indent=2))
-
-# 캐시 초기화
-manager.clear_cache(older_than_hours=0)  # 모든 캐시 삭제
+# 로그 확인 예시
+ipo_data = manager.get_ipo_data()
+print(ipo_data.head())
 ```
 
 이 모듈을 통해 실제 시장 데이터를 활용한 더욱 정확하고 실용적인 투자 스크리닝이 가능합니다.
