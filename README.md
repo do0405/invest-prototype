@@ -54,7 +54,9 @@ invest_prototype/
 ### 기본 스크리닝 실행
 ```bash
 # 전체 프로세스 실행 (데이터 수집 + 스크리닝)
-python main.py
+python main.py  # 실행 시 us_with_rs.csv 파일이 자동 갱신됩니다
+# 데이터 수집을 건너뛰는 경우에도 동일
+python main.py --skip-data
 
 # 특정 스크리너 실행 예시
 python main.py --task setup
