@@ -396,12 +396,14 @@ def run_market_breadth_collection(days: int = 252) -> None:
 def run_ipo_data_collection(days: int = 365) -> None:
     """Collect and save IPO related data."""
     try:
-        from screeners.ipo_investment.ipo_data_collector import IPODataCollector
+        from screeners.ipo_investment.ipo_data_collector import RealIPODataCollector
         print("\n📊 IPO 데이터 수집 시작...")
-        collector = IPODataCollector()
-        result = collector.collect_and_save_ipo_data(days_back=days, filename="recent_ipos")
-        if result:
-            print(f"✅ IPO 데이터 저장 완료: {result.get('records_count', 0)}개")
+        collector = RealIPODataCollector()
+        result = collector.collect_all_ipo_data()
+        if result.get('files'):
+            recent_count = len(result.get('recent_ipos', []))
+            upcoming_count = len(result.get('upcoming_ipos', []))
+            print(f"✅ IPO 데이터 저장 완료: {recent_count + upcoming_count}개")
         else:
             print("⚠️ IPO 데이터 저장 실패 또는 데이터 없음")
     except Exception as e:  # pragma: no cover - runtime log
