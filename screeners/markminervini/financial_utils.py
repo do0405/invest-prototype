@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import numpy as np
 import yfinance as yf
+from yahooquery import Ticker
 import requests
 import time
 from datetime import datetime, timedelta
@@ -14,6 +15,8 @@ from utils import ensure_dir
 __all__ = [
     "collect_financial_data",
     "collect_real_financial_data",
+    "collect_financial_data_yahooquery",
+    "collect_financial_data_hybrid",
     "screen_advanced_financials",
     "calculate_percentile_rank",
 ]
@@ -369,6 +372,215 @@ def collect_real_financial_data(symbols, max_retries=3, delay=1):
                 'error_details': ['데이터 수집 실패'],
             })
     return pd.DataFrame(results)
+
+
+def collect_financial_data_yahooquery(symbols, max_retries=2, delay=1.0):
+    """yahooquery를 사용하여 재무 데이터 수집"""
+    print("\n💰 yahooquery를 사용한 재무 데이터 수집 시작...")
+    financial_data = []
+    total = len(symbols)
+    
+    for i, symbol in enumerate(symbols):
+        print(f"진행 중: {i+1}/{total} - {symbol}")
+        
+        for attempt in range(max_retries):
+            try:
+                ticker = Ticker(symbol)
+                time.sleep(delay)
+                
+                # yahooquery로 재무 데이터 수집
+                income_stmt = ticker.income_statement(frequency='quarterly')
+                balance_sheet = ticker.balance_sheet(frequency='annual')
+                cash_flow = ticker.cash_flow(frequency='quarterly')
+                
+                data = {
+                    'symbol': symbol,
+                    'has_error': False,
+                    'error_details': [],
+                    'quarterly_eps_growth': 0,
+                    'annual_eps_growth': 0,
+                    'eps_growth_acceleration': False,
+                    'quarterly_revenue_growth': 0,
+                    'annual_revenue_growth': 0,
+                    'quarterly_op_margin_improved': False,
+                    'annual_op_margin_improved': False,
+                    'quarterly_net_income_growth': 0,
+                    'annual_net_income_growth': 0,
+                    'roe': 0,
+                    'debt_to_equity': 0,
+                    'last_updated': datetime.now().strftime('%Y-%m-%d'),
+                }
+                
+                # 분기 매출 성장률 계산
+                if isinstance(income_stmt, pd.DataFrame) and not income_stmt.empty and 'TotalRevenue' in income_stmt.columns:
+                    revenue_data = income_stmt['TotalRevenue'].dropna()
+                    if len(revenue_data) >= 2:
+                        recent_revenue = revenue_data.iloc[0]
+                        prev_revenue = revenue_data.iloc[1]
+                        if prev_revenue != 0:
+                            data['quarterly_revenue_growth'] = ((recent_revenue - prev_revenue) / abs(prev_revenue)) * 100
+                
+                # 분기 순이익 성장률 계산
+                if isinstance(income_stmt, pd.DataFrame) and not income_stmt.empty and 'NetIncome' in income_stmt.columns:
+                    net_income_data = income_stmt['NetIncome'].dropna()
+                    if len(net_income_data) >= 2:
+                        recent_ni = net_income_data.iloc[0]
+                        prev_ni = net_income_data.iloc[1]
+                        if prev_ni != 0:
+                            data['quarterly_net_income_growth'] = ((recent_ni - prev_ni) / abs(prev_ni)) * 100
+                
+                # ROE 계산
+                if isinstance(balance_sheet, pd.DataFrame) and not balance_sheet.empty:
+                    if 'StockholdersEquity' in balance_sheet.columns and isinstance(income_stmt, pd.DataFrame) and 'NetIncome' in income_stmt.columns:
+                        equity = balance_sheet['StockholdersEquity'].dropna()
+                        net_income = income_stmt['NetIncome'].dropna()
+                        if len(equity) > 0 and len(net_income) > 0 and equity.iloc[0] != 0:
+                            data['roe'] = (net_income.iloc[0] / equity.iloc[0]) * 100
+                
+                # 부채비율 계산
+                if isinstance(balance_sheet, pd.DataFrame) and not balance_sheet.empty:
+                    if 'TotalLiabilitiesNetMinorityInterest' in balance_sheet.columns and 'StockholdersEquity' in balance_sheet.columns:
+                        debt = balance_sheet['TotalLiabilitiesNetMinorityInterest'].dropna()
+                        equity = balance_sheet['StockholdersEquity'].dropna()
+                        if len(debt) > 0 and len(equity) > 0 and equity.iloc[0] != 0:
+                            data['debt_to_equity'] = debt.iloc[0] / equity.iloc[0]
+                
+                financial_data.append(data)
+                break
+                
+            except Exception as e:
+                if attempt < max_retries - 1:
+                    time.sleep(delay)
+                else:
+                    data = {
+                        'symbol': symbol,
+                        'has_error': True,
+                        'error_details': [f'yahooquery API 호출 실패: {str(e)[:100]}'],
+                        'quarterly_eps_growth': 0,
+                        'annual_eps_growth': 0,
+                        'eps_growth_acceleration': False,
+                        'quarterly_revenue_growth': 0,
+                        'annual_revenue_growth': 0,
+                        'quarterly_op_margin_improved': False,
+                        'annual_op_margin_improved': False,
+                        'quarterly_net_income_growth': 0,
+                        'annual_net_income_growth': 0,
+                        'roe': 0,
+                        'debt_to_equity': 0,
+                        'last_updated': datetime.now().strftime('%Y-%m-%d'),
+                    }
+                    financial_data.append(data)
+    
+    return pd.DataFrame(financial_data)
+
+
+def collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0):
+    """yfinance와 yahooquery를 함께 사용하여 재무 데이터 수집 (하이브리드 방식)"""
+    print("\n💰 하이브리드 방식 재무 데이터 수집 시작 (yfinance + yahooquery)...")
+    financial_data = []
+    total = len(symbols)
+    
+    for i, symbol in enumerate(symbols):
+        print(f"진행 중: {i+1}/{total} - {symbol}")
+        
+        data = {
+            'symbol': symbol,
+            'has_error': False,
+            'error_details': [],
+            'quarterly_eps_growth': 0,
+            'annual_eps_growth': 0,
+            'eps_growth_acceleration': False,
+            'quarterly_revenue_growth': 0,
+            'annual_revenue_growth': 0,
+            'quarterly_op_margin_improved': False,
+            'annual_op_margin_improved': False,
+            'quarterly_net_income_growth': 0,
+            'annual_net_income_growth': 0,
+            'roe': 0,
+            'debt_to_equity': 0,
+            'last_updated': datetime.now().strftime('%Y-%m-%d'),
+        }
+        
+        # 먼저 yfinance로 시도
+        yf_success = False
+        try:
+            ticker_yf = yf.Ticker(symbol)
+            income_quarterly = ticker_yf.quarterly_financials
+            income_annual = ticker_yf.financials
+            balance_annual = ticker_yf.balance_sheet
+            
+            if (income_quarterly is not None and not income_quarterly.empty and
+                income_annual is not None and not income_annual.empty and
+                balance_annual is not None and not balance_annual.empty):
+                
+                # yfinance 데이터로 계산
+                try:
+                    if 'Basic EPS' in income_quarterly.index and len(income_quarterly) >= 2:
+                        recent_eps = income_quarterly.loc['Basic EPS'].iloc[0]
+                        prev_eps = income_quarterly.loc['Basic EPS'].iloc[1]
+                        if not pd.isna(recent_eps) and not pd.isna(prev_eps) and prev_eps != 0:
+                            data['quarterly_eps_growth'] = ((recent_eps - prev_eps) / abs(prev_eps)) * 100
+                except Exception:
+                    pass
+                
+                try:
+                    if 'Total Revenue' in income_quarterly.index and len(income_quarterly) >= 2:
+                        recent_revenue = income_quarterly.loc['Total Revenue'].iloc[0]
+                        prev_revenue = income_quarterly.loc['Total Revenue'].iloc[1]
+                        if not pd.isna(recent_revenue) and not pd.isna(prev_revenue) and prev_revenue != 0:
+                            data['quarterly_revenue_growth'] = ((recent_revenue - prev_revenue) / abs(prev_revenue)) * 100
+                except Exception:
+                    pass
+                
+                yf_success = True
+                
+        except Exception as e:
+            data['error_details'].append(f'yfinance 실패: {str(e)[:50]}')
+        
+        # yfinance가 실패했거나 데이터가 부족한 경우 yahooquery로 보완
+        if not yf_success or data['quarterly_revenue_growth'] == 0:
+            try:
+                time.sleep(delay)
+                ticker_yq = Ticker(symbol)
+                income_stmt = ticker_yq.income_statement(frequency='quarterly')
+                balance_sheet = ticker_yq.balance_sheet(frequency='annual')
+                
+                # yahooquery로 매출 성장률 보완
+                if data['quarterly_revenue_growth'] == 0 and isinstance(income_stmt, pd.DataFrame) and not income_stmt.empty:
+                    if 'TotalRevenue' in income_stmt.columns:
+                        revenue_data = income_stmt['TotalRevenue'].dropna()
+                        if len(revenue_data) >= 2:
+                            recent_revenue = revenue_data.iloc[0]
+                            prev_revenue = revenue_data.iloc[1]
+                            if prev_revenue != 0:
+                                data['quarterly_revenue_growth'] = ((recent_revenue - prev_revenue) / abs(prev_revenue)) * 100
+                
+                # ROE 계산
+                if isinstance(balance_sheet, pd.DataFrame) and not balance_sheet.empty:
+                    if 'StockholdersEquity' in balance_sheet.columns and isinstance(income_stmt, pd.DataFrame) and 'NetIncome' in income_stmt.columns:
+                        equity = balance_sheet['StockholdersEquity'].dropna()
+                        net_income = income_stmt['NetIncome'].dropna()
+                        if len(equity) > 0 and len(net_income) > 0 and equity.iloc[0] != 0:
+                            data['roe'] = (net_income.iloc[0] / equity.iloc[0]) * 100
+                
+            except Exception as e:
+                data['error_details'].append(f'yahooquery 보완 실패: {str(e)[:50]}')
+                data['has_error'] = True
+        
+        # 최종 fallback으로 FMP API 사용
+        if data['quarterly_revenue_growth'] == 0 and data['roe'] == 0:
+            fallback = fetch_fmp_financials(symbol)
+            if fallback is not None and not fallback.get('has_error', True):
+                for key in ['quarterly_revenue_growth', 'annual_revenue_growth', 'roe', 'debt_to_equity']:
+                    if fallback.get(key, 0) != 0:
+                        data[key] = fallback[key]
+            else:
+                data['has_error'] = True
+                data['error_details'].append('모든 데이터 소스 실패')
+        
+        financial_data.append(data)
+    
+    return pd.DataFrame(financial_data)
 
 def screen_advanced_financials(financial_data: pd.DataFrame) -> pd.DataFrame:
     """수집된 재무 데이터를 조건에 맞춰 스크리닝"""

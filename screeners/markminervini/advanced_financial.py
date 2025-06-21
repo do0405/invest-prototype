@@ -21,6 +21,8 @@ from utils import ensure_dir
 from .financial_utils import (
     collect_financial_data,
     collect_real_financial_data,
+    collect_financial_data_yahooquery,
+    collect_financial_data_hybrid,
     screen_advanced_financials,
     calculate_percentile_rank,
 )
@@ -61,8 +63,9 @@ def run_advanced_financial_screening(force_update=False):
         
         print(f"📈 분석할 종목 수: {len(symbols)}")
         
-        # 재무제표 데이터 수집
-        financial_data = collect_financial_data(symbols)
+        # 재무제표 데이터 수집 (하이브리드 방식: yfinance + yahooquery + FMP)
+        print("\n💡 하이브리드 방식으로 재무 데이터를 수집합니다 (yfinance → yahooquery → FMP)")
+        financial_data = collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0)
         
         # 재무제표 스크리닝
         if not financial_data.empty:
