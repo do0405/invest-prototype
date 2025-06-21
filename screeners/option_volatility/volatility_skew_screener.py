@@ -34,6 +34,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
             "yfinance": {"grade": "B", "confidence_multiplier": 0.9, "description": "양호한 품질 무료 데이터"},
             "yfinance_fallback": {"grade": "C", "confidence_multiplier": 0.7, "description": "품질 부족하지만 사용 가능한 데이터"}
         }
+        self.grade_description_map = {info["grade"]: info["description"] for info in self.data_quality_grades.values()}
 
     def get_large_cap_stocks(self) -> List[str]:
         """S&P 500 전체 종목 가져오기"""
@@ -318,7 +319,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         for grade in ['A', 'B', 'C']:
             count = quality_counts.get(grade, 0)
             if count > 0:
-                description = list(self.data_quality_grades.values())[ord(grade) - ord('A')]['description']
+                description = self.grade_description_map.get(grade, "")
                 report.append(f"• {grade}등급: {count}개 종목 ({description})")
         
         # 품질 경고
