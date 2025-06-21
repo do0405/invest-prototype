@@ -15,6 +15,7 @@ pandas-ta>=0.3.14b
 matplotlib>=3.5.0
 seaborn>=0.11.0
 plotly>=5.10.0
+mplfinance>=0.12.9b0  # 금융 차트 생성
 
 # 웹 개발 (프론트엔드)
 streamlit>=1.25.0
@@ -40,6 +41,11 @@ lxml>=4.9.0
 # 성능 최적화
 numba>=0.56.0
 joblib>=1.2.0
+
+# AI/ML 모델
+ultralytics>=8.3.0  # YOLOv8 패턴 감지
+ultralyticsplus>=0.0.28  # Hugging Face YOLOv8 모델 지원
+opencv-python>=4.8.0  # 이미지 처리
 
 # 개발 도구
 pytest>=7.1.0

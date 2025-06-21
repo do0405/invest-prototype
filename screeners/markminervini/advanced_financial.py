@@ -30,8 +30,11 @@ from .financial_utils import (
 ensure_dir(RESULTS_DIR)
 
 
-def run_advanced_financial_screening(force_update=False):
+def run_advanced_financial_screening(force_update=False, skip_data=False):
     """고급 재무 분석 실행"""
+    if skip_data:
+        print("⏭️ 데이터 수집 건너뛰기 - 기존 결과 사용")
+        return
     print("\n=== 고급 재무 분석 시작 ===")
     
     # results2 디렉토리가 없으면 생성

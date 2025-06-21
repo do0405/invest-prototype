@@ -1,0 +1,5162 @@
+[
+  {
+    "symbol": "AMZE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SNSE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARBB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TMCWW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JFBR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "UNCY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BOLT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ASPS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "INUV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CLRO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PXLW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AEVA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MVST",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "QSG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DBVT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TMC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SEZL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TDUP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RGLS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "QNTM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OKLO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TSSI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TGEN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DVS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MFI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SVT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PSIX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PDYNW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PRCH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NEON",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BTM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AMBR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HOVR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CTEV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LEU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NAK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "APPS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ABVC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SMR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ASM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NAGE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PLTR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RKLB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VRNA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GRPN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CNVS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AMPX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NVTS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LFMD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JUNE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HOOD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GRAL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HIMS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NRSN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ALLT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SRRK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "XGN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AKBA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "USAS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MASS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "YSG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JFIN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CRDO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CRK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RAYA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ICAD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RBLX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IDN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ATYR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BLBX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ORLA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ADPT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CFSB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FARO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "COE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CLS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GORO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PRE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EYE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OPOF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GRNQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GEV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BYRN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NET",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LMB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SSRM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SKE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GOGO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CRMD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OSS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "UUU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ISBA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OPRT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ISSC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CYD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KFS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AKRO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EAT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NGD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EVLV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CVAC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ATAI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JNUG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CAR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TTMI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PRPO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SMDD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TPC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AXON",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VZLA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ESLT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PPIH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SNT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NIU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "STRL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TLN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CRS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PGY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CKPT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SLNO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GROY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NUGT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ATRO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LMND",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SPOT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SBSW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KTOS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VST",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SHNY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TLSA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SRAD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARMN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TPB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NYAX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ZS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JBL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CCRD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "STRT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TEM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FEIM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ESP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "THM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KGC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IHS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CRPT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BBW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LLYVA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GDMN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LLYVK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HEES",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TPR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CLBR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "APEI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SII",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BOSC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AHR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SSSS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TME",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SAND",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FUTU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ASA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SLSR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RDVT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARKW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "COOP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CMPO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MOBBW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CCJ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MIR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IDT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AUMI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SNOW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RDUS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NFLX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "YYGH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARLO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GFI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JOBY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MAG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DHX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SHLD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GOSS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TSAT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DRS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SGDM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SAN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CTLP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "REVG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IPI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GWRE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ALNT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TCI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AEM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EVEX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NUKZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DASH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TFPM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PEGA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARKF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "WPM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PSIL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ZLAB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PBI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GOEX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "WHLRP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EXEEL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IAG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ELPC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "COIN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FINV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CEG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CAH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ODC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NTES",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "X",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GDXJ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RCL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JOYY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FPH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BPMC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ACAD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AMSC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BWXT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CRWD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ICL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "QFIN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ERJ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MGIC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VRSN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NXT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "APH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RING",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EQT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DAN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ISRLU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TIGO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SNEX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FIX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SITM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LITE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PLYA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NLR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NERD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PLTM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ESE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "INSM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PPLT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IDCC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BBIO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MOS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MGNI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MRCY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GDX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FLEX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NEUE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SGDJ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SIL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "APYX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MTZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CBRL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SLVP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FIVE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARKK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FORTY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VSEC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TKO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RBKB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "WWD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ESPO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HIPO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IMAX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BJRI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JCI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TTWO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HERO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BTI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "UGI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "APG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EMX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FBL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LYV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "UFO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VIRT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EPRX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PBPB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AVGO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PUK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CAKE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DCO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IBM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MYRG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HCSG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NATH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NFG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ELVA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BLOK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VIK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RDWR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SBS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EXE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "VEEV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ELTX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "WILC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "WRLD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BWAY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "STN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NGS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KEN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARKQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CALM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RSI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CASY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "METU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SAH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LAUR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NCSM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FSM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IFS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CYBR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OCS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DRI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FTI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FNGO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CTVA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "WINA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SXT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PAAS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARKX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LOGC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "UCYB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CSV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BWEB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BNGE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IMMX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CNK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PWR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AGMI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BASE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LENZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ENLT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FNGG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RNXT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NTR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BUZZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CAE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FGDL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IAUM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BAR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GLDM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SGOL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AAAU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OUNZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BITQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FPX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GLD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "XAR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EIS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EBAY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GSIB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AIBU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RFIL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "QTUM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PHYS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NTRA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KMDA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MGYR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GAMR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "META",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ALGM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AAMI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JPM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BLX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GPOR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "COF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MIRM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "KEMQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CEF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FOX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ALAI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CHAT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SPRX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BPAY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MCK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FDD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SCHW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GLTR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ATFV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SANM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TGS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ITA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TASK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EPR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "INTU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GDE",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BAP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PLNT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ACMR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ROK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FWONA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CSCO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RTX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RRC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RPRX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CIB",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NEXT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "UAN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RBC",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "UTES",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MTSI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NEU",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DGII",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ISRA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EVRI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NDAQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SGI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NFLP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AEIS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ROKT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OGIG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ODDS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CUK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BKGI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JOF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IROQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RCG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CCL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GAN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DBP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GOLY",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DBD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GLNG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GCAD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GEG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "METV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FTWO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AORT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "WELL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PRIM",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CNEQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RXD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PPA",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FNGS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FDT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PIZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "MS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SHCO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SOCL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TMAT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CIBR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "C",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TBPH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IAI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IZRL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BETZ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ITRI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "RMCO",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GXG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BYD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ECNS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "IRMD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EME",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "AFK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ASND",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "ARVR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FLUT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PAX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "EFAS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NTRS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CPBI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LOUP",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DIS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BNT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GTES",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FDTS",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "HACK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SYF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PWRD",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "PHX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "BN",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LTL",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "CR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "FDNI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NORW",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "GPI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TRI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "NTCT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "TRFK",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SIVR",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "JEQ",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "USG",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "OLLI",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "DGX",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SFYF",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SLV",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "SAMT",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  },
+  {
+    "symbol": "LH",
+    "has_image": false,
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-06-22",
+    "error": "Data fetch failed"
+  }
+]

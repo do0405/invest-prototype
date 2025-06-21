@@ -28,6 +28,7 @@ from screeners.leader_stock.screener import run_leader_stock_screening
 from screeners.momentum_signals.screener import run_momentum_signals_screening
 from screeners.ipo_investment.screener import run_ipo_investment_screening
 from screeners.markminervini.ticker_tracker import track_new_tickers
+from screeners.markminervini.image_pattern_detection import run_image_pattern_detection
 from config import (
     DATA_US_DIR,
     RESULTS_DIR,
@@ -267,7 +268,7 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         print("✅ 2단계: 통합 스크리닝 완료.")
 
         print("\n⏳ 3단계: 고급 재무 스크리닝 실행 중...")
-        run_advanced_financial_screening()
+        run_advanced_financial_screening(skip_data=skip_data)
         print("✅ 3단계: 고급 재무 스크리닝 완료.")
 
         print("\n⏳ 4단계: 새로운 티커 추적 실행 중...")
@@ -309,6 +310,10 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         print("\n⏳ 13단계: 시장 국면 분석 실행 중...")
         run_market_regime_analysis(skip_data=skip_data)
         print("✅ 13단계: 시장 국면 분석 완료.")
+
+        print("\n⏳ 14단계: 이미지 패턴 감지 실행 중...")
+        run_image_pattern_detection_task(skip_data=skip_data)
+        print("✅ 14단계: 이미지 패턴 감지 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:  # pragma: no cover - runtime log
@@ -590,3 +595,28 @@ def run_scheduler() -> None:
             time.sleep(interval * 60)
     except KeyboardInterrupt:
         print("\n⏹️ 스케줄러 종료")
+
+def run_image_pattern_detection_task(skip_data: bool = False):
+    """
+    이미지 기반 패턴 감지 작업 실행
+    
+    Args:
+        skip_data: 데이터 수집 건너뛰기
+    """
+    try:
+        print("\n🖼️ 이미지 기반 패턴 감지 시작")
+        
+        # 필요한 디렉토리 확인
+        ensure_dir(MARKMINERVINI_RESULTS_DIR)
+        
+        # 이미지 패턴 감지 실행
+        results = run_image_pattern_detection(skip_data=skip_data)
+        
+        if not results.empty:
+            print(f"✅ 이미지 패턴 감지 완료: {len(results)}개 심볼 처리")
+        else:
+            print("⚠️ 처리된 결과가 없습니다.")
+            
+    except Exception as e:
+        print(f"❌ 이미지 패턴 감지 실행 중 오류: {e}")
+        print(traceback.format_exc())

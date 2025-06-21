@@ -29,6 +29,7 @@ from orchestrator.tasks import (
     run_ipo_investment_screener,
     run_qullamaggie_strategy_task,
     run_market_regime_analysis,
+    run_image_pattern_detection_task,
     setup_scheduler,
     run_scheduler,
 )
@@ -40,7 +41,7 @@ def main():
     parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 실행')
     parser.add_argument('--task', default='all',
                         choices=['all', 'screening', 'volatility-skew', 'setup', 'gainers', 'leader-stock',
-                                 'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime'],
+                                 'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime', 'image-pattern'],
                         help='실행할 작업 선택')
     parser.add_argument('--schedule', action='store_true', help='스케줄러 모드 실행')
     
@@ -95,6 +96,10 @@ def main():
             return
         if task == 'market-regime':
             run_market_regime_analysis(skip_data=args.skip_data)
+            return
+        if task == 'image-pattern':
+            print("\n🎯 이미지 패턴 감지 모드")
+            run_image_pattern_detection_task(skip_data=args.skip_data)
             return
         if task == 'portfolio':
             create_portfolio_manager()
