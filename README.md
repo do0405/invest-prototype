@@ -138,6 +138,7 @@ python data_collectors/stock_metadata_collector.py
 - results/screeners/markminervini/us_with_rs.csv/.json : 기술적 스크리닝 결과
 - results/screeners/markminervini/advanced_financial_results.csv/.json : 재무 스크리닝 결과
 - results/screeners/markminervini/integrated_results.csv/.json : 통합 스크리닝 결과
+- results/option/volatility_skew_screening_YYYYMMDD.csv/.json : 옵션 변동성 스크리닝 결과
 - results/momentum_signals/momentum_signals_YYYYMMDD.csv : 상승 모멘텀 시그널 결과
 - results/portfolio/buy/strategyX_results.csv/.json : 전략별 매수 신호
 - results/portfolio/sell/strategyX_results.csv/.json : 전략별 매도 신호
