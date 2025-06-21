@@ -48,8 +48,6 @@ flake8>=5.0.0
 
 # 데이터 소스 연동 추가 패키지
 sec-edgar-api>=1.0.0  # SEC EDGAR API
-fmp-python>=1.0.4     # Financial Modeling Prep API
-alpha-vantage>=2.3.1  # Alpha Vantage API
 quandl>=3.7.0         # Quandl 데이터
 
 # 기관 투자자 데이터

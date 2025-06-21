@@ -137,23 +137,14 @@ class OptimalDataStrategy:
     def __init__(self):
         # 우선순위별 데이터 소스 설정
         self.data_sources = [
-            "alpha_vantage_options",  # 1순위: Alpha Vantage 옵션 API
-            "yfinance_options",       # 2순위: yfinance 옵션 체인
-            "exclusion_approach"      # 3순위: 해당 종목 제외
+            "yfinance_options",       # 1순위: yfinance 옵션 체인
+            "exclusion_approach"      # 2순위: 해당 종목 제외
         ]
     
     def get_options_data(self, symbol):
         """계층적 옵션 데이터 수집"""
         
-        # 방법 1: Alpha Vantage 옵션 API (가장 신뢰성 있음)
-        try:
-            options_data = self.get_alpha_vantage_options(symbol)
-            if self.validate_options_data(options_data):
-                return options_data, "alpha_vantage"
-        except Exception as e:
-            print(f"Alpha Vantage 실패 ({symbol}): {e}")
-        
-        # 방법 2: yfinance 옵션 체인 (무료이지만 불안정)
+        # 방법 1: yfinance 옵션 체인 (무료이지만 불안정)
         try:
             options_data = self.get_yfinance_options(symbol)  
             if self.validate_options_data(options_data):
@@ -164,23 +155,6 @@ class OptimalDataStrategy:
         # 방법 3: 데이터 없으면 해당 종목 제외
         return None, "excluded"
     
-    def get_alpha_vantage_options(self, symbol):
-        """Alpha Vantage 옵션 API 활용 (추천)"""
-        # Alpha Vantage는 실제 옵션 IV 데이터 제공
-        # 무료 플랜: 500 requests/day
-        # 옵션 그릭스와 IV 포함된 완전한 데이터
-        
-        import requests
-        api_key = "YOUR_ALPHA_VANTAGE_KEY"
-        url = f"https://www.alphavantage.co/query"
-        params = {
-            'function': 'REALTIME_OPTIONS',
-            'symbol': symbol,
-            'apikey': api_key
-        }
-        
-        response = requests.get(url, params=params)
-        return response.json()
     
     def validate_options_data(self, data):
         """옵션 데이터 품질 검증"""
@@ -229,7 +203,7 @@ def practical_screening_approach(self):
                     'symbol': symbol,
                     'skew': skew,
                     'data_source': source,
-                    'reliability': 'high' if source == 'alpha_vantage' else 'medium'
+                    'reliability': 'high'
                 })
             else:
                 print(f"{symbol}: 옵션 데이터 없음 - 제외")
@@ -240,7 +214,7 @@ def practical_screening_approach(self):
     def hybrid_strategy(self):
         """핵심 종목은 유료 데이터, 나머지는 제외"""
         
-        # 1단계: S&P 100 대형주는 Alpha Vantage 프리미엄
+        # 1단계: S&P 100 대형주는 프리미엄 데이터 사용
         sp100_results = []
         for symbol in self.get_sp100_symbols():
             options_data = self.get_premium_options_data(symbol)
@@ -264,16 +238,10 @@ def practical_screening_approach(self):
 RECOMMENDED_APPROACH = """
 옵션 데이터 처리 우선순위:
 
-1. **Alpha Vantage 옵션 API 활용** (1순위)
-   - 실제 IV와 그릭스 제공
-   - 무료: 500 requests/day
-   - 가장 신뢰할 수 있는 데이터
-
-2. **yfinance 옵션 체인** (2순위)  
+1. **yfinance 옵션 체인** (1순위)
    - 불안정하지만 무료
    - 데이터 검증 후 사용
-
-3. **종목 제외** (3순위)
+2. **종목 제외** (2순위)
    - 옵션 데이터 없으면 과감히 제외
    - 합성 데이터는 생성하지 않음
 

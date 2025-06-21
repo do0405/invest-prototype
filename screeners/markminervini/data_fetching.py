@@ -8,163 +8,16 @@ import time
 from datetime import datetime, timedelta
 from config import (
     YAHOO_FINANCE_MAX_RETRIES, YAHOO_FINANCE_DELAY,
-    ADVANCED_FINANCIAL_CRITERIA, FMP_API_KEY
+    ADVANCED_FINANCIAL_CRITERIA
 )
 
 __all__ = [
-    "fetch_fmp_financials",
     "collect_financial_data",
-    "collect_real_financial_data",
     "collect_financial_data_yahooquery",
     "collect_financial_data_hybrid",
 ]
 
 
-def fetch_fmp_financials(symbol: str):
-    """Financial Modeling Prep API를 이용해 재무 데이터를 수집합니다."""
-    base_url = "https://financialmodelingprep.com/api/v3"
-    try:
-        q_resp = requests.get(
-            f"{base_url}/income-statement/{symbol}?period=quarter&limit=4&apikey={FMP_API_KEY}",
-            timeout=10,
-        )
-        a_resp = requests.get(
-            f"{base_url}/income-statement/{symbol}?period=annual&limit=4&apikey={FMP_API_KEY}",
-            timeout=10,
-        )
-        b_resp = requests.get(
-            f"{base_url}/balance-sheet-statement/{symbol}?period=annual&limit=4&apikey={FMP_API_KEY}",
-            timeout=10,
-        )
-        q_resp.raise_for_status()
-        a_resp.raise_for_status()
-        b_resp.raise_for_status()
-
-        q_income = pd.DataFrame(q_resp.json())
-        a_income = pd.DataFrame(a_resp.json())
-        balance = pd.DataFrame(b_resp.json())
-
-        if q_income.empty or a_income.empty or balance.empty:
-            return None
-
-        data = {
-            "symbol": symbol,
-            "has_error": False,
-            "error_details": [],
-            "quarterly_eps_growth": 0,
-            "annual_eps_growth": 0,
-            "eps_growth_acceleration": False,
-            "quarterly_revenue_growth": 0,
-            "annual_revenue_growth": 0,
-            "quarterly_op_margin_improved": False,
-            "annual_op_margin_improved": False,
-            "quarterly_net_income_growth": 0,
-            "annual_net_income_growth": 0,
-            "roe": 0,
-            "debt_to_equity": 0,
-            "last_updated": datetime.now().strftime("%Y-%m-%d"),
-        }
-
-        try:
-            if len(q_income) >= 2:
-                recent = q_income.loc[0, "eps"]
-                prev = q_income.loc[1, "eps"]
-                data["quarterly_eps_growth"] = ((recent - prev) / abs(prev)) * 100 if prev else 0
-        except Exception:
-            data["error_details"].append("FMP EPS 데이터 오류")
-            data["has_error"] = True
-
-        try:
-            if len(a_income) >= 2:
-                recent = a_income.loc[0, "eps"]
-                prev = a_income.loc[1, "eps"]
-                data["annual_eps_growth"] = ((recent - prev) / abs(prev)) * 100 if prev else 0
-        except Exception:
-            data["error_details"].append("FMP 연간 EPS 데이터 오류")
-            data["has_error"] = True
-
-        try:
-            if len(q_income) >= 3:
-                g1 = ((q_income.loc[0, "eps"] - q_income.loc[1, "eps"]) / abs(q_income.loc[1, "eps"])) * 100 if q_income.loc[1, "eps"] else 0
-                g2 = ((q_income.loc[1, "eps"] - q_income.loc[2, "eps"]) / abs(q_income.loc[2, "eps"])) * 100 if q_income.loc[2, "eps"] else 0
-                data["eps_growth_acceleration"] = g1 > g2
-        except Exception:
-            pass
-
-        try:
-            if len(q_income) >= 2:
-                r_recent = q_income.loc[0, "revenue"]
-                r_prev = q_income.loc[1, "revenue"]
-                data["quarterly_revenue_growth"] = ((r_recent - r_prev) / abs(r_prev)) * 100 if r_prev else 0
-        except Exception:
-            data["error_details"].append("FMP 분기 매출 데이터 오류")
-            data["has_error"] = True
-
-        try:
-            if len(a_income) >= 2:
-                r_recent = a_income.loc[0, "revenue"]
-                r_prev = a_income.loc[1, "revenue"]
-                data["annual_revenue_growth"] = ((r_recent - r_prev) / abs(r_prev)) * 100 if r_prev else 0
-        except Exception:
-            data["error_details"].append("FMP 연간 매출 데이터 오류")
-            data["has_error"] = True
-
-        try:
-            if len(q_income) >= 2:
-                op_recent = q_income.loc[0, "operatingIncome"] / q_income.loc[0, "revenue"] if q_income.loc[0, "revenue"] else 0
-                op_prev = q_income.loc[1, "operatingIncome"] / q_income.loc[1, "revenue"] if q_income.loc[1, "revenue"] else 0
-                data["quarterly_op_margin_improved"] = op_recent > op_prev
-        except Exception:
-            pass
-
-        try:
-            if len(a_income) >= 2:
-                op_recent = a_income.loc[0, "operatingIncome"] / a_income.loc[0, "revenue"] if a_income.loc[0, "revenue"] else 0
-                op_prev = a_income.loc[1, "operatingIncome"] / a_income.loc[1, "revenue"] if a_income.loc[1, "revenue"] else 0
-                data["annual_op_margin_improved"] = op_recent > op_prev
-        except Exception:
-            pass
-
-        try:
-            if len(q_income) >= 2:
-                ni_recent = q_income.loc[0, "netIncome"]
-                ni_prev = q_income.loc[1, "netIncome"]
-                data["quarterly_net_income_growth"] = ((ni_recent - ni_prev) / abs(ni_prev)) * 100 if ni_prev else 0
-        except Exception:
-            data["error_details"].append("FMP 분기 순이익 데이터 오류")
-            data["has_error"] = True
-
-        try:
-            if len(a_income) >= 2:
-                ni_recent = a_income.loc[0, "netIncome"]
-                ni_prev = a_income.loc[1, "netIncome"]
-                data["annual_net_income_growth"] = ((ni_recent - ni_prev) / abs(ni_prev)) * 100 if ni_prev else 0
-        except Exception:
-            data["error_details"].append("FMP 연간 순이익 데이터 오류")
-            data["has_error"] = True
-
-        try:
-            if not balance.empty and not a_income.empty:
-                net_income = a_income.loc[0, "netIncome"]
-                total_equity = balance.loc[0, "totalStockholdersEquity"]
-                data["roe"] = (net_income / total_equity) * 100 if total_equity else 0
-        except Exception:
-            data["has_error"] = True
-            data["error_details"].append("FMP ROE 계산 오류")
-
-        try:
-            if not balance.empty:
-                total_debt = balance.loc[0, "totalLiabilities"]
-                total_equity = balance.loc[0, "totalStockholdersEquity"]
-                data["debt_to_equity"] = total_debt / total_equity if total_equity else np.nan
-        except Exception:
-            data["error_details"].append("FMP D/E 계산 오류")
-            data["has_error"] = True
-
-        return data
-    except Exception as e:
-        print(f"FMP 데이터 수집 실패 ({symbol}): {e}")
-        return None
 
 
 def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay=YAHOO_FINANCE_DELAY):
@@ -201,10 +54,6 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
                     income_quarterly is None or income_annual is None or balance_annual is None or
                     income_quarterly.empty or income_annual.empty or balance_annual.empty
                 ):
-                    fallback = fetch_fmp_financials(symbol)
-                    if fallback is not None:
-                        financial_data.append(fallback)
-                        break
                     data['has_error'] = True
                     data['error_details'].append('기본 재무 데이터 없음')
                     financial_data.append(data)
@@ -349,29 +198,6 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
     df = pd.DataFrame(financial_data)
     return df
 
-def collect_real_financial_data(symbols, max_retries=3, delay=1):
-    """FMP API를 활용한 실제 재무 데이터 수집"""
-    print("\n💰 실제 재무 데이터 수집 시작...")
-    results = []
-    total = len(symbols)
-    for i, symbol in enumerate(symbols):
-        print(f"진행 중: {i+1}/{total} - {symbol}")
-        for attempt in range(max_retries):
-            data = fetch_fmp_financials(symbol)
-            if data is not None:
-                results.append(data)
-                break
-            if attempt < max_retries - 1:
-                time.sleep(delay)
-        else:
-            results.append({
-                'symbol': symbol,
-                'has_error': True,
-                'error_details': ['데이터 수집 실패'],
-            })
-    return pd.DataFrame(results)
-
-
 def collect_financial_data_yahooquery(symbols, max_retries=2, delay=1.0):
     """yahooquery를 사용하여 재무 데이터 수집"""
     print("\n💰 yahooquery를 사용한 재무 데이터 수집 시작...")
@@ -473,7 +299,7 @@ def collect_financial_data_yahooquery(symbols, max_retries=2, delay=1.0):
 
 
 def collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0):
-    """yfinance와 yahooquery를 함께 사용하여 재무 데이터 수집 (하이브리드 방식)"""
+    """yfinance와 yahooquery를 함께 사용하여 재무 데이터 수집"""
     print("\n💰 하이브리드 방식 재무 데이터 수집 시작 (yfinance + yahooquery)...")
     financial_data = []
     total = len(symbols)
@@ -565,16 +391,10 @@ def collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0):
                 data['error_details'].append(f'yahooquery 보완 실패: {str(e)[:50]}')
                 data['has_error'] = True
         
-        # 최종 fallback으로 FMP API 사용
+        # yfinance와 yahooquery에서 충분한 데이터가 없을 경우 오류 표시
         if data['quarterly_revenue_growth'] == 0 and data['roe'] == 0:
-            fallback = fetch_fmp_financials(symbol)
-            if fallback is not None and not fallback.get('has_error', True):
-                for key in ['quarterly_revenue_growth', 'annual_revenue_growth', 'roe', 'debt_to_equity']:
-                    if fallback.get(key, 0) != 0:
-                        data[key] = fallback[key]
-            else:
-                data['has_error'] = True
-                data['error_details'].append('모든 데이터 소스 실패')
+            data['has_error'] = True
+            data['error_details'].append('모든 데이터 소스 실패')
         
         financial_data.append(data)
     

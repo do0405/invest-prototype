@@ -23,16 +23,14 @@ from screeners.option_volatility.skew_mixins import SkewCalculationsMixin
 
 class VolatilitySkewScreener(SkewCalculationsMixin):
     """Xing et al.(2010) 논문 기반 변동성 스큐 역전 전략 스크리너"""
-    
-    def __init__(self, alpha_vantage_key: str = None):
-        self.alpha_vantage_key = alpha_vantage_key
+
+    def __init__(self):
         self.target_stocks = self.get_large_cap_stocks()
         self.results_dir = OPTION_VOLATILITY_DIR
         os.makedirs(self.results_dir, exist_ok=True)
         
         # 데이터 품질 등급 정의
         self.data_quality_grades = {
-            "alpha_vantage": {"grade": "A", "confidence_multiplier": 1.0, "description": "고품질 프리미엄 데이터"},
             "yfinance": {"grade": "B", "confidence_multiplier": 0.9, "description": "양호한 품질 무료 데이터"},
             "yfinance_fallback": {"grade": "C", "confidence_multiplier": 0.7, "description": "품질 부족하지만 사용 가능한 데이터"}
         }
@@ -75,21 +73,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         except Exception as e:
             print(f"⚠️ {symbol}: yfinance 실패 ({e})")
         
-        # 방법 2: Alpha Vantage로 대체 시도 (yfinance 품질이 부족할 때만)
-        if self.alpha_vantage_key:
-            try:
-                options_data = self.get_alpha_vantage_options(symbol)
-                if self.validate_options_data(options_data):
-                    print(f"✅ {symbol}: Alpha Vantage로 대체 성공")
-                    return options_data, "alpha_vantage"
-            except Exception as e:
-                # Alpha Vantage 실패 시 (한도 초과 포함)
-                if "rate limit" in str(e).lower() or "quota" in str(e).lower():
-                    print(f"⚠️ {symbol}: Alpha Vantage 한도 초과, yfinance 데이터로 진행")
-                else:
-                    print(f"⚠️ {symbol}: Alpha Vantage 실패 ({e}), yfinance 데이터로 진행")
-        
-        # 방법 3: Alpha Vantage 실패 시 yfinance 데이터라도 사용
+        # 방법 2: yfinance 데이터라도 사용
         if yfinance_data and self.validate_options_data(yfinance_data):
             print(f"📊 {symbol}: 품질은 낮지만 yfinance 데이터로 진행")
             return yfinance_data, "yfinance_fallback"
@@ -133,20 +117,6 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
             return False
 
     
-    def get_alpha_vantage_options(self, symbol: str) -> Optional[Dict]:
-        """Alpha Vantage 옵션 API 활용"""
-        if not self.alpha_vantage_key:
-            return None
-            
-        url = "https://www.alphavantage.co/query"
-        params = {
-            'function': 'REALTIME_OPTIONS',
-            'symbol': symbol,
-            'apikey': self.alpha_vantage_key
-        }
-        
-        response = requests.get(url, params=params)
-        return response.json()
     
     def get_yfinance_options(self, symbol: str) -> Optional[Dict]:
         """yfinance 옵션 체인 활용"""
@@ -217,26 +187,6 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
                 0.80 <= put['strike'] / underlying_price <= 0.95
                 for put in puts
                 if 'impliedVolatility' in put and put['impliedVolatility'] > 0
-            )
-            
-            return has_atm_calls and has_otm_puts
-        
-        # Alpha Vantage 데이터 검증
-        if 'data' in data:
-            options_list = data.get('data', [])
-            if not options_list:
-                return False
-                
-            has_atm_calls = any(
-                0.95 <= float(opt.get('strike', 0)) / float(opt.get('underlying_price', 1)) <= 1.05
-                for opt in options_list
-                if opt.get('type') == 'call' and float(opt.get('implied_volatility', 0)) > 0
-            )
-            
-            has_otm_puts = any(
-                0.80 <= float(opt.get('strike', 0)) / float(opt.get('underlying_price', 1)) <= 0.95
-                for opt in options_list
-                if opt.get('type') == 'put' and float(opt.get('implied_volatility', 0)) > 0
             )
             
             return has_atm_calls and has_otm_puts
@@ -434,7 +384,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
             return [], ""
 
 
-def run_volatility_skew_screening(alpha_vantage_key: Optional[str] = None) -> Tuple[List[Dict], str]:
+def run_volatility_skew_screening() -> Tuple[List[Dict], str]:
     """변동성 스큐 스크리닝 실행 함수 (main.py에서 호출용)"""
-    screener = VolatilitySkewScreener(alpha_vantage_key=alpha_vantage_key)
+    screener = VolatilitySkewScreener()
     return screener.run_screening()

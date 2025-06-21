@@ -21,74 +21,95 @@ from scipy.signal import find_peaks, argrelextrema
 # -----------------------------------------------------
 
 def detect_vcp(df: pd.DataFrame) -> bool:
-    """Return True if VCP conditions are satisfied."""
+    """`VCP & Cup handle.md` 기준 VCP 패턴 판별"""
     if df is None or len(df) < 60:
         return False
 
-    recent = df.tail(84).copy()  # up to 12 weeks
-    recent['adr'] = (recent['high'] - recent['low']) / recent['close'] * 100
-    recent['ma20'] = recent['close'].rolling(window=20).mean()
-    recent['correction'] = recent['close'] < recent['ma20']
+    recent = df.tail(90).copy()
+    recent["ma20"] = recent["close"].rolling(20).mean()
+    recent["above_ma"] = recent["close"] >= recent["ma20"]
 
-    correction_periods: List[List[int]] = []
-    current: List[int] = []
-    in_corr = False
-    for i, row in recent.iterrows():
-        if row['correction'] and not in_corr:
-            in_corr = True
-            current = [i]
-        elif row['correction'] and in_corr:
-            current.append(i)
-        elif not row['correction'] and in_corr:
-            in_corr = False
-            if len(current) >= 5:
-                correction_periods.append(current)
-            current = []
-    if in_corr and len(current) >= 5:
-        correction_periods.append(current)
+    periods: List[Tuple[int, int]] = []
+    start = None
+    for i, above in enumerate(recent["above_ma"]):
+        if not above and start is None:
+            start = i
+        elif above and start is not None:
+            if i - start >= 5:
+                periods.append((start, i - 1))
+            start = None
+    if start is not None and len(recent) - start >= 5:
+        periods.append((start, len(recent) - 1))
 
-    if len(correction_periods) < 3:
+    if len(periods) < 3:
         return False
 
-    correction_periods = correction_periods[-3:]
-    adr_vals = []
-    lows = []
-    vols = []
-    for p in correction_periods:
-        seg = recent.loc[p]
-        adr_vals.append(seg['adr'].mean())
-        lows.append(seg['low'].min())
-        vols.append(seg['volume'].mean())
-
-    if not (adr_vals[1] < adr_vals[0] * 0.8 and adr_vals[2] < adr_vals[1] * 0.8):
-        return False
-    if not (lows[1] > lows[0] and lows[2] > lows[1]):
-        return False
-    if not (vols[1] < vols[0] * 0.7 and vols[2] < vols[1] * 0.7):
+    periods = periods[-4:]
+    if not (42 <= periods[-1][1] - periods[0][0] + 1 <= 84):
         return False
 
-    vol_ma20 = recent['volume'].rolling(window=20).mean().iloc[-1]
-    if vols[-1] > vol_ma20 * 0.7:
+    depth_ranges = [(15, 25), (8, 15), (3, 8), (1, 5)]
+    volumes = []
+    highs = recent["high"].values
+    lows = recent["low"].values
+    closes = recent["close"].values
+    vol = recent["volume"].values
+    ma20_vol = recent["volume"].rolling(20).mean().values
+
+    prev_peak = highs[periods[0][0] - 1] if periods[0][0] > 0 else highs[periods[0][0]]
+    for idx, (start_idx, end_idx) in enumerate(periods):
+        if idx >= len(depth_ranges):
+            break
+        if not (5 <= end_idx - start_idx + 1 <= 21):
+            return False
+        low = lows[start_idx:end_idx + 1].min()
+        depth = (prev_peak - low) / prev_peak * 100
+        min_d, max_d = depth_ranges[idx]
+        if not (min_d <= depth <= max_d):
+            return False
+        avg_vol = vol[start_idx:end_idx + 1].mean()
+        volumes.append(avg_vol)
+        prev_peak = highs[end_idx]
+
+    for i in range(1, len(volumes)):
+        ratio = volumes[i] / volumes[i - 1]
+        if not (0.5 <= ratio <= 0.8):
+            return False
+
+    if volumes[-1] > ma20_vol[periods[-1][1]] * 0.7:
         return False
 
-    last_corr_len = len(correction_periods[-1])
-    if not (5 <= last_corr_len <= 15):
+    pivot_high = prev_peak
+    last_close = closes[-1]
+    if last_close < pivot_high * 0.95:
+        return False
+    if (pivot_high - lows[periods[-1][1]:].min()) / pivot_high * 100 > 8:
+        return False
+
+    side = closes[-15:]
+    if side.max() / side.min() - 1 > 0.05:
+        return False
+    if vol[-1] < ma20_vol[-1] * 1.5:
         return False
 
     return True
 
 
 def detect_cup_and_handle(df: pd.DataFrame, window: int = 180) -> bool:
-    """Return True if cup-with-handle conditions are satisfied."""
+    """`VCP & Cup handle.md` 기준 Cup-with-Handle 패턴 판별"""
     if len(df) < window:
         return False
-    data = df.tail(window)
-    prices = data['close'].values
-    volumes = data['volume'].values
+
+    data = df.tail(window).copy()
+    prices = data["close"].values
+    volumes = data["volume"].values
+    avg_volume = data["volume"].rolling(20).mean().values
+
     peaks, _ = find_peaks(prices)
     troughs, _ = find_peaks(-prices)
     if len(peaks) < 2 or len(troughs) == 0:
         return False
+
     left = peaks[0]
     right_candidates = peaks[peaks > left]
     if len(right_candidates) == 0:
@@ -99,38 +120,45 @@ def detect_cup_and_handle(df: pd.DataFrame, window: int = 180) -> bool:
         return False
     bottom = bottom_candidates[prices[bottom_candidates].argmin()]
 
-    if right - left < 35:  # cup duration at least 7 weeks
+    if right - left < 35:
+        return False
+    if bottom - left < 10 or right - bottom < 10:
         return False
 
     left_high = prices[left]
     right_high = prices[right]
-    bottom_low = prices[bottom]
-    depth = min(left_high, right_high) - bottom_low
-    if depth <= 0:
-        return False
-    depth_pct = depth / min(left_high, right_high) * 100
-    if not (12 <= depth_pct <= 50):
-        return False
     if abs(left_high - right_high) / min(left_high, right_high) * 100 > 5:
         return False
 
+    bottom_low = prices[bottom]
+    depth = (min(left_high, right_high) - bottom_low) / min(left_high, right_high) * 100
+    if not (12 <= depth <= 50):
+        return False
+
     handle_low = prices[right:].min()
-    handle_depth = (right_high - handle_low) / depth * 100
+    handle_depth = (right_high - handle_low) / right_high * 100
     handle_len = len(prices) - right
     if not (3 <= handle_depth <= 33):
         return False
     if not (7 <= handle_len <= 28):
         return False
+    if len(prices) - left < 49:
+        return False
 
-    avg_volume = data['volume'].rolling(window=20).mean().iloc[-1]
-    bottom_vol = volumes[bottom-2:bottom+3].mean() if bottom >=2 else volumes[bottom]
-    handle_vol = volumes[right:right+handle_len].mean() if handle_len >0 else volumes[right]
-    if bottom_vol >= avg_volume * 0.5:
+    bottom_vol = volumes[max(0, bottom - 2): bottom + 3].mean()
+    handle_vol = volumes[right: right + handle_len].mean() if handle_len > 0 else volumes[right]
+
+    if bottom_vol >= avg_volume[bottom] * 0.5:
         return False
     if handle_vol >= bottom_vol:
         return False
-    if volumes[-1] < avg_volume * 1.5:
+    if volumes[-1] < avg_volume[-1] * 1.5:
         return False
+
+    cup_volume_trend = pd.Series(volumes[left:right]).rolling(5).mean()
+    if cup_volume_trend.iloc[-1] >= cup_volume_trend.iloc[0]:
+        return False
+
     return True
 
 

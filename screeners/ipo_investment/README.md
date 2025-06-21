@@ -97,11 +97,6 @@ for symbol in candidate_stocks:
 # SEC API 설정
 SEC_API_USER_AGENT="Your Company Name (your.email@company.com)"
 
-# Alpha Vantage API (선택사항)
-ALPHA_VANTAGE_API_KEY="your_api_key_here"
-
-# Financial Modeling Prep API (선택사항)
-FMP_API_KEY="your_api_key_here"
 
 # 캐시 설정
 CACHE_DIRECTORY="data/cache"
