@@ -32,7 +32,7 @@ class VolatilitySkewPortfolioStrategy:
         ensure_dir(OPTION_VOLATILITY_RESULTS_DIR)
         ensure_dir(os.path.join(RESULTS_VER2_DIR, 'buy'))
 
-        self.portfolio_file = os.path.join(OPTION_VOLATILITY_DIR, 'portfolio_signals.csv')
+        self.portfolio_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'portfolio_signals.csv')
         self.results_file = os.path.join(OPTION_VOLATILITY_RESULTS_DIR, 'volatility_skew_results.csv')
 
         self.max_positions = 10

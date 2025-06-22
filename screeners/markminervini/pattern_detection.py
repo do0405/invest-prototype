@@ -1,23 +1,4 @@
-"""Pattern detection for VCP and Cup-with-Handle based on academic papers.
 
-This module implements advanced pattern detection algorithms for
-Volatility Contraction Pattern (VCP) and Cup-with-Handle patterns
-based on academic research papers as described in ``new VCP & CUPhandle.md``.
-
-Implemented techniques:
-- Kernel regression for price curve smoothing (Lo, Mamaysky & Wang 2000)
-- Amplitude-based volatility contraction detection (Suh, Li & Gao 2008)
-- Quadratic polynomial approximation for U-shaped cup verification
-- Bezier curve correlation analysis for pattern validation
-- Handle detection with depth constraints
-
-Features:
-- Academic paper-based pattern detection algorithms
-- Kernel smoothing for noise reduction
-- Mathematical curve fitting and correlation analysis
-- Batch processing of stock data from CSV files
-- Results output in both CSV and JSON formats
-"""
 
 from __future__ import annotations
 

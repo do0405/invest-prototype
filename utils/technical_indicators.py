@@ -16,12 +16,12 @@ def calculate_macd(
     include_hist: bool = False,
 ) -> pd.DataFrame:
     """Calculate MACD indicators and optionally histogram."""
-    df["ema_fast"] = df["close"].ewm(span=fast, adjust=False).mean()
-    df["ema_slow"] = df["close"].ewm(span=slow, adjust=False).mean()
-    df["macd"] = df["ema_fast"] - df["ema_slow"]
-    df["macd_signal"] = df["macd"].ewm(span=signal, adjust=False).mean()
+    df.loc[:, "ema_fast"] = df["close"].ewm(span=fast, adjust=False).mean()
+    df.loc[:, "ema_slow"] = df["close"].ewm(span=slow, adjust=False).mean()
+    df.loc[:, "macd"] = df["ema_fast"] - df["ema_slow"]
+    df.loc[:, "macd_signal"] = df["macd"].ewm(span=signal, adjust=False).mean()
     if include_hist:
-        df["macd_hist"] = df["macd"] - df["macd_signal"]
+        df.loc[:, "macd_hist"] = df["macd"] - df["macd_signal"]
     return df
 
 
@@ -31,10 +31,10 @@ def calculate_stochastic(
     d_period: int = 3,
 ) -> pd.DataFrame:
     """Calculate stochastic oscillator."""
-    df["lowest_low"] = df["low"].rolling(window=k_period).min()
-    df["highest_high"] = df["high"].rolling(window=k_period).max()
-    df["stoch_k"] = (
+    df.loc[:, "lowest_low"] = df["low"].rolling(window=k_period).min()
+    df.loc[:, "highest_high"] = df["high"].rolling(window=k_period).max()
+    df.loc[:, "stoch_k"] = (
         (df["close"] - df["lowest_low"]) / (df["highest_high"] - df["lowest_low"])
     ) * 100
-    df["stoch_d"] = df["stoch_k"].rolling(window=d_period).mean()
+    df.loc[:, "stoch_d"] = df["stoch_k"].rolling(window=d_period).mean()
     return df

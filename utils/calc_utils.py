@@ -101,12 +101,12 @@ def calculate_atr(df, window=10):
                 print(f"⚠️ ATR 계산에 필요한 '{col}' 컬럼이 없습니다.")
                 return pd.Series(index=df.index)
         df = df.copy()
-        df['prev_close'] = df['close'].shift(1)
-        df['tr1'] = abs(df['high'] - df['low'])
-        df['tr2'] = abs(df['high'] - df['prev_close'])
-        df['tr3'] = abs(df['low'] - df['prev_close'])
-        df['true_range'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
-        df['atr'] = df['true_range'].rolling(window=window).mean()
+        df.loc[:, 'prev_close'] = df['close'].shift(1)
+        df.loc[:, 'tr1'] = abs(df['high'] - df['low'])
+        df.loc[:, 'tr2'] = abs(df['high'] - df['prev_close'])
+        df.loc[:, 'tr3'] = abs(df['low'] - df['prev_close'])
+        df.loc[:, 'true_range'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
+        df.loc[:, 'atr'] = df['true_range'].rolling(window=window).mean()
         return df['atr']
     except Exception as e:
         print(f"❌ ATR 계산 오류: {e}")
@@ -125,7 +125,7 @@ def calculate_rsi(df, window=14):
         avg_gain = gain.rolling(window=window).mean()
         avg_loss = loss.rolling(window=window).mean()
         rs = avg_gain / avg_loss.where(avg_loss != 0, 1)
-        df[f'rsi_{window}'] = 100 - (100 / (1 + rs))
+        df.loc[:, f'rsi_{window}'] = 100 - (100 / (1 + rs))
         return df
     except Exception as e:
         print(f"❌ RSI 계산 오류: {e}")
@@ -141,24 +141,24 @@ def calculate_adx(df, window=14):
                 print(f"⚠️ ADX 계산에 필요한 '{col}' 컬럼이 없습니다.")
                 return pd.Series(index=df.index)
         df = df.copy()
-        df['prev_high'] = df['high'].shift(1)
-        df['prev_low'] = df['low'].shift(1)
-        df['prev_close'] = df['close'].shift(1)
-        df['up_move'] = df['high'] - df['prev_high']
-        df['down_move'] = df['prev_low'] - df['low']
-        df['+dm'] = np.where((df['up_move'] > df['down_move']) & (df['up_move'] > 0), df['up_move'], 0)
-        df['-dm'] = np.where((df['down_move'] > df['up_move']) & (df['down_move'] > 0), df['down_move'], 0)
-        df['tr1'] = abs(df['high'] - df['low'])
-        df['tr2'] = abs(df['high'] - df['prev_close'])
-        df['tr3'] = abs(df['low'] - df['prev_close'])
-        df['tr'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
-        df['+dm_avg'] = df['+dm'].rolling(window=window).mean()
-        df['-dm_avg'] = df['-dm'].rolling(window=window).mean()
-        df['tr_avg'] = df['tr'].rolling(window=window).mean()
-        df['+di'] = 100 * df['+dm_avg'] / df['tr_avg']
-        df['-di'] = 100 * df['-dm_avg'] / df['tr_avg']
-        df['dx'] = 100 * abs(df['+di'] - df['-di']) / (df['+di'] + df['-di'])
-        df['adx'] = df['dx'].rolling(window=window).mean()
+        df.loc[:, 'prev_high'] = df['high'].shift(1)
+        df.loc[:, 'prev_low'] = df['low'].shift(1)
+        df.loc[:, 'prev_close'] = df['close'].shift(1)
+        df.loc[:, 'up_move'] = df['high'] - df['prev_high']
+        df.loc[:, 'down_move'] = df['prev_low'] - df['low']
+        df.loc[:, '+dm'] = np.where((df['up_move'] > df['down_move']) & (df['up_move'] > 0), df['up_move'], 0)
+        df.loc[:, '-dm'] = np.where((df['down_move'] > df['up_move']) & (df['down_move'] > 0), df['down_move'], 0)
+        df.loc[:, 'tr1'] = abs(df['high'] - df['low'])
+        df.loc[:, 'tr2'] = abs(df['high'] - df['prev_close'])
+        df.loc[:, 'tr3'] = abs(df['low'] - df['prev_close'])
+        df.loc[:, 'tr'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
+        df.loc[:, '+dm_avg'] = df['+dm'].rolling(window=window).mean()
+        df.loc[:, '-dm_avg'] = df['-dm'].rolling(window=window).mean()
+        df.loc[:, 'tr_avg'] = df['tr'].rolling(window=window).mean()
+        df.loc[:, '+di'] = 100 * df['+dm_avg'] / df['tr_avg']
+        df.loc[:, '-di'] = 100 * df['-dm_avg'] / df['tr_avg']
+        df.loc[:, 'dx'] = 100 * abs(df['+di'] - df['-di']) / (df['+di'] + df['-di'])
+        df.loc[:, 'adx'] = df['dx'].rolling(window=window).mean()
         return df
     except Exception as e:
         print(f"❌ ADX 계산 오류: {e}")
@@ -172,7 +172,7 @@ def calculate_historical_volatility(df, window=60, annualize=True):
             print(f"⚠️ 변동성 계산에 필요한 'close' 컬럼이 없습니다.")
             return pd.Series(index=df.index)
         df = df.copy()
-        df['log_return'] = np.log(df['close'] / df['close'].shift(1))
+        df.loc[:, 'log_return'] = np.log(df['close'] / df['close'].shift(1))
         volatility = df['log_return'].rolling(window=window).std()
         if annualize:
             volatility = volatility * np.sqrt(252) * 100
@@ -194,7 +194,7 @@ def check_sp500_condition(data_dir, ma_days=100):
         spy_df = pd.read_csv(spy_file)
         spy_df.columns = [col.lower() for col in spy_df.columns]
         if 'date' in spy_df.columns:
-            spy_df['date'] = pd.to_datetime(spy_df['date'], utc=True)
+            spy_df.loc[:, 'date'] = pd.to_datetime(spy_df['date'], utc=True)
             spy_df = spy_df.sort_values('date')
         else:
             print("⚠️ SPY 데이터에 날짜 컬럼이 없습니다.")
@@ -202,7 +202,7 @@ def check_sp500_condition(data_dir, ma_days=100):
         if len(spy_df) < ma_days:
             print("⚠️ SPY 데이터가 충분하지 않습니다.")
             return False
-        spy_df[f'ma{ma_days}'] = spy_df['close'].rolling(window=ma_days).mean()
+        spy_df.loc[:, f'ma{ma_days}'] = spy_df['close'].rolling(window=ma_days).mean()
         latest_spy = spy_df.iloc[-1]
         spy_condition = latest_spy['close'] > latest_spy[f'ma{ma_days}']
         if not spy_condition:

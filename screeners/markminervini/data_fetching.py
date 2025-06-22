@@ -322,7 +322,7 @@ def collect_financial_data_yahooquery(symbols, max_retries=2, delay=1.0):
 
 
 def collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0):
-    """yfinance와 yahooquery를 함께 사용하여 재무 데이터 수집"""
+    """yfinance와 yahooquery를 함께 사용하여 재무 데이터 수집 - 9가지 조건 완전 구현"""
     print("\n💰 하이브리드 방식 재무 데이터 수집 시작 (yfinance + yahooquery)...")
     financial_data = []
     total = len(symbols)
@@ -353,8 +353,7 @@ def collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0):
             'last_updated': datetime.now().strftime('%Y-%m-%d'),
         }
         
-        # 먼저 yfinance로 시도
-        yf_success = False
+        # 먼저 yfinance로 시도 - 모든 9가지 조건 계산
         try:
             ticker_yf = yf.Ticker(symbol)
             income_quarterly = ticker_yf.quarterly_financials
@@ -365,64 +364,146 @@ def collect_financial_data_hybrid(symbols, max_retries=2, delay=1.0):
                 income_annual is not None and not income_annual.empty and
                 balance_annual is not None and not balance_annual.empty):
                 
-                # yfinance 데이터로 계산
+                # 1) 연간 EPS 성장률 계산
                 try:
-                    if 'Basic EPS' in income_quarterly.index and len(income_quarterly) >= 2:
-                        recent_eps = income_quarterly.loc['Basic EPS'].iloc[0]
-                        prev_eps = income_quarterly.loc['Basic EPS'].iloc[1]
-                        if not pd.isna(recent_eps) and not pd.isna(prev_eps) and prev_eps != 0:
-                            data['quarterly_eps_growth'] = ((recent_eps - prev_eps) / abs(prev_eps)) * 100
+                    if 'Basic EPS' in income_annual.index and len(income_annual) >= 2:
+                        recent_annual_eps = income_annual.loc['Basic EPS'].iloc[0]
+                        prev_annual_eps = income_annual.loc['Basic EPS'].iloc[1]
+                        if not pd.isna(recent_annual_eps) and not pd.isna(prev_annual_eps) and prev_annual_eps != 0:
+                            data['annual_eps_growth'] = ((recent_annual_eps - prev_annual_eps) / abs(prev_annual_eps)) * 100
                 except Exception:
                     pass
                 
+                # 2) 분기별 EPS 가속화 및 3분기 연속 가속화
                 try:
-                    if 'Total Revenue' in income_quarterly.index and len(income_quarterly) >= 2:
-                        recent_revenue = income_quarterly.loc['Total Revenue'].iloc[0]
-                        prev_revenue = income_quarterly.loc['Total Revenue'].iloc[1]
-                        if not pd.isna(recent_revenue) and not pd.isna(prev_revenue) and prev_revenue != 0:
-                            data['quarterly_revenue_growth'] = ((recent_revenue - prev_revenue) / abs(prev_revenue)) * 100
+                    if 'Basic EPS' in income_quarterly.index and len(income_quarterly) >= 4:
+                        eps_data = [income_quarterly.loc['Basic EPS'].iloc[i] for i in range(4)]
+                        if all(not pd.isna(eps) for eps in eps_data) and all(eps != 0 for eps in eps_data[1:]):
+                            growth_1 = ((eps_data[0] - eps_data[1]) / abs(eps_data[1])) * 100
+                            growth_2 = ((eps_data[1] - eps_data[2]) / abs(eps_data[2])) * 100
+                            growth_3 = ((eps_data[2] - eps_data[3]) / abs(eps_data[3])) * 100
+                            
+                            data['eps_growth_acceleration'] = growth_1 > growth_2
+                            data['eps_3q_accel'] = growth_1 > growth_2 > growth_3
                 except Exception:
                     pass
                 
-                yf_success = True
+                # 3) 연간 매출 성장률 계산
+                try:
+                    if 'Total Revenue' in income_annual.index and len(income_annual) >= 2:
+                        recent_annual_revenue = income_annual.loc['Total Revenue'].iloc[0]
+                        prev_annual_revenue = income_annual.loc['Total Revenue'].iloc[1]
+                        if not pd.isna(recent_annual_revenue) and not pd.isna(prev_annual_revenue) and prev_annual_revenue != 0:
+                            data['annual_revenue_growth'] = ((recent_annual_revenue - prev_annual_revenue) / abs(prev_annual_revenue)) * 100
+                except Exception:
+                    pass
+                
+                # 4) 분기별 매출 가속화 및 3분기 연속 가속화
+                try:
+                    if 'Total Revenue' in income_quarterly.index and len(income_quarterly) >= 4:
+                        revenue_data = [income_quarterly.loc['Total Revenue'].iloc[i] for i in range(4)]
+                        if all(not pd.isna(rev) for rev in revenue_data) and all(rev != 0 for rev in revenue_data[1:]):
+                            growth_1 = ((revenue_data[0] - revenue_data[1]) / abs(revenue_data[1])) * 100
+                            growth_2 = ((revenue_data[1] - revenue_data[2]) / abs(revenue_data[2])) * 100
+                            growth_3 = ((revenue_data[2] - revenue_data[3]) / abs(revenue_data[3])) * 100
+                            
+                            data['revenue_growth_acceleration'] = growth_1 > growth_2
+                            data['sales_3q_accel'] = growth_1 > growth_2 > growth_3
+                            data['quarterly_revenue_growth'] = growth_1
+                except Exception:
+                    pass
+                
+                # 5) 분기별 순이익률 개선 및 3분기 연속 가속화
+                try:
+                    if ('Net Income' in income_quarterly.index and 'Total Revenue' in income_quarterly.index and 
+                        len(income_quarterly) >= 4):
+                        margins = []
+                        for i in range(4):
+                            net_income = income_quarterly.loc['Net Income'].iloc[i]
+                            revenue = income_quarterly.loc['Total Revenue'].iloc[i]
+                            if not pd.isna(net_income) and not pd.isna(revenue) and revenue != 0:
+                                margins.append(net_income / revenue)
+                            else:
+                                margins.append(None)
+                        
+                        if len([m for m in margins if m is not None]) >= 3:
+                            valid_margins = [m for m in margins if m is not None]
+                            if len(valid_margins) >= 3:
+                                data['net_margin_improved'] = valid_margins[0] > valid_margins[1]
+                                if len(valid_margins) >= 4:
+                                    accel1 = valid_margins[0] - valid_margins[1]
+                                    accel2 = valid_margins[1] - valid_margins[2]
+                                    accel3 = valid_margins[2] - valid_margins[3]
+                                    data['margin_3q_accel'] = accel1 > accel2 > accel3
+                except Exception:
+                    pass
+                
+                # 6) 부채비율 계산
+                try:
+                    if 'Total Stockholder Equity' in balance_annual.index and 'Total Liab' in balance_annual.index:
+                        total_equity = balance_annual.loc['Total Stockholder Equity'].iloc[0]
+                        total_debt = balance_annual.loc['Total Liab'].iloc[0]
+                        if not pd.isna(total_equity) and not pd.isna(total_debt) and total_equity != 0:
+                            data['debt_to_equity'] = (total_debt / total_equity) * 100  # 백분율로 변환
+                except Exception:
+                    pass
+                
+                # 7) ROE 계산
+                try:
+                    if 'Net Income' in income_annual.index and 'Total Stockholder Equity' in balance_annual.index:
+                        net_income = income_annual.loc['Net Income'].iloc[0]
+                        total_equity = balance_annual.loc['Total Stockholder Equity'].iloc[0]
+                        if not pd.isna(net_income) and not pd.isna(total_equity) and total_equity != 0:
+                            data['roe'] = (net_income / total_equity) * 100
+                except Exception:
+                    pass
                 
         except Exception as e:
             data['error_details'].append(f'yfinance 실패: {str(e)[:50]}')
+            data['has_error'] = True
         
-        # yfinance가 실패했거나 데이터가 부족한 경우 yahooquery로 보완
-        if not yf_success or data['quarterly_revenue_growth'] == 0:
+        # yahooquery로 보완 (yfinance에서 실패한 경우)
+        if data['has_error'] or (data['annual_eps_growth'] == 0 and data['annual_revenue_growth'] == 0):
             try:
                 time.sleep(delay)
                 ticker_yq = Ticker(symbol)
-                income_stmt = ticker_yq.income_statement(frequency='quarterly')
+                income_stmt_q = ticker_yq.income_statement(frequency='quarterly')
+                income_stmt_a = ticker_yq.income_statement(frequency='annual')
                 balance_sheet = ticker_yq.balance_sheet(frequency='annual')
                 
-                # yahooquery로 매출 성장률 보완
-                if data['quarterly_revenue_growth'] == 0 and isinstance(income_stmt, pd.DataFrame) and not income_stmt.empty:
-                    if 'TotalRevenue' in income_stmt.columns:
-                        revenue_data = income_stmt['TotalRevenue'].dropna()
+                # yahooquery로 부족한 데이터 보완
+                if isinstance(income_stmt_q, pd.DataFrame) and not income_stmt_q.empty:
+                    # 매출 성장률 보완
+                    if data['quarterly_revenue_growth'] == 0 and 'TotalRevenue' in income_stmt_q.columns:
+                        revenue_data = income_stmt_q['TotalRevenue'].dropna()
                         if len(revenue_data) >= 2:
                             recent_revenue = revenue_data.iloc[0]
                             prev_revenue = revenue_data.iloc[1]
                             if prev_revenue != 0:
                                 data['quarterly_revenue_growth'] = ((recent_revenue - prev_revenue) / abs(prev_revenue)) * 100
                 
-                # ROE 계산
+                # ROE 및 부채비율 보완
                 if isinstance(balance_sheet, pd.DataFrame) and not balance_sheet.empty:
-                    if 'StockholdersEquity' in balance_sheet.columns and isinstance(income_stmt, pd.DataFrame) and 'NetIncome' in income_stmt.columns:
+                    if data['roe'] == 0 and 'StockholdersEquity' in balance_sheet.columns:
+                        if isinstance(income_stmt_a, pd.DataFrame) and 'NetIncome' in income_stmt_a.columns:
+                            equity = balance_sheet['StockholdersEquity'].dropna()
+                            net_income = income_stmt_a['NetIncome'].dropna()
+                            if len(equity) > 0 and len(net_income) > 0 and equity.iloc[0] != 0:
+                                data['roe'] = (net_income.iloc[0] / equity.iloc[0]) * 100
+                    
+                    if data['debt_to_equity'] == 0 and 'TotalLiabilitiesNetMinorityInterest' in balance_sheet.columns:
+                        debt = balance_sheet['TotalLiabilitiesNetMinorityInterest'].dropna()
                         equity = balance_sheet['StockholdersEquity'].dropna()
-                        net_income = income_stmt['NetIncome'].dropna()
-                        if len(equity) > 0 and len(net_income) > 0 and equity.iloc[0] != 0:
-                            data['roe'] = (net_income.iloc[0] / equity.iloc[0]) * 100
+                        if len(debt) > 0 and len(equity) > 0 and equity.iloc[0] != 0:
+                            data['debt_to_equity'] = (debt.iloc[0] / equity.iloc[0]) * 100
+                
+                # 오류 상태 해제 (일부 데이터라도 수집된 경우)
+                if data['annual_eps_growth'] != 0 or data['annual_revenue_growth'] != 0 or data['roe'] != 0:
+                    data['has_error'] = False
                 
             except Exception as e:
                 data['error_details'].append(f'yahooquery 보완 실패: {str(e)[:50]}')
                 data['has_error'] = True
-        
-        # yfinance와 yahooquery에서 충분한 데이터가 없을 경우 오류 표시
-        if data['quarterly_revenue_growth'] == 0 and data['roe'] == 0:
-            data['has_error'] = True
-            data['error_details'].append('모든 데이터 소스 실패')
         
         financial_data.append(data)
     

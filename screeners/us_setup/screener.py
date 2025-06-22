@@ -105,16 +105,21 @@ def screen_us_setup() -> pd.DataFrame:
 
     print(f"✅ 처리 완료: {processed}개 파일, {len(results)}개 종목 발견")
     
+    ensure_dir(US_SETUP_RESULTS_DIR)
+    
     if results:
         df_res = pd.DataFrame(results)
-        ensure_dir(US_SETUP_RESULTS_DIR)
         df_res.to_csv(US_SETUP_RESULTS_PATH, index=False)
         df_res.to_json(US_SETUP_RESULTS_PATH.replace('.csv', '.json'),
                        orient='records', indent=2)
         print(f"💾 결과 저장 완료: {US_SETUP_RESULTS_PATH}")
         return df_res
     else:
-        print("⚠️ 조건을 만족하는 종목이 없습니다.")
-        return pd.DataFrame()
+        # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
+        empty_df = pd.DataFrame(columns=['symbol', 'price', 'market_cap', 'adr_percent', 'perf_1w_pct', 'perf_1m_pct', 'volume', 'avg_volume60'])
+        empty_df.to_csv(US_SETUP_RESULTS_PATH, index=False)
+        empty_df.to_json(US_SETUP_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2)
+        print(f"⚠️ 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {US_SETUP_RESULTS_PATH}")
+        return empty_df
 
 

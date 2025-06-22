@@ -39,12 +39,20 @@ logger = logging.getLogger(__name__)
 class LeaderStockScreener:
     """주도주 투자 전략 스크리너 클래스"""
     
-    def __init__(self):
+    def __init__(self, skip_data=False):
         """초기화"""
         self.today = get_us_market_today()
+        self.skip_data = skip_data
         ensure_dir(LEADER_STOCK_RESULTS_DIR)
-        self.market_stage = self._determine_market_stage()
-        self._load_metadata()
+        
+        if skip_data:
+            self.market_stage = "unknown"
+            self.sector_data = {}
+            self.pe_data = {}
+            logger.info("Skip data mode: 시장 단계 및 메타데이터 로드 건너뜀")
+        else:
+            self.market_stage = self._determine_market_stage()
+            self._load_metadata()
         
     def _determine_market_stage(self):
         """시장 단계 결정 (Stage 1-4)"""
@@ -183,6 +191,11 @@ class LeaderStockScreener:
         """주도주 스크리닝 실행"""
         logger.info("주도주 투자 전략 스크리닝 시작...")
         logger.info(f"현재 시장 단계: {self.market_stage}")
+        
+        # skip_data 모드에서는 빈 결과 반환
+        if skip_data or self.skip_data:
+            logger.info("Skip data mode: 빈 결과 반환")
+            return pd.DataFrame()
         
         # 섹터 상대 강도 계산
         sector_rs = calculate_sector_rs(SECTOR_ETFS)
@@ -325,7 +338,13 @@ class LeaderStockScreener:
             
             return results_df
         else:
-            logger.info("조건을 만족하는 종목이 없습니다.")
+            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
+            output_file = os.path.join(LEADER_STOCK_RESULTS_DIR, f"leader_stocks_{self.today.strftime('%Y%m%d')}.csv")
+            empty_df = pd.DataFrame(columns=['ticker', 'sector', 'close', 'volume', 'volume_ratio', 'rsi_14', 
+                                           'above_30w_sma', 'above_10w_sma', 'market_stage', 'date'])
+            empty_df.to_csv(output_file, index=False)
+            empty_df.to_json(output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
+            logger.info(f"조건을 만족하는 종목이 없습니다. 빈 파일 생성: {output_file}")
             return pd.DataFrame()
     
     def _get_stage_conditions(self):

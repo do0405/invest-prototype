@@ -46,13 +46,22 @@ logger = logging.getLogger(__name__)
 class MomentumSignalsScreener:
     """상승 모멘텀 신호 스크리너 클래스"""
     
-    def __init__(self):
+    def __init__(self, skip_data=False):
         """초기화"""
         self.today = get_us_market_today()
+        self.skip_data = skip_data
         ensure_dir(MOMENTUM_SIGNALS_RESULTS_DIR)
-        self.rs_scores = self._load_rs_scores()
-        self._load_metadata()
-        self.strong_sectors = self._load_sector_strength()
+        
+        if skip_data:
+            self.rs_scores = {}
+            self.sector_data = {}
+            self.pe_data = {}
+            self.strong_sectors = []
+            logger.info("Skip data mode: 메타데이터 로드 건너뜀")
+        else:
+            self.rs_scores = self._load_rs_scores()
+            self._load_metadata()
+            self.strong_sectors = self._load_sector_strength()
     
 
 
@@ -100,6 +109,11 @@ class MomentumSignalsScreener:
     def screen_momentum_signals(self):
         """상승 모멘텀 신호 스크리닝 실행"""
         logger.info("상승 모멘텀 신호 스크리닝 시작...")
+        
+        # skip_data 모드에서는 빈 결과 반환
+        if self.skip_data:
+            logger.info("Skip data mode: 빈 결과 반환")
+            return pd.DataFrame()
         
         # 결과 저장용 데이터프레임
         results = []
@@ -347,13 +361,26 @@ class MomentumSignalsScreener:
             
             return results_df
         else:
-            logger.info("조건을 만족하는 종목이 없습니다.")
+            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
+            output_file = os.path.join(MOMENTUM_SIGNALS_RESULTS_DIR,
+                                      f"momentum_signals_{self.today.strftime('%Y%m%d')}.csv")
+            empty_df = pd.DataFrame(columns=['ticker', 'sector', 'close', 'volume', 'rs_score', 'momentum_score', 
+                                           'core_signals', 'rsi_14', 'macd', 'macd_signal', 'adx', 'date',
+                                           'golden_cross', 'short_ma_aligned', 'long_ma_aligned', 'macd_crossover',
+                                           'macd_hist_increasing', 'rsi_uptrend', 'stoch_crossover', 'strong_trend',
+                                           'positive_trend', 'bollinger_breakout', 'volume_surge', 'new_high',
+                                           'price_momentum', 'cup_handle_breakout', 'healthy_ma_distance',
+                                           'uptrend_confirmed', 'above_30w_3d', 'stage_2a', 'vwap_breakout',
+                                           'obv_rising', 'ad_new_high', 'rs_rank', 'sector_strong', 'signal'])
+            empty_df.to_csv(output_file, index=False)
+            empty_df.to_json(output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
+            logger.info(f"조건을 만족하는 종목이 없습니다. 빈 파일 생성: {output_file}")
             return pd.DataFrame()
 
 
-def run_momentum_signals_screening():
+def run_momentum_signals_screening(skip_data=False):
     """상승 모멘텀 신호 스크리닝 실행 함수"""
-    screener = MomentumSignalsScreener()
+    screener = MomentumSignalsScreener(skip_data=skip_data)
     return screener.screen_momentum_signals()
 
 

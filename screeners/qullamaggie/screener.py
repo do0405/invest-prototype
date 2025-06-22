@@ -95,7 +95,11 @@ def run_qullamaggie_screening(setup_type=None):
             breakout_df.to_json(BREAKOUT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             print(f"✅ 브레이크아웃 셋업 결과 저장 완료: {len(breakout_df)}개 종목")
         else:
-            print("⚠️ 브레이크아웃 셋업 결과 없음")
+            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
+            empty_breakout_df = pd.DataFrame(columns=['ticker', 'score', 'passed', 'setup_type', 'date'])
+            empty_breakout_df.to_csv(BREAKOUT_RESULTS_PATH, index=False)
+            empty_breakout_df.to_json(BREAKOUT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
+            print(f"⚠️ 브레이크아웃 셋업 결과 없음. 빈 파일 생성: {BREAKOUT_RESULTS_PATH}")
     
     # 에피소드 피벗 셋업 결과 저장
     if setup_type is None or setup_type == 'episode_pivot':
@@ -108,7 +112,11 @@ def run_qullamaggie_screening(setup_type=None):
             episode_pivot_df.to_json(EPISODE_PIVOT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             print(f"✅ 에피소드 피벗 셋업 결과 저장 완료: {len(episode_pivot_df)}개 종목")
         else:
-            print("⚠️ 에피소드 피벗 셋업 결과 없음")
+            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
+            empty_episode_df = pd.DataFrame(columns=['ticker', 'score', 'passed', 'setup_type', 'date'])
+            empty_episode_df.to_csv(EPISODE_PIVOT_RESULTS_PATH, index=False)
+            empty_episode_df.to_json(EPISODE_PIVOT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
+            print(f"⚠️ 에피소드 피벗 셋업 결과 없음. 빈 파일 생성: {EPISODE_PIVOT_RESULTS_PATH}")
     
     # 파라볼릭 숏 셋업 결과 저장
     if setup_type is None or setup_type == 'parabolic_short':
@@ -121,7 +129,11 @@ def run_qullamaggie_screening(setup_type=None):
             parabolic_short_df.to_json(PARABOLIC_SHORT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             print(f"✅ 파라볼릭 숏 셋업 결과 저장 완료: {len(parabolic_short_df)}개 종목")
         else:
-            print("⚠️ 파라볼릭 숏 셋업 결과 없음")
+            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
+            empty_parabolic_df = pd.DataFrame(columns=['ticker', 'score', 'passed', 'setup_type', 'date'])
+            empty_parabolic_df.to_csv(PARABOLIC_SHORT_RESULTS_PATH, index=False)
+            empty_parabolic_df.to_json(PARABOLIC_SHORT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
+            print(f"⚠️ 파라볼릭 숏 셋업 결과 없음. 빈 파일 생성: {PARABOLIC_SHORT_RESULTS_PATH}")
     
     # 결과 요약
     print("\n📊 스크리닝 결과 요약:")

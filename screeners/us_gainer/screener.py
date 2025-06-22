@@ -88,9 +88,10 @@ def screen_us_gainers() -> pd.DataFrame:
 
     print(f"\n📊 스크리닝 완료: {processed_files}개 종목 분석, {qualified_stocks}개 종목이 조건 만족")
     
+    ensure_dir(US_GAINER_RESULTS_DIR)
+    
     if results:
         df_res = pd.DataFrame(results)
-        ensure_dir(US_GAINER_RESULTS_DIR)
         print(f"💾 결과 저장 중: {US_GAINERS_RESULTS_PATH}")
         df_res.to_csv(US_GAINERS_RESULTS_PATH, index=False)
         df_res.to_json(US_GAINERS_RESULTS_PATH.replace('.csv', '.json'),
@@ -98,8 +99,11 @@ def screen_us_gainers() -> pd.DataFrame:
         print(f"✅ 결과 저장 완료: {len(df_res)}개 종목")
         return df_res
     else:
-        print("⚠️ 조건을 만족하는 종목이 없습니다.")
-
-    return pd.DataFrame()
+        # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
+        empty_df = pd.DataFrame(columns=['symbol', 'price', 'change_pct', 'volume', 'relative_volume', 'market_cap', 'eps_growth_qoq'])
+        empty_df.to_csv(US_GAINERS_RESULTS_PATH, index=False)
+        empty_df.to_json(US_GAINERS_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2)
+        print(f"⚠️ 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {US_GAINERS_RESULTS_PATH}")
+        return empty_df
 
 

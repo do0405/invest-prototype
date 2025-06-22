@@ -85,11 +85,11 @@ def main():
             return
         if task == 'momentum':
             print("\n🎯 상승 모멘텀 신호 모드")
-            run_momentum_signals_screener()
+            run_momentum_signals_screener(skip_data=args.skip_data)
             return
         if task == 'ipo':
             print("\n🎯 IPO 투자 전략 모드")
-            run_ipo_investment_screener()
+            run_ipo_investment_screener(skip_data=args.skip_data)
             return
         if task == 'qullamaggie':
             run_qullamaggie_strategy_task(skip_data=args.skip_data)

@@ -296,11 +296,11 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         print("✅ 9단계: 주도주 투자 전략 스크리닝 완료.")
 
         print("\n⏳ 10단계: 상승 모멘텀 신호 스크리닝 실행 중...")
-        run_momentum_signals_screener()
+        run_momentum_signals_screener(skip_data=skip_data)
         print("✅ 10단계: 상승 모멘텀 신호 스크리닝 완료.")
 
         print("\n⏳ 11단계: IPO 투자 전략 스크리닝 실행 중...")
-        run_ipo_investment_screener()
+        run_ipo_investment_screener(skip_data=skip_data)
         print("✅ 11단계: IPO 투자 전략 스크리닝 완료.")
 
         print("\n⏳ 12단계: 쿨라매기 전략 실행 중...")
@@ -385,11 +385,11 @@ def run_leader_stock_screener(skip_data=False):
         print(traceback.format_exc())
 
 
-def run_momentum_signals_screener() -> None:
+def run_momentum_signals_screener(skip_data=False) -> None:
     """Run the momentum signals screener."""
     try:
         print("\n📊 상승 모멘텀 신호 스크리너 시작...")
-        df = run_momentum_signals_screening()
+        df = run_momentum_signals_screening(skip_data=skip_data)
         if not df.empty:
             print(f"✅ 상승 모멘텀 신호 결과 저장 완료: {len(df)}개 종목")
         else:
@@ -440,11 +440,11 @@ def run_stock_metadata_collection() -> None:
         print(traceback.format_exc())
 
 
-def run_ipo_investment_screener() -> None:
+def run_ipo_investment_screener(skip_data=False) -> None:
     """Run the IPO investment screener."""
     try:
         print("\n📊 IPO 투자 전략 스크리너 시작...")
-        df = run_ipo_investment_screening()
+        df = run_ipo_investment_screening(skip_data=skip_data)
         if not df.empty:
             print(f"✅ IPO 투자 전략 결과 저장 완료: {len(df)}개 종목")
         else:
