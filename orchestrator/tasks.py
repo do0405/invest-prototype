@@ -20,7 +20,7 @@ from data_collectors.stock_metadata_collector import main as collect_stock_metad
 from utils.market_regime_indicator import analyze_market_regime
 from screeners.markminervini.filter_stock import run_integrated_screening
 from screeners.markminervini.advanced_financial import run_advanced_financial_screening
-from screeners.markminervini.pattern_detection import analyze_tickers_from_results
+from screeners.markminervini.pattern_detection import run_pattern_detection_on_financial_results
 from screeners.markminervini.screener import run_us_screening
 from screeners.us_setup.screener import screen_us_setup
 from screeners.us_gainer.screener import screen_us_gainers
@@ -218,12 +218,11 @@ def ensure_directories() -> None:
 
 
 def run_pattern_analysis() -> None:
-    """Run pattern analysis on previously screened tickers."""
+    """Run pattern detection on previously screened tickers."""
     try:
-        print("\n📊 패턴 분석 시작...")
-        output_dir = MARKMINERVINI_RESULTS_DIR
-        analyze_tickers_from_results(MARKMINERVINI_RESULTS_DIR, DATA_US_DIR, output_dir)
-        print("✅ 패턴 분석 완료")
+        print("\n📊 패턴 감지 시작...")
+        run_pattern_detection_on_financial_results()
+        print("✅ 패턴 감지 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 패턴 분석 중 오류 발생: {e}")
         print(traceback.format_exc())

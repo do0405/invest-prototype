@@ -46,7 +46,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       'us_with_rs': 'US with RS',
       'us_setup_results': 'US Setup Results',
       'us_gainers_results': 'US Gainers Results',
-      'pattern_analysis_results': 'Pattern Analysis Results'
+      'pattern_detection_results': 'Pattern Detection Results'
     };
     return names[id] || id;
   };
