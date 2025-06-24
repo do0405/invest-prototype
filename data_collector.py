@@ -258,6 +258,8 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                 if len(existing) > 330:
                     print(f"[US] ✂️ {ticker}: 330 영업일 초과 데이터 정리 중 ({len(existing)} → 330)")
                     existing = existing.sort_values("date", ascending=False).head(330).reset_index(drop=True)
+                    # 오래된 데이터가 위에 오도록 다시 정렬
+                    existing = existing.sort_values("date", ascending=True).reset_index(drop=True)
                     
                 last_date = existing["date"].dropna().max().date()
                 start_date = last_date + timedelta(days=1)
@@ -344,6 +346,9 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                 print(f"[US] ✂️ {ticker}: 병합 후 330 영업일 초과 데이터 정리 중 ({len(df_combined)} → 330)")
                 df_combined = df_combined.sort_values("date", ascending=False).head(330).reset_index(drop=True)
             
+            # 최종 저장 전 오래된 데이터가 위에 오도록 정렬
+            df_combined = df_combined.sort_values("date", ascending=True).reset_index(drop=True)
+            
             after_len = len(df_combined)
 
             # 항상 저장하여 데이터 업데이트 보장
@@ -358,6 +363,9 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
             if len(df_new) > 330:
                 print(f"[US] ✂️ {ticker}: 신규 데이터 330 영업일 초과 정리 중 ({len(df_new)} → 330)")
                 df_new = df_new.sort_values("date", ascending=False).head(330).reset_index(drop=True)
+            
+            # 최종 저장 전 오래된 데이터가 위에 오도록 정렬
+            df_new = df_new.sort_values("date", ascending=True).reset_index(drop=True)
                 
             df_new.to_csv(path, index=False)
             print(f"[US] ✅ 신규 저장: {ticker} ({len(df_new)} rows)")
