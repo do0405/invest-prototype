@@ -249,9 +249,9 @@ def get_markminervini_results(screener_name):
         # Check main results directory
         json_file = os.path.join(RESULTS_DIR, f'{screener_name}.json')
         
-        # Check results2 subdirectory for pattern analysis
-        if not os.path.exists(json_file) and screener_name == 'pattern_analysis_results':
-            json_file = os.path.join(RESULTS_DIR, 'results2', f'{screener_name}.json')
+        # Backward compatibility for old pattern analysis path
+        if not os.path.exists(json_file) and screener_name == 'pattern_detection_results':
+            json_file = os.path.join(RESULTS_DIR, 'results2', 'pattern_analysis_results.json')
         
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:

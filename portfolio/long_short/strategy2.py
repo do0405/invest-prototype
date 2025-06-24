@@ -136,26 +136,34 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
                 position_size = min(risk_amount / risk_per_share, total_capital * 0.1 / entry_price)
             else:
                 position_size = total_capital * 0.1 / entry_price
-             
-             # 결과 저장
+
+            # 자산 비중(%) 계산
+            weight_pct = round((position_size * entry_price / total_capital) * 100, 2)
+
+            # 결과 저장 (표준 컬럼 사용)
             results.append({
-                 'symbol': symbol,
-                 'entry_price': round(entry_price, 2),
-                 'stop_loss': round(stop_loss, 2),
-                 'profit_target': round(profit_target, 2),
-                 'position_size': int(position_size),
-                 'adx_7': round(adx_7d, 2),
-                 'rsi_3': round(rsi_3, 2),
-                 'atr_10': round(atr_10.iloc[-1], 4),
-                 'avg_close_10': round(avg_close_10, 2),
-                 'avg_daily_value_20': round(avg_daily_value_20, 0),
-                 'adx_7d': adx_7d  # 정렬용
-             })
+                '종목명': symbol,
+                '매수일': datetime.now().strftime('%Y-%m-%d'),
+                '매수가': round(entry_price, 2),
+                '비중(%)': weight_pct,
+                '수익률': 0.0,
+                '차익실현': round(profit_target, 2),
+                '손절매': round(stop_loss, 2),
+                '수익보호': '없음',
+                '롱여부': False,
+                # 정렬 및 분석용 부가 정보
+                'adx_7': round(adx_7d, 2),
+                'rsi_3': round(rsi_3, 2),
+                'atr_10': round(atr_10.iloc[-1], 4),
+                'avg_close_10': round(avg_close_10, 2),
+                'avg_daily_value_20': round(avg_daily_value_20, 0),
+                'adx_7d': adx_7d  # 정렬용
+            })
         
         if not results:
             print("❌ 스크리닝 결과가 없습니다.")
-            # 빈 결과 파일 생성
-            empty_columns = ['symbol', 'entry_price', 'stop_loss', 'profit_target', 'position_size', 'adx_7', 'rsi_3', 'atr_10', 'avg_close_10', 'avg_daily_value_20']
+            # 빈 결과 파일 생성 - 표준 컬럼 사용
+            empty_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
             pd.DataFrame(columns=empty_columns).to_csv(result_file, index=False, encoding='utf-8-sig')
             # JSON 파일 생성
             json_file = result_file.replace('.csv', '.json')
@@ -171,9 +179,9 @@ def run_strategy2_screening(total_capital=100000, update_existing=False):
         # 상위 10개 종목만 선택
         result_df = result_df.head(10)
         
-        # 결과 CSV에 포함할 컬럼 선택
-        columns_to_save = ['symbol', 'entry_price', 'stop_loss', 'profit_target', 'position_size', 'adx_7', 'rsi_3', 'atr_10', 'avg_close_10', 'avg_daily_value_20']
-        result_df_to_save = result_df[columns_to_save]
+        # 결과 CSV에 포함할 컬럼 선택 (표준 컬럼)
+        strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
+        result_df_to_save = result_df[strategy_result_columns]
 
         # 결과 저장
         result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')

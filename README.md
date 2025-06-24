@@ -6,7 +6,7 @@
 
 ### 1. 스크리닝 시스템
 - **기술적 스크리닝**: Mark Minervini 기법 기반 상대강도(RS) 점수 계산
-- **재무제표 스크리닝**: EPS, 매출, 영업이익률 등 11개 재무 지표 분석
+- **재무제표 스크리닝**: EPS, 매출, 영업이익률 등 9개 재무 지표 분석
 - **통합 스크리닝**: 기술적 분석과 재무 분석을 결합한 종합 평가
 - **변동성 스큐 스크리닝**: 옵션 데이터 기반 변동성 스큐 역전 전략
 
@@ -118,7 +118,7 @@ python data_collectors/stock_metadata_collector.py
 - 현재가가 52주 최고가의 75% 이상
 - 현재가가 52주 최저가의 125% 이상
 - 상대강도(RS) 점수 70 이상
-### 재무제표 분석 (11개 지표)
+### 재무제표 분석 (9개 지표)
 1. EPS 성장률 : 분기/연간 20% 이상
 2. EPS 가속화 : 최근 분기 성장률 > 이전 분기
 3. 매출 성장률 : 분기/연간 20% 이상
@@ -145,7 +145,7 @@ python data_collectors/stock_metadata_collector.py
 - results/portfolio/portfolio_integration_report.csv/.json : 포트폴리오 통합 보고서
 ### 주요 결과 지표
 - rs_score : 상대강도 점수 (0-100)
-- fin_met_count : 충족한 재무 조건 수 (0-11)
+- fin_met_count : 충족한 재무 조건 수 (0-9)
 - total_percentile : 종합 백분위 점수
 - portfolio_weight : 포트폴리오 내 비중
 - expected_return : 예상 수익률

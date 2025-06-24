@@ -100,10 +100,10 @@ def run_advanced_financial_screening(force_update=False, skip_data=False):
                     final_df['total_percentile'] = final_df['rs_percentile'] + final_df['fin_percentile']
                     
                     # 정렬 기준:
-                    # 1. fin_met_count가 11인 종목 우선
+                    # 1. fin_met_count가 9인 종목 우선
                     # 2. total_percentile (내림차순)
                     # 3. rs_score (내림차순)
-                    final_df['is_perfect'] = final_df['fin_met_count'] == 11
+                    final_df['is_perfect'] = final_df['fin_met_count'] == 9
                     final_df = final_df.sort_values(
                         ['is_perfect', 'total_percentile', 'rs_score'],
                         ascending=[False, False, False]

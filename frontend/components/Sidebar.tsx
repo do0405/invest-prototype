@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
     { id: 'us_with_rs', name: 'US with RS', icon: '🇺🇸' },
     { id: 'us_setup_results', name: 'US Setup Results', icon: '⚙️' },
     { id: 'us_gainers_results', name: 'US Gainers Results', icon: '📈' },
-    { id: 'pattern_analysis_results', name: 'Pattern Analysis', icon: '📊' },
+    { id: 'pattern_detection_results', name: 'Pattern Detection', icon: '📊' },
   ];
 
   return (

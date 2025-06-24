@@ -452,7 +452,7 @@ def analyze_tickers_from_results(results_dir: str, data_dir: str, output_dir: st
 
     out_df = pd.DataFrame(analysis)
     out_df = out_df.sort_values(['vcp', 'cup_handle'], ascending=False)
-    out_file = os.path.join(output_dir, 'pattern_analysis_results.csv')
+    out_file = os.path.join(output_dir, 'pattern_detection_results.csv')
     out_df.to_csv(out_file, index=False, encoding='utf-8-sig')
     out_df.to_json(out_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
     return out_df
