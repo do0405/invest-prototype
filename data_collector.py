@@ -241,29 +241,29 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                 existing = pd.read_csv(path, parse_dates=["date"])
                 if "date" not in existing.columns:
                     raise ValueError("❌ 'date' 컬럼 없음")
-                
+
                 # 날짜 데이터를 UTC로 변환
                 existing["date"] = pd.to_datetime(existing["date"], utc=True)
-                
-                # 빈 파일이거나 데이터가 부족한 경우 새로 수집
+
                 if len(existing) == 0:
+                    # 헤더만 존재하는 빈 파일의 경우 새로 수집
                     print(f"[US] 📊 빈 파일 감지, 새로 데이터 수집: {ticker}")
                     existing = None
                     start_date = today - timedelta(days=450)
-                
-                # 날짜 컬럼이 UTC 시간대로 변환되었는지 확인
-                if not pd.api.types.is_datetime64tz_dtype(existing["date"]):
-                    existing["date"] = pd.to_datetime(existing["date"], utc=True)
-                    
-                # 330 영업일 제한 적용 (데이터가 330일 이상인 경우 오래된 데이터 제거)
-                if len(existing) > 330:
-                    print(f"[US] ✂️ {ticker}: 330 영업일 초과 데이터 정리 중 ({len(existing)} → 330)")
-                    existing = existing.sort_values("date", ascending=False).head(330).reset_index(drop=True)
-                    # 오래된 데이터가 위에 오도록 다시 정렬
-                    existing = existing.sort_values("date", ascending=True).reset_index(drop=True)
-                    
-                last_date = existing["date"].dropna().max().date()
-                start_date = last_date + timedelta(days=1)
+                else:
+                    # 날짜 컬럼이 UTC 시간대로 변환되었는지 확인
+                    if not pd.api.types.is_datetime64tz_dtype(existing["date"]):
+                        existing["date"] = pd.to_datetime(existing["date"], utc=True)
+
+                    # 330 영업일 제한 적용 (데이터가 330일 이상인 경우 오래된 데이터 제거)
+                    if len(existing) > 330:
+                        print(f"[US] ✂️ {ticker}: 330 영업일 초과 데이터 정리 중 ({len(existing)} → 330)")
+                        existing = existing.sort_values("date", ascending=False).head(330).reset_index(drop=True)
+                        # 오래된 데이터가 위에 오도록 다시 정렬
+                        existing = existing.sort_values("date", ascending=True).reset_index(drop=True)
+
+                    last_date = existing["date"].dropna().max().date()
+                    start_date = last_date + timedelta(days=1)
             except Exception as e:
                 print(f"⚠️ {ticker} 기존 파일 오류: {e}")
                 existing = None
