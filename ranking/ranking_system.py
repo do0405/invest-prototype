@@ -10,14 +10,15 @@ from typing import Dict, List, Optional, Tuple, Union
 from pathlib import Path
 import logging
 from datetime import datetime, timedelta
+from config import DATA_US_DIR
 
 # Import existing modules for integration
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from mcda_calculator import MCDACalculator, MCDAMethod
-from criteria_weights import CriteriaWeights, InvestmentStrategy
+from .mcda_calculator import MCDACalculator, MCDAMethod
+from .criteria_weights import CriteriaWeights, InvestmentStrategy
 
 # Import existing utility modules
 try:
@@ -25,7 +26,6 @@ try:
     from utils.io_utils import *
     from utils.relative_strength import calculate_relative_strength
     from screeners.base_screener import BaseScreener
-    from data.data_collector import DataCollector
 except ImportError as e:
     logging.warning(f"Could not import some utility modules: {e}")
     logging.warning("Some features may not be available")
@@ -38,15 +38,18 @@ class StockRankingSystem:
     decision analysis methods.
     """
     
-    def __init__(self, 
-                 data_directory: str = "c:\\Users\\HOME\\Desktop\\invest_prototype\\data\\us",
+    def __init__(self,
+                 data_directory: Optional[str] = None,
                  cache_directory: Optional[str] = None):
         """Initialize the ranking system.
         
         Args:
-            data_directory: Directory containing stock data
+            data_directory: Directory containing stock data. If ``None``,
+                uses ``config.DATA_US_DIR``.
             cache_directory: Directory for caching calculated indicators
         """
+        if data_directory is None:
+            data_directory = DATA_US_DIR
         self.data_directory = Path(data_directory)
         self.cache_directory = Path(cache_directory) if cache_directory else None
         
@@ -54,12 +57,7 @@ class StockRankingSystem:
         self.mcda_calculator = MCDACalculator()
         self.criteria_weights = CriteriaWeights()
         
-        # Initialize data collector if available
-        try:
-            self.data_collector = DataCollector()
-        except:
-            self.data_collector = None
-            logging.warning("DataCollector not available")
+
             
         # Setup logging
         logging.basicConfig(level=logging.INFO)
@@ -83,7 +81,8 @@ class StockRankingSystem:
             file_path = self.data_directory / f"{symbol}.csv"
             if file_path.exists():
                 df = pd.read_csv(file_path)
-                df['date'] = pd.to_datetime(df['date'])
+                df.columns = [c.lower().replace(' ', '_') for c in df.columns]
+                df['date'] = pd.to_datetime(df['date'], utc=True, errors='coerce')
                 df = df.sort_values('date').tail(days).reset_index(drop=True)
                 return df
             else:
@@ -391,18 +390,29 @@ class StockRankingSystem:
         weighted_criteria = list(filtered_weights.keys())
         decision_matrix = decision_matrix[weighted_criteria]
         
-        # Prepare weights and types arrays
-        weights_array = np.array([filtered_weights[col] for col in decision_matrix.columns])
-        types_array = [criteria_types[col] for col in decision_matrix.columns]
-        
-        # Calculate MCDA scores
+        # Prepare weights and types for MCDA calculator
+        # Set decision matrix for calculator
+        weights_dict = {col: filtered_weights[col] for col in decision_matrix.columns}
+        types_dict = {col: criteria_types[col] for col in decision_matrix.columns}
+
         try:
-            scores = self.mcda_calculator.calculate_scores(
-                decision_matrix.values,
-                weights_array,
-                types_array,
-                method
+            self.mcda_calculator.set_decision_matrix(
+                decision_matrix,
+                weights_dict,
+                types_dict
             )
+
+            mcda_results = self.mcda_calculator.calculate_all_methods([method])
+            if method == MCDAMethod.TOPSIS:
+                scores = mcda_results['topsis_score'].values
+            elif method == MCDAMethod.VIKOR:
+                scores = -mcda_results['Q'].values  # Lower Q is better
+            elif method == MCDAMethod.WEIGHTED_SUM:
+                scores = mcda_results['weighted_sum_score'].values
+            elif method == MCDAMethod.COPRAS:
+                scores = mcda_results['copras_score'].values
+            else:
+                scores = mcda_results.iloc[:, 0].values
             
             # Create results DataFrame
             results = pd.DataFrame({
