@@ -57,14 +57,10 @@ ADVANCED_FINANCIAL_MIN_MET = 4  # 최소 충족해야 할 재무 조건 수
 
 # 재무제표 스크리닝 기준
 ADVANCED_FINANCIAL_CRITERIA = {
-    'min_quarterly_eps_growth': 20,  # 최근 분기 EPS 성장률 ≥ +20%
-    'min_annual_eps_growth': 20,    # 최근 연간 EPS 성장률 ≥ +20%
-    'min_quarterly_revenue_growth': 20,  # 최근 분기 매출 성장률 ≥ +20%
-    'min_annual_revenue_growth': 20,     # 최근 연간 매출 성장률 ≥ +20%
-    'min_quarterly_net_income_growth': 20,  # 최근 분기 순이익 증가율 ≥ +20%
-    'min_annual_net_income_growth': 20,     # 최근 연간 순이익 증가율 ≥ +20%
-    'min_roe': 15,                  # 최근 연간 ROE ≥ 15%
-    'max_debt_to_equity': 150       # 부채비율 ≤ 150%
+    # bullet points in ``prompts/to make it better.md`` 기준
+    'min_annual_eps_growth': 20,      # 연간 EPS 성장률 ≥ 20%
+    'min_annual_revenue_growth': 15,  # 연간 매출 성장률 ≥ 15%
+    'max_debt_to_equity': 150         # 부채비율 ≤ 150%
 }
 
 # 변동성 스큐 역전 전략 기준 (Xing et al. 2010 논문 기반)
