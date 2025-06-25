@@ -245,10 +245,11 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                 # 날짜 데이터를 UTC로 변환
                 existing["date"] = pd.to_datetime(existing["date"], utc=True)
                 
-                # 빈 파일 확인 (상장 폐지 종목 표시용)
-                if len(existing) == 0 and all(col in existing.columns for col in ["date", "symbol", "open", "high", "low", "close", "volume"]):
-                    print(f"[US] 🚫 상장 폐지 종목 (이전에 확인됨): {ticker}")
-                    return False
+                # 빈 파일이거나 데이터가 부족한 경우 새로 수집
+                if len(existing) == 0:
+                    print(f"[US] 📊 빈 파일 감지, 새로 데이터 수집: {ticker}")
+                    existing = None
+                    start_date = today - timedelta(days=450)
                 
                 # 날짜 컬럼이 UTC 시간대로 변환되었는지 확인
                 if not pd.api.types.is_datetime64tz_dtype(existing["date"]):
