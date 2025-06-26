@@ -13,8 +13,8 @@ from config import QULLAMAGGIE_RESULTS_DIR
 from utils import ensure_dir
 
 # 쿨라매기 모듈 임포트
-from qullamaggie.screener import run_qullamaggie_screening
-from qullamaggie.signal_generator import (
+from .screener import run_qullamaggie_screening
+from .signal_generator import (
     generate_buy_signals,
     generate_sell_signals,
     manage_positions

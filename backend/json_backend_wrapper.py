@@ -8,7 +8,7 @@ from typing import Dict, Any, List
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from api_utils import DataManager
+from .api_utils import DataManager
 
 class BackendWrapper:
     """기존 기능을 백엔드 API 형태로 래핑"""

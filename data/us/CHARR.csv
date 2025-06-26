@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-17 00:00:00-04:00,0.0,0.1599999964237213,0.1599999964237213,0.1599999964237213,0.1599999964237213,2,CHARR

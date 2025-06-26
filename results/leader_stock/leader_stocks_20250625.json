@@ -1,0 +1,14 @@
+[
+  {
+    "ticker":"CAR",
+    "sector":"Industrials",
+    "close":171.8600006104,
+    "volume":3408100,
+    "volume_ratio":2.7139307841,
+    "rsi_14":87.0183938163,
+    "above_30w_sma":true,
+    "above_10w_sma":true,
+    "market_stage":"stage1",
+    "date":"2025-06-25"
+  }
+]

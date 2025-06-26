@@ -377,7 +377,7 @@ def get_qullamaggie_sell_signals():
 def run_qullamaggie_screening():
     """쿨라매기 매매법 스크리닝 실행"""
     try:
-        from qullamaggie import run_qullamaggie_strategy
+        from screeners.qullamaggie import run_qullamaggie_strategy
 
         data = request.get_json()
         mode = data.get('mode', 'all')  # all, breakout, episode_pivot, parabolic_short

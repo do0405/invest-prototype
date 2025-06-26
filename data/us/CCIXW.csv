@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-24 00:00:00-04:00,1.0,1.0,0.9348999857902527,1.0,1.0,16541,CCIXW

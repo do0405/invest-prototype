@@ -155,23 +155,62 @@ def run_strategy5_screening():
         # ADX 내림차순, RSI 오름차순으로 정렬
         result_df = result_df.sort_values(['adx_7', 'rsi_3'], ascending=[False, True])
         
-        # 상위 10개 종목만 선택
-        result_df = result_df.head(10)
+        # 기존 포트폴리오 로드 및 병합 (원칙 3: 이미 채워진 종목은 매수일을 업데이트하지 않음)
+        existing_portfolio = pd.DataFrame()
+        if os.path.exists(result_file):
+            try:
+                existing_portfolio = pd.read_csv(result_file, encoding='utf-8-sig')
+                print(f"📂 기존 포트폴리오 로드: {len(existing_portfolio)}개 종목")
+            except Exception as e:
+                print(f"⚠️ 기존 포트폴리오 로드 실패: {e}")
+                existing_portfolio = pd.DataFrame()
         
-        # 결과 CSV에 포함할 컬럼 선택 (표준 컬럼)
-        strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
-        result_df_to_save = result_df[strategy_result_columns]
-
+        # 새로운 후보 종목들 (기존 종목 제외)
+        if not existing_portfolio.empty:
+            existing_symbols = set(existing_portfolio['종목명'].tolist())
+            new_candidates = result_df[~result_df['종목명'].isin(existing_symbols)]
+        else:
+            new_candidates = result_df
+        
+        # 포트폴리오 구성 (원칙 1: 항상 최대한 만족하는 10개의 종목을 채우려 노력)
+        final_portfolio = existing_portfolio.copy()
+        
+        # 10개까지 채우기 위해 새로운 종목 추가 (조건에 맞는 종목이 있을 때만)
+        needed_count = max(0, 10 - len(final_portfolio))
+        if needed_count > 0:
+            if not new_candidates.empty:
+                additional_stocks = new_candidates.head(needed_count)
+                # 결과 CSV에 포함할 컬럼 선택 (표준 컬럼)
+                strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
+                additional_stocks_filtered = additional_stocks[strategy_result_columns]
+                final_portfolio = pd.concat([final_portfolio, additional_stocks_filtered], ignore_index=True)
+                print(f"➕ {len(additional_stocks_filtered)}개 새로운 종목 추가")
+            else:
+                print(f"⚠️ 조건에 맞는 새로운 종목이 없어 {len(final_portfolio)}개로 유지합니다.")
+        
+        # 원칙 2: 실행해서 csv파일이 일부라도 비어있을 경우(10개 미만일 경우) 종목을 찾는다
+        if len(final_portfolio) < 10 and not result_df.empty:
+            remaining_needed = 10 - len(final_portfolio)
+            print(f"📋 포트폴리오가 {len(final_portfolio)}개로 부족하여 {remaining_needed}개 더 채웁니다.")
+            strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
+            additional_fill = result_df.head(remaining_needed)[strategy_result_columns]
+            final_portfolio = pd.concat([final_portfolio, additional_fill], ignore_index=True)
+        
+        # 최종 포트폴리오가 비어있는 경우 빈 파일 생성
+        if final_portfolio.empty:
+            strategy_result_columns = ['종목명', '매수일', '매수가', '비중(%)', '수익률', '차익실현', '손절매', '수익보호', '롱여부']
+            final_portfolio = pd.DataFrame(columns=strategy_result_columns)
+        
         # 결과 저장
-        result_df_to_save.to_csv(result_file, index=False, encoding='utf-8-sig')
+        final_portfolio.to_csv(result_file, index=False, encoding='utf-8-sig')
         
         # JSON 파일도 저장
         json_file = result_file.replace('.csv', '.json')
-        result_df_to_save.to_json(json_file, orient='records', force_ascii=False, indent=2)
+        final_portfolio.to_json(json_file, orient='records', force_ascii=False, indent=2)
         
-        print(f"✅ 전략 5 스크리닝 결과 저장 완료: {len(result_df_to_save)}개 종목, 경로: {result_file}")
+        print(f"✅ 전략 5 스크리닝 결과 저장 완료: {len(final_portfolio)}개 종목, 경로: {result_file}")
         print("\n🏆 전략 5 상위 종목 (스크리닝 결과):")
-        print(result_df_to_save)
+        print(final_portfolio)
 
 
     except Exception as e:
@@ -184,7 +223,7 @@ def run_strategy5_screening():
 
 
 
-def run_strategy(total_capital=100000):
+def run_strategy():
     """Wrapper function for main.py compatibility"""
     return run_strategy5_screening()
 

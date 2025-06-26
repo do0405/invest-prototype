@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-23 00:00:00-04:00,6.5,5.5,5.5,5.5,5.5,101,NVAWW

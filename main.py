@@ -30,6 +30,7 @@ from orchestrator.tasks import (
     run_qullamaggie_strategy_task,
     run_market_regime_analysis,
     run_image_pattern_detection_task,
+    run_ranking_system_task,
     setup_scheduler,
     run_scheduler,
 )
@@ -41,7 +42,7 @@ def main():
     parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 실행')
     parser.add_argument('--task', default='all',
                         choices=['all', 'screening', 'volatility-skew', 'setup', 'gainers', 'leader-stock',
-                                 'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime', 'image-pattern'],
+                                 'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime', 'image-pattern', 'ranking'],
                         help='실행할 작업 선택')
     parser.add_argument('--schedule', action='store_true', help='스케줄러 모드 실행')
     
@@ -101,6 +102,10 @@ def main():
             print("\n🎯 이미지 패턴 감지 모드")
             run_image_pattern_detection_task(skip_data=args.skip_data)
             return
+        if task == 'ranking':
+            print("\n🎯 MCDA 기반 종목 랭킹 모드")
+            run_ranking_system_task(skip_data=args.skip_data)
+            return
         if task == 'portfolio':
             create_portfolio_manager()
             return
@@ -118,7 +123,10 @@ def main():
         run_all_screening_processes(skip_data=args.skip_data)
         execute_strategies()
 
-        print("\n🏦 3단계: 포트폴리오 관리 실행")
+        print("\n📊 3단계: MCDA 기반 종목 랭킹 실행")
+        run_ranking_system_task(skip_data=args.skip_data)
+
+        print("\n🏦 4단계: 포트폴리오 관리 실행")
         create_portfolio_manager()
 
         print("\n🎉 모든 프로세스 완료!")

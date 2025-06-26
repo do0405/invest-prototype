@@ -19,6 +19,13 @@ from typing import Dict, List, Tuple, Optional
 import warnings
 warnings.filterwarnings('ignore')
 
+# YOLO import (ultralytics 라이브러리 필요)
+try:
+    from ultralytics import YOLO
+except ImportError:
+    YOLO = None
+    print("Warning: ultralytics 라이브러리가 설치되지 않았습니다. 이미지 패턴 감지 기능이 제한됩니다.")
+
 # 프로젝트 루트 경로 설정
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, project_root)
@@ -193,6 +200,9 @@ class ImagePatternDetector:
             
             # YOLOv8 모델 사용 (ultralytics 라이브러리 필요)
             try:
+                if YOLO is None:
+                    raise ImportError("ultralytics 라이브러리가 설치되지 않았습니다.")
+                    
                 # Hugging Face에서 주식 패턴 감지 전용 모델 사용
                 logger.info("Hugging Face YOLOv8 패턴 감지 모델 로드 중...")
                 model = YOLO('foduucom/stockmarket-pattern-detection-yolov8')

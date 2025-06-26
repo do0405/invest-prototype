@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-24 00:00:00-04:00,0.25,0.2660999894142151,0.23399999737739563,0.23999999463558197,0.23999999463558197,108900,CHACR

@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-18 00:00:00-04:00,0.17499999701976776,0.1875,0.1875,0.1875,0.1875,37,TAVIR

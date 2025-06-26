@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-20 00:00:00-04:00,0.25,0.2410999983549118,0.2410999983549118,0.2410999983549118,0.2410999983549118,1721,PLMKW

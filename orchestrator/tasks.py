@@ -619,3 +619,58 @@ def run_image_pattern_detection_task(skip_data: bool = False):
     except Exception as e:
         print(f"❌ 이미지 패턴 감지 실행 중 오류: {e}")
         print(traceback.format_exc())
+
+def run_ranking_system_task(skip_data: bool = False):
+    """
+    MCDA 기반 종목 랭킹 시스템 실행
+    
+    Args:
+        skip_data: 데이터 수집 건너뛰기
+    """
+    try:
+        print("\n📊 MCDA 기반 종목 랭킹 시스템 시작")
+        
+        # 랭킹 시스템 모듈 임포트
+        from ranking.ranking_system import StockRankingSystem
+        from ranking.criteria_weights import InvestmentStrategy
+        from ranking.mcda_calculator import MCDAMethod
+        from ranking.utils import load_all_screener_symbols, get_market_regime_strategy
+        
+        # 모든 스크리너 결과를 활용해 종목 코드를 로드
+        symbols = load_all_screener_symbols()
+        
+        if not symbols:
+            print("⚠️ 스크리너 결과에서 종목을 찾을 수 없습니다.")
+            return
+        
+        print(f"📈 {len(symbols)}개 종목에 대해 랭킹 분석 시작")
+        
+        # 시장 상황에 맞는 전략 선택
+        strategy = get_market_regime_strategy(InvestmentStrategy.BALANCED)
+        
+        # 랭킹 시스템 초기화 및 실행
+        ranking_system = StockRankingSystem(data_directory=DATA_US_DIR)
+        rankings = ranking_system.rank_stocks(
+            symbols=symbols,
+            strategy=strategy,
+            method=MCDAMethod.TOPSIS,
+        )
+        
+        if not rankings.empty:
+            # 상위 10개 종목 출력
+            top10 = rankings[['rank', 'symbol', 'score']].head(10)
+            print("\n🏆 상위 10개 종목:")
+            print(top10.to_string(index=False))
+            
+            # 결과 저장
+            output_path = os.path.join(RESULTS_DIR, 'ranking_results.csv')
+            rankings.to_csv(output_path, index=False)
+            print(f"\n💾 랭킹 결과가 저장되었습니다: {output_path}")
+            
+            print(f"✅ 랭킹 시스템 완료: {len(rankings)}개 종목 분석")
+        else:
+            print("⚠️ 랭킹 결과가 생성되지 않았습니다.")
+            
+    except Exception as e:
+        print(f"❌ 랭킹 시스템 실행 중 오류: {e}")
+        print(traceback.format_exc())

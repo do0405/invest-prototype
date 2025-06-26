@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-24 00:00:00-04:00,0.25,0.27000001072883606,0.25,0.25,0.25,18610,RANGR

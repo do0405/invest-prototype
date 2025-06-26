@@ -24,8 +24,7 @@ from .criteria_weights import CriteriaWeights, InvestmentStrategy
 try:
     from utils.calc_utils import *
     from utils.io_utils import *
-    from utils.relative_strength import calculate_relative_strength
-    from screeners.base_screener import BaseScreener
+    from utils.relative_strength import calculate_rs_score
 except ImportError as e:
     logging.warning(f"Could not import some utility modules: {e}")
     logging.warning("Some features may not be available")
