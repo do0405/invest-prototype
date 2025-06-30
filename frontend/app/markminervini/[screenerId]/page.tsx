@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
 import ScreeningCriteria from '@/components/ScreeningCriteria';
+import TradingViewChart from '@/components/TradingViewChart';
 interface ScreenerPageProps {
   params: Promise<{
     screenerId: string;
@@ -33,6 +34,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   const getScreenerName = (id: string) => {
     const names: { [key: string]: string } = {
@@ -280,6 +282,13 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         </button>
       </div>
 
+      {selectedSymbol && (
+        <div className="mb-6 bg-white rounded-lg shadow p-4">
+          <h2 className="text-xl font-semibold mb-4">{selectedSymbol} 차트</h2>
+          <TradingViewChart symbol={selectedSymbol} height="500px" />
+        </div>
+      )}
+
       {/* 슬라이더 필터 패널 */}
       <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
         showFilters 
@@ -357,6 +366,8 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
             striped={true}
             hoverable={true}
             className="shadow-xl"
+            onSymbolSelect={setSelectedSymbol}
+            disableModal
           />
         </div>
       ) : (

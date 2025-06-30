@@ -18,6 +18,8 @@ interface DataTableProps<T> {
   responsive?: boolean;
   cardClassName?: string;
   onRowClick?: (item: T) => void;
+  onSymbolSelect?: (symbol: string) => void;
+  disableModal?: boolean;
   striped?: boolean;
   hoverable?: boolean;
 }
@@ -77,6 +79,8 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
   responsive = true,
   cardClassName = 'bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-3 hover:shadow-md transition-shadow',
   onRowClick,
+  onSymbolSelect,
+  disableModal = false,
   striped = true,
   hoverable = true
 }: DataTableProps<T>) {
@@ -98,8 +102,13 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
     // symbol 또는 ticker 필드 찾기
     const symbol = item.symbol || item.ticker || item.Symbol || item.Ticker;
     if (symbol) {
-      setSelectedSymbol(String(symbol));
-      setIsModalOpen(true);
+      if (onSymbolSelect) {
+        onSymbolSelect(String(symbol));
+      }
+      if (!disableModal) {
+        setSelectedSymbol(String(symbol));
+        setIsModalOpen(true);
+      }
     }
     if (onRowClick) {
       onRowClick(item);
@@ -223,7 +232,7 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
       </div>
 
       {/* TradingView 모달 */}
-      {selectedSymbol && (
+      {!disableModal && selectedSymbol && (
         <TradingViewModal
           symbol={selectedSymbol}
           isOpen={isModalOpen}

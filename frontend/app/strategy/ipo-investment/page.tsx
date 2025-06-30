@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
 import { apiClient, ScreeningData } from '@/lib/api';
+import TradingViewChart from '@/components/TradingViewChart';
 
 export default function IPOInvestmentPage() {
   const [data, setData] = useState<ScreeningData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -52,8 +54,14 @@ export default function IPOInvestmentPage() {
         ← Back to Dashboard
       </Link>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">IPO Investment Screener</h1>
+      {selectedSymbol && (
+        <div className="mb-6 bg-white rounded-lg shadow p-4">
+          <h2 className="text-xl font-semibold mb-4">{selectedSymbol} 차트</h2>
+          <TradingViewChart symbol={selectedSymbol} height="500px" />
+        </div>
+      )}
       {data.length > 0 ? (
-        <DataTable data={data} columns={columns} />
+        <DataTable data={data} columns={columns} onSymbolSelect={setSelectedSymbol} disableModal />
       ) : (
         <div className="text-center text-gray-500">No data available</div>
       )}
