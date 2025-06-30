@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+
+# 환경변수 로드
+load_dotenv()
 import pandas as pd
 import os
 import sys
@@ -30,7 +35,7 @@ def get_screening_results():
     """스크리닝 결과 반환"""
     try:
         # us_with_rs.json 파일 읽기
-        json_file = os.path.join(RESULTS_DIR, 'us_with_rs.json')
+        json_file = os.path.join(MARKMINERVINI_RESULTS_DIR, 'us_with_rs.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
             mtime = os.path.getmtime(json_file)
@@ -49,7 +54,7 @@ def get_screening_results():
 def get_financial_results():
     """재무제표 스크리닝 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_DIR, 'advanced_financial_results.json')
+        json_file = os.path.join(MARKMINERVINI_RESULTS_DIR, 'advanced_financial_results.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
             mtime = os.path.getmtime(json_file)
@@ -110,7 +115,9 @@ def get_portfolio_by_strategy(strategy_name):
 def get_strategy_description(strategy_name):
     """전략 설명 텍스트 반환"""
     try:
-        md_path = os.path.join('portfolio', 'long_short', 'strategy', f'{strategy_name}.md')
+        # 프로젝트 루트 디렉토리 기준으로 절대경로 설정
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        md_path = os.path.join(project_root, 'portfolio', 'long_short', 'strategy', f'{strategy_name}.md')
         if os.path.exists(md_path):
             with open(md_path, 'r', encoding='utf-8') as f:
                 text = f.read()
@@ -123,7 +130,9 @@ def get_strategy_description(strategy_name):
 def get_screener_description(screener_name):
     """스크리너 설명 텍스트 반환"""
     try:
-        md_path = os.path.join('screeners', 'markminervini', f'{screener_name}.md')
+        # 프로젝트 루트 디렉토리 기준으로 절대경로 설정
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        md_path = os.path.join(project_root, 'screeners', 'markminervini', f'{screener_name}.md')
         if os.path.exists(md_path):
             with open(md_path, 'r', encoding='utf-8') as f:
                 text = f.read()
@@ -274,7 +283,9 @@ def get_markminervini_results(screener_name):
 def get_qullamaggie_description():
     """쿨라매기 매매법 설명 텍스트 반환"""
     try:
-        md_path = os.path.join('qullamaggie', 'pattern.md')
+        # 프로젝트 루트 디렉토리 기준으로 절대경로 설정
+        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+        md_path = os.path.join(project_root, 'screeners', 'qullamaggie', 'pattern.md')
         if os.path.exists(md_path):
             with open(md_path, 'r', encoding='utf-8') as f:
                 text = f.read()
@@ -397,4 +408,6 @@ def run_qullamaggie_screening():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.getenv('BACKEND_PORT', 3001))
+    debug = os.getenv('FLASK_ENV', 'development') == 'development'
+    app.run(debug=debug, host='0.0.0.0', port=port)

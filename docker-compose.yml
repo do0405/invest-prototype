@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "${BACKEND_PORT:-5000}:${BACKEND_PORT:-5000}"
+    environment:
+      - BACKEND_PORT=${BACKEND_PORT:-5000}
+      - FLASK_ENV=${FLASK_ENV:-production}
+      - SEC_API_USER_AGENT=${SEC_API_USER_AGENT}
+      - CACHE_DIRECTORY=${CACHE_DIRECTORY:-data/cache}
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
+    env_file:
+      - .env
+    networks:
+      - invest-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      - BACKEND_URL=http://backend:${BACKEND_PORT:-5000}
+      - NODE_ENV=${NODE_ENV:-production}
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    networks:
+      - invest-network
+
+networks:
+  invest-network:
+    driver: bridge
+
+volumes:
+  data:
+  results:

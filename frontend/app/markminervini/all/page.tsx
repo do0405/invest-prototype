@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
-import DataTable, { DataTableColumn } from '@/components/DataTable';
-
+import SimpleDataTable from '@/components/SimpleDataTable';
+import TradingViewChart from '@/components/TradingViewChart';
+import ScreeningSummary from '@/components/ScreeningSummary';
 interface ScreenerResult {
   symbol: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | null | undefined;
 }
 
 interface ScreenerData {
@@ -27,11 +28,12 @@ export default function AllMarkminerviniPage() {
   const [screenersData, setScreenersData] = useState<ScreenerData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [expandedScreeners, setExpandedScreeners] = useState<Set<string>>(new Set());
   const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
   const [showFilters, setShowFilters] = useState(false);
 
-  const screeners = [
+  const screeners = useMemo(() => [
     { id: 'advanced_financial_results', name: 'Advanced Financial Results', icon: '💰' },
     { id: 'integrated_results', name: 'Integrated Results', icon: '🔗' },
     { id: 'new_tickers', name: 'New Tickers', icon: '🆕' },
@@ -39,7 +41,7 @@ export default function AllMarkminerviniPage() {
     { id: 'us_setup_results', name: 'US Setup Results', icon: '⚙️' },
     { id: 'us_gainers_results', name: 'US Gainers Results', icon: '📈' },
     { id: 'pattern_detection_results', name: 'Pattern Detection', icon: '📊' },
-  ];
+  ], []);
 
   useEffect(() => {
     const fetchAllScreeners = async () => {
@@ -84,7 +86,7 @@ export default function AllMarkminerviniPage() {
     };
 
     fetchAllScreeners();
-  }, []);
+  }, [screeners]);
 
   const initializeSliderFilters = (screenersData: ScreenerData[]) => {
     if (screenersData.length === 0) return;
@@ -103,7 +105,7 @@ export default function AllMarkminerviniPage() {
     });
 
     const filters: SliderFilter[] = numericColumns.map(key => {
-      const values = allData.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val));
+      const values = allData.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val)) as number[];
       const min = Math.min(...values);
       const max = Math.max(...values);
       const step = (max - min) > 100 ? Math.ceil((max - min) / 100) : 0.01;
@@ -143,25 +145,7 @@ export default function AllMarkminerviniPage() {
     });
   };
 
-  const getOrderedHeaders = (data: ScreenerResult[]) => {
-    if (data.length === 0) return [];
-    
-    const allKeys = Object.keys(data[0]);
-    const symbolKey = allKeys.find(key => 
-      key.toLowerCase().includes('symbol') || key.toLowerCase().includes('ticker')
-    ) || 'symbol';
-    
-    const otherKeys = allKeys
-      .filter(key => key !== symbolKey)
-      .filter(key => {
-        // True 값을 가진 컬럼들을 필터링해서 제외
-        const allTrue = data.every(item => item[key] === true || item[key] === 'True');
-        return !allTrue;
-      })
-      .slice(0, 6); // 처음 6개만
-    
-    return [symbolKey, ...otherKeys];
-  };
+
 
   const handleSliderChange = (filterKey: string, newValue: [number, number]) => {
     setSliderFilters(prev => 
@@ -202,6 +186,10 @@ export default function AllMarkminerviniPage() {
   const totalResults = screenersData.reduce((sum, screener) => sum + screener.data.length, 0);
   const screenersWithData = screenersData.filter(screener => screener.data.length > 0).length;
 
+  const handleRowClick = (item: Record<string, unknown>) => {
+    setSelectedSymbol(String(item.symbol || item.ticker));
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-h-screen overflow-y-auto">
       <div className="mb-6">
@@ -211,26 +199,65 @@ export default function AllMarkminerviniPage() {
         >
           ← Back to Dashboard
         </Link>
-        <div className="flex items-center gap-4">
-          <h1 className="text-3xl font-bold text-gray-800">All Markminervini Screeners</h1>
-          <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
-            🔍 Complete Overview
-          </span>
+        
+        {/* Screening Summary */}
+        <div className="mb-8">
+          <ScreeningSummary />
         </div>
         
+        {/* TradingView Chart */}
+        {selectedSymbol && (
+          <div className="mt-6">
+            <div className="bg-white rounded-lg shadow p-4">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4">
+                {selectedSymbol} 차트
+              </h2>
+              <TradingViewChart symbol={selectedSymbol} height="500px" />
+            </div>
+          </div>
+        )}
+        
         {/* 요약 정보 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">{totalScreeners}</div>
-            <div className="text-sm text-blue-800">Total Screeners</div>
-          </div>
-          <div className="bg-green-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">{totalResults}</div>
-            <div className="text-sm text-green-800">Total Results</div>
-          </div>
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">{screenersWithData}</div>
-            <div className="text-sm text-purple-800">Active Screeners</div>
+        {/* Quick Stats */}
+        <div className="bg-gradient-to-r from-slate-50 to-gray-50 rounded-xl p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center space-x-2">
+            <span>📊</span>
+            <span>실시간 스크리닝 현황</span>
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <span className="text-blue-600 text-lg">🔍</span>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-blue-600">{totalScreeners}</div>
+                  <div className="text-sm text-gray-600">활성 스크리너</div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <span className="text-green-600 text-lg">📈</span>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-green-600">{totalResults}</div>
+                  <div className="text-sm text-gray-600">선별된 종목</div>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <span className="text-purple-600 text-lg">⚡</span>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-purple-600">{screenersWithData}</div>
+                  <div className="text-sm text-gray-600">데이터 보유</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -311,20 +338,8 @@ export default function AllMarkminerviniPage() {
       
       {/* 스크리너 결과 */}
       <div className="space-y-6">
-        {screenersData.map((screenerData, index) => {
+        {screenersData.map((screenerData) => {
           const filteredData = getFilteredData(screenerData.data);
-          const headers = getOrderedHeaders(filteredData);
-          const columns: DataTableColumn<ScreenerResult>[] = headers.map(header => ({
-            key: header,
-            header: header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-            render: (item: ScreenerResult) => {
-              const value = item[header];
-              if (header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker')) {
-                return <span className="font-semibold text-purple-600">{String(value ?? 'N/A')}</span>;
-              }
-              return typeof value === 'number' ? value.toFixed(2) : String(value ?? 'N/A');
-            }
-          }));
           const isExpanded = expandedScreeners.has(screenerData.type);
           const screener = screeners.find(s => s.id === screenerData.type);
           
@@ -369,18 +384,34 @@ export default function AllMarkminerviniPage() {
                 {(() => { // Use an IIFE to log inside JSX
                   const filteredData = getFilteredData(screenerData.data);
                   console.log(`Filtered data for ${screenerData.name}:`, filteredData); // ADDED LOG
-                  const headers = getOrderedHeaders(filteredData);
-                  const columns: DataTableColumn<ScreenerResult>[] = headers.map(header => ({
-                    key: header,
-                    header: header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-                    render: (item: ScreenerResult) => {
-                      const value = item[header];
-                      if (header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker')) {
-                        return <span className="font-semibold text-purple-600">{String(value ?? 'N/A')}</span>;
+                  
+                  // 간단한 컬럼 구성: 종목명과 시그널 발생일만 표시
+                  const simpleColumns = [
+                    {
+                      key: 'symbol',
+                      header: '종목명',
+                      render: (item: Record<string, unknown>) => (
+                        <span className="font-semibold text-purple-600">{String(item.symbol ?? 'N/A')}</span>
+                      )
+                    },
+                    {
+                      key: 'signal_date',
+                      header: '시그널 발생일',
+                      render: (item: Record<string, unknown>) => {
+                        const value = item.signal_date;
+                        // 날짜 형식 처리
+                        if (value) {
+                          try {
+                            const date = new Date(value as string);
+                            return date.toLocaleDateString('ko-KR');
+                          } catch {
+                            return String(value);
+                          }
+                        }
+                        return 'N/A';
                       }
-                      return typeof value === 'number' ? value.toFixed(2) : String(value ?? 'N/A');
                     }
-                  }));
+                  ];
                   return filteredData.length > 0 ? (
                     <>
                       {screenerData.lastUpdated && (
@@ -388,7 +419,12 @@ export default function AllMarkminerviniPage() {
                           Last updated: {new Date(screenerData.lastUpdated).toLocaleString()}
                         </div>
                       )}
-                      <DataTable data={filteredData.slice(0, 10)} columns={columns} headerRowClassName="bg-gray-50" />
+                      <SimpleDataTable 
+                        data={filteredData.slice(0, 10)} 
+                        columns={simpleColumns}
+                        description={`${filteredData.length}개 종목 중 최근 10개 표시${selectedSymbol ? '' : ' (종목을 클릭하면 차트를 볼 수 있습니다)'}`}
+                        onRowClick={handleRowClick}
+                      />
                       {filteredData.length > 10 && (
                         <div className="p-4 text-center text-gray-500 text-sm">
                           Showing 10 of {filteredData.length} results.

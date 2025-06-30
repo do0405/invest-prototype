@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { apiClient, PortfolioItem } from '@/lib/api';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
@@ -16,7 +16,7 @@ export default function AllStrategiesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const strategies = [
+  const strategies = useMemo(() => [
     { id: 'strategy1', name: 'Strategy 1', type: 'buy' as const },
     { id: 'strategy2', name: 'Strategy 2', type: 'sell' as const },
     { id: 'strategy3', name: 'Strategy 3', type: 'buy' as const },
@@ -24,7 +24,7 @@ export default function AllStrategiesPage() {
     { id: 'strategy5', name: 'Strategy 5', type: 'buy' as const },
     { id: 'strategy6', name: 'Strategy 6', type: 'sell' as const },
     { id: 'volatility_skew', name: 'Volatility Skew', type: 'buy' as const },
-  ];
+  ], []);
 
 
   const columns: DataTableColumn<PortfolioItem>[] = [
@@ -34,9 +34,9 @@ export default function AllStrategiesPage() {
       key: '시장 진입가',
       header: '시장 진입가',
       align: 'right',
-      render: (item) =>
+      render: (item: Record<string, unknown>) =>
         item['시장 진입가']
-          ? `$${
+          ? `${
               typeof item['시장 진입가'] === 'number'
                 ? item['시장 진입가'].toFixed(2)
                 : item['시장 진입가']
@@ -50,9 +50,9 @@ export default function AllStrategiesPage() {
       key: '손절매',
       header: '손절매',
       align: 'right',
-      render: (item) =>
+      render: (item: Record<string, unknown>) =>
         item.손절매
-          ? `$${
+          ? `${
               typeof item.손절매 === 'number'
                 ? item.손절매.toFixed(2)
                 : item.손절매
@@ -64,7 +64,7 @@ export default function AllStrategiesPage() {
       key: '롱여부',
       header: '롱여부',
       align: 'center',
-      render: (item) => (
+      render: (item: Record<string, unknown>) => (
         <span
           className={`px-2 py-1 rounded-full text-xs font-medium ${
             item.롱여부 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
@@ -109,7 +109,7 @@ export default function AllStrategiesPage() {
     };
 
     fetchAllStrategies();
-  }, []);
+  }, [strategies]);
 
   if (loading) {
     return (

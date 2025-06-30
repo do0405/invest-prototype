@@ -10,7 +10,7 @@ export interface ApiResponse<T> {
 
 export interface ScreeningData {
   symbol: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | null | undefined;
 }
 
 export interface PortfolioItem {
@@ -20,7 +20,7 @@ export interface PortfolioItem {
   weight?: number;
   매수가?: number;
   entry_price?: number;
-  [key: string]: any;
+  [key: string]: string | number | boolean | null | undefined;
 }
 
 export interface SummaryData {
@@ -73,6 +73,11 @@ export class ApiClient {
     return this.request<ScreeningData[]>('/api/screening-results');
   }
 
+  // 스크리닝 결과 (getTechnicalResults와 동일한 엔드포인트)
+  async getScreeningResults() {
+    return this.request<ScreeningData[]>('/api/screening-results');
+  }
+
   // 재무제표 스크리닝 결과
   async getFinancialResults() {
     return this.request<ScreeningData[]>('/api/financial-results');
@@ -113,7 +118,7 @@ export class ApiClient {
   }
 
   async getMarketRegime() {
-    return this.request<any>('/api/market-regime');
+    return this.request<Record<string, unknown>>('/api/market-regime');
   }
 
 

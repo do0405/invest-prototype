@@ -183,7 +183,7 @@ export default function StrategyPage({ params }: StrategyPageProps) {
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg">No data available for this strategy.</p>
           <p className="text-gray-400 text-sm mt-2">
-            The strategy "{resolvedParams.strategyId}" may not exist or has no positions.
+            The strategy &quot;{resolvedParams.strategyId}&quot; may not exist or has no positions.
           </p>
         </div>
       )}

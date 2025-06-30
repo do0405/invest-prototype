@@ -3,9 +3,7 @@
 import { useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
-import { apiClient } from '@/lib/api';
-
-
+import ScreeningCriteria from '@/components/ScreeningCriteria';
 interface ScreenerPageProps {
   params: Promise<{
     screenerId: string;
@@ -14,7 +12,7 @@ interface ScreenerPageProps {
 
 interface ScreenerResult {
   symbol: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | null | undefined;
 }
 
 interface SliderFilter {
@@ -34,7 +32,6 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
   const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
   const [showFilters, setShowFilters] = useState(false);
-  const [description, setDescription] = useState('');
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   const getScreenerName = (id: string) => {
@@ -77,15 +74,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         setLoading(false);
       }
     };
-    const fetchDescription = async () => {
-      const res = await apiClient.getScreenerDescription(resolvedParams.screenerId);
-      if (res.success && res.data) {
-        setDescription(res.data as unknown as string);
-      }
-    };
-
     fetchScreenerData();
-    fetchDescription();
   }, [resolvedParams.screenerId]);
 
   const initializeSliderFilters = (dataArray: ScreenerResult[]) => {
@@ -101,7 +90,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
     });
 
     const filters: SliderFilter[] = numericColumns.map(key => {
-      const values = dataArray.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val));
+      const values = dataArray.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val)) as number[];
       const min = Math.min(...values);
       const max = Math.max(...values);
       const step = (max - min) > 100 ? Math.ceil((max - min) / 100) : 0.01;
@@ -120,7 +109,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
 
   // 데이터 필터링 및 정렬
   useEffect(() => {
-    let filtered = data.filter(item => {
+    const filtered = data.filter(item => {
       // 슬라이더 필터링
       return sliderFilters.every(filter => {
         const value = item[filter.key];
@@ -173,16 +162,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
     return [symbolKey, ...otherKeys];
   };
 
-  const handleSort = (key: string) => {
-    setSortConfig(current => {
-      if (current?.key === key) {
-        return current.direction === 'asc' 
-          ? { key, direction: 'desc' }
-          : null;
-      }
-      return { key, direction: 'asc' };
-    });
-  };
+
 
   const handleSliderChange = (filterKey: string, newValue: [number, number]) => {
     setSliderFilters(prev => 
@@ -224,12 +204,40 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const columns: DataTableColumn<ScreenerResult>[] = headers.map((header) => ({
     key: header,
     header: header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    sortable: typeof data[0]?.[header] === 'number',
+    align: typeof data[0]?.[header] === 'number' ? 'right' : 'left',
     render: (item) => {
       const value = item[header];
       if (header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker')) {
-        return <span className="font-semibold text-purple-600">{String(value ?? 'N/A')}</span>;
+        return (
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white text-xs font-bold">
+              {String(value ?? 'N/A').charAt(0)}
+            </span>
+            <span className="font-bold text-gray-900">{String(value ?? 'N/A')}</span>
+          </div>
+        );
       }
-      return typeof value === 'number' ? value.toFixed(2) : String(value ?? 'N/A');
+      if (typeof value === 'number') {
+        const isPositive = value > 0;
+        return (
+          <span className={`font-semibold ${
+            isPositive ? 'text-green-600' : value < 0 ? 'text-red-600' : 'text-gray-600'
+          }`}>
+            {value.toFixed(2)}
+          </span>
+        );
+      }
+      if (typeof value === 'boolean') {
+        return (
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+            value ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+          }`}>
+            {value ? '✓ Yes' : '✗ No'}
+          </span>
+        );
+      }
+      return <span className="text-gray-700">{String(value ?? 'N/A')}</span>;
     },
   }));
 
@@ -253,11 +261,9 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         <p className="text-gray-600 mt-2">
           {filteredData.length} of {data.length} results
         </p>
-        {description && (
-          <pre className="whitespace-pre-wrap bg-gray-50 p-4 mt-4 rounded text-sm">
-            {description}
-          </pre>
-        )}
+        <div className="mt-6">
+          <ScreeningCriteria screenerId={resolvedParams.screenerId} />
+        </div>
       </div>
       
       {/* 필터 토글 버튼 */}
@@ -335,24 +341,40 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       </div>
       
       {filteredData.length > 0 ? (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="space-y-4">
           {lastUpdated && (
-            <div className="text-right text-xs text-gray-400 pr-4 pt-2">
-              Last updated: {new Date(lastUpdated).toLocaleString()}
+            <div className="text-right text-sm text-gray-500 bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200">
+              <span className="inline-flex items-center gap-2">
+                <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                Last updated: {new Date(lastUpdated).toLocaleString()}
+              </span>
             </div>
           )}
           <DataTable
             data={filteredData}
             columns={columns}
-            headerRowClassName="bg-purple-50"
+            headerRowClassName="bg-gradient-to-r from-purple-50 to-blue-50"
+            striped={true}
+            hoverable={true}
+            className="shadow-xl"
           />
         </div>
       ) : (
-        <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No data matches your filters.</p>
-          <p className="text-gray-400 text-sm mt-2">
-            Try adjusting your slider ranges or resetting filters.
-          </p>
+        <div className="text-center py-16 bg-white rounded-xl shadow-lg border border-gray-200">
+          <div className="max-w-md mx-auto">
+            <div className="text-6xl mb-4">📊</div>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">No data matches your filters</h3>
+            <p className="text-gray-500 mb-6">
+              Try adjusting your slider ranges or resetting filters to see more results.
+            </p>
+            <button
+              onClick={resetFilters}
+              className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <span className="mr-2">🔄</span>
+              Reset All Filters
+            </button>
+          </div>
         </div>
       )}
       

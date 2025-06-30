@@ -2,13 +2,11 @@
 
 import './globals.css';
 import { Inter } from 'next/font/google';
-import type { Metadata } from 'next';
 import Sidebar from '@/components/Sidebar';
 import { useState, useEffect } from 'react';
 import { FaBars, FaArrowLeft } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
 import { usePathname } from 'next/navigation'; // usePathname 임포트
-import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -115,13 +113,17 @@ export default function RootLayout({
           {/* 메인 콘텐츠 */}
           <div className="flex flex-col flex-1 w-full h-full overflow-hidden">
             {/* 데스크톱 헤더 */}
-            <div className="hidden p-4 bg-white shadow-sm md:block">
+            <div className="hidden p-4 bg-white shadow-sm md:block relative z-40">
               <div className="flex items-center justify-between">
                 <motion.button
                   onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                  className="p-2 text-gray-600 rounded-md hover:bg-gray-100"
+                  className="p-2 text-gray-600 rounded-md hover:bg-gray-100 relative z-50"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
+                  style={{
+                    transform: isSidebarOpen ? 'translateX(256px)' : 'translateX(0px)',
+                    transition: 'transform 0.3s ease-in-out'
+                  }}
                 >
                   {isSidebarOpen ? <FaArrowLeft /> : <FaBars />}
                 </motion.button>

@@ -51,6 +51,53 @@ invest_prototype/
 
 ## 🚀 실행 방법
 
+### 환경 설정
+
+#### 1. 환경 변수 설정
+```bash
+# .env.example을 .env로 복사하고 설정 값을 수정하세요
+cp .env.example .env
+```
+
+주요 환경 변수:
+- `BACKEND_PORT`: 백엔드 서버 포트 (기본값: 5000)
+- `FRONTEND_PORT`: 프론트엔드 서버 포트 (기본값: 3000)
+- `BACKEND_URL`: 백엔드 서버 URL (기본값: http://localhost:5000)
+- `NODE_ENV`: Node.js 환경 (development/production)
+- `FLASK_ENV`: Flask 환경 (development/production)
+- `SEC_API_USER_AGENT`: SEC API 사용자 에이전트
+- `CACHE_DIRECTORY`: 캐시 디렉토리 경로
+
+#### 2. 개발 환경 실행
+
+**Windows:**
+```bash
+# 개발 서버 자동 시작 (백엔드 + 프론트엔드)
+scripts\start-dev.bat
+```
+
+**Linux/Mac:**
+```bash
+# 실행 권한 부여
+chmod +x scripts/start-dev.sh
+
+# 개발 서버 자동 시작
+./scripts/start-dev.sh
+```
+
+#### 3. 프로덕션 배포 (Docker)
+
+**Windows:**
+```bash
+scripts\deploy.bat
+```
+
+**Linux/Mac:**
+```bash
+chmod +x scripts/deploy.sh
+./scripts/deploy.sh
+```
+
 ### 기본 스크리닝 실행
 ```bash
 # 전체 프로세스 실행 (데이터 수집 + 스크리닝)
@@ -88,14 +135,31 @@ python portfolio_integration.py
 
 ### 백엔드 API 서버
 ```bash
+# 개별 실행 (환경 변수 자동 로드)
 cd backend
 python api_server.py
-# 주요 엔드포인트
-# GET http://localhost:5000/api/screening-results
-# GET http://localhost:5000/api/portfolio-performance
-# GET http://localhost:5000/api/strategy-results
 
+# 또는 환경 변수와 함께 실행
+BACKEND_PORT=5000 FLASK_ENV=development python api_server.py
 ```
+
+주요 엔드포인트:
+- `GET http://localhost:{BACKEND_PORT}/api/screening-results`
+- `GET http://localhost:{BACKEND_PORT}/api/portfolio-performance`
+- `GET http://localhost:{BACKEND_PORT}/api/strategy-results`
+
+### 프론트엔드 웹 애플리케이션
+```bash
+# 개발 모드
+cd frontend
+npm run dev
+
+# 프로덕션 빌드
+npm run build
+npm start
+```
+
+웹 인터페이스: `http://localhost:{FRONTEND_PORT}`
 각 스크리너 API는 `last_updated` 필드로 데이터 파일의 수정 시간을 함께 반환하므로
 프론트엔드에서 최신 여부를 쉽게 확인할 수 있습니다. 이 시간은 각 스크리닝
 작업이 완료된 시각을 기준으로 합니다.
@@ -167,9 +231,35 @@ POSITION_SIZE = 0.05  # 5%
 STOP_LOSS = -0.08     # -8%
 TAKE_PROFIT = 0.25    # 25%
 
-📋 의존성
+## 📋 의존성
 
-pip install pandas numpy yfinance requests flask flask-cors scipy pytz
+### Python 패키지
+```bash
+# requirements.txt를 통한 설치
+pip install -r requirements.txt
+```
+
+주요 패키지:
+- `pandas`, `numpy`: 데이터 처리
+- `yfinance`: 주식 데이터 수집
+- `flask`, `flask-cors`: 백엔드 API 서버
+- `python-dotenv`: 환경 변수 관리
+- `scipy`, `pytz`: 과학 계산 및 시간대 처리
+
+### Node.js 패키지 (프론트엔드)
+```bash
+cd frontend
+npm install
+```
+
+### Docker (선택사항)
+- Docker Desktop 또는 Docker Engine
+- Docker Compose
+
+### 환경 요구사항
+- Python 3.9+
+- Node.js 18+
+- npm 또는 yarn
 
 ## 🎯 사용 시나리오
 ### 1. 일일 스크리닝
