@@ -165,14 +165,14 @@ def get_volatility_skew_results():
 
 # --- New screener result endpoints ---
 
-def _load_latest_csv(directory: str) -> tuple[Optional[pd.DataFrame], Optional[float]]:
-    pattern = os.path.join(directory, '*.csv')
+def _load_latest_json(directory: str) -> tuple[Optional[pd.DataFrame], Optional[float]]:
+    pattern = os.path.join(directory, '*.json')
     files = glob.glob(pattern)
     if not files:
         return None, None
     latest = max(files, key=os.path.getctime)
     try:
-        df = pd.read_csv(latest)
+        df = pd.read_json(latest)
         return df, os.path.getmtime(latest)
     except Exception:
         return None, None
@@ -182,7 +182,7 @@ def _load_latest_csv(directory: str) -> tuple[Optional[pd.DataFrame], Optional[f
 def get_ipo_investment_results():
     """Return latest IPO investment screener results."""
     try:
-        df, mtime = _load_latest_csv(IPO_INVESTMENT_RESULTS_DIR)
+        df, mtime = _load_latest_json(IPO_INVESTMENT_RESULTS_DIR)
         if df is not None:
             return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
@@ -195,7 +195,7 @@ def get_ipo_investment_results():
 def get_leader_stock_results():
     """Return latest leader stock screener results."""
     try:
-        df, mtime = _load_latest_csv(LEADER_STOCK_RESULTS_DIR)
+        df, mtime = _load_latest_json(LEADER_STOCK_RESULTS_DIR)
         if df is not None:
             return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
@@ -208,7 +208,7 @@ def get_leader_stock_results():
 def get_momentum_signals_results():
     """Return latest momentum signals screener results."""
     try:
-        df, mtime = _load_latest_csv(MOMENTUM_SIGNALS_RESULTS_DIR)
+        df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR)
         if df is not None:
             return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
@@ -408,6 +408,7 @@ def run_qullamaggie_screening():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.getenv('BACKEND_PORT', 3001))
+    # 기본 포트를 프론트엔드 기본값(5000)과 맞춰 연결 오류를 방지한다
+    port = int(os.getenv('BACKEND_PORT', 5000))
     debug = os.getenv('FLASK_ENV', 'development') == 'development'
     app.run(debug=debug, host='0.0.0.0', port=port)

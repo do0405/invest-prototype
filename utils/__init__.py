@@ -36,6 +36,7 @@ from .technical_indicators import (
     calculate_macd,
     calculate_stochastic,
 )
+from .first_buy_tracker import update_first_buy_signals
 
 __all__ = [
     'ensure_dir',
@@ -65,5 +66,6 @@ __all__ = [
     'fetch_quarterly_eps_growth',
     'calculate_macd',
     'calculate_stochastic',
+    'update_first_buy_signals',
 ]
 
