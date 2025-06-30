@@ -24,6 +24,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
   const [isStrategyAlphaOpen, setIsStrategyAlphaOpen] = useState(false);
   const [isMarkminerviniOpen, setIsMarkminerviniOpen] = useState(false);
+  const [isQullaOpen, setIsQullaOpen] = useState(false);
 
   const strategyAlphaItems = [
     { id: 'strategy1', name: 'Strategy 1 (Buy)', type: 'buy' },
@@ -43,6 +44,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
     { id: 'us_setup_results', name: 'US Setup Results', icon: '⚙️' },
     { id: 'us_gainers_results', name: 'US Gainers Results', icon: '📈' },
     { id: 'pattern_detection_results', name: 'Pattern Detection', icon: '📊' },
+  ];
+
+  const qullaItems = [
+    { id: 'breakout', name: 'Breakout Setup', icon: '🚀' },
+    { id: 'episode-pivot', name: 'Episode Pivot', icon: '🎯' },
+    { id: 'parabolic-short', name: 'Parabolic Short', icon: '📉' },
+    { id: 'buy-signals', name: 'Buy Signals', icon: '🟢' },
+    { id: 'sell-signals', name: 'Sell Signals', icon: '🔴' },
   ];
 
   return (
@@ -160,6 +169,44 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                     {item.icon} {item.name}
                   </MotionLink>
                 ))} 
+              </motion.div>
+            </div>
+          )}
+        </div>
+
+        {/* Qullamaggie Screener 섹션 */}
+        <div className="mb-4">
+          <motion.button
+            onClick={() => setIsQullaOpen(!isQullaOpen)}
+            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md"
+            whileHover={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', color: '#a16207' }}
+            whileTap={{ backgroundColor: 'rgba(234, 179, 8, 0.2)' }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          >
+            <span className="font-semibold">Qullamaggie Screener</span>
+            {isQullaOpen ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />}
+          </motion.button>
+
+          {isQullaOpen && (
+            <div className="ml-4 mt-2 space-y-1">
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.2 }}
+              >
+                {qullaItems.map((item) => (
+                  <MotionLink
+                    key={item.id}
+                    href={`/qullamaggie/${item.id}`}
+                    className="block py-2 px-4 rounded-md text-sm"
+                    whileHover={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', color: '#a16207', borderLeftColor: '#facc15' }}
+                    whileTap={{ backgroundColor: 'rgba(234, 179, 8, 0.2)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+                  >
+                    {item.icon} {item.name}
+                  </MotionLink>
+                ))}
               </motion.div>
             </div>
           )}

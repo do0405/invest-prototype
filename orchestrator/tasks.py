@@ -29,6 +29,7 @@ from screeners.momentum_signals.screener import run_momentum_signals_screening
 from screeners.ipo_investment.screener import run_ipo_investment_screening
 from screeners.markminervini.ticker_tracker import track_new_tickers
 from screeners.markminervini.image_pattern_detection import run_image_pattern_detection
+from utils.first_buy_tracker import update_first_buy_signals
 from config import (
     DATA_US_DIR,
     RESULTS_DIR,
@@ -41,6 +42,11 @@ from config import (
     MARKET_REGIME_DIR,
     IPO_DATA_DIR,
     MARKMINERVINI_RESULTS_DIR,
+    US_SETUP_RESULTS_DIR,
+    US_GAINER_RESULTS_DIR,
+    LEADER_STOCK_RESULTS_DIR,
+    MOMENTUM_SIGNALS_RESULTS_DIR,
+    IPO_INVESTMENT_RESULTS_DIR,
 )
 
 # Portfolio manager utilities
@@ -349,6 +355,7 @@ def run_setup_screener() -> None:
         df = screen_us_setup()
         if not df.empty:
             print(f"✅ US Setup 결과 저장 완료: {len(df)}개 종목")
+            update_first_buy_signals(df, US_SETUP_RESULTS_DIR)
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log
@@ -363,6 +370,7 @@ def run_gainers_screener() -> None:
         df = screen_us_gainers()
         if not df.empty:
             print(f"✅ US Gainers 결과 저장 완료: {len(df)}개 종목")
+            update_first_buy_signals(df, US_GAINER_RESULTS_DIR)
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log
@@ -377,6 +385,7 @@ def run_leader_stock_screener(skip_data=False):
         df = run_leader_stock_screening(skip_data=skip_data)
         if not df.empty:
             print(f"✅ 주도주 투자 전략 결과 저장 완료: {len(df)}개 종목")
+            update_first_buy_signals(df, LEADER_STOCK_RESULTS_DIR)
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log
@@ -391,6 +400,7 @@ def run_momentum_signals_screener(skip_data=False) -> None:
         df = run_momentum_signals_screening(skip_data=skip_data)
         if not df.empty:
             print(f"✅ 상승 모멘텀 신호 결과 저장 완료: {len(df)}개 종목")
+            update_first_buy_signals(df, MOMENTUM_SIGNALS_RESULTS_DIR)
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log
@@ -446,6 +456,7 @@ def run_ipo_investment_screener(skip_data=False) -> None:
         df = run_ipo_investment_screening(skip_data=skip_data)
         if not df.empty:
             print(f"✅ IPO 투자 전략 결과 저장 완료: {len(df)}개 종목")
+            update_first_buy_signals(df, IPO_INVESTMENT_RESULTS_DIR)
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log

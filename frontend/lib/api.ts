@@ -117,6 +117,27 @@ export class ApiClient {
     return this.request<ScreeningData[]>('/api/momentum-signals');
   }
 
+  // Qullamaggie screener endpoints
+  async getQullamaggieBreakout() {
+    return this.request<ScreeningData[]>('/api/qullamaggie/breakout');
+  }
+
+  async getQullamaggieEpisodePivot() {
+    return this.request<ScreeningData[]>('/api/qullamaggie/episode-pivot');
+  }
+
+  async getQullamaggieParabolicShort() {
+    return this.request<ScreeningData[]>('/api/qullamaggie/parabolic-short');
+  }
+
+  async getQullamaggieBuySignals() {
+    return this.request<ScreeningData[]>('/api/qullamaggie/buy-signals');
+  }
+
+  async getQullamaggieSellSignals() {
+    return this.request<ScreeningData[]>('/api/qullamaggie/sell-signals');
+  }
+
   async getMarketRegime() {
     return this.request<Record<string, unknown>>('/api/market-regime');
   }
