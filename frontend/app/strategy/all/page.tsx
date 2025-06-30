@@ -3,7 +3,6 @@ import { useEffect, useState, useMemo } from 'react';
 import { apiClient, PortfolioItem } from '@/lib/api';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
-import TradingViewChart from '@/components/TradingViewChart';
 
 interface StrategyData {
   strategyId: string;
@@ -16,7 +15,6 @@ export default function AllStrategiesPage() {
   const [strategiesData, setStrategiesData] = useState<StrategyData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   const strategies = useMemo(() => [
     { id: 'strategy1', name: 'Strategy 1', type: 'buy' as const },
@@ -163,13 +161,6 @@ export default function AllStrategiesPage() {
         </div>
       </div>
 
-      {selectedSymbol && (
-        <div className="mb-8 bg-white rounded-lg shadow p-4">
-          <h2 className="text-xl font-semibold mb-4">{selectedSymbol} 차트</h2>
-          <TradingViewChart symbol={selectedSymbol} height="500px" />
-        </div>
-      )}
-
       {/* Buy Strategies Section */}
       {buyStrategies.length > 0 && (
         <div className="mb-12">
@@ -195,12 +186,7 @@ export default function AllStrategiesPage() {
                 </div>
                 <div className="p-6">
                   {strategy.data.length > 0 ? (
-                    <DataTable
-                      data={strategy.data}
-                      columns={columns}
-                      onSymbolSelect={setSelectedSymbol}
-                      disableModal
-                    />
+                    <DataTable data={strategy.data} columns={columns} />
                   ) : (
                     <p className="text-gray-500 text-center py-4">No positions available</p>
                   )}
@@ -236,12 +222,7 @@ export default function AllStrategiesPage() {
                 </div>
                 <div className="p-6">
                   {strategy.data.length > 0 ? (
-                    <DataTable
-                      data={strategy.data}
-                      columns={columns}
-                      onSymbolSelect={setSelectedSymbol}
-                      disableModal
-                    />
+                    <DataTable data={strategy.data} columns={columns} />
                   ) : (
                     <p className="text-gray-500 text-center py-4">No positions available</p>
                   )}

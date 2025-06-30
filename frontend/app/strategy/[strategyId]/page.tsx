@@ -4,7 +4,6 @@ import { useEffect, useState, use } from 'react';
 import { apiClient, PortfolioItem } from '@/lib/api';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
-import TradingViewChart from '@/components/TradingViewChart';
 
 interface StrategyPageProps {
   params: Promise<{
@@ -18,7 +17,6 @@ export default function StrategyPage({ params }: StrategyPageProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [description, setDescription] = useState('');
-  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchStrategyData = async () => {
@@ -171,12 +169,6 @@ export default function StrategyPage({ params }: StrategyPageProps) {
             {description}
           </pre>
         )}
-        {selectedSymbol && (
-          <div className="mt-6 bg-white rounded-lg shadow p-4">
-            <h2 className="text-xl font-semibold mb-4">{selectedSymbol} 차트</h2>
-            <TradingViewChart symbol={selectedSymbol} height="500px" />
-          </div>
-        )}
       </div>
       
       {data.length > 0 ? (
@@ -185,8 +177,6 @@ export default function StrategyPage({ params }: StrategyPageProps) {
             data={data}
             columns={columns}
             headerRowClassName={strategyType === 'buy' ? 'bg-green-50' : 'bg-red-50'}
-            onSymbolSelect={setSelectedSymbol}
-            disableModal
           />
         </div>
       ) : (
