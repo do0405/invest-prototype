@@ -61,10 +61,14 @@ def check_risk_management_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     # 부가조건들
     # VIX > 35
     vix_strength = 0.0
+    vix_condition = False  # 기본값 설정
     if 'VIX' in index_data and index_data['VIX'] is not None:
-        vix_value = index_data['VIX'].iloc[-1]['close']
-
-        vix_condition = vix_value > 35
+        try:
+            vix_value = index_data['VIX'].iloc[-1]['close']
+            vix_condition = vix_value > 35
+        except (KeyError, IndexError) as e:
+            print(f"⚠️ VIX 데이터 처리 중 오류: {e}")
+            vix_condition = False
     additional_conditions.append(vix_condition)
     details['vix_high'] = vix_condition
 

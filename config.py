@@ -23,6 +23,7 @@ OPTION_VOLATILITY_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'option_volat
 LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
 MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, 'momentum_signals')
 IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
+RANKING_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ranking')
 DATA_US_DIR = os.path.join(DATA_DIR, 'us')  # 미국 주식 데이터 디렉토리
 # IPO 데이터 디렉토리
 IPO_DATA_DIR = os.path.join(DATA_DIR, 'ipo')

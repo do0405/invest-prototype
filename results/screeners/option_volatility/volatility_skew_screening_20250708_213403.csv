@@ -1,0 +1,3 @@
+﻿symbol,company_name,skew_index,expected_return,confidence_score,base_confidence,data_source,data_quality_grade,confidence_numeric,quality_description
+REG,Regency Centers Corporation,-61.62047753906249,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+STE,STERIS plc,-4.138142211914053,0.13,낮음,높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터

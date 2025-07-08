@@ -20,133 +20,8 @@ from config import (
     DATA_DIR, DATA_US_DIR, RESULTS_DIR
 )
 
-# NASDAQ, NYSE, ETF 티커 수집
-def load_nasdaq_ftp_symbols():
-    base_url = "https://www.nasdaqtrader.com/dynamic/SymDir"
-
-    files = {
-        "nasdaq": {
-            "file": "nasdaqlisted.txt",
-            "symbol_col": "Symbol",
-            "test_col": "Test Issue"
-        },
-        "nyse": {
-            "file": "otherlisted.txt",
-            "symbol_col": "ACT Symbol",
-            "test_col": "Test Issue"
-        },
-        "etf": {
-            "file": "etf.txt",
-            "symbol_col": None,
-            "test_col": None
-        }
-    }
-
-    all_symbols = []
-
-    for name, meta in files.items():
-        url = f"{base_url}/{meta['file']}"
-        try:
-            res = requests.get(url)
-            content = res.text.strip().splitlines()
-            if "File Creation Time" in content[-1]:
-                content = content[:-1]
-            reader = csv.reader(content, delimiter="|")
-            rows = list(reader)
-
-            if name == "etf":
-                df = pd.DataFrame(rows[1:], columns=["Symbol", "Name", "IsEnabled"])
-                symbols = df["Symbol"].dropna().astype(str).tolist()
-            else:
-                header, *data = rows
-                df = pd.DataFrame(data, columns=header)
-                symbol_col = meta["symbol_col"]
-                test_col = meta["test_col"]
-                if test_col in df.columns:
-                    df = df[df[test_col] != "Y"]
-                symbols = df[symbol_col].dropna().astype(str).tolist()
-
-            # HTML 태그 및 JavaScript/CSS 코드가 포함된 티커 필터링
-            filtered_symbols = []
-            for symbol in symbols:
-                # 빈 문자열이나 공백만 있는 경우 제외
-                if not symbol or symbol.isspace():
-                    continue
-                    
-                # 유효한 티커 심볼 패턴 검사 (알파벳, 숫자, 일부 특수문자만 허용)
-                if not all(c.isalnum() or c in '.-$^' for c in symbol):
-                    # 로그 시작 부분
-                    log_msg = f"⚠️ 비정상적인 티커 제외: {symbol}"
-                    reasons = []
-                    
-                    # HTML 태그 패턴 감지
-                    if '<' in symbol or '>' in symbol:
-                        reasons.append("HTML 태그 포함")
-                    
-                    # CSS 스타일 코드 패턴 감지
-                    css_patterns = ['{', '}', ':', ';']
-                    css_keywords = ['width', 'height', 'position', 'margin', 'padding', 'color', 'background', 'font', 'display', 'style']
-                    
-                    if any(p in symbol for p in css_patterns):
-                        reasons.append("CSS 구문 포함")
-                    elif any(kw in symbol.lower() for kw in css_keywords):
-                        reasons.append("CSS 속성 포함")
-                    
-                    # JavaScript 코드 패턴 감지
-                    js_patterns = ['=', '(', ')', '[', ']', '&&', '||', '!', '?', '.']
-                    js_keywords = ['function', 'var', 'let', 'const', 'return', 'if', 'else', 'for', 'while', 'class', 'new', 'this', 'document', 'window']
-                    
-                    if any(p in symbol for p in js_patterns):
-                        reasons.append("JS 구문 포함")
-                    elif any(kw in symbol.lower() for kw in js_keywords):
-                        reasons.append("JS 키워드 포함")
-                    elif '.className' in symbol or 'RegExp' in symbol:
-                        reasons.append("JS API 포함")
-                    
-                    # JavaScript 주석 패턴 감지
-                    if symbol.strip().startswith('//') or symbol.strip().startswith('/*') or symbol.strip().endswith('*/'):
-                        reasons.append("JS 주석 포함")
-                    
-                    # 기타 비정상 패턴
-                    if not reasons:
-                        reasons.append("비정상 문자 포함")
-                    
-                    # 로그 출력
-                    print(f"{log_msg} - 이유: {', '.join(reasons)}")
-                    continue
-                
-                # 티커 길이 제한 (일반적으로 1-5자)
-                if len(symbol) > 8:
-                    print(f"⚠️ 너무 긴 티커 제외 ({len(symbol)}자): {symbol}")
-                    continue
-                    
-                filtered_symbols.append(symbol)
-            
-            all_symbols.extend(filtered_symbols)
-            print(f"✅ {name.upper()} 종목 수: {len(filtered_symbols)}")
-        except Exception as e:
-            print(f"❌ {name.upper()} 로딩 실패: {e}")
-
-    unique_cleaned = clean_tickers(all_symbols)
-    print(f"🎯 최종 클린 티커 수: {len(unique_cleaned)}")
-    return unique_cleaned
-
-# 캐시된 NASDAQ 심볼 가져오기
-def get_or_load_cached_nasdaq_symbols():
-    nasdaq_cache_path = os.path.join(DATA_DIR, "nasdaq_symbols.csv")
-    ensure_dir(os.path.dirname(nasdaq_cache_path))
-    if os.path.exists(nasdaq_cache_path):
-        # 캐시 파일이 24시간 이상 지났는지 확인
-        file_time = datetime.fromtimestamp(os.path.getmtime(nasdaq_cache_path), tz=timezone('UTC'))
-        if datetime.now(timezone('UTC')) - file_time < timedelta(hours=24):
-            print("📂 NASDAQ 캐시 로드 중...")
-            df = pd.read_csv(nasdaq_cache_path)
-            return df['symbol'].tolist()
-    
-    print("🌐 NASDAQ 실시간 수집 중...")
-    symbols = load_nasdaq_ftp_symbols()
-    pd.DataFrame({'symbol': symbols}).to_csv(nasdaq_cache_path, index=False)
-    return symbols
+# 주식 심볼 수집 (NASDAQ API 제거됨 - 타임아웃 문제로 인해)
+# 대신 Yahoo Finance나 다른 안정적인 소스를 사용하는 것을 권장
 
 # 크라켄 관련 함수 제거됨
 
@@ -416,16 +291,19 @@ def collect_data(max_us_chunks=None, start_chunk=0):
         ensure_dir(directory)
         
     print("\n🇺🇸 미국 주식 데이터 수집 시작...")
-    us_tickers = get_or_load_cached_nasdaq_symbols()
-    fetch_and_save_us_ohlcv_chunked(
-        tickers=us_tickers,
-        save_dir=DATA_US_DIR,
-        chunk_size=5,
-        pause=5.0,
-        start_chunk=start_chunk,
-        max_chunks=max_us_chunks,
-        max_workers=3
-    )
+    # NASDAQ API 제거됨 - 타임아웃 문제로 인해
+    # 대신 수동으로 주요 종목 리스트를 사용하거나 다른 안정적인 소스 활용
+    print("⚠️ NASDAQ API가 제거되었습니다. 수동 종목 리스트나 다른 데이터 소스를 사용하세요.")
+    # us_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]  # 예시 종목들
+    # fetch_and_save_us_ohlcv_chunked(
+    #     tickers=us_tickers,
+    #     save_dir=DATA_US_DIR,
+    #     chunk_size=5,
+    #     pause=5.0,
+    #     start_chunk=start_chunk,
+    #     max_chunks=max_us_chunks,
+    #     max_workers=3
+    # )
 
 # 명령행 인터페이스
 if __name__ == "__main__":

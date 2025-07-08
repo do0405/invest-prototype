@@ -47,6 +47,7 @@ from config import (
     LEADER_STOCK_RESULTS_DIR,
     MOMENTUM_SIGNALS_RESULTS_DIR,
     IPO_INVESTMENT_RESULTS_DIR,
+    RANKING_RESULTS_DIR,
 )
 
 # Portfolio manager utilities
@@ -673,8 +674,10 @@ def run_ranking_system_task(skip_data: bool = False):
             print("\n🏆 상위 10개 종목:")
             print(top10.to_string(index=False))
             
-            # 결과 저장
-            output_path = os.path.join(RESULTS_DIR, 'ranking_results.csv')
+            # 결과 저장 - ranking 디렉토리에 저장
+            from utils.io_utils import ensure_dir
+            ensure_dir(RANKING_RESULTS_DIR)
+            output_path = os.path.join(RANKING_RESULTS_DIR, 'ranking_results.csv')
             rankings.to_csv(output_path, index=False)
             print(f"\n💾 랭킹 결과가 저장되었습니다: {output_path}")
             

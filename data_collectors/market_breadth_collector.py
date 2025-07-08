@@ -42,13 +42,27 @@ class MarketBreadthCollector:
         print(f"📁 데이터 디렉토리 확인: {BREADTH_DATA_DIR}")
         print(f"📁 옵션 데이터 디렉토리 확인: {OPTION_DATA_DIR}")
     
-    def collect_vix_data(self, days: int = 252) -> bool:
-        """VIX 데이터 수집"""
+    def collect_vix_data(self, days: int = 252, force_update: bool = False) -> bool:
+        """VIX 데이터 수집 (캐싱 및 중복 방지)"""
         try:
             print("📊 VIX 데이터 수집 중...")
             
             # 디렉토리 생성
             os.makedirs(OPTION_DATA_DIR, exist_ok=True)
+            vix_file = os.path.join(OPTION_DATA_DIR, 'vix.csv')
+            
+            # 기존 파일 확인 및 캐싱 로직
+            if not force_update and os.path.exists(vix_file):
+                try:
+                    existing_data = pd.read_csv(vix_file)
+                    if not existing_data.empty:
+                        # 최신 데이터가 1일 이내인지 확인
+                        last_date = pd.to_datetime(existing_data['date'].iloc[-1])
+                        if (datetime.now() - last_date).days < 1:
+                            print(f"✅ 기존 VIX 데이터 사용 (최신: {last_date.date()})")
+                            return True
+                except Exception:
+                    pass
 
             # VIX 데이터 다운로드 (여러 시도)
             vix = None
@@ -56,29 +70,38 @@ class MarketBreadthCollector:
 
             for symbol in symbols_to_try:
                 try:
+                    print(f"  시도 중: {symbol}")
                     vix = yf.download(symbol, period=f'{days}d', interval='1d', progress=False)
                     if not vix.empty:
+                        print(f"  ✅ {symbol}에서 데이터 수집 성공")
                         break
-                except Exception:
+                except Exception as e:
+                    print(f"  ❌ {symbol} 실패: {e}")
                     continue
 
             if vix is None or vix.empty:
                 print('❌ VIX 데이터를 가져오지 못했습니다.')
                 return False
 
-            # 실제 VIX 데이터 정리
+            # VIX 데이터 정리 및 검증
             vix_data = pd.DataFrame({
-                'date': vix.index.values.flatten(),
-                'vix_close': vix['Close'].values.flatten(),
-                'vix_high': vix['High'].values.flatten(),
-                'vix_low': vix['Low'].values.flatten(),
-                'vix_volume': vix['Volume'].fillna(0).values.flatten(),
+                'date': vix.index.strftime('%Y-%m-%d'),
+                'vix_close': vix['Close'].round(2),
+                'vix_high': vix['High'].round(2),
+                'vix_low': vix['Low'].round(2),
+                'vix_volume': vix['Volume'].fillna(0).astype(int),
             })
             
+            # 데이터 검증
+            vix_data = vix_data.dropna(subset=['vix_close'])
+            if vix_data.empty:
+                print('❌ 유효한 VIX 데이터가 없습니다.')
+                return False
+            
             # 파일 저장
-            vix_file = os.path.join(OPTION_DATA_DIR, 'vix.csv')
             vix_data.to_csv(vix_file, index=False)
             print(f"✅ VIX 데이터 저장 완료: {vix_file} ({len(vix_data)}개 레코드)")
+            print(f"  최신 VIX: {vix_data.iloc[-1]['vix_close']} ({vix_data.iloc[-1]['date']})")
             
             return True
             

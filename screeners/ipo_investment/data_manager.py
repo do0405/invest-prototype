@@ -12,7 +12,6 @@ import json
 
 from .ipo_data_collector import RealIPODataCollector
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class DataManager:

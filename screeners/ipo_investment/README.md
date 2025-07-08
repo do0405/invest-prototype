@@ -1,175 +1,83 @@
-# 데이터 소스 연동 모듈
+# IPO 투자 전략 모듈
 
-이 모듈은 외부 데이터 소스와의 연동을 담당하여 IPO 데이터, 기관 투자자 데이터 등을 실시간으로 수집하고 관리합니다.
+이 모듈은 IPO 투자 전략을 위한 데이터 수집, 분석, 스크리닝 기능을 제공합니다.
 
 ## 주요 기능
 
 ### 1. IPO 데이터 수집 (`ipo_data_collector.py`)
-- SEC EDGAR API를 통한 IPO 파일링 데이터 수집
-- Yahoo Finance를 통한 IPO 종목 추가 정보 수집
-- IPO 성과 분석 및 추적
+- SEC EDGAR API를 통한 IPO 데이터 수집
+- Finance Calendars를 통한 IPO 일정 수집
+- 다양한 데이터 소스 통합 및 중복 제거
 
-### 2. 기관 투자자 데이터 수집 (`institutional_data_collector.py`)
-- SEC 13F 파일링을 통한 기관 보유 현황 수집
-- 기관 자금 흐름 분석
-- 임원 거래 내역 추적
-- 기관 매수/매도 패턴 분석
+### 2. 패턴 분석 (`pattern_analyzer.py`)
+- IPO 베이스 패턴 분석
+- IPO 브레이크아웃 패턴 분석
+- 기술적 지표 기반 패턴 인식
 
-### 3. 통합 데이터 관리 (`data_manager.py`)
-- 모든 데이터 소스의 통합 관리
-- 캐싱 시스템으로 성능 최적화
-- 데이터 상태 모니터링
+### 3. 트랙 분석 (`track_analyzer.py`)
+- Track1: 기본적 IPO 투자 조건 분석
+- Track2: 고급 모멘텀 기반 분석
+- 환경적 요인(VIX, 섹터 강도) 고려
+
+### 4. 결과 처리 (`result_processor.py`)
+- 스크리닝 결과 저장 (CSV, JSON)
+- 빈 결과 파일 생성
+- 결과 데이터 정렬 및 포맷팅
 
 ## 사용법
 
-### 기본 사용
+### IPO 데이터 수집
 
 ```python
-from data_sources.data_manager import DataManager
+from screeners.ipo_investment.ipo_data_collector import RealIPODataCollector
 
-# 데이터 매니저 초기화
-manager = DataManager()
+# IPO 데이터 수집기 초기화
+collector = RealIPODataCollector()
 
-# IPO 데이터 가져오기
-ipo_data = manager.get_ipo_data(days_back=365)
-print(f"수집된 IPO: {len(ipo_data)}개")
-
-# 기관 투자자 데이터 가져오기
-symbol = "AAPL"
-holdings, flow_analysis = manager.get_institutional_data(symbol)
-print(f"{symbol} 기관 보유: {len(holdings)}개 기관")
-
-# 기관 연속 매수 확인
-buying_streak = manager.check_institutional_buying_streak(symbol, min_days=3)
-print(f"기관 연속 매수: {buying_streak}")
+# 모든 IPO 데이터 수집
+result = collector.collect_all_ipo_data()
+print(f"수집된 최근 IPO: {len(result.get('recent_ipos', []))}개")
+print(f"수집된 예정 IPO: {len(result.get('upcoming_ipos', []))}개")
 ```
 
-### IPO 분석
+### IPO 스크리닝
 
 ```python
-# 특정 IPO 종목 분석
-ipo_analysis = manager.get_ipo_analysis("RIVN")
-print("IPO 분석 결과:")
-print(f"- IPO 정보: {ipo_analysis['ipo_info']}")
-print(f"- 성과: {ipo_analysis['performance']}")
-print(f"- 기관 관심도: {ipo_analysis['institutional_interest']}")
+from screeners.ipo_investment.screener import run_ipo_investment_screening
+
+# IPO 투자 전략 스크리닝 실행
+results = run_ipo_investment_screening()
+print(f"스크리닝 결과: {len(results)}개 종목")
 ```
 
-### 캐시 관리
+## 데이터 소스
 
-```python
-# 데이터 매니저 사용 예시
-manager.get_ipo_data(days_back=365)
+현재 지원되는 IPO 데이터 소스:
+
+1. **SEC EDGAR API** - 가장 안정적인 소스
+2. **Finance Calendars** - IPO 일정 정보
+3. **Investpy** - 보조 데이터 소스
+
+## 모듈 구조
+
+```
+ipo_investment/
+├── screener.py           # 메인 스크리너
+├── ipo_data_collector.py  # IPO 데이터 수집
+├── pattern_analyzer.py    # 패턴 분석
+├── track_analyzer.py      # 트랙 분석
+├── result_processor.py    # 결과 처리
+├── data_manager.py        # 데이터 관리
+├── indicators.py          # 기술적 지표
+└── data_sources/          # 데이터 소스 모듈
+    ├── base_source.py
+    ├── sec_edgar_source.py
+    ├── finance_calendars_source.py
+    └── ...
 ```
 
-## 스크리너에서 사용
+## 주의사항
 
-### IPO Investment 스크리너
-
-```python
-from screeners.ipo_investment.screener import IPOInvestmentScreener
-
-# 스크리너 실행 (자동으로 데이터 소스 연동)
-screener = IPOInvestmentScreener()
-results = screener.screen_ipo_investments()
-
-# 결과에는 실제 기관 투자자 데이터가 포함됨
-print(results[['symbol', 'institutional_interest', 'institutional_flow']])
-```
-
-### Momentum Signals 스크리너에서 기관 데이터 활용
-
-```python
-from data_sources.data_manager import DataManager
-
-# 기관 매수 확인을 추가 필터로 사용
-manager = DataManager()
-for symbol in candidate_stocks:
-    if manager.check_institutional_buying_streak(symbol, min_days=3):
-        print(f"{symbol}: 기관 연속 매수 확인")
-```
-
-## 설정 및 환경변수
-
-### 필요한 환경변수 (`.env` 파일)
-
-```bash
-# SEC API 설정
-SEC_API_USER_AGENT="Your Company Name (your.email@company.com)"
-
-
-# 캐시 설정
-CACHE_DIRECTORY="data/cache"
-CACHE_EXPIRY_HOURS=6
-```
-
-### 데이터 소스 우선순위
-
-1. **IPO 데이터**
-   - 1순위: SEC EDGAR API
-   - 2순위: Yahoo Finance
-
-2. **기관 투자자 데이터**
-   - 1순위: SEC 13F 파일링
-   - 2순위: Yahoo Finance Institutional Holders
-   - 3순위: 볼륨/가격 패턴 분석
-
-## 성능 최적화
-
-### 캐싱 전략
-- IPO 데이터: 6시간 캐시
-- 기관 데이터: 12시간 캐시
-- 자동 캐시 정리: 24시간 이상 된 파일 삭제
-
-### API 호출 제한
-- Yahoo Finance: 0.1초 간격
-- SEC API: 0.5초 간격
-- 기타 API: 각 제공업체 정책 준수
-
-## 에러 처리
-
-### 일반적인 에러 상황
-1. **API 호출 실패**: 캐시된 데이터 사용
-2. **네트워크 오류**: 캐시된 데이터 사용
-3. **데이터 형식 오류**: 로그 기록 후 건너뛰기
-
-### 로그 확인
-```python
-import logging
-logging.basicConfig(level=logging.INFO)
-
-# 데이터 수집 과정의 로그가 출력됨
-manager = DataManager()
-ipo_data = manager.get_ipo_data()
-```
-
-## 확장 가능성
-
-### 새로운 데이터 소스 추가
-1. `data_sources/` 디렉토리에 새 수집기 모듈 생성
-2. `DataManager` 클래스에 통합
-3. 스크리너에서 활용
-
-### 지원 예정 데이터 소스
-- FINRA 데이터
-- 옵션 플로우 데이터
-- 소셜 미디어 센티먼트
-- 뉴스 및 공시 데이터
-
-## 문제 해결
-
-### 자주 발생하는 문제
-
-1. **ImportError**: `pip install -r requirements.txt` 실행
-2. **API 키 오류**: `.env` 파일 설정 확인
-3. **캐시 오류**: `data/cache` 디렉토리 권한 확인
-4. **네트워크 오류**: 인터넷 연결 및 방화벽 설정 확인
-
-### 디버깅
-```python
-# 로그 확인 예시
-ipo_data = manager.get_ipo_data()
-print(ipo_data.head())
-```
-
-이 모듈을 통해 실제 시장 데이터를 활용한 더욱 정확하고 실용적인 투자 스크리닝이 가능합니다.
+- FMP API와 NASDAQ API는 인증 및 타임아웃 문제로 제거되었습니다
+- 현재 SEC EDGAR API가 가장 안정적으로 작동합니다
+- 데이터 수집 시 API 호출 제한을 준수합니다

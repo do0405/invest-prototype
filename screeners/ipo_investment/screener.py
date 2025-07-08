@@ -10,22 +10,17 @@ from typing import Dict, List, Tuple, Optional
 import os
 import sys
 
-# 로컬 데이터 매니저 모듈 추가
+# 로컬 모듈 임포트
 from .data_manager import DataManager
+from .pattern_analyzer import IPOPatternAnalyzer
+from .track_analyzer import IPOTrackAnalyzer
+from .result_processor import IPOResultProcessor
 
-from config import (
-    IPO_INVESTMENT_RESULTS_DIR
-)
+from config import IPO_INVESTMENT_RESULTS_DIR
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from utils.calc_utils import get_us_market_today
-from .indicators import (
-    calculate_base_pattern,
-    calculate_macd,
-    calculate_stochastic,
-    calculate_track2_indicators
-)
 from utils.market_utils import (
     get_vix_value,
     calculate_sector_rs,
@@ -33,13 +28,7 @@ from utils.market_utils import (
 )
 from data_collectors.market_breadth_collector import MarketBreadthCollector
 
-
-# 결과 저장 디렉토리는 config에서 제공됨
-
-
-
 # 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -69,6 +58,11 @@ class IPOInvestmentScreener:
             collector.collect_vix_data(days=30)
             self.vix = get_vix_value()
         self.sector_rs = calculate_sector_rs(SECTOR_ETFS)
+        
+        # 분석기 초기화
+        self.pattern_analyzer = IPOPatternAnalyzer()
+        self.track_analyzer = IPOTrackAnalyzer(self.ipo_data, self.vix, self.sector_rs)
+        self.result_processor = IPOResultProcessor(self.today)
     
     def _load_ipo_data(self):
         """IPO 데이터 로드 (실제 외부 데이터 소스 연동)"""
@@ -108,195 +102,16 @@ class IPOInvestmentScreener:
         return recent
     
     
-    def _check_ipo_base_pattern(self, df, min_days=30, max_days=200):
-        """IPO 베이스 패턴 확인"""
-        # 데이터가 충분하지 않은 경우
-        if len(df) < min_days:
-            return False, {}
-            
-        # 너무 오래된 IPO인 경우
-        if len(df) > max_days:
-            return False, {}
-        
-        # 기술적 지표 계산
-        df = calculate_base_pattern(df)
-        
-        # 최근 데이터
-        recent = df.iloc[-1]
-        
-        # 베이스 패턴 조건 확인
-        # 1. 최근 20일 동안 가격 변동이 15% 이내 (베이스 형성)
-        recent_range = df.iloc[-20:]['price_range'].max()
-        base_formed = recent_range <= 15
-        
-        # 2. 거래량 감소 (베이스 형성 중 거래량 감소)
-        volume_declining = df.iloc[-20:]['volume'].mean() < df.iloc[-40:-20]['volume'].mean()
-        
-        # 3. 종가가 20일 이동평균선 위에 있음
-        above_20_sma = recent['close'] > recent['sma_20']
-        
-        # 4. RSI가 과매도 구간에서 벗어남 (RSI > 40)
-        healthy_rsi = recent['rsi_14'] > 40
-        
-        # 5. 최근 가격이 IPO 이후 고점의 70% 이상
-        ipo_high = df['high'].max()
-        price_strength = recent['close'] >= ipo_high * 0.7
-        
-        # 베이스 패턴 점수 계산
-        base_score = sum([base_formed, volume_declining, above_20_sma, healthy_rsi, price_strength])
-        
-        # 베이스 패턴 정보
-        base_info = {
-            'base_score': base_score,
-            'base_formed': base_formed,
-            'volume_declining': volume_declining,
-            'above_20_sma': above_20_sma,
-            'healthy_rsi': healthy_rsi,
-            'price_strength': price_strength,
-            'recent_range': recent_range,
-            'ipo_high': ipo_high,
-            'current_price': recent['close'],
-            'price_to_high_ratio': recent['close'] / ipo_high
-        }
-        
-        # 베이스 패턴 확인 (점수가 3점 이상이면 베이스 패턴으로 간주)
-        return base_score >= 3, base_info
-    
-    def _check_ipo_breakout(self, df):
-        """IPO 브레이크아웃 확인"""
-        # 데이터가 충분하지 않은 경우
-        if len(df) < 30:
-            return False, {}
-        
-        # 기술적 지표 계산
-        df = calculate_base_pattern(df)
-        
-        # 최근 데이터
-        recent = df.iloc[-1]
-        prev = df.iloc[-2]
-        
-        # 브레이크아웃 조건 확인
-        # 1. 종가가 20일 고점 돌파
-        breakout_20d_high = recent['close'] > df.iloc[-21:-1]['high'].max()
-        
-        # 2. 거래량 급증 (20일 평균 대비 2배 이상)
-        volume_surge = recent['volume_ratio'] >= 2.0
-        
-        # 3. 종가가 상단 밴드 돌파
-        breakout_upper_band = recent['close'] > recent['upper_band']
-        
-        # 4. 당일 가격 상승률 2% 이상
-        daily_gain = (recent['close'] / prev['close'] - 1) * 100 >= 2
-        
-        # 5. RSI가 50 이상 (상승 모멘텀)
-        strong_rsi = recent['rsi_14'] >= 50
-        
-        # 브레이크아웃 점수 계산
-        breakout_score = sum([breakout_20d_high, volume_surge, breakout_upper_band, daily_gain, strong_rsi])
-        
-        # 브레이크아웃 정보
-        breakout_info = {
-            'breakout_score': breakout_score,
-            'breakout_20d_high': breakout_20d_high,
-            'volume_surge': volume_surge,
-            'breakout_upper_band': breakout_upper_band,
-            'daily_gain': daily_gain,
-            'strong_rsi': strong_rsi,
-            'current_price': recent['close'],
-            'volume_ratio': recent['volume_ratio'],
-            'rsi': recent['rsi_14']
-        }
-        
-        # 브레이크아웃 확인 (점수가 3점 이상이면 브레이크아웃으로 간주)
-        return breakout_score >= 3, breakout_info
 
-    def check_track1(self, ticker, df):
-        """Track 1 조건 확인"""
-        ipo_row = self.ipo_data[self.ipo_data['ticker'] == ticker]
-        if ipo_row.empty:
-            return False, {}
-
-        ipo_info = ipo_row.iloc[0]
-        df = calculate_base_pattern(df)
-        recent = df.iloc[-1]
-
-        price_cond = ipo_info['ipo_price'] * 0.7 <= recent['close'] <= ipo_info['ipo_price'] * 0.9
-        rsi_cond = recent['rsi_14'] < 30
-        support_touch = recent['close'] <= recent['rolling_low'] * 1.02
-        volume_cond = recent['volume'] < recent['volume_sma_20'] * 0.5
-
-        sector_rs = self.sector_rs.get(ipo_info['sector'], {}).get('percentile', 0)
-        environment_cond = self.vix < 25 and sector_rs >= 50
-
-        fundamental_cond = (
-            ipo_info.get('ps_ratio', np.inf) < ipo_info.get('industry_ps_ratio', np.inf) and
-            ipo_info.get('revenue_growth', 0) > 20 and
-            ipo_info.get('equity_ratio', 0) > 30 and
-            ipo_info.get('cash_to_sales', 0) > 15
-        )
-
-        info = {
-            'price_cond': price_cond,
-            'rsi_cond': rsi_cond,
-            'support_touch': support_touch,
-            'volume_cond': volume_cond,
-            'environment_cond': environment_cond,
-            'fundamental_cond': fundamental_cond,
-            'sector_rs': sector_rs,
-            'vix': self.vix,
-            'current_price': recent['close'],
-            'ipo_price': ipo_info['ipo_price']
-        }
-
-        return all([price_cond, rsi_cond and support_touch, volume_cond, environment_cond, fundamental_cond]), info
-
-    def check_track2(self, ticker, df):
-        """Track 2 조건 확인"""
-        ipo_row = self.ipo_data[self.ipo_data['ticker'] == ticker]
-        if ipo_row.empty:
-            return False, {}
-
-        ipo_info = ipo_row.iloc[0]
-        df = calculate_track2_indicators(df)
-        recent = df.iloc[-1]
-
-        price_momentum = len(df) >= 5 and (df['close'].iloc[4] / df['close'].iloc[0] - 1) >= 0.20
-        macd_signal = recent['macd'] > recent['macd_signal']
-        volume_surge = recent['volume'] >= recent['volume_sma_20'] * 3
-        institutional_buy = False
-
-        ema_break = df.iloc[-2]['close'] > df.iloc[-2]['ema_5'] and recent['close'] > recent['ema_5']
-        rsi_strong = recent['rsi_7'] > 70
-        stoch_cond = recent['stoch_k'] > recent['stoch_d'] and recent['stoch_k'] > 80
-        roc_cond = recent['roc_5'] > 15
-
-        sector_rs = self.sector_rs.get(ipo_info['sector'], {}).get('percentile', 0)
-        environment_cond = self.vix < 25 and sector_rs >= 50
-
-        info = {
-            'price_momentum': price_momentum,
-            'macd_signal': macd_signal,
-            'volume_surge': volume_surge,
-            'ema_break': ema_break,
-            'rsi_strong': rsi_strong,
-            'stoch_cond': stoch_cond,
-            'roc_cond': roc_cond,
-            'environment_cond': environment_cond,
-            'sector_rs': sector_rs,
-            'vix': self.vix,
-            'current_price': recent['close']
-        }
-
-        return all([price_momentum, macd_signal, volume_surge,
-                    ema_break, rsi_strong, stoch_cond, roc_cond, environment_cond]), info
     
     def screen_ipo_investments(self):
         """IPO 투자 전략 스크리닝 실행"""
         logger.info("IPO 투자 전략 스크리닝 시작...")
         
-        # skip_data 모드에서는 빈 결과 반환
+        # skip_data 모드에서는 빈 결과 파일만 생성
         if self.skip_data:
-            logger.info("Skip data mode: 빈 결과 반환")
+            logger.info("Skip data mode: 빈 결과 파일 생성")
+            self.result_processor.create_empty_result_files()
             return pd.DataFrame()
         
         # 최근 IPO 종목 가져오기
@@ -335,14 +150,14 @@ class IPOInvestmentScreener:
                 ipo_analysis = self.data_manager.get_ipo_analysis(ticker)
                 
                 # 베이스 패턴 확인
-                has_base, base_info = self._check_ipo_base_pattern(df)
+                has_base, base_info = self.pattern_analyzer.check_ipo_base_pattern(df)
 
                 # 브레이크아웃 확인
-                has_breakout, breakout_info = self._check_ipo_breakout(df)
+                has_breakout, breakout_info = self.pattern_analyzer.check_ipo_breakout(df)
 
                 # Track1/Track2 조건 확인
-                track1_pass, track1_info = self.check_track1(ticker, df)
-                track2_pass, track2_info = self.check_track2(ticker, df)
+                track1_pass, track1_info = self.track_analyzer.check_track1(ticker, df)
+                track2_pass, track2_info = self.track_analyzer.check_track2(ticker, df)
                 
                 # 결과 저장
                 if has_base:
@@ -415,64 +230,15 @@ class IPOInvestmentScreener:
         track1_df = pd.DataFrame(track1_results) if track1_results else pd.DataFrame()
         track2_df = pd.DataFrame(track2_results) if track2_results else pd.DataFrame()
         
-        # 결과 저장 (빈 결과일 때도 칼럼명이 있는 빈 파일 생성)
-        base_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR, 
-                                       f"ipo_base_{self.today.strftime('%Y%m%d')}.csv")
-        if not base_df.empty:
-            base_df = base_df.sort_values('score', ascending=False)
-            base_df.to_csv(base_output_file, index=False)
-            base_df.to_json(base_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"IPO 베이스 패턴 결과 저장 완료: {base_output_file} ({len(base_df)}개 종목)")
-        else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_base_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                'pattern_type', 'current_price', 'score', 'date'])
-            empty_base_df.to_csv(base_output_file, index=False)
-            empty_base_df.to_json(base_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"IPO 베이스 패턴 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {base_output_file}")
+        # 결과 저장
+        logger.info(f"베이스 패턴: {len(base_results)}개, 브레이크아웃: {len(breakout_results)}개")
+        logger.info(f"Track1: {len(track1_results)}개, Track2: {len(track2_results)}개")
         
-        breakout_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
-                                          f"ipo_breakout_{self.today.strftime('%Y%m%d')}.csv")
-        if not breakout_df.empty:
-            breakout_df = breakout_df.sort_values('score', ascending=False)
-            breakout_df.to_csv(breakout_output_file, index=False)
-            breakout_df.to_json(breakout_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"IPO 브레이크아웃 결과 저장 완료: {breakout_output_file} ({len(breakout_df)}개 종목)")
-        else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_breakout_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                    'pattern_type', 'current_price', 'score', 'date'])
-            empty_breakout_df.to_csv(breakout_output_file, index=False)
-            empty_breakout_df.to_json(breakout_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"IPO 브레이크아웃 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {breakout_output_file}")
-
-        track1_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
-                                         f"ipo_track1_{self.today.strftime('%Y%m%d')}.csv")
-        if not track1_df.empty:
-            track1_df.to_csv(track1_output_file, index=False)
-            track1_df.to_json(track1_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"Track1 결과 저장 완료: {track1_output_file} ({len(track1_df)}개 종목)")
-        else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_track1_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                  'pattern_type', 'current_price', 'score', 'date'])
-            empty_track1_df.to_csv(track1_output_file, index=False)
-            empty_track1_df.to_json(track1_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"Track1 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {track1_output_file}")
-
-        track2_output_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR,
-                                         f"ipo_track2_{self.today.strftime('%Y%m%d')}.csv")
-        if not track2_df.empty:
-            track2_df.to_csv(track2_output_file, index=False)
-            track2_df.to_json(track2_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"Track2 결과 저장 완료: {track2_output_file} ({len(track2_df)}개 종목)")
-        else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_track2_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                  'pattern_type', 'current_price', 'score', 'date'])
-            empty_track2_df.to_csv(track2_output_file, index=False)
-            empty_track2_df.to_json(track2_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            logger.info(f"Track2 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {track2_output_file}")
+        # CSV 및 JSON 파일로 저장
+        self.result_processor.save_results(base_df, 'base_patterns')
+        self.result_processor.save_results(breakout_df, 'breakouts')
+        self.result_processor.save_results(track1_df, 'track1')
+        self.result_processor.save_results(track2_df, 'track2')
 
         # 통합 결과
         dfs = [base_df, breakout_df, track1_df, track2_df]

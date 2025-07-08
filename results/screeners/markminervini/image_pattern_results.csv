@@ -1,625 +1,666 @@
 ﻿symbol,has_image,vcp_detected,vcp_confidence,cup_handle_detected,cup_handle_confidence,detection_date,error
-FEIM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ASPS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OUST,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CRDO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AEVA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EVLV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BTM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CRS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TPC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LFMD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NEPH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ZS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ATRO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FGEN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SEZL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TSSI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TDUP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-STRT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BBIO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PLTR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GOSS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AKBA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RDVT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TME,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ADPT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ISSC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EYE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TTMI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RCL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BPMC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ODD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GOGO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KEP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IESC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KGC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CMPO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NFLX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PLYA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EXEL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DASH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WWD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GHM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FROG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ROAD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TKO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ZLAB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SPNT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UVE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SFM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TATT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RBC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AVPT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ERJ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AMZE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VEEV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TGEN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RGLS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VRSN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EHC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NEON,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DAVE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ABVC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CURI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WOR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NVTS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OCFT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MIRM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DCO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CALX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CNVS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OPFI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CAR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FTEK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JFIN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-COE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BKSY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ONC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BLBX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BBVA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NCSM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CLS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DRI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WTS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RSI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CFSB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SXT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CMP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CPSH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NGS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NYAX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CVAC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BMI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GROY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BJRI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HWM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JBL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TPB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CCRD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NKTR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SNSE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BSGM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARBB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KTOS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CTVA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TMCWW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UNCY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JFBR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BOLT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ALNT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KULR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-INUV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PXLW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MFI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RDUS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TMC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TCI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OCG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AHR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TWLO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PSIX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SVT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OKLO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FLUT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PRCH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IDT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LTBR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CTEV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IIIN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LEU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AGAE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BTSG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ALTS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RKLB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FPH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AMBR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NAGE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SATX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BWFG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SMR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VRNA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CDTX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BOSC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HSAI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-REVG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LTH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AORT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NAK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ASTS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GRPN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HOOD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARLO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DIST,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JUNE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ALLT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BKTI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-YSG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AMPX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CRMD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-YMM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ATYR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DLO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TBMCR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TVRD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HTZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AMLX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IDN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-USAS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RBLX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PDLB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CRK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RAYA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SGHC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ACHR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FARO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SNT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BBU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TOST,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CYD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SKE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IDCC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GTES,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BYRN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NNE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FENC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GEV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ESE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TSAT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PMEC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LMB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UUU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OPOF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-APH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PRPO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NET,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WELL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OPRT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-YYGH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-USAU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SLNO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DAN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NGD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CAH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BCS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LMND,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PPIH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BWXT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FIX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PGY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AXON,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KOPN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SRAD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PODC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SURG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KFS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WGS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AKRO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EAT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SPOT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-C,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LINC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SSSS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SAH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TESL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-STRL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IRTC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CKPT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TLN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PJT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SBSW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-COOP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-COIN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BASE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-APYX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ESP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SMDD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VST,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MNST,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ISBA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MIND,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TLSA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JCI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-APEI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TPR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EME,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SOFI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SNOW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CRPT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SLS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ICCC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VIRT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARKW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NRIM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SIJ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DHX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RDWR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CCJ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EXEEL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BBW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NFG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HEES,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SAN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EPSN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IHS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RMCO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MIR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MGIC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LLYVK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LLYVA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ATGE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WHLRP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WRLD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RBKB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OSS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-STN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARKF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SII,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PBI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BWAY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AMSC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ULS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-QFIN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ODC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HIPO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NTES,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MGNI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CASY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FINV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CCB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GTBP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NUKZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MAG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IFS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JOBY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CYBR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AFRM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CTLP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MGYR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SITM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-INSM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EVEX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CUK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ESQ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-INDV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ENLT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NEU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CCL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SGDM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AVGO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TFPM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WHLRD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ELVA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RFIL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FUTU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EPRX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CCEC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LITE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-III,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LFCR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KEN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CBRL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EQT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-X,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SNEX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PAAS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CEG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CHEF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PBPB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ELPC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JOYY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BTSGU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARKK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MYRG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NERD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FLEX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NLR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CALM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LBRDK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LBRDA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WILC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FORTY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NATH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CXDO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VSEC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PHAR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-APG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PSIL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OMAB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FOXA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CRWD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UFO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VIK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MTZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ACAD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HCSG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PUK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FIVE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PLTM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-XERS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KMDA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PPLT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TTWO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BLOK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HERO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ITRI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ESPO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DGII,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IBM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ORN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CSCO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DGICB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-XPP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UGI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ATAT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DLTR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SENEA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GREK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ELP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GENI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FGM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MCB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LYG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HSBC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FBL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FOX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EMX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CAKE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MELI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CNM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CCLDO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SIL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SLVP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EXE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TGTX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LAUR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BWEB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EIS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ALGM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SYF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ZVRA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SENEB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BTI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CEF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NEUE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DXPE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SBS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UCYB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NEXT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ROK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARKQ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BBUC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OCS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PWR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BNGE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OND,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-METU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ENIC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARKX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LYV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PLNT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AAMI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KEMQ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BITQ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FFIV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GEL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WEBL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BAP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FNGO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BPAY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UNTY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FNGG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JVSAU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GSIB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LOGC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RNXT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GILT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SHOP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SANM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BUZZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TDS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ETR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DBD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-QTUM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EWP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AIBU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ELTX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LRCX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FPX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-COF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GAN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-XAR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RYAAY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CWCO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CHN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CBNK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CIVB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ISRA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MYFW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FTNT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RPRX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RYTM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CHAT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PHX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IZRL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NTRA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EMA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FWONK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SLAB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PRIM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ACMR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AGMI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EPR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CIB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-XYLO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GAMR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NTRS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-JPM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FWONA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-VLGEA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DAX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CIEN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SOCL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SGI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FER,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LENZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MTSI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NIC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-META,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FDD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ALAI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-T,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OLLI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FEUZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-DTM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LYFT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IROQ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-STVN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NFLP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SYBT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ATFV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GPOR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AEIS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UTES,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ECNS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ITA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BKNG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BFC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EPOL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CLDL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TASK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ASND,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GDE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ODDS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SPRX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UAN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TSM,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IRMD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BKGI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RMNI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CAE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BETZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FEP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IAI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NDAQ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FDNI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TMAT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LOUP,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BYD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WMT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FTI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FXI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GNTY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RMBS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HNNA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-METV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MCK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GLTR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-UPV,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ENVA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-COR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARVR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-OGIG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LNG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-QTWO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BNT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SCHW,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BN,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TRFK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SWTX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ROKT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-KTEC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PWRD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-BJ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EVRI,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-STCE,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HAFC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FDT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GOLY,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SAMT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RRC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CNEQ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-THFF,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WFC,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-WMB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GCAD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ARKD,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CIBR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ULTA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SHCO,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PPA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-LTL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-GVA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PIZ,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-MTUL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ABT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FNGS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TOGA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FCA,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-TBPH,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AER,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-NTB,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-HACK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-IROHU,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-EFAS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-PAX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ING,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FDTS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-SSYS,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-FINX,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-XTL,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-RCG,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-ECVT,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-CHTR,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
-AFK,False,False,0.0,False,0.0,2025-06-26,YOLOv8 모델 실행 중 오류 발생: name 'YOLO' is not defined
+FEIM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ASPS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OUST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VERV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AEVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BTM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OWLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TPC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CRS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EVLV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NEPH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JBL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ODD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+STRT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ZS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CUK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CCL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FGEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RCL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+QBTS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SEZL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TSSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TDUP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ALMU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ESLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+APPS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BBIO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+XYF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MSGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TTMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RDUS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ADPT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ISSC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EYE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RDVT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CVNA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLDP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SIEB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GOGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MDAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KEP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IESC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NVMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GHM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ERJ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DNA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RMCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WWD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TME,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BPMC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AISP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DASH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NFLX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ROAD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CALX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KGC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CMPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EXEL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+QUBT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AMZE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BMNR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TGEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DAVE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RGLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NEON,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ABVC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VEEV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TATT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTMX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PLYA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BKSY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WOR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FTEK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BLBX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DGXX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OCFT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IPI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OPFI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LASR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CAR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IIIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CMP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JFIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WTS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TKO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WPM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TGI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UPST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CFSB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CPSH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BBVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TIGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ALNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GTES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VAPE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BSGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SNSE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NYAX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+STEM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SPRC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+C,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+U,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WRBY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BULLW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ALG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CVAC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+INUV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SPNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JFBR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BOLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TRUG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+REVG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TMCWW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AYRO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KULR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BREA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GITS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CCRD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HWM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DBVT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ASUR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AIMD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KTOS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TMC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GROY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DVS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PRCH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PSIX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SVT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ROMA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VRSN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BJRI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CNVS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BLDE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OCG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTEV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RKLB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+URBN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RPID,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+XTKG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IONQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CDTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HOOD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LEU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SATX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TAOX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SOGP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HSAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AMPX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NAK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+YSG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MATH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GRPN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RAYA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DIST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CRDO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ASTS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JUNE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BNRG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+USAS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IDT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SGHC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LPLA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FIX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OKYO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ATYR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+YYGH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FLUT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+THTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MBOT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CDE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PRPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SEI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SNES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TCI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BWFG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ATAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FENC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PGY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ITRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TBMCR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TWLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BYRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EVEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PAC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BOSC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PMEC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PPIH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RBLX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LMB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FARO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MGNI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BKTI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CYD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KFS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DOMO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UUU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AHR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GEV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+APH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SAH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NET,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HTZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SOFI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DUOT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OPRT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GORO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DAN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SKE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SSRM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TSAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PZG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ESE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ICL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+STRL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SBSW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+THM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CXDO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EPRX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JOBY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+COIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LMND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OSW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SRAD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WRLD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NGD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DHX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NTRB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CPS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AXON,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+APYX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PJT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CRPT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+XMTR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NRG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WGS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ESP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LIF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SSSS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AFRM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLSR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GRNQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AWI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MGIC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NRIM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FORD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OPOF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MKTW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RDWR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NTGR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TLN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TESL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OSS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OSIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FIVE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BTFX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RBCAA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SPOT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IHS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BITU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FPH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ELTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TPR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CKPT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BCS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AXP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARKW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PODC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLNO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PVLA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EFOI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LINC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NUGT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FLEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SNOW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MPAA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JCI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FORTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+INDV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SII,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SAN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VHC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARMN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VIRT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AVGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WEBL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MIR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CBRL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TOST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARKF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BWAY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ENLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ATI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BITX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+APEI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BBW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CAH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RFIL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MYRG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BLOK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ORN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SYF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IPX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CCB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ODC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LITE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FNGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RMNI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MAG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DGII,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BITQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AAMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SIFY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HIPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FNGG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+STCE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+STNE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ESQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CRWD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DRS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MAXI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ALGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SAND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WILC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BASE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HEES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FBL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AIBU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NYC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SNEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CAKE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARKK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TWI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IFS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+III,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NEU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NUKZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OMAB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UFO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MCB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GDMN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PRIM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ZVRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MTZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+METU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TITN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CSV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SHLD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SURG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ONIT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VIK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PSIL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SKLZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IMMX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SANM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MGTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ROK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EMX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+COOP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IBEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+STN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IBIT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EZBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CLBR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HODL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BTCW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FBTC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BITB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BRRR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BTCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CEG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LLYVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+XERS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SENEB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DEFI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LLYVK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FTDR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UNTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CELH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SGDM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SENEA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DXPE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NTRS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PAAS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PBPB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UCYB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DBD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BWEB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SHOP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IAG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PWR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTLP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PLTM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GBTC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PPLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KAR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AEIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ITRI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+VSTA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MOS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CNM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ADTN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LRCX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BELFB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HCSG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ATLC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARKX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLAB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CBNK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CUBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RBKB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CLDL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SIL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CYBR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FINV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EXTR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ACMR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FHN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+COF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+X,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FUTU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ENVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CIVB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EURL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ETNB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AMPL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SIJ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GREK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+COCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BUZZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARKQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+INSM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NFG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SNX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLVP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NERD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NATH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RLX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CIEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ONON,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SGDJ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CHEF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KMDA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OVBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TCBX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GPI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TSM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EMR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CAE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RING,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MELI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RRBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARKD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NIC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RMBS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SPRX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LBRDK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LBRDA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NEXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UBER,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ELPC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FAS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SIBN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NTES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CEE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+QD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LFCR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DLTR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ASTE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+QTUM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CSCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GNTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KLAC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BPAY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EWBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FSS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TTWO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CHAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CASY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SYBT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PRLB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ESPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SBS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GDX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AGMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SMDD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IZRL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RDCM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+XAR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NPKI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WBS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BBUC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MGYR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BFC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ATAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GSIB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HAFC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+USFD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MTSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LAUR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IBM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DAKT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FFIV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HBCP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LOUP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SSYS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ALAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+QFIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TMAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JPM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EPOL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SLND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PERI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RYAAY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CCLDO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+THFF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HERO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PUK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RYTM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+JOYY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GILT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FPX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PLPC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TRFK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ISRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NPK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WFC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BNGE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FTNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+META,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GEL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OPRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RNXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LTL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BKNG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+STT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DERM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ATEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SHCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FNGS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AGI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SGI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ATFV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CSGS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BTI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ROKT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GAMR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BTRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ELP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BETZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CIB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BYD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARKA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MAKX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BANF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ITA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EWP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EPR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+WBD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTRI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TRMB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SEIC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CNEQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+TBPH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+HNNA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BPOP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTBB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LYV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+CTOS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KBWB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PWOD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SAP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+METV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PAX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+XTL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+RPRX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PWRD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ALV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FBIZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UPV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SSBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ELLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EWO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+FEUZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NTB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ODDS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+DAX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+LOGC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SIXG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GDE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+UYG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+GTLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+EUFN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OGIG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ING,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+OMF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ARTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+SCHW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+BK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+MTUL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+NDAQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+IIIV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+AFK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+KEMQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PPA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+PNFP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist

@@ -221,24 +221,45 @@ class StockRankingSystem:
             shares_outstanding = np.random.uniform(50e6, 10e9)
             indicators['market_cap'] = current_price * shares_outstanding
             
-            # Relative strength vs SPY
+            # Relative strength using Mark Minervini method
             try:
+                # 마크 미너비니 방식의 상대강도 계산
+                # 3개월(63일), 6개월(126일), 9개월(189일), 12개월(252일) 성과 가중 평균
                 spy_data = self.load_stock_data('SPY')
-                if spy_data is not None and len(spy_data) >= len(df):
-                    stock_returns = df['close'].pct_change().dropna()
-                    spy_returns = spy_data['close'].tail(len(stock_returns)).pct_change().dropna()
+                if spy_data is not None and len(df) >= 252 and len(spy_data) >= 252:
+                    # 최근 252일 데이터 사용
+                    stock_prices = df['close'].tail(252).values
+                    spy_prices = spy_data['close'].tail(252).values
                     
-                    if len(stock_returns) == len(spy_returns) and len(stock_returns) > 0:
-                        # Calculate relative strength
-                        stock_cum_return = (1 + stock_returns).cumprod().iloc[-1] - 1
-                        spy_cum_return = (1 + spy_returns).cumprod().iloc[-1] - 1
-                        indicators['relative_strength'] = stock_cum_return - spy_cum_return
+                    if len(stock_prices) >= 252 and len(spy_prices) >= 252:
+                        # 각 기간별 수익률 계산
+                        p3 = (stock_prices[-1] - stock_prices[-63]) / stock_prices[-63] * 100  # 3개월
+                        p6 = (stock_prices[-1] - stock_prices[-126]) / stock_prices[-126] * 100  # 6개월
+                        p9 = (stock_prices[-1] - stock_prices[-189]) / stock_prices[-189] * 100  # 9개월
+                        p12 = (stock_prices[-1] - stock_prices[-252]) / stock_prices[-252] * 100  # 12개월
+                        
+                        # SPY 기간별 수익률 계산
+                        b3 = (spy_prices[-1] - spy_prices[-63]) / spy_prices[-63] * 100
+                        b6 = (spy_prices[-1] - spy_prices[-126]) / spy_prices[-126] * 100
+                        b9 = (spy_prices[-1] - spy_prices[-189]) / spy_prices[-189] * 100
+                        b12 = (spy_prices[-1] - spy_prices[-252]) / spy_prices[-252] * 100
+                        
+                        # 가중 평균 계산 (최근 3개월에 40% 가중치)
+                        stock_score = 0.4 * p3 + 0.2 * p6 + 0.2 * p9 + 0.2 * p12
+                        bench_score = 0.4 * b3 + 0.2 * b6 + 0.2 * b9 + 0.2 * b12
+                        
+                        # 상대강도 = 종목 점수 / 벤치마크 점수 * 100
+                        if bench_score != 0:
+                            indicators['relative_strength'] = stock_score / bench_score * 100
+                        else:
+                            indicators['relative_strength'] = 100  # 벤치마크가 0이면 기본값
                     else:
-                        indicators['relative_strength'] = 0
+                        indicators['relative_strength'] = 50  # 데이터 부족시 중간값
                 else:
-                    indicators['relative_strength'] = 0
-            except:
-                indicators['relative_strength'] = 0
+                    indicators['relative_strength'] = 50  # 데이터 부족시 중간값
+            except Exception as e:
+                print(f"⚠️ {symbol} 상대강도 계산 오류: {e}")
+                indicators['relative_strength'] = 50  # 오류시 중간값
                 
             # Beta calculation
             try:

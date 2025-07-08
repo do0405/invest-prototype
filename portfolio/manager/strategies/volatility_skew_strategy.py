@@ -14,7 +14,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
 sys.path.insert(0, project_root)
 
-from config import OPTION_VOLATILITY_DIR, OPTION_VOLATILITY_RESULTS_DIR, RESULTS_VER2_DIR
+from config import OPTION_VOLATILITY_DIR, OPTION_VOLATILITY_RESULTS_DIR, RESULTS_VER2_DIR, PORTFOLIO_RESULTS_DIR
 from utils import ensure_dir
 from screeners.option_volatility.volatility_skew_screener import VolatilitySkewScreener
 
