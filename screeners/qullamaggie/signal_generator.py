@@ -7,8 +7,10 @@ import pandas as pd
 from datetime import datetime, timedelta
 import json
 
+from utils.path_utils import add_project_root
+
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
+add_project_root()
 
 # 설정 및 유틸리티 임포트
 from config import QULLAMAGGIE_RESULTS_DIR, DATA_US_DIR

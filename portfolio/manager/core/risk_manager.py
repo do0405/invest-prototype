@@ -11,10 +11,12 @@ import numpy as np
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple
 
-# 프로젝트 루트 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from utils.path_utils import add_project_root
 
-from config import RESULTS_VER2_DIR
+# 프로젝트 루트 추가
+add_project_root()
+
+from config import PORTFOLIO_RESULTS_DIR
 from utils import ensure_dir
 
 class RiskManager:
@@ -22,7 +24,7 @@ class RiskManager:
     
     def __init__(self, portfolio_name: str = "default"):
         self.portfolio_name = portfolio_name
-        self.risk_dir = os.path.join(RESULTS_VER2_DIR, 'risk_management')
+        self.risk_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'risk_management')
         ensure_dir(self.risk_dir)
         
         # 기본 리스크 설정
@@ -203,5 +205,4 @@ class RiskManager:
             }
             
         except Exception as e:
-            print(f"⚠️ 리스크 요약 생성 실패: {e}")
-            return {}
+            print(f"⚠️ 리스크 요약 생성 실패: {e}")            return {}

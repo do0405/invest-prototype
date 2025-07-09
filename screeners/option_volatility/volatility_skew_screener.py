@@ -12,12 +12,12 @@ import traceback
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Any
 
-# 프로젝트 루트 디렉토리를 Python 경로에 추가
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(os.path.dirname(current_dir))
-sys.path.insert(0, project_root)
+from utils.path_utils import add_project_root
 
-from config import RESULTS_VER2_DIR, OPTION_VOLATILITY_DIR
+# 프로젝트 루트 디렉토리를 Python 경로에 추가
+add_project_root()
+
+from config import PORTFOLIO_RESULTS_DIR, OPTION_VOLATILITY_RESULTS_DIR
 from utils import ensure_dir
 from screeners.option_volatility.skew_mixins import SkewCalculationsMixin
 
@@ -26,7 +26,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
 
     def __init__(self):
         self.target_stocks = self.get_large_cap_stocks()
-        self.results_dir = OPTION_VOLATILITY_DIR
+        self.results_dir = OPTION_VOLATILITY_RESULTS_DIR
         os.makedirs(self.results_dir, exist_ok=True)
         
         # 데이터 품질 등급 정의

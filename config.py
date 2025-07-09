@@ -13,8 +13,6 @@ PORTFOLIO_BUY_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy')
 PORTFOLIO_SELL_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell')
 OPTION_RESULTS_DIR = os.path.join(RESULTS_DIR, 'option')
 
-# 기존 코드 호환성을 위한 별칭
-RESULTS_VER2_DIR = PORTFOLIO_RESULTS_DIR
 MARKMINERVINI_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'markminervini')
 QULLAMAGGIE_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'qullamaggie')
 US_GAINER_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'us_gainer')
@@ -36,7 +34,6 @@ MARKMINERVINI_DIR = os.path.join(SCREENERS_DIR, 'markminervini')
 QULLAMAGGIE_DIR = os.path.join(SCREENERS_DIR, 'qullamaggie')
 US_GAINER_DIR = os.path.join(SCREENERS_DIR, 'us_gainer')
 US_SETUP_DIR = os.path.join(SCREENERS_DIR, 'us_setup')
-OPTION_VOLATILITY_DIR = OPTION_VOLATILITY_RESULTS_DIR  # 결과 파일은 results 폴더에 저장
 LEADER_STOCK_DIR = os.path.join(SCREENERS_DIR, 'leader_stock')
 MOMENTUM_SIGNALS_DIR = os.path.join(SCREENERS_DIR, 'momentum_signals')
 IPO_INVESTMENT_DIR = os.path.join(SCREENERS_DIR, 'ipo_investment')

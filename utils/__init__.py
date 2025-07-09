@@ -37,6 +37,7 @@ from .technical_indicators import (
     calculate_stochastic,
 )
 from .first_buy_tracker import update_first_buy_signals
+from .path_utils import add_project_root
 
 __all__ = [
     'ensure_dir',
@@ -67,5 +68,6 @@ __all__ = [
     'calculate_macd',
     'calculate_stochastic',
     'update_first_buy_signals',
+    'add_project_root',
 ]
 

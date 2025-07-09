@@ -26,9 +26,10 @@ except ImportError:
     YOLO = None
     print("Warning: ultralytics 라이브러리가 설치되지 않았습니다. 이미지 패턴 감지 기능이 제한됩니다.")
 
+from utils.path_utils import add_project_root
+
 # 프로젝트 루트 경로 설정
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.insert(0, project_root)
+add_project_root()
 
 from config import *
 

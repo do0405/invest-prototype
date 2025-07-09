@@ -14,10 +14,12 @@ import json
 
 from .price_calculator import PriceCalculator
 
-# 프로젝트 루트 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from utils.path_utils import add_project_root
 
-from config import RESULTS_VER2_DIR
+# 프로젝트 루트 추가
+add_project_root()
+
+from config import PORTFOLIO_RESULTS_DIR
 from utils import ensure_dir
 from .strategy_config import StrategyConfig, OrderType, PositionType, ExitConditionType
 
@@ -26,7 +28,7 @@ class PositionTracker:
     
     def __init__(self, portfolio_name: str = "default"):
         self.portfolio_name = portfolio_name
-        self.positions_dir = os.path.join(RESULTS_VER2_DIR, 'portfolio_positions')
+        self.positions_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'portfolio_positions')
         ensure_dir(self.positions_dir)
         
         self.positions_file = os.path.join(self.positions_dir, f'{portfolio_name}_positions.csv')
@@ -271,5 +273,4 @@ class PositionTracker:
             
             return metrics
             
-        except Exception as e:
-            print(f"⚠️ 성과 지표 계산 실패: {e}")
+        except Exception as e:            print(f"⚠️ 성과 지표 계산 실패: {e}")
