@@ -8,13 +8,12 @@ import sys
 import pandas as pd
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
+from utils.path_utils import add_project_root
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
-sys.path.insert(0, project_root)
+add_project_root()
 
-from config import OPTION_VOLATILITY_DIR, OPTION_VOLATILITY_RESULTS_DIR, RESULTS_VER2_DIR, PORTFOLIO_RESULTS_DIR
+from config import OPTION_VOLATILITY_RESULTS_DIR, PORTFOLIO_RESULTS_DIR
 from utils import ensure_dir
 from screeners.option_volatility.volatility_skew_screener import VolatilitySkewScreener
 
@@ -28,9 +27,8 @@ class VolatilitySkewPortfolioStrategy:
         self.strategy_name = "volatility_skew"
         
         # 결과 저장 경로
-        ensure_dir(OPTION_VOLATILITY_DIR)
         ensure_dir(OPTION_VOLATILITY_RESULTS_DIR)
-        ensure_dir(os.path.join(RESULTS_VER2_DIR, 'buy'))
+        ensure_dir(os.path.join(PORTFOLIO_RESULTS_DIR, 'buy'))
 
         self.portfolio_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'portfolio_signals.csv')
         self.results_file = os.path.join(OPTION_VOLATILITY_RESULTS_DIR, 'volatility_skew_results.csv')
@@ -105,7 +103,7 @@ class VolatilitySkewPortfolioStrategy:
         # 파일명 생성
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         filename = f"volatility_skew_portfolio_{timestamp}.csv"
-        filepath = os.path.join(OPTION_VOLATILITY_DIR, filename)
+        filepath = os.path.join(OPTION_VOLATILITY_RESULTS_DIR, filename)
         buy_result_path = self.results_file
         
         # CSV 저장

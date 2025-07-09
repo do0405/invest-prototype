@@ -10,11 +10,12 @@ import pandas as pd
 
 
 from portfolio.manager import create_portfolio_manager
+from utils.path_utils import add_project_root
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'portfolio', 'long_short'))
-sys.path.insert(0, os.path.join(os.path.abspath(os.path.dirname(__file__)), 'portfolio', 'manager'))
+add_project_root()
+add_project_root(os.path.join('portfolio', 'long_short'))
+add_project_root(os.path.join('portfolio', 'manager'))
 
 from orchestrator.tasks import (
     execute_strategies,

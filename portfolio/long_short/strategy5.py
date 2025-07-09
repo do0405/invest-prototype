@@ -7,14 +7,15 @@ import sys
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+from utils.path_utils import add_project_root
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+add_project_root()
 
 # 설정 파일 임포트
 from config import (
     DATA_DIR, DATA_US_DIR,
-    RESULTS_DIR, RESULTS_VER2_DIR
+    RESULTS_DIR, PORTFOLIO_RESULTS_DIR
 )
 
 # 유틸리티 함수 임포트
@@ -29,7 +30,7 @@ def run_strategy5_screening():
     print("\n🔍 전략 5: 평균회귀 하이 ADX 리버설 롱 스크리닝 시작...")
 
     # 결과 파일 경로 - buy 폴더로 변경
-    buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
+    buy_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy')
     ensure_dir(buy_dir)
     result_file = os.path.join(buy_dir, 'strategy5_results.csv')
 

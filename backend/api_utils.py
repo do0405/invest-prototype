@@ -5,10 +5,12 @@ import sys
 import glob
 from typing import Dict, List, Optional
 
-# 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils.path_utils import add_project_root
 
-from config import RESULTS_DIR, RESULTS_VER2_DIR
+# 프로젝트 루트 디렉토리를 Python 경로에 추가
+add_project_root()
+
+from config import RESULTS_DIR, PORTFOLIO_RESULTS_DIR
 
 class DataManager:
     """JSON 데이터 관리 클래스"""
@@ -55,9 +57,8 @@ class DataManager:
         strategies = ['strategy1', 'strategy2', 'strategy3', 'strategy4', 'strategy5', 'strategy6']
         
         for strategy in strategies:
-            json_file = os.path.join(RESULTS_VER2_DIR, f'{strategy}_results.json')
+            json_file = os.path.join(PORTFOLIO_RESULTS_DIR, f'{strategy}_results.json')
             data = DataManager.get_json_data(json_file)
             if data is not None:
                 results[strategy] = data
-        
-        return results
+                return results

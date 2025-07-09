@@ -7,18 +7,19 @@ from flask_cors import CORS
 # 환경변수 로드
 load_dotenv()
 import pandas as pd
-import os
 import sys
 import glob
 import json  # 추가된 import
 from datetime import datetime
 
+from utils.path_utils import add_project_root
+
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))  
+add_project_root()
 
 from config import (
     RESULTS_DIR,
-    RESULTS_VER2_DIR,
+    PORTFOLIO_RESULTS_DIR,
     MARKMINERVINI_RESULTS_DIR,
     IPO_INVESTMENT_RESULTS_DIR,
     LEADER_STOCK_RESULTS_DIR,
@@ -93,10 +94,10 @@ def get_portfolio_by_strategy(strategy_name):
     """전략별 포트폴리오 결과 반환"""
     try:
         # Check in buy directory first
-        json_file = os.path.join(RESULTS_VER2_DIR, 'buy', f'{strategy_name}_results.json')
+        json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy', f'{strategy_name}_results.json')
         if not os.path.exists(json_file):
             # Check in sell directory
-            json_file = os.path.join(RESULTS_VER2_DIR, 'sell', f'{strategy_name}_results.json')
+            json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell', f'{strategy_name}_results.json')
         
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
@@ -146,7 +147,7 @@ def get_volatility_skew_results():
     """변동성 스큐 스크리닝 결과 반환"""
     try:
         # 가장 최근 파일 찾기
-        pattern = os.path.join(RESULTS_VER2_DIR, 'option_volatility', 'volatility_skew_screening_*.json')
+        pattern = os.path.join(PORTFOLIO_RESULTS_DIR, 'option_volatility', 'volatility_skew_screening_*.json')
         files = glob.glob(pattern)
         if files:
             latest_file = max(files, key=os.path.getctime)
@@ -298,7 +299,7 @@ def get_qullamaggie_description():
 def get_qullamaggie_breakout_results():
     """쿨라매기 브레이크아웃 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'breakout_results.json')
+        json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'qullamaggie_result', 'breakout_results.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -316,7 +317,7 @@ def get_qullamaggie_breakout_results():
 def get_qullamaggie_episode_pivot_results():
     """쿨라매기 에피소드 피벗 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'episode_pivot_results.json')
+        json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'qullamaggie_result', 'episode_pivot_results.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -334,7 +335,7 @@ def get_qullamaggie_episode_pivot_results():
 def get_qullamaggie_parabolic_short_results():
     """쿨라매기 파라볼릭 숏 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'parabolic_short_results.json')
+        json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'qullamaggie_result', 'parabolic_short_results.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -352,7 +353,7 @@ def get_qullamaggie_parabolic_short_results():
 def get_qullamaggie_buy_signals():
     """쿨라매기 매수 시그널 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'buy', 'qullamaggie_buy_signals.json')
+        json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'qullamaggie_result', 'buy', 'qullamaggie_buy_signals.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -370,7 +371,7 @@ def get_qullamaggie_buy_signals():
 def get_qullamaggie_sell_signals():
     """쿨라매기 매도 시그널 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_VER2_DIR, 'qullamaggie_result', 'sell', 'qullamaggie_sell_signals.json')
+        json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'qullamaggie_result', 'sell', 'qullamaggie_sell_signals.json')
         if os.path.exists(json_file):
             with open(json_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -410,5 +411,4 @@ def run_qullamaggie_screening():
 if __name__ == '__main__':
     # 기본 포트를 프론트엔드 기본값(5000)과 맞춰 연결 오류를 방지한다
     port = int(os.getenv('BACKEND_PORT', 5000))
-    debug = os.getenv('FLASK_ENV', 'development') == 'development'
-    app.run(debug=debug, host='0.0.0.0', port=port)
+    debug = os.getenv('FLASK_ENV', 'development') == 'development'    app.run(debug=debug, host='0.0.0.0', port=port)

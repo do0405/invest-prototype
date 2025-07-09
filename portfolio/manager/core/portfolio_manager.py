@@ -14,8 +14,10 @@ import re
 from datetime import datetime, timedelta
 from typing import Dict, Optional
 
+from utils.path_utils import add_project_root
+
 # 프로젝트 루트 추가
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+add_project_root()
 
 from .position_tracker import PositionTracker
 from .risk_manager import RiskManager
@@ -30,7 +32,7 @@ from .exit_conditions import (
     check_complex_exit_condition,
     should_check_exit_from_next_day,
 )
-from config import RESULTS_VER2_DIR
+from config import PORTFOLIO_RESULTS_DIR
 from utils import ensure_dir
 from .strategy_config import StrategyConfig
 
@@ -42,7 +44,7 @@ class PortfolioManager:
         self.initial_capital = initial_capital
         
         # 포트폴리오 디렉토리 설정
-        self.portfolio_dir = os.path.join(RESULTS_VER2_DIR, 'portfolio_management')
+        self.portfolio_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'portfolio_management')
         ensure_dir(self.portfolio_dir)
 
         # 핵심 모듈 초기화
@@ -90,7 +92,7 @@ class PortfolioManager:
     def load_strategy_results(self, strategy_name: str) -> Optional[pd.DataFrame]:
         """전략 결과 파일 로드"""
         try:
-            result_file = StrategyConfig.get_result_file_path(strategy_name, RESULTS_VER2_DIR)
+            result_file = StrategyConfig.get_result_file_path(strategy_name, PORTFOLIO_RESULTS_DIR)
             if result_file and os.path.exists(result_file):
                 return pd.read_csv(result_file)
             return None
@@ -135,8 +137,8 @@ class PortfolioManager:
         try:
             print("\n🔄 전략 결과 파일 처리 및 업데이트 시작...")
             
-            buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
-            sell_dir = os.path.join(RESULTS_VER2_DIR, 'sell')
+            buy_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy')
+            sell_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell')
             
             # buy 디렉토리 처리
             if os.path.exists(buy_dir):
@@ -267,8 +269,8 @@ class PortfolioManager:
         try:
             print("\n🔍 매매 신호 모니터링 시작...")
             
-            buy_dir = os.path.join(RESULTS_VER2_DIR, 'buy')
-            sell_dir = os.path.join(RESULTS_VER2_DIR, 'sell')
+            buy_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy')
+            sell_dir = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell')
             
             # Buy 폴더 처리
             if os.path.exists(buy_dir):
