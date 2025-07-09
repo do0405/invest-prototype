@@ -291,19 +291,42 @@ def collect_data(max_us_chunks=None, start_chunk=0):
         ensure_dir(directory)
         
     print("\n🇺🇸 미국 주식 데이터 수집 시작...")
-    # NASDAQ API 제거됨 - 타임아웃 문제로 인해
-    # 대신 수동으로 주요 종목 리스트를 사용하거나 다른 안정적인 소스 활용
-    print("⚠️ NASDAQ API가 제거되었습니다. 수동 종목 리스트나 다른 데이터 소스를 사용하세요.")
-    # us_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA"]  # 예시 종목들
-    # fetch_and_save_us_ohlcv_chunked(
-    #     tickers=us_tickers,
-    #     save_dir=DATA_US_DIR,
-    #     chunk_size=5,
-    #     pause=5.0,
-    #     start_chunk=start_chunk,
-    #     max_chunks=max_us_chunks,
-    #     max_workers=3
-    # )
+    
+    # 기존 CSV 파일들을 기반으로 종목 목록 생성
+    try:
+        from data_collectors.stock_metadata_collector import get_symbols
+        us_tickers = get_symbols()
+        
+        if not us_tickers:
+            print("⚠️ 기존 CSV 파일에서 종목을 찾을 수 없습니다. 기본 종목 리스트를 사용합니다.")
+            us_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "NFLX", "AMD", "CRM"]
+        
+        print(f"📊 총 {len(us_tickers)}개 종목의 OHLCV 데이터를 업데이트합니다.")
+        
+        # OHLCV 데이터 수집 실행
+        fetch_and_save_us_ohlcv_chunked(
+            tickers=us_tickers,
+            save_dir=DATA_US_DIR,
+            chunk_size=10,
+            pause=2.0,
+            start_chunk=start_chunk,
+            max_chunks=max_us_chunks,
+            max_workers=5
+        )
+        
+    except Exception as e:
+        print(f"❌ OHLCV 데이터 수집 중 오류 발생: {e}")
+        print("⚠️ 기본 종목 리스트로 데이터 수집을 시도합니다.")
+        us_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "NFLX", "AMD", "CRM"]
+        fetch_and_save_us_ohlcv_chunked(
+            tickers=us_tickers,
+            save_dir=DATA_US_DIR,
+            chunk_size=5,
+            pause=3.0,
+            start_chunk=start_chunk,
+            max_chunks=max_us_chunks,
+            max_workers=3
+        )
 
 # 명령행 인터페이스
 if __name__ == "__main__":

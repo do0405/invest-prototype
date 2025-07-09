@@ -10,14 +10,12 @@ Symbols are derived from existing OHLCV files under ``data/us``.
 import os
 import logging
 import time
-from typing import Dict, List
-from concurrent.futures import ThreadPoolExecutor, as_completed
-
-
 import pandas as pd
 import yfinance as yf
-import requests
 from yahooquery import Ticker
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Dict, List, Optional
+import requests
 
 import sys
 import os
@@ -29,13 +27,17 @@ from config import (
     YAHOO_FINANCE_MAX_RETRIES,
     YAHOO_FINANCE_DELAY,
 )
-from utils import ensure_dir
+from utils.io_utils import ensure_dir
 
 # Set user agent to avoid 401 errors
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+}
 requests.packages.urllib3.disable_warnings()
 
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 
@@ -86,7 +88,7 @@ def fetch_metadata_yahooquery(symbol: str, delay: float = 1.0) -> Dict[str, obje
         }
 
 
-def fetch_metadata(symbol: str, max_retries: int = 1, delay: float = 2.0) -> Dict[str, object]:
+def fetch_metadata(symbol: str, max_retries: int = 1, delay: float = 0.8) -> Dict[str, object]:
     """Fetch metadata for a single symbol with yfinance first, then yahooquery backup."""
     # First try yfinance
     try:
@@ -141,7 +143,7 @@ def fetch_metadata(symbol: str, max_retries: int = 1, delay: float = 2.0) -> Dic
         return yq_data
 
 
-def collect_stock_metadata(symbols: List[str], max_workers: int = 2) -> pd.DataFrame:
+def collect_stock_metadata(symbols: List[str], max_workers: int = 8) -> pd.DataFrame:
     """Collect metadata for a list of symbols with reduced concurrency."""
     records: List[Dict[str, object]] = []
     successful_count = 0
@@ -204,21 +206,79 @@ def get_symbols() -> List[str]:
     return filtered_symbols
 
 
+def load_cached_metadata() -> Optional[pd.DataFrame]:
+    """Load cached metadata if exists and is recent (within 7 days)."""
+    if not os.path.exists(STOCK_METADATA_PATH):
+        return None
+    
+    try:
+        # Check file age
+        file_age = time.time() - os.path.getmtime(STOCK_METADATA_PATH)
+        if file_age > 7 * 24 * 3600:  # 7 days
+            logger.info("메타데이터 캐시가 7일 이상 오래됨, 새로 수집합니다.")
+            return None
+        
+        df = pd.read_csv(STOCK_METADATA_PATH)
+        logger.info(f"✅ 캐시된 메타데이터 로드: {len(df)}개 종목")
+        return df
+    except Exception as e:
+        logger.warning(f"캐시된 메타데이터 로드 실패: {e}")
+        return None
+
+
+def get_missing_symbols(cached_df: Optional[pd.DataFrame], all_symbols: List[str]) -> List[str]:
+    """Get symbols that are missing from cached data."""
+    if cached_df is None:
+        return all_symbols
+    
+    cached_symbols = set(cached_df['symbol'].tolist())
+    missing_symbols = [s for s in all_symbols if s not in cached_symbols]
+    logger.info(f"캐시에서 누락된 종목: {len(missing_symbols)}개")
+    return missing_symbols
+
+
+def merge_metadata(cached_df: Optional[pd.DataFrame], new_df: pd.DataFrame) -> pd.DataFrame:
+    """Merge cached and new metadata, preferring new data for duplicates."""
+    if cached_df is None:
+        return new_df
+    
+    # Remove duplicates from cached data
+    new_symbols = set(new_df['symbol'].tolist())
+    filtered_cached = cached_df[~cached_df['symbol'].isin(new_symbols)]
+    
+    # Combine dataframes
+    combined_df = pd.concat([filtered_cached, new_df], ignore_index=True)
+    logger.info(f"메타데이터 병합 완료: {len(combined_df)}개 종목")
+    return combined_df
+
+
 def main() -> None:
     ensure_dir(os.path.dirname(STOCK_METADATA_PATH))
     symbols = get_symbols()
     logger.info("메타데이터 수집 대상 종목 수: %d", len(symbols))
     
-    df = collect_stock_metadata(symbols)
-    df.to_csv(STOCK_METADATA_PATH, index=False)
-    logger.info("✅ 메타데이터 저장 완료: %s (%d tickers)", STOCK_METADATA_PATH, len(df))
+    # Try to load cached data
+    cached_df = load_cached_metadata()
+    missing_symbols = get_missing_symbols(cached_df, symbols)
+    
+    if not missing_symbols:
+        logger.info("✅ 모든 메타데이터가 캐시에 있습니다.")
+        return
+    
+    logger.info(f"새로 수집할 종목: {len(missing_symbols)}개")
+    new_df = collect_stock_metadata(missing_symbols)
+    
+    # Merge with cached data
+    final_df = merge_metadata(cached_df, new_df)
+    final_df.to_csv(STOCK_METADATA_PATH, index=False)
+    logger.info("✅ 메타데이터 저장 완료: %s (%d tickers)", STOCK_METADATA_PATH, len(final_df))
     
     # Show summary of collected data
-    successful_data = df[(df['sector'] != '') | (df['pe_ratio'].notna()) | (df['market_cap'].notna())]
-    logger.info("성공적으로 수집된 데이터: %d/%d (%.1f%%)", len(successful_data), len(df), len(successful_data)/len(df)*100)
+    successful_data = final_df[(final_df['sector'] != '') | (final_df['pe_ratio'].notna()) | (final_df['market_cap'].notna())]
+    logger.info("성공적으로 수집된 데이터: %d/%d (%.1f%%)", len(successful_data), len(final_df), len(successful_data)/len(final_df)*100)
     
     # Show sector distribution
-    sector_counts = df[df['sector'] != '']['sector'].value_counts().head(10)
+    sector_counts = final_df[final_df['sector'] != '']['sector'].value_counts().head(10)
     if len(sector_counts) > 0:
         logger.info("주요 섹터 분포:\n%s", sector_counts.to_string())
 

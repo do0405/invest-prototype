@@ -166,5 +166,25 @@
   {
     "symbol":"UUU",
     "first_signal_date":"2025-07-08"
+  },
+  {
+    "symbol":"RFIL",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"DHX",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"MGIC",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"MSGM",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"ROMA",
+    "first_signal_date":"2025-07-09"
   }
 ]

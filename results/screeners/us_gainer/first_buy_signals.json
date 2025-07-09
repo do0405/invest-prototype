@@ -150,5 +150,41 @@
   {
     "symbol":"OLO",
     "first_signal_date":"2025-07-08"
+  },
+  {
+    "symbol":"BIDU",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"BRFS",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"CLOV",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"ENVX",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"ESI",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"GSAT",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"LX",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"OSCR",
+    "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"SAND",
+    "first_signal_date":"2025-07-09"
   }
 ]

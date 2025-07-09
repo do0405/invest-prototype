@@ -205,4 +205,5 @@ class RiskManager:
             }
             
         except Exception as e:
-            print(f"⚠️ 리스크 요약 생성 실패: {e}")            return {}
+            print(f"⚠️ 리스크 요약 생성 실패: {e}")
+            return {}

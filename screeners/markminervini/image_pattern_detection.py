@@ -40,7 +40,7 @@ logger = logging.getLogger(__name__)
 # 결과 파일 경로
 IMAGE_PATTERN_RESULTS_CSV = os.path.join(MARKMINERVINI_RESULTS_DIR, 'image_pattern_results.csv')
 IMAGE_PATTERN_RESULTS_JSON = os.path.join(MARKMINERVINI_RESULTS_DIR, 'image_pattern_results.json')
-IMAGE_OUTPUT_DIR = os.path.join(project_root, 'data', 'image')
+IMAGE_OUTPUT_DIR = os.path.join(BASE_DIR, 'data', 'image')
 
 class ImagePatternDetector:
     """

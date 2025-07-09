@@ -2,7 +2,11 @@
 
 from typing import List, Dict, Any
 import logging
+import warnings
 from .base_source import BaseIPODataSource
+
+# pkg_resources 경고 억제
+warnings.filterwarnings('ignore', message='pkg_resources is deprecated')
 
 try:
     import investpy

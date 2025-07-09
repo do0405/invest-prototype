@@ -1,47 +1,92 @@
 [
   {
-    "symbol":"BMNR",
-    "price":135.0,
-    "change_pct":130.7692307692,
-    "volume":37559900,
-    "relative_volume":10.1581368651,
-    "market_cap":4600928768,
-    "eps_growth_qoq":46.1693452538
+    "symbol":"BIDU",
+    "price":89.7900009155,
+    "change_pct":3.9837898115,
+    "volume":6788400,
+    "relative_volume":2.1375043069,
+    "market_cap":30094567424,
+    "eps_growth_qoq":48.6325115562
   },
   {
-    "symbol":"BULL",
-    "price":14.3000001907,
-    "change_pct":2.0699497296,
-    "volume":28799800,
-    "relative_volume":2.8885530908,
-    "market_cap":6165384192,
-    "eps_growth_qoq":21.5928752921
+    "symbol":"BRFS",
+    "price":3.8299999237,
+    "change_pct":7.5842692491,
+    "volume":13050300,
+    "relative_volume":3.0816767242,
+    "market_cap":6407262208,
+    "eps_growth_qoq":61.5630204045
   },
   {
-    "symbol":"DQ",
-    "price":18.9799995422,
-    "change_pct":7.1710927353,
-    "volume":2122700,
-    "relative_volume":2.4478005504,
-    "market_cap":1170139520,
-    "eps_growth_qoq":60.1308676782
+    "symbol":"CLOV",
+    "price":2.8900001049,
+    "change_pct":12.8906316211,
+    "volume":22210700,
+    "relative_volume":2.9726063087,
+    "market_cap":1552196864,
+    "eps_growth_qoq":94.2332065906
   },
   {
-    "symbol":"IREN",
-    "price":16.8199996948,
-    "change_pct":7.4074065052,
-    "volume":42840900,
-    "relative_volume":2.2923583712,
-    "market_cap":4099645952,
-    "eps_growth_qoq":28.33456934
+    "symbol":"ENVX",
+    "price":13.029999733,
+    "change_pct":14.3985894663,
+    "volume":23849500,
+    "relative_volume":4.5086663678,
+    "market_cap":2580533760,
+    "eps_growth_qoq":37.248098225
   },
   {
-    "symbol":"OLO",
-    "price":10.1199998856,
-    "change_pct":13.5802475743,
-    "volume":43516500,
-    "relative_volume":18.955573657,
-    "market_cap":1711838464,
-    "eps_growth_qoq":384.4094488189
+    "symbol":"ESI",
+    "price":24.6599998474,
+    "change_pct":2.7499993642,
+    "volume":6497300,
+    "relative_volume":2.5684868554,
+    "market_cap":5980159488,
+    "eps_growth_qoq":79.1590493601
+  },
+  {
+    "symbol":"GSAT",
+    "price":26.5200004578,
+    "change_pct":6.4205472575,
+    "volume":1989800,
+    "relative_volume":3.289949764,
+    "market_cap":3411411968,
+    "eps_growth_qoq":65.4891574902
+  },
+  {
+    "symbol":"LX",
+    "price":7.5500001907,
+    "change_pct":3.0013679307,
+    "volume":6167200,
+    "relative_volume":2.3011367876,
+    "market_cap":1270393216,
+    "eps_growth_qoq":18.6285834006
+  },
+  {
+    "symbol":"OSCR",
+    "price":16.8099994659,
+    "change_pct":2.0643604539,
+    "volume":32794900,
+    "relative_volume":2.3270415781,
+    "market_cap":4281120768,
+    "eps_growth_qoq":279.2747497509
+  },
+  {
+    "symbol":"PAHC",
+    "price":29.8999996185,
+    "change_pct":6.7857129233,
+    "volume":557300,
+    "relative_volume":2.1618651081,
+    "market_cap":1211953536,
+    "eps_growth_qoq":555.5729984301
+  },
+  {
+    "symbol":"SAND",
+    "price":10.2399997711,
+    "change_pct":6.3343681145,
+    "volume":43562100,
+    "relative_volume":7.2902236964,
+    "market_cap":3008226048,
+    "eps_growth_qoq":243.0437622469
   }
 ]

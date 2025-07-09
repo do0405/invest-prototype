@@ -1,666 +1,649 @@
 ﻿symbol,has_image,vcp_detected,vcp_confidence,cup_handle_detected,cup_handle_confidence,detection_date,error
-FEIM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ASPS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OUST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VERV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AEVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BTM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OWLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TPC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CRS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EVLV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NEPH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JBL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ODD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-STRT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ZS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CUK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CCL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FGEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RCL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-QBTS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SEZL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TSSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TDUP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ALMU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ESLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-APPS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BBIO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-XYF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MSGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TTMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RDUS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ADPT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ISSC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EYE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RDVT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CVNA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLDP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SIEB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GOGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MDAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KEP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IESC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NVMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GHM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ERJ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DNA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RMCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WWD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TME,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BPMC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AISP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DASH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NFLX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ROAD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CALX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KGC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CMPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EXEL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-QUBT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AMZE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BMNR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TGEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DAVE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RGLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NEON,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ABVC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VEEV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TATT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTMX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PLYA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BKSY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WOR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FTEK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BLBX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DGXX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OCFT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IPI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OPFI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LASR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CAR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IIIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CMP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JFIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WTS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TKO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WPM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TGI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UPST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CFSB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CPSH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BBVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TIGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ALNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GTES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VAPE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BSGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SNSE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NYAX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-STEM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SPRC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-C,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-U,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WRBY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BULLW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ALG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CVAC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-INUV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SPNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JFBR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BOLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TRUG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-REVG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TMCWW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AYRO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KULR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BREA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GITS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CCRD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HWM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DBVT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ASUR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AIMD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KTOS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TMC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GROY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DVS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PRCH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PSIX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SVT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ROMA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VRSN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BJRI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CNVS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BLDE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OCG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTEV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RKLB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-URBN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RPID,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-XTKG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IONQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CDTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HOOD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LEU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SATX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TAOX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SOGP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HSAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AMPX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NAK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-YSG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MATH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GRPN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RAYA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DIST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CRDO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ASTS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JUNE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BNRG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-USAS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IDT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SGHC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LPLA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FIX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OKYO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ATYR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-YYGH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FLUT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-THTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MBOT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CDE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PRPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SEI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SNES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TCI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BWFG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ATAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FENC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PGY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ITRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TBMCR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TWLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BYRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EVEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PAC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BOSC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PMEC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PPIH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RBLX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LMB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FARO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MGNI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BKTI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CYD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KFS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DOMO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UUU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AHR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GEV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-APH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SAH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NET,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HTZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SOFI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DUOT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OPRT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GORO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DAN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SKE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SSRM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TSAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PZG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ESE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ICL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-STRL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SBSW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-THM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CXDO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EPRX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JOBY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-COIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LMND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OSW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SRAD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WRLD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NGD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DHX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NTRB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CPS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AXON,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-APYX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PJT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CRPT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-XMTR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NRG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WGS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ESP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LIF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SSSS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AFRM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLSR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GRNQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AWI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MGIC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NRIM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FORD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OPOF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MKTW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RDWR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NTGR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TLN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TESL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OSS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OSIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FIVE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BTFX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RBCAA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SPOT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IHS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BITU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FPH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ELTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TPR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CKPT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BCS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AXP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARKW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PODC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLNO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PVLA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EFOI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LINC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NUGT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FLEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SNOW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MPAA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JCI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FORTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-INDV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SII,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SAN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VHC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARMN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VIRT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AVGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WEBL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MIR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CBRL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TOST,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARKF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BWAY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ENLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ATI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BITX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-APEI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BBW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CAH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RFIL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MYRG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BLOK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ORN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SYF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IPX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CCB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ODC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LITE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FNGO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RMNI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MAG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DGII,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BITQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AAMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SIFY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HIPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FNGG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-STCE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-STNE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ESQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CRWD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DRS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MAXI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ALGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SAND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WILC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BASE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HEES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FBL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AIBU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NYC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SNEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CAKE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARKK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TWI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IFS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-III,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NEU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NUKZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OMAB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UFO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MCB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GDMN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PRIM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ZVRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MTZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-METU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TITN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CSV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SHLD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SURG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ONIT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VIK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PSIL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SKLZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IMMX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SANM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MGTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ROK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EMX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-COOP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IBEX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-STN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IBIT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EZBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CLBR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HODL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BTCW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FBTC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BITB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BRRR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BTCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CEG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LLYVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-XERS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SENEB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DEFI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LLYVK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FTDR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UNTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CELH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SGDM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SENEA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DXPE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NTRS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PAAS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PBPB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UCYB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DBD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BWEB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SHOP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IAG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PWR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTLP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PLTM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GBTC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PPLT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KAR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AEIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ITRI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-VSTA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MOS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CNM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ADTN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LRCX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BELFB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HCSG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ATLC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARKX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLAB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CBNK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CUBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RBKB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CLDL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SIL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CYBR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FINV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EXTR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ACMR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FHN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-COF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-X,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FUTU,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ENVA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CIVB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EURL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ETNB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AMPL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SIJ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GREK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-COCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BUZZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARKQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-INSM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NFG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SNX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLVP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NERD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NATH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RLX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CIEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ONON,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SGDJ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CHEF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KMDA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OVBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TCBX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GPI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TSM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EMR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CAE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RING,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MELI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RRBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARKD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NIC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RMBS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SPRX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FGM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LBRDK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LBRDA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NEXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UBER,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ELPC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FAS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SIBN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NTES,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CEE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-QD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LFCR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DLTR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ASTE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-QTUM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CSCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GNTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KLAC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BPAY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EWBC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FSS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TTWO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CHAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CASY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SYBT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PRLB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ESPO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SBS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GDX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AGMI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SMDD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IZRL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GTX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RDCM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-XAR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NPKI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WBS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BBUC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MGYR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BFC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ATAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GSIB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HAFC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-USFD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MTSI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LAUR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IBM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DAKT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FFIV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HBCP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LOUP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SSYS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ALAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-QFIN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TMAT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JPM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EPOL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SLND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PERI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RYAAY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OND,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CCLDO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-THFF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HERO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PUK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RYTM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-JOYY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GILT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FPX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PLPC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TRFK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ISRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NPK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WFC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BNGE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FTNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-META,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GEL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OPRA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RNXT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LTL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BKNG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-STT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IAI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DERM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ATEN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SHCO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FNGS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AGI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SGI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ATFV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CSGS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BTI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ROKT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GAMR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BTRN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ELP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BETZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CIB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BYD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARKA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MAKX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DIS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BANF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EM,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ITA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EWP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EPR,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-WBD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTRI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TRMB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SEIC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CNEQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-TBPH,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-HNNA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BPOP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTBB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LYV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-CTOS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KBWB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PWOD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SAP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-METV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PAX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BNT,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-XTL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-RPRX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PWRD,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ALV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FBIZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UPV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SSBI,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ELLO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EWO,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-FEUZ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NTB,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ODDS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-DAX,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-LOGC,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SIXG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GDE,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-UYG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-GTLS,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-EUFN,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OGIG,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ING,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-OMF,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-ARTY,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-SCHW,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-BK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-MTUL,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-NDAQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-IIIV,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-AFK,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-KEMQ,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PPA,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
-PNFP,False,False,0.0,False,0.0,2025-07-08,YOLOv8 모델 실행 중 오류 발생: 'foduucom/stockmarket-pattern-detection-yolov8' does not exist
+ASPS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OUST,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AEVA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+VERV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OWLT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BTM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CRS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TPC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NEPH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ODD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JBL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EVLV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ZS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+STRT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FGEN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CUK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CCL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+QBTS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SEZL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TSSI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RCL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ESLT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PLTR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+APPS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+XYF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BBIO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RDVT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MSGM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ISSC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CVNA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ADPT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TTMI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EYE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GOGO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RDUS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MDAI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KEP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TME,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OLO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WWD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NVMI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SLDP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IESC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AISP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GHM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LEDS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BPMC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DASH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ERJ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NFLX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CMPO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KGC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CALX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ROAD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AMZE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TATT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TGEN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ABVC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DAVE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NEON,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RGLS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FROG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IPI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EXEL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ASM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BKSY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FTEK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BLBX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WPM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OCFT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WOR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OPFI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DGXX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CLS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CAR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JFIN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LASR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UPST,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CMP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AEM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RSI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TKO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SXT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NPO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IIIN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TIGO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DCO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CFSB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ORLA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BBVA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PARR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RBC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WTS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TGI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GLYC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CVAC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BSGM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SNSE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GTES,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SPRC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+STEM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+INUV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TMCWW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JFBR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+COE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BOLT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ALG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CCRD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GITS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GROY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TRUG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AYRO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BREA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KULR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DBVT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HWM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MFI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+VRSN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ALNT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KTOS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AIMD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DVS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TMC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+REVG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PRCH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ROMA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SVT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+C,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CNVS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PSIX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+INTU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FLUT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+U,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CTEV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OCG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RKLB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BBAI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NAK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+XTKG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CTVA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IONQ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RPID,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LEU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CDTX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LPLA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HOOD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RAYA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NYAX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AMPX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MATH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CDE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TAOX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SNPX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NXT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BWFG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HSAI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GRPN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+YSG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+USAS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PLYA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SATX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CRDO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PRPO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OKYO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DIST,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ASTS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TCI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SGHC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+YYGH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SOGP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FIX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ALLT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CEAD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+VAPE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ATYR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TWLO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SNES,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BNRG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IDT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GORO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UUU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BLDE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RBLX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OPRT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BYRN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SEI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+THTX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+APYX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+URBN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PGY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SOFI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FENC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DOMO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+APH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AHR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TBMCR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RBRK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MGNI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EVEX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BOSC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GEV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ATAI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CYD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FARO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LMB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PMEC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SNT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NET,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DAN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SBSW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ITRN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KFS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PPIH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+THM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SLSR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SKE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SSRM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PJT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HTZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DLO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SLS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+USAU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SAH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GDXU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PAC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DUOT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CXDO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TSAT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GRNQ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NTGR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EPRX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+COIN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+STRL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FSI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LMND,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AAP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DHX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TOST,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AFRM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NGD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OSW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WRLD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SRAD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AXON,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JNUG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NRG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ESE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LIF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PZG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ICL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JOBY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RFIL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MGIC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SSSS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+VST,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RDWR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ESP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CPS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SPOT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CRPT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AVAL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WEBL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OSS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BCS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TPR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OPOF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TLN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CKPT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AWI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NUGT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+VHC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OSIS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SNOW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MTRX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+QD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PVLA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ATI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CAH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FIVE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NRIM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARKW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PODC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARMN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JCI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ELTX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FLEX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FORTY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HNRG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EFOI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SAN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+VIRT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IHS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MPAA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARKF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MIR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SII,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ENLT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SAND,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+INDV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BWAY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SLNO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FNGO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BITU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AVGO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FORD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BASE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AAMI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MAG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DRS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SLM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CCB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MYRG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+APEI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CTRN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FPH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FNGG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SYF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ODC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AIBU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FBL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BLOK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CLBR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LITE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SURG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ESQ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MKTW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PBI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+METU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+STNE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GDMN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WILC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CBRL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CEG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EMX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IDCC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MGTX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SHLD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KEN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CRWD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SIFY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NUKZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SNEX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BBW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARKK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OMAB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UFO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NEU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LFCR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ALGM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RMNI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+STCE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DGII,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SKLZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BITQ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NYC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+VIK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PAAS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ETNB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HEES,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UCYB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PRIM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IMMX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MOS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MTZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IBEX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CXW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PSIL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KARO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MCB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ONIT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TWI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EURL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GFI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SGDM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PBPB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+III,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SANM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UNTY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IAG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FUTU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DBD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+XERS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NEXT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SENEB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LRCX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ULS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SHOP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CAKE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BWEB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+STN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FAS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CSV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SIL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CHEF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CLDL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TFPM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CYBR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TITN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IFS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARKX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FSM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FINV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HODL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EZBC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ROK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AEIS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BTCO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BRRR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IBIT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BTCW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BITB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CASY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FBTC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PWR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ITRI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LLYVA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LLYVK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BELFB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CTLP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ENVA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ADTN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NTRS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DEFI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ATAT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UBER,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FHN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PLTM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SLVP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GDXJ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ACMR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PPLT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DXPE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+COF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ATLC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SENEA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KAR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FTDR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EXTR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CAE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CBNK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BUZZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GREK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARKQ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CUBI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PRA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HCSG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GOAU,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RERE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EMR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MAXI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+COCO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AMPL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CNM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RING,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NERD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FGM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GBTC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SGDJ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SPRX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LAUR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+X,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TTWO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EIS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CELH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NATH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MELI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SNX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BPAY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+XAR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SSBI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OVBC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TCBX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CIVB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DLTR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NTNX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GTX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AGMI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LBRDA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IBM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LBRDK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WBS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JOYY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GDX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CIEN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EWBC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+USFD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARKD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FPX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NTES,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PERI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WNS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RYTM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RYAAY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SSYS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CEE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+QTUM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CSCO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NIC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LOUP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KLAC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+QFIN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TMAT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SYBT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HSBC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OND,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GSIB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TSM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CHAT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CCLDO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FFIV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+JPM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AGI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BBUC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BNGE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BKNG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IZRL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HERO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+RMBS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ALAI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FTNT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GEL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FSS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KMDA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LTL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EPOL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+STT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WHLRD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IAI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ITA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WFC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HAFC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MTUL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+META,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TRFK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+THFF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GILT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SGI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SIJ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ISRA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ATFV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ROKT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BFC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SIBN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BTI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SHCO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+WBD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UYG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ASTE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+UPV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MTSI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SCHW,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SMDD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GAMR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GNTY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HBCP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+HNNA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OPRA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SLND,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DIS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ATEN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BETZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FNGS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TBPH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SBS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CSGS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EWP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NPK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TRMB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SAP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NDAQ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OMF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FEUZ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ODDS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PWRD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SEIC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ING,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CTOS,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PPA,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EUFN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+KBWB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FTI,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EWO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+METV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+CNEQ,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FOSLL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+DAX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AFK,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+OGIG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GDE,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+MAKX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PAX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BYD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EPR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ECVT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GCAD,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FINX,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BNT,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+FLGR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+AN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PNFP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BPOP,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+XTL,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BANF,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ELLO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+IH,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+BN,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PAR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ALV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ARTY,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+TRFM,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+PLPC,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+LYV,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EGO,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+ILDR,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+NTB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+GRAB,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+EWG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed
+SIXG,False,False,0.0,False,0.0,2025-07-09,Data fetch failed

@@ -1,3 +1,15 @@
 [
-
+  {
+    "symbol":"BSGM",
+    "setup_type":"Breakout",
+    "passed":true,
+    "current_price":11.5500001907,
+    "volume_ratio":1.5468608852,
+    "adr":16.4701174821,
+    "vcp_pattern":false,
+    "breakout_level":13.0355997276,
+    "stop_loss":10.6000003815,
+    "risk_reward_ratio":1.2157897379,
+    "score":5
+  }
 ]
