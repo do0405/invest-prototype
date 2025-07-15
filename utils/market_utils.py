@@ -36,14 +36,24 @@ def get_vix_value(data_dir: str = OPTION_DATA_DIR) -> float | None:
     if os.path.exists(vix_path):
         try:
             vix = pd.read_csv(vix_path)
+            if vix.empty:
+                return None
+                
             vix.columns = [c.lower() for c in vix.columns]
             vix["date"] = pd.to_datetime(vix["date"], utc=True)
             vix = vix.sort_values("date")
-            close_col = next((c for c in vix.columns if "close" in c), None)
+            
+            # VIX close 컬럼 찾기 (vix_close, close, adj_close 등)
+            close_col = None
+            for col in vix.columns:
+                if "close" in col:
+                    close_col = col
+                    break
+                    
             if close_col and not vix.empty:
                 return float(vix.iloc[-1][close_col])
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"❌ VIX 데이터 로드 오류: {e}")
     return None
 
 

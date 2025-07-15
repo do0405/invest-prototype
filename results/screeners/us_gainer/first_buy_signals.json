@@ -186,5 +186,41 @@
   {
     "symbol":"SAND",
     "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"ATRO",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"ERO",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"LION",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"OR",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"PFGC",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"RDW",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"USM",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"UXIN",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"VZLA",
+    "first_signal_date":"2025-07-15"
   }
 ]

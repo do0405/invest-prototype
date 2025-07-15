@@ -1,92 +1,101 @@
 [
   {
-    "symbol":"BIDU",
-    "price":89.7900009155,
-    "change_pct":3.9837898115,
-    "volume":6788400,
-    "relative_volume":2.1375043069,
-    "market_cap":30094567424,
-    "eps_growth_qoq":48.6325115562
+    "symbol":"ATRO",
+    "price":36.1100006104,
+    "change_pct":16.1466723484,
+    "volume":1628600,
+    "relative_volume":2.8668732062,
+    "market_cap":1256221440,
+    "eps_growth_qoq":436.4406779661
   },
   {
-    "symbol":"BRFS",
-    "price":3.8299999237,
-    "change_pct":7.5842692491,
-    "volume":13050300,
-    "relative_volume":3.0816767242,
-    "market_cap":6407262208,
-    "eps_growth_qoq":61.5630204045
+    "symbol":"AVAV",
+    "price":263.799987793,
+    "change_pct":11.0409477881,
+    "volume":4249300,
+    "relative_volume":3.8680519102,
+    "market_cap":13017091072,
+    "eps_growth_qoq":1050.0570125428
   },
   {
-    "symbol":"CLOV",
-    "price":2.8900001049,
-    "change_pct":12.8906316211,
-    "volume":22210700,
-    "relative_volume":2.9726063087,
-    "market_cap":1552196864,
-    "eps_growth_qoq":94.2332065906
+    "symbol":"ERO",
+    "price":15.1000003815,
+    "change_pct":2.3035240333,
+    "volume":1808100,
+    "relative_volume":3.1885413548,
+    "market_cap":1520164096,
+    "eps_growth_qoq":263.9159038902
   },
   {
-    "symbol":"ENVX",
-    "price":13.029999733,
-    "change_pct":14.3985894663,
-    "volume":23849500,
-    "relative_volume":4.5086663678,
-    "market_cap":2580533760,
-    "eps_growth_qoq":37.248098225
+    "symbol":"KTOS",
+    "price":51.7099990845,
+    "change_pct":11.757074936,
+    "volume":9418900,
+    "relative_volume":3.0192971487,
+    "market_cap":8753972224,
+    "eps_growth_qoq":15.3846153846
   },
   {
-    "symbol":"ESI",
-    "price":24.6599998474,
-    "change_pct":2.7499993642,
-    "volume":6497300,
-    "relative_volume":2.5684868554,
-    "market_cap":5980159488,
-    "eps_growth_qoq":79.1590493601
+    "symbol":"LION",
+    "price":7.0,
+    "change_pct":19.8630105668,
+    "volume":4820900,
+    "relative_volume":2.3250022908,
+    "market_cap":1948528640,
+    "eps_growth_qoq":105.6437389771
   },
   {
-    "symbol":"GSAT",
-    "price":26.5200004578,
-    "change_pct":6.4205472575,
-    "volume":1989800,
-    "relative_volume":3.289949764,
-    "market_cap":3411411968,
-    "eps_growth_qoq":65.4891574902
+    "symbol":"OR",
+    "price":27.8700008392,
+    "change_pct":3.9925434053,
+    "volume":1847700,
+    "relative_volume":2.0538559635,
+    "market_cap":5146930176,
+    "eps_growth_qoq":255.9558759402
   },
   {
-    "symbol":"LX",
-    "price":7.5500001907,
-    "change_pct":3.0013679307,
-    "volume":6167200,
-    "relative_volume":2.3011367876,
-    "market_cap":1270393216,
-    "eps_growth_qoq":18.6285834006
+    "symbol":"PFGC",
+    "price":94.8099975586,
+    "change_pct":4.8435223252,
+    "volume":4643400,
+    "relative_volume":4.1149268082,
+    "market_cap":15184533504,
+    "eps_growth_qoq":37.5
   },
   {
-    "symbol":"OSCR",
-    "price":16.8099994659,
-    "change_pct":2.0643604539,
-    "volume":32794900,
-    "relative_volume":2.3270415781,
-    "market_cap":4281120768,
-    "eps_growth_qoq":279.2747497509
+    "symbol":"RDW",
+    "price":16.6399993896,
+    "change_pct":6.3258772859,
+    "volume":5460900,
+    "relative_volume":2.021849381,
+    "market_cap":2527872512,
+    "eps_growth_qoq":95.6110705832
   },
   {
-    "symbol":"PAHC",
-    "price":29.8999996185,
-    "change_pct":6.7857129233,
-    "volume":557300,
-    "relative_volume":2.1618651081,
-    "market_cap":1211953536,
-    "eps_growth_qoq":555.5729984301
+    "symbol":"USM",
+    "price":69.9899978638,
+    "change_pct":3.5661378624,
+    "volume":512500,
+    "relative_volume":2.1919266672,
+    "market_cap":5921440256,
+    "eps_growth_qoq":260.0
   },
   {
-    "symbol":"SAND",
-    "price":10.2399997711,
-    "change_pct":6.3343681145,
-    "volume":43562100,
-    "relative_volume":7.2902236964,
-    "market_cap":3008226048,
-    "eps_growth_qoq":243.0437622469
+    "symbol":"UXIN",
+    "price":5.1399998665,
+    "change_pct":33.8541661816,
+    "volume":609300,
+    "relative_volume":13.3936618428,
+    "market_cap":1051461824,
+    "eps_growth_qoq":12.7652579845
+  },
+  {
+    "symbol":"VZLA",
+    "price":3.25,
+    "change_pct":8.6956518272,
+    "volume":8991300,
+    "relative_volume":2.476159214,
+    "market_cap":1070730688,
+    "eps_growth_qoq":23.223642071
   }
 ]

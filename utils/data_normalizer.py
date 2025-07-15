@@ -41,13 +41,19 @@ class DataNormalizer:
                 
             # 필수 컬럼 확인 및 생성
             required_columns = ['advancing', 'declining', 'unchanged']
-            for col in required_columns:
-                if col not in df.columns:
+            missing_columns = [col for col in required_columns if col not in df.columns]
+            
+            if missing_columns:
+                print(f"⚠️ Advance-Decline 데이터에 필요한 컬럼이 없습니다: {missing_columns}")
+                print(f"📋 현재 컬럼: {list(df.columns)}")
+                # 누락된 컬럼을 0으로 초기화
+                for col in missing_columns:
                     df[col] = 0
                     
             # 데이터 타입 정규화
             for col in required_columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
+                if col in df.columns:
+                    df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
                 
             # 중복 날짜 제거 (최신 데이터 유지)
             df = df.drop_duplicates(subset=['date'], keep='last')
@@ -90,6 +96,10 @@ class DataNormalizer:
             # 데이터 로드
             df = pd.read_csv(file_path)
             
+            if df.empty:
+                print(f"⚠️ VIX 데이터 파일이 비어있습니다: {file_path}")
+                return False
+            
             # 컬럼명 정규화
             df.columns = [col.lower().strip() for col in df.columns]
             
@@ -97,9 +107,18 @@ class DataNormalizer:
             if 'date' in df.columns:
                 df['date'] = pd.to_datetime(df['date'], errors='coerce')
                 df['date'] = df['date'].dt.strftime('%Y-%m-%d')
+            else:
+                print(f"⚠️ VIX 데이터에 'date' 컬럼이 없습니다. 현재 컬럼: {list(df.columns)}")
+                return False
                 
             # VIX 관련 컬럼 정규화
             vix_columns = ['vix_close', 'vix_high', 'vix_low', 'vix_volume']
+            missing_vix_columns = [col for col in vix_columns if col not in df.columns]
+            
+            if missing_vix_columns:
+                print(f"⚠️ VIX 데이터에 필요한 컬럼이 없습니다: {missing_vix_columns}")
+                print(f"📋 현재 컬럼: {list(df.columns)}")
+                
             for col in vix_columns:
                 if col in df.columns:
                     if 'volume' in col:
@@ -140,15 +159,26 @@ class DataNormalizer:
         """모든 시장 데이터 정규화"""
         success = True
         
+        # VIX 데이터 변환 (options -> us 형식)
+        try:
+            from utils.vix_data_converter import convert_vix_data
+            convert_vix_data()
+        except Exception as e:
+            print(f"⚠️ VIX 데이터 변환 중 오류: {e}")
+        
         # Advance-Decline 데이터 정규화
         ad_file = os.path.join(data_dir, 'breadth', 'advance_decline.csv')
         if os.path.exists(ad_file):
             success &= DataNormalizer.normalize_advance_decline_data(ad_file)
+        else:
+            print(f"⚠️ Advance-Decline 데이터 파일이 없습니다: {ad_file}")
             
         # VIX 데이터 정규화
         vix_file = os.path.join(data_dir, 'options', 'vix.csv')
         if os.path.exists(vix_file):
             success &= DataNormalizer.normalize_vix_data(vix_file)
+        else:
+            print(f"⚠️ VIX 데이터 파일이 없습니다: {vix_file}")
             
         return success
 

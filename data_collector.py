@@ -159,10 +159,18 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                 df_new = fetch_us_single(ticker, start=start_date, end=today)
                 
                 # 상장 폐지 종목 처리 (빈 DataFrame이 반환된 경우)
-                if df_new is not None and df_new.empty and len(df_new.columns) > 0:
-                    print(f"[US] 🚫 상장 폐지 종목 감지됨: {ticker}")
-                    df_new.to_csv(path, index=False)
-                    return True
+                if df_new is not None and df_new.empty:
+                    # 기존 데이터가 있으면 상장폐지로 처리하지 않음
+                    if existing is not None and len(existing) > 0:
+                        print(f"[US] ⏩ 새 데이터 없음, 기존 데이터 유지: {ticker}")
+                        return False
+                    else:
+                        print(f"[US] 🚫 상장 폐지 종목 감지됨: {ticker}")
+                        # 빈 DataFrame에 컬럼이 있으면 그대로 저장, 없으면 기본 컬럼 추가
+                        if len(df_new.columns) == 0:
+                            df_new = pd.DataFrame(columns=['date', 'symbol', 'open', 'high', 'low', 'close', 'volume'])
+                        df_new.to_csv(path, index=False)
+                        return True
                 elif df_new is not None and not df_new.empty:
                     # 정상 데이터 획득
                     break
@@ -189,11 +197,16 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
 
         if df_new is None or df_new.empty:
             print(f"[US] ❌ 빈 데이터: {ticker}")
-            # 여러 번 시도해도 데이터가 없으면 상장 폐지로 간주
-            empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
-            empty_df.to_csv(path, index=False)
-            print(f"[US] 🚫 데이터 없음 - 상장 폐지로 처리: {ticker}")
-            return True
+            # 기존 데이터가 있으면 상장폐지로 처리하지 않음
+            if existing is not None and len(existing) > 0:
+                print(f"[US] ⏩ 새 데이터 없음, 기존 데이터 유지: {ticker}")
+                return False
+            else:
+                # 여러 번 시도해도 데이터가 없으면 상장 폐지로 간주
+                empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
+                empty_df.to_csv(path, index=False)
+                print(f"[US] 🚫 데이터 없음 - 상장 폐지로 처리: {ticker}")
+                return True
 
         if existing is not None:
             before_len = len(existing)

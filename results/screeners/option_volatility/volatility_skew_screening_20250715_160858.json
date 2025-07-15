@@ -1,0 +1,14 @@
+[
+  {
+    "symbol":"ROP",
+    "company_name":"Roper Technologies, Inc.",
+    "skew_index":-44.277511322,
+    "expected_return":0.15,
+    "confidence_score":"높음",
+    "base_confidence":"매우 높음",
+    "data_source":"yfinance",
+    "data_quality_grade":"B",
+    "confidence_numeric":90.0,
+    "quality_description":"양호한 품질 무료 데이터"
+  }
+]

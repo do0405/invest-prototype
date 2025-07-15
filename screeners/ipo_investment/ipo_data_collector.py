@@ -22,13 +22,17 @@ import requests
 from pathlib import Path
 
 # 모듈화된 데이터 소스들
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 try:
-    from .data_sources.sec_edgar_source import SecEdgarSource
+    from data_sources.sec_edgar_source import SecEdgarSource
     print("✅ SecEdgar 데이터 소스 import 성공")
 except ImportError as e:
     print(f"❌ SecEdgar Import 오류: {e}")
     # 기본 데이터 소스 사용
-    from .data_sources.base_source import BaseDataSource
+    from data_sources.base_source import BaseDataSource
     
     SecEdgarSource = BaseDataSource
     print("⚠️ BaseDataSource 사용")

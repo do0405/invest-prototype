@@ -150,11 +150,21 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
             df['date'] = pd.to_datetime(df['date'])
             df = df.sort_values('date')
 
-        adv_col = next((c for c in df.columns if 'advance' in c), None)
-        dec_col = next((c for c in df.columns if 'decline' in c), None)
-        if not adv_col or not dec_col:
-            print("⚠️ Advance-Decline 데이터에 필요한 컬럼이 없습니다.")
+        # 정확한 컬럼명으로 확인
+        required_columns = ['advancing', 'declining']
+        missing_columns = [col for col in required_columns if col not in df.columns]
+        
+        if missing_columns:
+            print(f"⚠️ Advance-Decline 데이터에 필요한 컬럼이 없습니다: {missing_columns}")
+            print(f"📋 현재 컬럼: {list(df.columns)}")
             return 0
+            
+        adv_col = 'advancing'
+        dec_col = 'declining'
+        
+        # 데이터 타입 변환 (숫자가 아닌 값들을 0으로 처리)
+        df[adv_col] = pd.to_numeric(df[adv_col], errors='coerce').fillna(0)
+        df[dec_col] = pd.to_numeric(df[dec_col], errors='coerce').fillna(0)
 
         df['ad_line'] = (df[adv_col] - df[dec_col]).cumsum()
         if len(df) < 50:

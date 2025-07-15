@@ -334,6 +334,17 @@ class MarketBreadthCollector:
             # DataFrame 생성
             ad_df = pd.DataFrame(ad_data)
             
+            # 데이터 검증
+            if ad_df.empty:
+                print("⚠️ Advance-Decline 데이터가 비어있습니다.")
+                # 빈 DataFrame이라도 기본 구조는 유지
+                ad_df = pd.DataFrame(columns=['date', 'advancing', 'declining', 'unchanged'])
+            else:
+                # 데이터 타입 확인 및 변환
+                for col in ['advancing', 'declining', 'unchanged']:
+                    if col in ad_df.columns:
+                        ad_df[col] = pd.to_numeric(ad_df[col], errors='coerce').fillna(0).astype(int)
+            
             # 파일 저장
             ad_file = os.path.join(BREADTH_DATA_DIR, 'advance_decline.csv')
             ad_df.to_csv(ad_file, index=False)

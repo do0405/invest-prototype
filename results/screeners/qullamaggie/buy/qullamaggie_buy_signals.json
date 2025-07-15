@@ -1,20 +1,20 @@
 [
   {
-    "symbol":"BSGM",
+    "symbol":"ETHT",
     "setup_type":"Breakout",
-    "signal_date":"2025-07-09",
-    "current_price":11.5500001907,
-    "entry_price":13.0355997276,
-    "stop_loss":10.6000003815,
-    "risk_percent":18.6842139755,
-    "target_price_1":12.7050002098,
-    "target_price_2":13.8600002288,
+    "signal_date":"2025-07-15",
+    "current_price":55.1599998474,
+    "entry_price":56.4366018677,
+    "stop_loss":52.7999992371,
+    "risk_percent":6.4436952443,
+    "target_price_1":60.6759998321,
+    "target_price_2":66.1919998169,
     "score":5,
-    "volume_ratio":1.5468608852,
-    "adr":16.4701174821,
+    "volume_ratio":1.6548721615,
+    "adr":7.0180650273,
     "vcp_pattern":false,
-    "risk_reward_ratio":1.2157897379,
-    "position_sizing":410,
+    "risk_reward_ratio":2.3372875247,
+    "position_sizing":274,
     "status":"New"
   }
 ]

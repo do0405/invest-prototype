@@ -1,0 +1,2 @@
+﻿symbol,company_name,skew_index,expected_return,confidence_score,base_confidence,data_source,data_quality_grade,confidence_numeric,quality_description
+ROP,"Roper Technologies, Inc.",-44.27751132202148,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터

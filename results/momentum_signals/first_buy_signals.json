@@ -186,5 +186,29 @@
   {
     "symbol":"ROMA",
     "first_signal_date":"2025-07-09"
+  },
+  {
+    "symbol":"AZ",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"GRNQ",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"OCFT",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"RMNI",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"INUV",
+    "first_signal_date":"2025-07-15"
+  },
+  {
+    "symbol":"MSTR",
+    "first_signal_date":"2025-07-15"
   }
 ]
