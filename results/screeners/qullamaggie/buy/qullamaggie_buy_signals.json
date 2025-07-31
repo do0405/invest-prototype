@@ -1,20 +1,20 @@
 [
   {
-    "symbol":"ETHT",
+    "symbol":"FLYE",
     "setup_type":"Breakout",
-    "signal_date":"2025-07-15",
-    "current_price":55.1599998474,
-    "entry_price":56.4366018677,
-    "stop_loss":52.7999992371,
-    "risk_percent":6.4436952443,
-    "target_price_1":60.6759998321,
-    "target_price_2":66.1919998169,
+    "signal_date":"2025-07-31",
+    "current_price":5.7899999619,
+    "entry_price":6.4749600506,
+    "stop_loss":5.4600000381,
+    "risk_percent":15.6751548205,
+    "target_price_1":6.3689999581,
+    "target_price_2":6.9479999543,
     "score":5,
-    "volume_ratio":1.6548721615,
-    "adr":7.0180650273,
+    "volume_ratio":2.5019982413,
+    "adr":12.9194993862,
     "vcp_pattern":false,
-    "risk_reward_ratio":2.3372875247,
-    "position_sizing":274,
+    "risk_reward_ratio":1.7545458486,
+    "position_sizing":985,
     "status":"New"
   }
 ]

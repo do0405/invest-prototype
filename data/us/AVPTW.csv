@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-07-11 00:00:00-04:00,6.5,6.659999847412109,3.4356000423431396,5.150000095367432,5.150000095367432,60880,AVPTW

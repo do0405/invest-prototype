@@ -17,9 +17,6 @@ from .track_analyzer import IPOTrackAnalyzer
 from .result_processor import IPOResultProcessor
 
 from config import IPO_INVESTMENT_RESULTS_DIR
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from utils.calc_utils import get_us_market_today
 from utils.market_utils import (
     get_vix_value,
@@ -27,8 +24,8 @@ from utils.market_utils import (
     SECTOR_ETFS,
 )
 from data_collectors.market_breadth_collector import MarketBreadthCollector
+from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary
 
-# 로깅 설정
 logger = logging.getLogger(__name__)
 
 
@@ -71,7 +68,12 @@ class IPOInvestmentScreener:
             ipo_data = self.data_manager.get_ipo_data(days_back=365)
 
             if not ipo_data.empty:
+                # 날짜 형식 정규화 및 UTC 변환
                 ipo_data['ipo_date'] = pd.to_datetime(ipo_data['ipo_date'], errors='coerce')
+                if ipo_data['ipo_date'].dt.tz is None:
+                    ipo_data['ipo_date'] = ipo_data['ipo_date'].dt.tz_localize('UTC')
+                else:
+                    ipo_data['ipo_date'] = ipo_data['ipo_date'].dt.tz_convert('UTC')
                 self.logger.info(f"IPO 데이터 로드 완료: {len(ipo_data)}개 종목")
                 return ipo_data
             else:
@@ -87,7 +89,10 @@ class IPOInvestmentScreener:
         if self.ipo_data.empty:
             return pd.DataFrame()
 
-        cutoff_date = pd.Timestamp(self.today - timedelta(days=days))
+        cutoff_date = pd.Timestamp(self.today - timedelta(days=days), tz='UTC')
+        # ipo_date가 timezone-aware인지 확인하고 맞춰줌
+        if self.ipo_data['ipo_date'].dt.tz is None:
+            cutoff_date = cutoff_date.tz_localize(None)
         recent = self.ipo_data[self.ipo_data['ipo_date'] >= cutoff_date].copy()
         if recent.empty:
             return pd.DataFrame()
@@ -108,11 +113,9 @@ class IPOInvestmentScreener:
         """IPO 투자 전략 스크리닝 실행"""
         logger.info("IPO 투자 전략 스크리닝 시작...")
         
-        # skip_data 모드에서는 빈 결과 파일만 생성
+        # skip_data 모드에서도 정상적으로 스크리닝 수행 (OHLCV 데이터만 건너뛰고 나머지는 진행)
         if self.skip_data:
-            logger.info("Skip data mode: 빈 결과 파일 생성")
-            self.result_processor.create_empty_result_files()
-            return pd.DataFrame()
+            logger.info("Skip data mode: OHLCV 업데이트 없이 기존 데이터로 스크리닝 진행")
         
         # 최근 IPO 종목 가져오기
         recent_ipos = self._get_recent_ipos(days=365)
@@ -137,7 +140,7 @@ class IPOInvestmentScreener:
                     continue
                     
                 # 주가 데이터 로드 (yfinance 사용)
-                data = yf.download(ticker, period="6mo", interval="1d")
+                data = yf.download(ticker, period="6mo", interval="1d", auto_adjust=False)
                 if data.empty:
                     continue
                 
@@ -159,6 +162,16 @@ class IPOInvestmentScreener:
                 track1_pass, track1_info = self.track_analyzer.check_track1(ticker, df)
                 track2_pass, track2_info = self.track_analyzer.check_track2(ticker, df)
                 
+                # 패턴 형성 시점 결정
+                pattern_formation_date = self.today.strftime('%Y-%m-%d')  # 기본값
+                
+                if has_base and base_info.get('pattern_formation_date'):
+                    pattern_formation_date = base_info.get('pattern_formation_date')
+                
+                if has_breakout and breakout_info.get('pattern_formation_date'):
+                    # 브레이크아웃이 있으면 브레이크아웃 날짜를 우선 사용
+                    pattern_formation_date = breakout_info.get('pattern_formation_date')
+                
                 # 결과 저장
                 if has_base:
                     base_result = {
@@ -170,7 +183,8 @@ class IPOInvestmentScreener:
                         'pattern_type': 'base',
                         'current_price': base_info['current_price'],
                         'score': base_info['base_score'],
-                        'date': self.today.strftime('%Y-%m-%d')
+                        'date': base_info.get('pattern_formation_date', self.today.strftime('%Y-%m-%d')),
+                        'screening_date': self.today.strftime('%Y-%m-%d')
                     }
                     base_result.update(base_info)
                     base_results.append(base_result)
@@ -185,7 +199,8 @@ class IPOInvestmentScreener:
                         'pattern_type': 'breakout',
                         'current_price': breakout_info['current_price'],
                         'score': breakout_info['breakout_score'],
-                        'date': self.today.strftime('%Y-%m-%d')
+                        'date': breakout_info.get('pattern_formation_date', self.today.strftime('%Y-%m-%d')),
+                        'screening_date': self.today.strftime('%Y-%m-%d')
                     }
                     breakout_result.update(breakout_info)
                     breakout_results.append(breakout_result)
@@ -200,7 +215,8 @@ class IPOInvestmentScreener:
                         'days_since_ipo': ipo['days_since_ipo'],
                         'current_price': track1_info['current_price'],
                         'price_vs_ipo': (track1_info['current_price'] / ipo['ipo_price'] - 1) * 100,
-                        'date': self.today.strftime('%Y-%m-%d')
+                        'date': track1_info.get('pattern_formation_date', self.today.strftime('%Y-%m-%d')),
+                        'screening_date': self.today.strftime('%Y-%m-%d')
                     }
                     t1.update(track1_info)
                     track1_results.append(t1)
@@ -215,7 +231,8 @@ class IPOInvestmentScreener:
                         'days_since_ipo': ipo['days_since_ipo'],
                         'current_price': track2_info['current_price'],
                         'price_vs_ipo': (track2_info['current_price'] / ipo['ipo_price'] - 1) * 100,
-                        'date': self.today.strftime('%Y-%m-%d')
+                        'date': track2_info.get('pattern_formation_date', self.today.strftime('%Y-%m-%d')),
+                        'screening_date': self.today.strftime('%Y-%m-%d')
                     }
                     t2.update(track2_info)
                     track2_results.append(t2)
@@ -250,7 +267,44 @@ class IPOInvestmentScreener:
 
 def run_ipo_investment_screening(skip_data=False):
     """IPO 투자 전략 스크리닝 실행 함수"""
+    print("\n🔍 IPO 투자 전략 스크리닝 시작...")
+    
     screener = IPOInvestmentScreener(skip_data=skip_data)
-    return screener.screen_ipo_investments()
+    results_df = screener.screen_ipo_investments()
+    
+    # DataFrame을 딕셔너리 리스트로 변환
+    if not results_df.empty:
+        results_list = results_df.to_dict('records')
+    else:
+        results_list = []
+    
+    # 결과 저장 (JSON + CSV)
+    results_paths = save_screening_results(
+        results=results_list,
+        output_dir=IPO_INVESTMENT_RESULTS_DIR,
+        filename_prefix="ipo_investment_results",
+        include_timestamp=True
+    )
+    
+    # 새로운 티커 추적
+    tracker_file = os.path.join(IPO_INVESTMENT_RESULTS_DIR, "new_ipo_tickers.csv")
+    new_tickers = track_new_tickers(
+        current_results=results_list,
+        tracker_file=tracker_file,
+        symbol_key='symbol',
+        retention_days=30  # IPO는 30일간 추적
+    )
+    
+    # 요약 정보 생성
+    summary = create_screener_summary(
+        screener_name="IPO Investment",
+        total_candidates=len(results_list),
+        new_tickers=len(new_tickers),
+        results_paths=results_paths
+    )
+    
+    print(f"✅ IPO 투자 스크리닝 완료: {len(results_list)}개 종목, 신규 {len(new_tickers)}개")
+    
+    return results_df
 
 

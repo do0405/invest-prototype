@@ -119,14 +119,17 @@ def calculate_rsi(df, window=14):
         if 'close' not in df.columns:
             print(f"⚠️ RSI 계산에 필요한 'close' 컬럼이 없습니다.")
             return df
-        delta = df['close'].diff()
+        
+        # DataFrame 복사본 생성하여 SettingWithCopyWarning 방지
+        result_df = df.copy()
+        delta = result_df['close'].diff()
         gain = delta.where(delta > 0, 0)
         loss = -delta.where(delta < 0, 0)
         avg_gain = gain.rolling(window=window).mean()
         avg_loss = loss.rolling(window=window).mean()
         rs = avg_gain / avg_loss.where(avg_loss != 0, 1)
-        df.loc[:, f'rsi_{window}'] = 100 - (100 / (1 + rs))
-        return df
+        result_df[f'rsi_{window}'] = 100 - (100 / (1 + rs))
+        return result_df
     except Exception as e:
         print(f"❌ RSI 계산 오류: {e}")
         return df

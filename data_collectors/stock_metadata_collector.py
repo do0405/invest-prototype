@@ -144,37 +144,46 @@ def fetch_metadata(symbol: str, max_retries: int = 1, delay: float = 0.8) -> Dic
 
 
 def collect_stock_metadata(symbols: List[str], max_workers: int = 8) -> pd.DataFrame:
-    """Collect metadata for a list of symbols with reduced concurrency."""
+    """Collect metadata for a list of symbols with reduced concurrency (thread-safe)."""
     records: List[Dict[str, object]] = []
     successful_count = 0
+    temp_records = []  # 임시 결과 저장
+    temp_successful_count = 0
+    completed_count = 0
     
     logger.info(f"메타데이터 수집 시작: {len(symbols)}개 종목")
     
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_symbol = {executor.submit(fetch_metadata, sym): sym for sym in symbols}
-        for i, future in enumerate(as_completed(future_to_symbol)):
+        for future in as_completed(future_to_symbol):
             sym = future_to_symbol[future]
+            completed_count += 1
+            
             try:
                 data = future.result()
-                records.append(data)
+                temp_records.append(data)
                 # Count successful data collection
                 if data["sector"] != "" or data["pe_ratio"] is not None or data["market_cap"] is not None:
-                    successful_count += 1
+                    temp_successful_count += 1
                 
                 # Progress logging every 100 symbols
-                if (i + 1) % 100 == 0:
-                    logger.info(f"진행률: {i + 1}/{len(symbols)} ({successful_count}개 성공)")
+                if completed_count % 100 == 0:
+                    logger.info(f"진행률: {completed_count}/{len(symbols)} ({temp_successful_count}개 성공)")
                     
             except Exception as e:
                 logger.error(f"{sym} 메타데이터 처리 오류: {e}")
                 # Add empty record for failed symbol
-                records.append({
+                temp_records.append({
                     "symbol": sym,
                     "sector": "",
                     "pe_ratio": None,
                     "market_cap": None,
                     "revenue_growth": None,
                 })
+    
+    # 결과 병합 (메인 스레드에서 안전하게 처리)
+    records.extend(temp_records)
+    successful_count = temp_successful_count
     
     logger.info(f"메타데이터 수집 완료: {successful_count}/{len(symbols)}개 성공")
     return pd.DataFrame(records)

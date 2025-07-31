@@ -20,6 +20,8 @@ interface DataTableProps<T> {
   onRowClick?: (item: T) => void;
   striped?: boolean;
   hoverable?: boolean;
+  title?: string;
+  description?: string;
 }
 
 // TradingView 차트 모달 컴포넌트
@@ -68,6 +70,28 @@ function TradingViewModal({ symbol, isOpen, onClose }: TradingViewModalProps) {
   );
 }
 
+// 셀 값 포맷팅 함수
+function formatCellValue(value: string | number | boolean | null | undefined): string {
+  if (value === null || value === undefined || value === '') {
+    return 'N/A';
+  }
+  
+  if (typeof value === 'number') {
+    // 숫자인 경우 소수점 처리
+    if (Number.isInteger(value)) {
+      return value.toLocaleString();
+    } else {
+      return value.toFixed(2);
+    }
+  }
+  
+  if (typeof value === 'boolean') {
+    return value ? 'Yes' : 'No';
+  }
+  
+  return String(value);
+}
+
 function DataTable<T extends Record<string, string | number | boolean | null | undefined>>({
   data,
   columns,
@@ -78,7 +102,9 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
   cardClassName = 'bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-3 hover:shadow-md transition-shadow',
   onRowClick,
   striped = true,
-  hoverable = true
+  hoverable = true,
+  title,
+  description
 }: DataTableProps<T>) {
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -124,6 +150,18 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
 
   return (
     <>
+      {/* 헤더 섹션 */}
+      {(title || description) && (
+        <div className="mb-6">
+          {title && (
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">{title}</h2>
+          )}
+          {description && (
+            <p className="text-gray-600">{description}</p>
+          )}
+        </div>
+      )}
+      
       <div className={`overflow-hidden rounded-xl border border-gray-200 shadow-lg ${className}`}>
         {/* 데스크톱 테이블 */}
         <div className="overflow-x-auto">
@@ -163,7 +201,7 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
                       className={`px-6 py-4 text-sm text-gray-900 ${getAlignClass(col.align)}`}
                     >
                       <div className="font-medium">
-                        {col.render ? col.render(item) : String(item[col.key] ?? 'N/A')}
+                        {col.render ? col.render(item) : formatCellValue(item[col.key])}
                       </div>
                     </td>
                   ))}
@@ -199,7 +237,7 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
                     <div key={col.key} className="flex justify-between items-center py-1">
                       <span className="text-sm font-medium text-gray-600 mr-4">{col.header}</span>
                       <span className={`text-sm font-semibold text-gray-900 ${getAlignClass(col.align)}`}>
-                        {col.render ? col.render(item) : String(item[col.key] ?? 'N/A')}
+                        {col.render ? col.render(item) : formatCellValue(item[col.key])}
                       </span>
                     </div>
                   ))}

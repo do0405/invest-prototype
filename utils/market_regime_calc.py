@@ -10,7 +10,6 @@ from .market_regime_helpers import (
     load_index_data,
     calculate_high_low_index,
     calculate_advance_decline_trend,
-    calculate_put_call_ratio,
 )
 from .market_regime_conditions import determine_regime_by_conditions
 from utils.calc_utils import get_us_market_today
@@ -90,25 +89,7 @@ def calculate_market_score(index_data: Dict[str, pd.DataFrame]) -> Tuple[int, Di
         'score': vix_score
     }
     
-    # Put/Call Ratio 점수 (8점 만점)
-    pc_ratio = calculate_put_call_ratio()
-    pc_thresholds = MARKET_REGIME_CRITERIA['put_call_ratio_thresholds']
-    if pc_ratio < pc_thresholds[0]:
-        pc_score = 8  # 매우 낙관적 (강한 상승장)
-    elif pc_ratio < pc_thresholds[1]:
-        pc_score = 6  # 낙관적 (상승장)
-    elif pc_ratio < pc_thresholds[2]:
-        pc_score = 4  # 중립 (조정장)
-    elif pc_ratio < pc_thresholds[3]:
-        pc_score = 2  # 비관적 (위험 관리장)
-    else:
-        pc_score = 0  # 매우 비관적 (약세장)
-    
-    tech_score += pc_score
-    tech_score_details['put_call_ratio'] = {
-        'value': pc_ratio,
-        'score': pc_score
-    }
+    # Put/Call Ratio 점수 계산 제거됨
     
     # High-Low Index 점수 (8점 만점, 비례식)
     hl_index = calculate_high_low_index(index_data)

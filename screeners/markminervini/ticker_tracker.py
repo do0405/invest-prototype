@@ -171,7 +171,7 @@ def track_new_tickers(advanced_financial_results_path):
     
     # 2주 이상 지난 데이터 삭제
     two_weeks_ago = today - timedelta(days=14)
-    new_tickers_df['added_date'] = pd.to_datetime(new_tickers_df['added_date']).dt.date
+    new_tickers_df['added_date'] = pd.to_datetime(new_tickers_df['added_date'], utc=True).dt.date
     new_tickers_df = new_tickers_df[new_tickers_df['added_date'] > two_weeks_ago]
     
     # 추가된 날짜 기준으로 내림차순 정렬 (최신 데이터가 위로)
@@ -184,5 +184,22 @@ def track_new_tickers(advanced_financial_results_path):
         new_tickers_df.to_json(json_path, orient='records', indent=2, force_ascii=False)
         print(f"새로 추가된 티커 정보를 {NEW_TICKERS_PATH}에 저장했습니다.")
         print(f"현재 추적 중인 티커 수: {len(new_tickers_df)}")
+        
+        # 새로 추가된 티커에 대해 통합 스크리너 실행 (패턴 감지 포함)
+        if new_symbols and len(new_symbols) > 0:
+            try:
+                print("\n🔍 새로 추가된 티커에 대한 통합 패턴 감지 스크리너 실행 중...")
+                from .integrated_screener import run_integrated_screening
+                
+                # 새로 추가된 심볼만 패턴 감지
+                new_symbols_list = list(new_symbols)
+                if new_symbols_list:
+                    pattern_results = run_integrated_screening(max_symbols=len(new_symbols_list))
+                    print(f"✅ 새 티커 패턴 감지 완료: {len(pattern_results)}개 심볼 처리")
+                else:
+                    print("⚠️ 패턴 감지할 새 심볼이 없습니다.")
+            except Exception as e:
+                print(f"⚠️ 새 티커 통합 패턴 감지 오류: {e}")
+                
     except Exception as e:
         print(f"오류: 새로 추가된 티커 정보를 저장하는 중 오류가 발생했습니다: {e}")

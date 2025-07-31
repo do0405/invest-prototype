@@ -1,0 +1,68 @@
+﻿symbol,company_name,skew_index,expected_return,confidence_score,base_confidence,data_source,data_quality_grade,confidence_numeric,quality_description
+EVRG,"Evergy, Inc.",-20.532021240234375,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
+WDC,Western Digital Corporation,-15.576016113281243,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+SYY,Sysco Corporation,-15.40511938476563,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+BSX,Boston Scientific Corporation,-7.519456054687495,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+RMD,ResMed Inc.,-6.323178955078124,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+JBL,Jabil Inc.,-4.119831848144534,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+ABNB,"Airbnb, Inc.",-3.5888312988281212,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+DPZ,"Domino's Pizza, Inc.",-3.4667622070312487,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+GEV,GE Vernova Inc.,-3.411831115722652,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+NOC,Northrop Grumman Corporation,-2.8930374755859383,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+SMCI,"Super Micro Computer, Inc.",-2.832002929687505,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+FSLR,"First Solar, Inc.",-2.746554565429715,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+UBER,"Uber Technologies, Inc.",-2.6122785644531077,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+CDNS,"Cadence Design Systems, Inc.",-2.5512440185546934,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+ADI,"Analog Devices, Inc.",-2.551244018554688,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+VST,Vistra Corp.,-2.551244018554688,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+MOS,The Mosaic Company,-2.5390371093749975,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+PAYC,"Paycom Software, Inc.",-2.1362091064453193,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+EBAY,eBay Inc.,-2.0751745605468774,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+KLAC,KLA Corporation,-2.0660193786621095,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+META,"Meta Platforms, Inc.",-1.9714158325195352,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+CME,CME Group Inc.,-1.9408985595703117,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+PODD,Insulet Corporation,-1.9042778320312648,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+ANET,Arista Networks Inc,-1.80662255859374,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+DGX,Quest Diagnostics Incorporated,-1.7944156494140606,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+AMD,"Advanced Micro Devices, Inc.",-1.7089672851562376,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+COIN,"Coinbase Global, Inc.",-1.6540361938476522,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+DDOG,"Datadog, Inc.",-1.6357258300781163,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+PEG,Public Service Enterprise Group Incorporated,-1.562484374999995,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+CCI,Crown Castle Inc.,-1.4892429199218682,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+AXON,"Axon Enterprise, Inc.",-1.4739842834472605,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+INTC,Intel Corporation,-1.4648291015624926,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+MPWR,"Monolithic Power Systems, Inc.",-1.4068462829589623,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+LDOS,"Leidos Holdings, Inc.",-1.4037945556640674,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+EL,The Estée Lauder Companies Inc.,-1.34276000976562,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+CAT,Caterpillar Inc.,-1.2390012817382723,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+SNPS,"Synopsys, Inc.",-1.1535529174804715,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+PLTR,Palantir Technologies Inc.,-1.098621826171875,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+VMC,Vulcan Materials Company,-1.0620010986328143,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+ALLE,Allegion plc,-0.9399320068359418,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+MCHP,Microchip Technology Incorporated,-0.9277250976562401,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+TTWO,"Take-Two Interactive Software, Inc.",-0.866690551757815,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+DXCM,"DexCom, Inc.",-0.7812421874999975,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+NEM,Newmont Corporation,-0.7812421874999975,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+RF,Regions Financial Corporation,-0.7324145507812518,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+LRCX,Lam Research Corporation,-0.7080007324218707,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CMI,Cummins Inc.,-0.6713800048828156,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+FCX,Freeport-McMoRan Inc.,-0.6347592773437438,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+APTV,Aptiv PLC,-0.6103454589843627,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+HUBB,Hubbell Incorporated,-0.5737247314453131,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+ALL,The Allstate Corporation,-0.5371040039062525,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+PANW,"Palo Alto Networks, Inc.",-0.5126901855468768,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+PWR,"Quanta Services, Inc.",-0.4577590942382803,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CEG,Constellation Energy Corporation,-0.4516556396484517,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+ROK,"Rockwell Automation, Inc.",-0.4150349121093688,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+GEN,Gen Digital Inc.,-0.39062109374999876,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+MGM,MGM Resorts International,-0.39062109374998766,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+GILD,"Gilead Sciences, Inc.",-0.36620727539062314,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+HWM,Howmet Aerospace Inc.,-0.3662072753906065,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+NFLX,"Netflix, Inc.",-0.31280204772948794,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+BA,The Boeing Company,-0.2685520019531207,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+EXPD,"Expeditors International of Washington, Inc.",-0.17089672851562376,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+LH,Labcorp Holdings Inc.,-0.15868981933593596,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+ADM,Archer-Daniels-Midland Company,-0.09765527343749691,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+BG,Bunge Global SA,-0.04882763671875123,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+BEN,"Franklin Resources, Inc.",-0.04882763671874568,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+FTNT,"Fortinet, Inc.",-0.024413818359370065,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터

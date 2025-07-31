@@ -94,11 +94,24 @@ export default function TechnicalScreeningPage() {
       
       <div className="mb-6 p-4 bg-blue-50 rounded-lg">
         <h2 className="text-lg font-semibold text-blue-800 mb-2">기술적 분석 스크리닝</h2>
-        <p className="text-blue-700">
+        <p className="text-blue-700 mb-3">
           차트 패턴, 기술적 지표, 거래량 분석을 통해 매수 시그널이 발생한 종목들을 선별합니다.
           이동평균선 돌파, RSI 과매도 반등, 볼린저 밴드 하단 터치 후 반등 등의 기술적 신호를 종합적으로 분석합니다.
           {selectedSymbol ? '' : ' 종목을 클릭하면 차트를 볼 수 있습니다.'}
         </p>
+        <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200">
+          <h3 className="text-sm font-semibold text-blue-800 mb-2">🔧 시스템 성능 개선</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-blue-700">
+            <div>
+              <strong>⚡ RS 점수 계산 최적화:</strong>
+              <br />메모리 경합 해결로 더 정확한 상대강도 분석
+            </div>
+            <div>
+              <strong>🚀 병렬 처리 안정성:</strong>
+              <br />대용량 데이터 처리 시 시스템 안정성 보장
+            </div>
+          </div>
+        </div>
       </div>
       {data.length > 0 ? (
         <SimpleDataTable 

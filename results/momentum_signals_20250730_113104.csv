@@ -1,0 +1,2 @@
+﻿symbol,sector,rs_score,close_price,sma_30,volume_ratio,relative_strength,above_30w_ma,ma_trending_up,volume_surge,breakout_occurred,positive_rs,sustained_breakout,entry_type,obv_rising,healthy_pattern,resistance_level,market_favorable,screening_date
+TEST,Technology,85.0,100.0,95.0,2.5,1.2,True,True,True,True,True,True,A형,True,True,98.0,True,2025-07-30

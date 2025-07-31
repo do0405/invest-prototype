@@ -203,7 +203,7 @@ class PortfolioUtils:
                     return True, "손절"
             
             # 최대 보유일 확인
-            entry_date = pd.to_datetime(position['entry_date'])
+            entry_date = pd.to_datetime(position['entry_date'], utc=True)
             holding_days = (datetime.now() - entry_date).days
             
             if holding_days >= 30:  # 30일 최대 보유

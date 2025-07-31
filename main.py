@@ -41,6 +41,7 @@ def main():
     parser = argparse.ArgumentParser(description='투자 스크리너 및 포트폴리오 관리 시스템')
     parser.add_argument('--skip-data', action='store_true', help='데이터 수집 건너뛰기')
     parser.add_argument('--force-screening', action='store_true', help='강제 스크리닝 실행')
+    parser.add_argument('--no-symbol-update', action='store_true', help='종목 리스트 업데이트 건너뛰기')
     parser.add_argument('--task', default='all',
                         choices=['all', 'screening', 'volatility-skew', 'setup', 'gainers', 'leader-stock',
                                  'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime', 'image-pattern', 'ranking'],
@@ -114,11 +115,18 @@ def main():
         # task == 'all'
         print("\n🎯 전체 프로세스 실행 모드")
 
-        if not args.skip_data:
-            print("\n📊 1단계: 데이터 수집")
-            collect_data_main()
+        print("\n📊 1단계: 데이터 수집")
+        # 종목 리스트 업데이트 여부 결정
+        update_symbols = not args.no_symbol_update
+        if args.skip_data:
+            print("⏭️ OHLCV 데이터 업데이트 건너뛰기 - 기타 데이터 수집은 진행")
+            collect_data_main(update_symbols=False, skip_ohlcv=True)
         else:
-            print("\n⏭️ 데이터 수집 건너뛰기")
+            if args.no_symbol_update:
+                print("📊 종목 리스트 업데이트 건너뛰기 - 기존 종목만 사용")
+            else:
+                print("🔄 종목 리스트 자동 업데이트 활성화")
+            collect_data_main(update_symbols=update_symbols, skip_ohlcv=False)
 
         print("\n🔄 2단계: 스크리닝 실행 중...")
         run_all_screening_processes(skip_data=args.skip_data)

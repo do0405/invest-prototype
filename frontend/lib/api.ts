@@ -142,6 +142,25 @@ export class ApiClient {
     return this.request<Record<string, unknown>>('/api/market-regime');
   }
 
+  // Recent signals endpoint
+  async getRecentSignals(days: number = 5) {
+    return this.request<ScreeningData[]>(`/api/recent-signals?days=${days}`);
+  }
+
+  // Top stocks endpoint
+  async getTopStocks() {
+    return this.request<ScreeningData[]>('/api/top-stocks');
+  }
+
+  // Dashboard summary endpoint
+  async getDashboardSummary() {
+    return this.request<Record<string, unknown>>('/api/dashboard-summary');
+  }
+
+  // Mark Minervini screener endpoints
+  async getMarkminerviniResults(screenerName: string) {
+    return this.request<ScreeningData[]>(`/api/markminervini/${screenerName}`);
+  }
 
   // 전체 요약 (여러 API를 조합하여 생성)
   async getSummary(): Promise<ApiResponse<SummaryData>> {

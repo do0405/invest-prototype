@@ -145,7 +145,7 @@ class PositionTracker:
                 'quantity': position['quantity'],
                 'return_pct': realized_pnl_pct,
                 'exit_reason': exit_reason,
-                'holding_days': (datetime.now() - pd.to_datetime(position['entry_date'])).days
+                'holding_days': (datetime.now() - pd.to_datetime(position['entry_date'], utc=True)).days
             }
             
             # 포지션 제거
@@ -191,7 +191,7 @@ class PositionTracker:
                     self.positions.loc[idx, 'unrealized_pnl_pct'] = unrealized_pnl_pct
                     
                     # 보유일 업데이트
-                    entry_date = pd.to_datetime(position['entry_date'])
+                    entry_date = pd.to_datetime(position['entry_date'], utc=True)
                     holding_days = (datetime.now() - entry_date).days
                     self.positions.loc[idx, 'holding_days'] = holding_days
                     

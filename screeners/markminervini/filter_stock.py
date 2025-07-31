@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 import argparse
-import pandas as pd
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 
@@ -139,6 +138,21 @@ def run_integrated_screening():
         print("\n🏆 통합 스크리닝 상위 10개 종목:")
         pd.set_option('display.max_rows', None)
         print(top_10.to_string(index=True))
+        
+        # 통합 스크리너 실행 (패턴 감지 포함)
+        try:
+            print("\n🔍 통합 패턴 감지 스크리너 실행 중...")
+            from .integrated_screener import run_integrated_screening
+            
+            # 상위 30개 심볼만 패턴 감지
+            top_symbols = filtered_df.head(30)['symbol'].tolist()
+            if top_symbols:
+                pattern_results = run_integrated_screening(max_symbols=len(top_symbols))
+                print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 심볼 처리")
+            else:
+                print("⚠️ 패턴 감지할 심볼이 없습니다.")
+        except Exception as e:
+            print(f"⚠️ 통합 패턴 감지 오류: {e}")
         
     except Exception as e:
         print(f"❌ 통합 스크리닝 오류: {e}")

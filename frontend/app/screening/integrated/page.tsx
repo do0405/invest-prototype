@@ -94,12 +94,25 @@ export default function IntegratedScreeningPage() {
       
       <div className="mb-6 p-4 bg-purple-50 rounded-lg">
         <h2 className="text-lg font-semibold text-purple-800 mb-2">통합 분석 스크리닝</h2>
-        <p className="text-purple-700">
+        <p className="text-purple-700 mb-3">
           기술적 분석과 재무제표 분석을 종합하여 최종 투자 후보 종목을 선별합니다.
           두 가지 분석 방법에서 모두 긍정적인 신호를 보이는 종목들로, 보다 높은 투자 확신도를 제공합니다.
           기술적 매수 시그널과 펀더멘털 우수성을 동시에 만족하는 프리미엄 종목들입니다.
           {selectedSymbol ? '' : ' 종목을 클릭하면 차트를 볼 수 있습니다.'}
         </p>
+        <div className="mt-3 p-3 bg-white rounded-lg border border-purple-200">
+          <h3 className="text-sm font-semibold text-purple-800 mb-2">🔧 최신 개선 사항</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-purple-700">
+            <div>
+              <strong>⚡ RS 점수 계산 최적화:</strong>
+              <br />메모리 경합 해결, 청크 처리로 안정성 향상
+            </div>
+            <div>
+              <strong>🚀 병렬 처리 강화:</strong>
+              <br />파일 I/O 경합 방지, 프로세스 안정성 개선
+            </div>
+          </div>
+        </div>
       </div>
       {data.length > 0 ? (
         <SimpleDataTable 

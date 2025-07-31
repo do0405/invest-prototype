@@ -11,6 +11,7 @@ import requests
 import traceback
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Tuple, Any
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from utils.path_utils import add_project_root
 
@@ -19,6 +20,7 @@ add_project_root()
 
 from config import PORTFOLIO_RESULTS_DIR, OPTION_VOLATILITY_RESULTS_DIR
 from utils import ensure_dir
+from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary
 from screeners.option_volatility.skew_mixins import SkewCalculationsMixin
 
 class VolatilitySkewScreener(SkewCalculationsMixin):
@@ -204,21 +206,18 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         processed_count = 0
         quality_stats = {"A": 0, "B": 0, "C": 0, "D": 0}
         
-        for i, symbol in enumerate(self.target_stocks, 1):
-            print(f"\r진행률: {i}/{len(self.target_stocks)} ({i/len(self.target_stocks)*100:.1f}%) - 처리 중: {symbol}", end="")
-            
+        def process_symbol(symbol):
+            """개별 종목 처리 함수"""
             try:
                 # 1단계: 기본 조건 체크
                 if not self.meets_basic_criteria(symbol):
-                    excluded_count += 1
-                    continue
+                    return None, 'excluded'
                 
                 # 2단계: 스큐 지수 계산 및 데이터 소스 확인
                 skew, data_source = self.calculate_skew_index_with_source(symbol)
                 
                 if skew is None:
-                    excluded_count += 1
-                    continue
+                    return None, 'excluded'
                 
                 # 3단계: 상승 후보 판별 (낮은 스큐)
                 if self.is_bullish_candidate(symbol, skew):
@@ -236,10 +235,7 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
                         symbol, skew, data_source
                     )
                     
-                    # 품질 통계 업데이트
-                    quality_stats[quality_grade] += 1
-                    
-                    results.append({
+                    result = {
                         'symbol': symbol,
                         'company_name': company_name,
                         'skew_index': skew,
@@ -250,15 +246,55 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
                         'data_quality_grade': quality_grade,
                         'confidence_numeric': confidence_score,
                         'quality_description': self.data_quality_grades[data_source]["description"]
-                    })
-                    processed_count += 1
+                    }
+                    return result, 'processed'
                 else:
-                    excluded_count += 1
+                    return None, 'excluded'
                     
             except Exception as e:
                 print(f"\n오류 발생 ({symbol}): {e}")
-                excluded_count += 1
-                continue
+                return None, 'error'
+        
+        # 병렬 처리 실행 (스레드 안전성 보장)
+        max_workers = min(4, len(self.target_stocks))  # 최대 4개 워커
+        completed_count = 0
+        all_results = []  # 모든 결과를 임시로 저장
+        temp_excluded_count = 0
+        temp_processed_count = 0
+        temp_quality_stats = {"A": 0, "B": 0, "C": 0, "D": 0}
+        
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            # 작업 제출
+            future_to_symbol = {executor.submit(process_symbol, symbol): symbol for symbol in self.target_stocks}
+            
+            # 결과 수집 (스레드 안전)
+            for future in as_completed(future_to_symbol):
+                completed_count += 1
+                symbol = future_to_symbol[future]
+                
+                # 진행률 출력
+                print(f"\r진행률: {completed_count}/{len(self.target_stocks)} ({completed_count/len(self.target_stocks)*100:.1f}%) - 완료: {symbol}", end="")
+                
+                try:
+                    result, status = future.result()
+                    
+                    if status == 'processed' and result is not None:
+                        all_results.append(result)
+                        temp_processed_count += 1
+                        temp_quality_stats[result['data_quality_grade']] += 1
+                    else:
+                        temp_excluded_count += 1
+                        
+                except Exception as e:
+                    print(f"\n{symbol} 결과 처리 중 오류: {e}")
+                    temp_excluded_count += 1
+        
+        # 결과 병합 (메인 스레드에서 안전하게 처리)
+        results.extend(all_results)
+        excluded_count += temp_excluded_count
+        processed_count += temp_processed_count
+        for grade in quality_stats:
+            quality_stats[grade] += temp_quality_stats[grade]
         
         print(f"\n\n스크리닝 완료: {processed_count}개 종목 선별, {excluded_count}개 종목 제외")
         print(f"데이터 품질 분포: A등급 {quality_stats['A']}개, B등급 {quality_stats['B']}개, C등급 {quality_stats['C']}개")
@@ -340,26 +376,19 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         return "\n".join(report)
 
     def save_results(self, results: List[Dict]) -> str:
-        """결과를 CSV 파일로 저장"""
+        """결과를 CSV 파일로 저장 (타임스탬프 없는 파일명 사용)"""
         if not results:
             return ""
         
-        # DataFrame 생성
-        df = pd.DataFrame(results)
+        # 결과 저장 (타임스탬프 포함 파일명 사용)
+        results_paths = save_screening_results(
+            results=results,
+            output_dir=self.results_dir,
+            filename_prefix="volatility_skew_screening",
+            include_timestamp=True
+        )
         
-        # 파일명 생성
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"volatility_skew_screening_{timestamp}.csv"
-        filepath = os.path.join(self.results_dir, filename)
-        
-        # CSV 저장
-        df.to_csv(filepath, index=False, encoding='utf-8-sig')
-        # JSON 파일 생성 추가
-        json_filepath = filepath.replace('.csv', '.json')
-        df.to_json(json_filepath, orient='records', indent=2, force_ascii=False)
-        
-        print(f"\n💾 결과 저장 완료: {filepath}")
-        return filepath
+        return results_paths['csv_path']
     
     def run_screening(self, save_results: bool = True) -> Tuple[List[Dict], str]:
         """전체 스크리닝 실행"""
@@ -375,6 +404,25 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
             filepath = ""
             if save_results and results:
                 filepath = self.save_results(results)
+                
+                # 새로운 티커 추적
+                tracker_file = os.path.join(self.results_dir, "new_volatility_skew_tickers.csv")
+                new_tickers = track_new_tickers(
+                    current_results=results,
+                    tracker_file=tracker_file,
+                    symbol_key='symbol',
+                    retention_days=14
+                )
+                
+                # 요약 정보 생성
+                summary = create_screener_summary(
+                    screener_name="Volatility Skew",
+                    total_candidates=len(results),
+                    new_tickers=len(new_tickers),
+                    results_paths={'csv': filepath, 'json': filepath.replace('.csv', '.json') if filepath else ''}
+                )
+                
+                print(f"✅ 변동성 스큐 스크리닝 완료: {len(results)}개 종목, 신규 {len(new_tickers)}개")
             
             return results, filepath
             

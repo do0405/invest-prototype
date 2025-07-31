@@ -1,0 +1,23 @@
+[
+  {
+    "symbol":"TEST",
+    "sector":"Technology",
+    "rs_score":85.0,
+    "close_price":100.0,
+    "sma_30":95.0,
+    "volume_ratio":2.5,
+    "relative_strength":1.2,
+    "above_30w_ma":true,
+    "ma_trending_up":true,
+    "volume_surge":true,
+    "breakout_occurred":true,
+    "positive_rs":true,
+    "sustained_breakout":true,
+    "entry_type":"A형",
+    "obv_rising":true,
+    "healthy_pattern":true,
+    "resistance_level":98.0,
+    "market_favorable":true,
+    "screening_date":"2025-07-30"
+  }
+]

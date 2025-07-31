@@ -33,8 +33,7 @@ ensure_dir(RESULTS_DIR)
 def run_advanced_financial_screening(force_update=False, skip_data=False):
     """고급 재무 분석 실행"""
     if skip_data:
-        print("⏭️ 데이터 수집 건너뛰기 - 기존 결과 사용")
-        return
+        print("⏭️ OHLCV 업데이트 없이 기존 데이터로 재무 분석 진행")
     print("\n=== 고급 재무 분석 시작 ===")
     
     # results2 디렉토리가 없으면 생성
@@ -91,10 +90,10 @@ def run_advanced_financial_screening(force_update=False, skip_data=False):
                     fin_percentile_dict = dict(zip(result_df['symbol'], fin_percentiles))
                     final_df['fin_percentile'] = final_df['symbol'].map(fin_percentile_dict)
                     
-                    # 누락된 값 처리
-                    final_df['fin_met_count'] = final_df['fin_met_count'].fillna(0)
-                    final_df['has_error'] = final_df['has_error'].fillna(True)
-                    final_df['fin_percentile'] = final_df['fin_percentile'].fillna(0)
+                    # 누락된 값 처리 (FutureWarning 방지)
+                    final_df['fin_met_count'] = final_df['fin_met_count'].fillna(0).infer_objects(copy=False)
+                    final_df['has_error'] = final_df['has_error'].fillna(True).infer_objects(copy=False)
+                    final_df['fin_percentile'] = final_df['fin_percentile'].fillna(0).infer_objects(copy=False)
                     
                     # 백분위 합계 계산
                     final_df['total_percentile'] = final_df['rs_percentile'] + final_df['fin_percentile']
@@ -121,17 +120,20 @@ def run_advanced_financial_screening(force_update=False, skip_data=False):
                     integrated_json_path = INTEGRATED_RESULTS_PATH.replace('.csv', '.json')
                     final_df.to_json(integrated_json_path, orient='records', indent=2, force_ascii=False)
                     
-                    # 패턴 감지 실행
-                    print("\n🔍 패턴 감지를 시작합니다...")
+                    # 통합 스크리너 실행 (패턴 감지 포함)
+                    print("\n🔍 통합 패턴 감지 스크리너 실행 중...")
                     try:
-                        from pattern_detection import run_pattern_detection_on_financial_results
-                        pattern_results = run_pattern_detection_on_financial_results()
-                        if not pattern_results.empty:
-                            print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 종목")
+                        from .integrated_screener import run_integrated_screening
+                        
+                        # 상위 50개 심볼만 패턴 감지
+                        top_symbols = final_df.head(50)['symbol'].tolist()
+                        if top_symbols:
+                            pattern_results = run_integrated_screening(max_symbols=len(top_symbols))
+                            print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 심볼 처리")
                         else:
-                            print("⚠️ 패턴을 만족하는 종목이 없습니다.")
+                            print("⚠️ 패턴 감지할 심볼이 없습니다.")
                     except Exception as e:
-                        print(f"⚠️ 패턴 감지 중 오류: {e}")
+                        print(f"⚠️ 통합 패턴 감지 오류: {e}")
                     
                     # 에러가 있는 종목 출력
                     error_df = final_df[final_df['has_error'] == True]

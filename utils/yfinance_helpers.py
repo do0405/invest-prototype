@@ -37,6 +37,13 @@ def fetch_quarterly_eps_growth(symbol: str) -> float:
         
         if prev_earnings == 0 or pd.isna(recent_earnings) or pd.isna(prev_earnings):
             return 0.0
-        return (recent_earnings - prev_earnings) / abs(prev_earnings) * 100
+        
+        if prev_earnings > 0:
+            return (recent_earnings - prev_earnings) / prev_earnings * 100
+        else:
+            if recent_earnings >= 0:
+                return 200  # 흑자 전환
+            else:
+                return (recent_earnings - prev_earnings) / abs(prev_earnings) * 100
     except Exception:
         return 0.0

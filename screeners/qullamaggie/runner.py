@@ -41,7 +41,7 @@ def create_directories():
     print("✅ 디렉토리 구조 생성 완료")
 
 # 스크리닝 실행 함수
-def run_screening(args):
+def run_screening(args, enable_earnings_filter=True):
     """
     쿨라매기 매매법 스크리닝 실행
     
@@ -66,7 +66,7 @@ def run_screening(args):
         setup_type = None
 
     # screener 모듈의 통합 함수 호출
-    run_qullamaggie_screening(setup_type)
+    run_qullamaggie_screening(setup_type, enable_earnings_filter)
 
     print("\n✅ 쿨라매기 매매법 스크리닝 완료")
 
@@ -95,7 +95,7 @@ def run_signal_generation(args):
     print("\n✅ 쿨라매기 매매법 시그널 생성 완료")
 
 # 외부에서 호출 가능한 함수
-def run_qullamaggie_strategy(setups=None, skip_data=False):
+def run_qullamaggie_strategy(setups=None, skip_data=False, enable_earnings_filter=True):
     """
     쿨라매기 매매법 전략 실행 - 외부에서 호출 가능한 인터페이스
     
@@ -134,7 +134,7 @@ def run_qullamaggie_strategy(setups=None, skip_data=False):
         args.parabolic_short = True
     
     # 스크리닝 실행
-    run_screening(args)
+    run_screening(args, enable_earnings_filter)
     
     # 시그널 생성 실행
     run_signal_generation(args)

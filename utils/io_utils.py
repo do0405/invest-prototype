@@ -62,8 +62,9 @@ def create_required_dirs(directories=None) -> None:
 
 
 def load_csvs_parallel(file_paths, max_workers=4):
-    """Load multiple CSV files in parallel."""
+    """Load multiple CSV files in parallel (thread-safe)."""
     results = {}
+    temp_results = []  # 임시 결과 저장
 
     def load_csv(file_path):
         try:
@@ -88,7 +89,11 @@ def load_csvs_parallel(file_paths, max_workers=4):
         for future in concurrent.futures.as_completed(future_to_file):
             file_name, df = future.result()
             if df is not None:
-                results[file_name] = df
+                temp_results.append((file_name, df))
+    
+    # 결과 병합 (메인 스레드에서 안전하게 처리)
+    for file_name, df in temp_results:
+        results[file_name] = df
 
     return results
 

@@ -165,42 +165,7 @@ class StockRankingSystem:
             
         return indicators
         
-    def calculate_fundamental_indicators(self, symbol: str) -> Dict[str, float]:
-        """Calculate fundamental indicators for a stock.
-        
-        Note: This is a placeholder implementation. In a real system,
-        you would integrate with financial data providers.
-        
-        Args:
-            symbol: Stock symbol
-            
-        Returns:
-            Dictionary of fundamental indicator values
-        """
-        indicators = {}
-        
-        # Placeholder values - in real implementation, fetch from financial data
-        # These would come from APIs like Alpha Vantage, Yahoo Finance, etc.
-        try:
-            # Mock fundamental data - replace with actual data fetching
-            mock_fundamentals = {
-                'pe_ratio': np.random.uniform(10, 30),
-                'pb_ratio': np.random.uniform(0.5, 5),
-                'roe': np.random.uniform(5, 25),
-                'debt_to_equity': np.random.uniform(0, 2),
-                'revenue_growth': np.random.uniform(-10, 30),
-                'eps_growth': np.random.uniform(-20, 50),
-                'profit_margin': np.random.uniform(0, 20),
-                'current_ratio': np.random.uniform(0.5, 3),
-                'dividend_yield': np.random.uniform(0, 8)
-            }
-            
-            indicators.update(mock_fundamentals)
-            
-        except Exception as e:
-            self.logger.error(f"Error calculating fundamental indicators for {symbol}: {e}")
-            
-        return indicators
+    # Fundamental indicators removed as requested
         
     def calculate_market_indicators(self, symbol: str, df: pd.DataFrame) -> Dict[str, float]:
         """Calculate market-related indicators for a stock.
@@ -215,11 +180,8 @@ class StockRankingSystem:
         indicators = {}
         
         try:
-            # Market cap (placeholder - would need shares outstanding)
+            # Market cap calculation removed as requested
             current_price = df['close'].iloc[-1]
-            # Mock shares outstanding - replace with actual data
-            shares_outstanding = np.random.uniform(50e6, 10e9)
-            indicators['market_cap'] = current_price * shares_outstanding
             
             # Relative strength using Mark Minervini method
             try:
@@ -309,19 +271,14 @@ class StockRankingSystem:
             
         # Calculate all types of indicators
         technical = self.calculate_technical_indicators(df)
-        fundamental = self.calculate_fundamental_indicators(symbol)
         market = self.calculate_market_indicators(symbol, df)
         
         indicators.update(technical)
-        indicators.update(fundamental)
         indicators.update(market)
         
         # Add some sentiment indicators (placeholder)
-        indicators.update({
-            'analyst_rating': np.random.uniform(1, 5),
-            'insider_ownership': np.random.uniform(0, 30),
-            'institutional_ownership': np.random.uniform(20, 90)
-        })
+        # 애널리스트 평점, 내부자 소유권, 기관 소유권 데이터 제거됨
+        # 실제 데이터 소스 연결 시 구현 예정
         
         # Cache the results
         self._indicator_cache[cache_key] = indicators
@@ -449,8 +406,6 @@ class StockRankingSystem:
                 # Add key metrics for reference
                 results.loc[idx, 'price_momentum_20d'] = indicators.get('price_momentum_20d', 0)
                 results.loc[idx, 'rsi_14'] = indicators.get('rsi_14', 50)
-                results.loc[idx, 'pe_ratio'] = indicators.get('pe_ratio', 0)
-                results.loc[idx, 'roe'] = indicators.get('roe', 0)
                 results.loc[idx, 'relative_strength'] = indicators.get('relative_strength', 0)
                 
             # Sort by score (descending)

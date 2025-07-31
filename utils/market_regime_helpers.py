@@ -12,7 +12,6 @@ __all__ = [
     "load_index_data",
     "calculate_high_low_index",
     "calculate_advance_decline_trend",
-    "calculate_put_call_ratio",
     "calculate_ma_distance",
     "count_consecutive_below_ma",
     "INDEX_TICKERS",
@@ -113,7 +112,7 @@ def calculate_high_low_index(index_data: Dict[str, pd.DataFrame]) -> float:
         df = pd.read_csv(file_path)
         df.columns = [c.lower() for c in df.columns]
         if 'date' in df.columns:
-            df['date'] = pd.to_datetime(df['date'])
+            df['date'] = pd.to_datetime(df['date'], utc=True)
             df = df.sort_values('date')
 
         high_col = next((c for c in df.columns if 'high' in c), None)
@@ -147,7 +146,7 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
         df = pd.read_csv(file_path)
         df.columns = [c.lower() for c in df.columns]
         if 'date' in df.columns:
-            df['date'] = pd.to_datetime(df['date'])
+            df['date'] = pd.to_datetime(df['date'], utc=True)
             df = df.sort_values('date')
 
         # 정확한 컬럼명으로 확인
@@ -180,31 +179,7 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
         return 0
 
 
-def calculate_put_call_ratio() -> float | None:
-    """Return latest put/call ratio. 데이터가 없으면 수집 시도 후 반환."""
-    file_path = os.path.join(OPTION_DATA_DIR, "put_call_ratio.csv")
-    try:
-        if not os.path.exists(file_path):
-            collector = MarketBreadthCollector()
-            collector.collect_put_call_ratio(days=30)
-        if not os.path.exists(file_path):
-            print(f"⚠️ Put/Call Ratio 데이터 파일을 찾을 수 없습니다: {file_path}")
-            return None
-
-        df = pd.read_csv(file_path)
-        df.columns = [c.lower() for c in df.columns]
-        if 'date' in df.columns:
-            df['date'] = pd.to_datetime(df['date'])
-            df = df.sort_values('date')
-
-        ratio_col = next((c for c in df.columns if 'ratio' in c), None)
-        if not ratio_col:
-            print("⚠️ Put/Call Ratio 데이터에 비율 컬럼이 없습니다.")
-            return None
-        return float(df[ratio_col].iloc[-1])
-    except Exception as e:
-        print(f"❌ Put/Call Ratio 계산 오류: {e}")
-        return None
+# Put/Call Ratio 계산 기능 제거됨
 
 
 def calculate_ma_distance(df: pd.DataFrame, ma_column: str = "ma200", price_column: str = "close") -> float:

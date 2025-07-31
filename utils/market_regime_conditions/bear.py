@@ -5,7 +5,6 @@ from .common import (
     MARKET_REGIME_CRITERIA,
     calculate_high_low_index,
     calculate_advance_decline_trend,
-    calculate_put_call_ratio,
     calculate_ma_distance,
     count_consecutive_below_ma
 )
@@ -83,12 +82,7 @@ def check_bear_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     additional_conditions.append(vix_condition)
     details['vix_extreme'] = vix_condition
 
-    # Put/Call Ratio > 1.5
-    pc_ratio = calculate_put_call_ratio()
-    pc_condition = pc_ratio > 1.5
-    additional_conditions.append(pc_condition)
-    details['put_call_extreme'] = pc_condition
-    details['put_call_ratio'] = pc_ratio
+    # Put/Call Ratio 조건 제거됨
 
     # High-Low Index < 20
     hl_index = calculate_high_low_index(index_data)

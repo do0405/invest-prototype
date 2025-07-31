@@ -25,7 +25,7 @@ from screeners.markminervini.screener import run_us_screening
 from screeners.us_setup.screener import screen_us_setup
 from screeners.us_gainer.screener import screen_us_gainers
 from screeners.leader_stock.screener import run_leader_stock_screening
-from screeners.momentum_signals.screener import run_momentum_signals_screening
+from screeners.momentum_signals.screener import run_stage2_breakout_screening
 from screeners.ipo_investment.screener import run_ipo_investment_screening
 from screeners.markminervini.ticker_tracker import track_new_tickers
 from screeners.markminervini.image_pattern_detection import run_image_pattern_detection
@@ -235,16 +235,43 @@ def run_pattern_analysis() -> None:
         print(traceback.format_exc())
 
 
-def collect_data_main() -> None:
-    """Wrapper around the data collector."""
+def collect_data_main(update_symbols: bool = True, skip_ohlcv: bool = False) -> None:
+    """Wrapper around the data collector.
+    
+    Args:
+        update_symbols: 종목 리스트 업데이트 여부 (기본값: True)
+        skip_ohlcv: OHLCV 데이터 수집 건너뛰기 여부 (기본값: False)
+    """
     print("\n💾 데이터 수집 시작...")
     try:
-        collect_data()
+        # 1. 기본 주가 데이터 수집 (종목 리스트 업데이트 포함)
+        if not skip_ohlcv:
+            print("\n📈 1단계: 주가 데이터 수집")
+            if update_symbols:
+                print("🔄 종목 리스트 자동 업데이트 활성화")
+            else:
+                print("📊 기존 종목 리스트 사용")
+            collect_data(update_symbols=update_symbols)
+        else:
+            print("\n⏭️ 1단계: OHLCV 데이터 수집 건너뛰기")
+        
+        # 2. 시장 폭 데이터 수집
+        print("\n📊 2단계: 시장 폭 데이터 수집")
         run_market_breadth_collection()
+        
+        # 3. 시장 국면 분석
+        print("\n🔍 3단계: 시장 국면 분석")
         run_market_regime_analysis()
+        
+        # 4. IPO 데이터 수집 (SEC Edgar)
+        print("\n🏢 4단계: IPO 데이터 수집")
         run_ipo_data_collection()
+        
+        # 5. 주식 메타데이터 업데이트
+        print("\n📋 5단계: 주식 메타데이터 업데이트")
         run_stock_metadata_collection()
-        print("✅ 데이터 수집 완료")
+        
+        print("✅ 모든 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 데이터 수집 중 오류 발생: {e}")
         print(traceback.format_exc())
@@ -395,17 +422,17 @@ def run_leader_stock_screener(skip_data=False):
 
 
 def run_momentum_signals_screener(skip_data=False) -> None:
-    """Run the momentum signals screener."""
+    """Run the Stan Weinstein Stage 2 breakout screener."""
     try:
-        print("\n📊 상승 모멘텀 신호 스크리너 시작...")
-        df = run_momentum_signals_screening(skip_data=skip_data)
+        print("\n📊 Stan Weinstein Stage 2 Breakout 스크리너 시작...")
+        df = run_stage2_breakout_screening(skip_data=skip_data)
         if not df.empty:
-            print(f"✅ 상승 모멘텀 신호 결과 저장 완료: {len(df)}개 종목")
+            print(f"✅ Stage 2 Breakout 결과 저장 완료: {len(df)}개 종목")
             update_first_buy_signals(df, MOMENTUM_SIGNALS_RESULTS_DIR)
         else:
             print("⚠️ 조건을 만족하는 종목이 없습니다.")
     except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ 상승 모멘텀 신호 스크리너 실행 중 오류 발생: {e}")
+        print(f"❌ Stage 2 Breakout 스크리너 실행 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
@@ -440,11 +467,25 @@ def run_ipo_data_collection(days: int = 365) -> None:
 
 
 def run_stock_metadata_collection() -> None:
-    """Collect and save stock metadata."""
+    """Collect and save stock metadata using StockMetadataUpdater."""
     try:
+        from utils.data.stock_metadata_updater import StockMetadataUpdater
+        
         print("\n📊 주식 메타데이터 수집 시작...")
-        collect_stock_metadata_main()
-        print("✅ 주식 메타데이터 수집 완료")
+        updater = StockMetadataUpdater()
+        
+        # 기존 메타데이터 로드
+        existing_data = updater.load_current_metadata()
+        print(f"📋 기존 메타데이터: {len(existing_data)}개 종목")
+        
+        # 새로운 메타데이터 수집 (증분 업데이트)
+        updated_data = updater.update_metadata(incremental=True, max_age_days=7)
+        
+        if updated_data is not None:
+            print(f"✅ 주식 메타데이터 업데이트 완료: {len(updated_data)}개 종목")
+        else:
+            print("⚠️ 메타데이터 업데이트 실패")
+            
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 주식 메타데이터 수집 실패: {e}")
         print(traceback.format_exc())
@@ -609,24 +650,45 @@ def run_scheduler() -> None:
 
 def run_image_pattern_detection_task(skip_data: bool = False):
     """
-    이미지 기반 패턴 감지 작업 실행
+    이미지 기반 패턴 감지 작업 실행 - 모든 스크리닝 결과 대상
     
     Args:
         skip_data: 데이터 수집 건너뛰기
     """
     try:
-        print("\n🖼️ 이미지 기반 패턴 감지 시작")
+        print("\n🖼️ 이미지 기반 패턴 감지 시작 (모든 스크리닝 결과 대상)")
         
         # 필요한 디렉토리 확인
         ensure_dir(MARKMINERVINI_RESULTS_DIR)
         
-        # 이미지 패턴 감지 실행
-        results = run_image_pattern_detection(skip_data=skip_data)
-        
-        if not results.empty:
-            print(f"✅ 이미지 패턴 감지 완료: {len(results)}개 심볼 처리")
-        else:
-            print("⚠️ 처리된 결과가 없습니다.")
+        # 모든 스크리너 결과에서 심볼 수집
+        try:
+            from ranking.utils import load_all_screener_symbols
+            all_symbols = load_all_screener_symbols()
+            
+            if not all_symbols:
+                print("⚠️ 스크리너 결과에서 종목을 찾을 수 없습니다.")
+                return
+            
+            print(f"📈 {len(all_symbols)}개 종목에 대해 이미지 패턴 감지 시작")
+            
+            # 이미지 패턴 감지 실행 (모든 심볼 대상)
+            results = run_image_pattern_detection(max_symbols=len(all_symbols), skip_data=skip_data)
+            
+            if not results.empty:
+                print(f"✅ 이미지 패턴 감지 완료: {len(results)}개 심볼 처리")
+            else:
+                print("⚠️ 처리된 결과가 없습니다.")
+                
+        except ImportError:
+            print("⚠️ ranking.utils 모듈을 찾을 수 없어 기본 방식으로 실행합니다.")
+            # 기본 방식으로 실행 (기존 코드)
+            results = run_image_pattern_detection(skip_data=skip_data)
+            
+            if not results.empty:
+                print(f"✅ 이미지 패턴 감지 완료: {len(results)}개 심볼 처리")
+            else:
+                print("⚠️ 처리된 결과가 없습니다.")
             
     except Exception as e:
         print(f"❌ 이미지 패턴 감지 실행 중 오류: {e}")

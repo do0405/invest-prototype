@@ -43,7 +43,7 @@ def update_first_buy_signals(df: pd.DataFrame, results_dir: str,
             return
 
     if date_col and date_col in df.columns:
-        date_series = pd.to_datetime(df[date_col], errors="coerce").dt.strftime("%Y-%m-%d")
+        date_series = pd.to_datetime(df[date_col], errors="coerce", utc=True).dt.strftime("%Y-%m-%d")
     else:
         if run_date is None:
             run_date = datetime.now().strftime("%Y-%m-%d")

@@ -228,20 +228,20 @@ JSON 데이터 구조
 ### 일일 운영 프로세스
 1. 데이터 수집 (장 마감 후)
 
-python main.py --collect-only
+py main.py --collect-only
 
 2. 스크리닝 실행 (저녁)
 
-python main.py --integrated
+py main.py --integrated
 
 3. 포트폴리오 업데이트 (저녁)
 
 cd long_short_portfolio
-python portfolio_integration.py
+py portfolio_integration.py
 
 성과 모니터링 (다음날 아침)
 
-python backend/api_server.py
+py backend/api_server.py
 # 브라우저에서 http://localhost:5000/api/portfolio-performance 확인
 
 ### 주간 운영 프로세스

@@ -36,7 +36,7 @@ from config import (
     MARKET_REGIME_CRITERIA,
 )
 from utils.calc_utils import get_us_market_today
-from .market_regime_helpers import INDEX_TICKERS, MARKET_REGIMES, load_index_data, calculate_high_low_index, calculate_advance_decline_trend, calculate_put_call_ratio
+from .market_regime_helpers import INDEX_TICKERS, MARKET_REGIMES, load_index_data, calculate_high_low_index, calculate_advance_decline_trend
 from .market_regime_calc import calculate_market_score, get_market_regime, get_regime_description, get_investment_strategy, analyze_market_regime
 __all__ = [
     "analyze_market_regime",

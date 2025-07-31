@@ -71,7 +71,7 @@ class MarketBreadthCollector:
             for symbol in symbols_to_try:
                 try:
                     print(f"  시도 중: {symbol}")
-                    vix = yf.download(symbol, period=f'{days}d', interval='1d', progress=False)
+                    vix = yf.download(symbol, period=f'{days}d', interval='1d', progress=False, auto_adjust=False)
                     if not vix.empty:
                         print(f"  ✅ {symbol}에서 데이터 수집 성공")
                         break
@@ -119,66 +119,7 @@ class MarketBreadthCollector:
             print(f"❌ VIX 데이터 수집 오류: {e}")
             return False
     
-    def collect_put_call_ratio(self, days: int = 252) -> bool:
-        """Put/Call Ratio 데이터를 FRED에서 수집"""
-        try:
-            print("📊 Put/Call Ratio 데이터 수집 중...")
-            
-            # 디렉토리 생성
-            os.makedirs(OPTION_DATA_DIR, exist_ok=True)
-            pc_file = os.path.join(OPTION_DATA_DIR, 'put_call_ratio.csv')
-            
-            # 기존 파일 확인
-            if os.path.exists(pc_file):
-                try:
-                    existing_data = pd.read_csv(pc_file)
-                    if not existing_data.empty:
-                        print(f"✅ 기존 Put/Call Ratio 데이터 사용 ({len(existing_data)}개 레코드)")
-                        return True
-                except Exception:
-                    pass
-
-            # FRED에서 데이터 수집 시도
-            url = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PUTCALL"
-            try:
-                resp = requests.get(url, timeout=15)
-                if resp.status_code != 200:
-                    raise Exception(f"HTTP {resp.status_code} 오류")
-                
-                df = pd.read_csv(StringIO(resp.text))
-                if df.empty:
-                    raise Exception("빈 데이터셋")
-                    
-                df.columns = [c.lower() for c in df.columns]
-                df['date'] = pd.to_datetime(df['date'])
-                df.rename(columns={df.columns[1]: 'put_call_ratio'}, inplace=True)
-                df = df.dropna().tail(days)
-                
-                if df.empty:
-                    raise Exception("유효한 데이터 없음")
-                
-                # 파일 저장
-                df.to_csv(pc_file, index=False)
-                print(f"✅ Put/Call Ratio 데이터 저장 완료: {pc_file} ({len(df)}개 레코드)")
-                return True
-                
-            except Exception as e:
-                print(f"❌ FRED에서 Put/Call Ratio 데이터 수집 실패: {e}")
-                
-                # 대체 데이터 생성 (더미 데이터)
-                print("📊 대체 Put/Call Ratio 데이터 생성 중...")
-                dates = pd.date_range(end=datetime.now().date(), periods=days, freq='D')
-                dummy_data = pd.DataFrame({
-                    'date': dates.strftime('%Y-%m-%d'),
-                    'put_call_ratio': [1.0] * days  # 기본값 1.0
-                })
-                dummy_data.to_csv(pc_file, index=False)
-                print(f"✅ 대체 Put/Call Ratio 데이터 생성 완료: {pc_file} ({len(dummy_data)}개 레코드)")
-                return True
-            
-        except Exception as e:
-            print(f"❌ Put/Call Ratio 데이터 수집 오류: {e}")
-            return False
+    # Put/Call Ratio 데이터 수집 기능 제거됨
     
     def _process_file_for_high_low(self, file_path: str, days: int) -> Dict[pd.Timestamp, Dict[str, int]]:
         """Process a single file for high-low index calculation."""
@@ -189,7 +130,7 @@ class MarketBreadthCollector:
             if 'date' not in df.columns or 'high' not in df.columns or 'low' not in df.columns or 'close' not in df.columns:
                 return date_map
             
-            df['date'] = pd.to_datetime(df['date'])
+            df['date'] = pd.to_datetime(df['date'], utc=True)
             df = df.sort_values('date')
             df = df.tail(252 + days)
 
@@ -227,21 +168,11 @@ class MarketBreadthCollector:
 
             print(f"📈 {len(csv_files)}개 파일을 병렬 처리로 분석 중...")
             
-            # 병렬 처리로 파일들 처리
+            # 병렬 처리로 파일들 처리 (개선된 스레드 안전성)
             from concurrent.futures import ThreadPoolExecutor, as_completed
-            import threading
             
             date_map: Dict[pd.Timestamp, Dict[str, int]] = {}
-            lock = threading.Lock()
-            
-            def merge_results(file_result):
-                with lock:
-                    for date, values in file_result.items():
-                        if date not in date_map:
-                            date_map[date] = {'highs': 0, 'lows': 0, 'total': 0}
-                        date_map[date]['highs'] += values['highs']
-                        date_map[date]['lows'] += values['lows']
-                        date_map[date]['total'] += values['total']
+            all_file_results = []  # 모든 파일 결과를 임시 저장
             
             # 최대 8개 워커로 병렬 처리
             max_workers = min(8, len(csv_files))
@@ -251,10 +182,19 @@ class MarketBreadthCollector:
                 completed = 0
                 for future in as_completed(future_to_file):
                     file_result = future.result()
-                    merge_results(file_result)
+                    all_file_results.append(file_result)
                     completed += 1
                     if completed % 100 == 0:
                         print(f"진행률: {completed}/{len(csv_files)} 파일 처리 완료")
+            
+            # 결과 병합 (메인 스레드에서 안전하게 처리)
+            for file_result in all_file_results:
+                for date, values in file_result.items():
+                    if date not in date_map:
+                        date_map[date] = {'highs': 0, 'lows': 0, 'total': 0}
+                    date_map[date]['highs'] += values['highs']
+                    date_map[date]['lows'] += values['lows']
+                    date_map[date]['total'] += values['total']
 
             hl_data = [
                 {
@@ -303,7 +243,7 @@ class MarketBreadthCollector:
                     df.columns = [c.lower() for c in df.columns]
                     if 'date' not in df.columns or 'close' not in df.columns:
                         continue
-                    df['date'] = pd.to_datetime(df['date'])
+                    df['date'] = pd.to_datetime(df['date'], utc=True)
                     df = df.sort_values('date')
                     df = df.tail(days + 1)
                     for i in range(1, len(df)):
@@ -364,7 +304,6 @@ class MarketBreadthCollector:
         
         results = {
             'vix': self.collect_vix_data(days),
-            'put_call_ratio': self.collect_put_call_ratio(days),
             'high_low_index': self.collect_high_low_index(days),
             'advance_decline': self.collect_advance_decline_data(days)
         }

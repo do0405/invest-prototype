@@ -42,14 +42,24 @@ class DataManager:
             if cache_age < timedelta(hours=6):  # 6시간 이내 캐시 사용
                 logger.info("캐시된 IPO 데이터 사용")
                 df = pd.read_csv(cache_file)
+                # 날짜 형식 정규화 및 UTC 변환
                 df['ipo_date'] = pd.to_datetime(df['ipo_date'], errors='coerce')
+                if df['ipo_date'].dt.tz is None:
+                    df['ipo_date'] = df['ipo_date'].dt.tz_localize('UTC')
+                else:
+                    df['ipo_date'] = df['ipo_date'].dt.tz_convert('UTC')
                 return df
         
         # 새로운 데이터 수집
         logger.info("새로운 IPO 데이터 수집")
         ipo_data = self.ipo_collector.get_recent_ipos(days_back)
         if not ipo_data.empty:
+            # 날짜 형식 정규화 및 UTC 변환
             ipo_data['ipo_date'] = pd.to_datetime(ipo_data['ipo_date'], errors='coerce')
+            if ipo_data['ipo_date'].dt.tz is None:
+                ipo_data['ipo_date'] = ipo_data['ipo_date'].dt.tz_localize('UTC')
+            else:
+                ipo_data['ipo_date'] = ipo_data['ipo_date'].dt.tz_convert('UTC')
         
         # 캐시 저장
         if not ipo_data.empty:

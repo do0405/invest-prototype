@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,volume
+date,Open,High,Low,Close,Adj Close,Volume,symbol
+2025-06-30 00:00:00-04:00,0.8199999928474426,1.9500000476837158,0.75,1.8700000047683716,1.8700000047683716,1656584,BULLZ

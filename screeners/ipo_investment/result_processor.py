@@ -26,12 +26,13 @@ class IPOResultProcessor:
         track_columns = ['ticker', 'company_name', 'ipo_date', 'ipo_price', 'track', 
                         'days_since_ipo', 'current_price', 'price_vs_ipo', 'date']
         
-        # 파일 경로 정의
+        # 파일 경로 정의 (타임스탬프 포함 파일명 사용)
+        timestamp = self.today.strftime('%Y%m%d')
         files_to_create = [
-            (f"ipo_base_{self.today.strftime('%Y%m%d')}.csv", base_columns),
-            (f"ipo_breakout_{self.today.strftime('%Y%m%d')}.csv", base_columns),
-            (f"ipo_track1_{self.today.strftime('%Y%m%d')}.csv", track_columns),
-            (f"ipo_track2_{self.today.strftime('%Y%m%d')}.csv", track_columns)
+            (f"ipo_base_{timestamp}.csv", base_columns),
+            (f"ipo_breakout_{timestamp}.csv", base_columns),
+            (f"ipo_track1_{timestamp}.csv", track_columns),
+            (f"ipo_track2_{timestamp}.csv", track_columns)
         ]
         
         # 빈 파일들 생성

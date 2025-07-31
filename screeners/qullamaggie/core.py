@@ -14,6 +14,7 @@ add_project_root()
 # 설정 및 유틸리티 임포트
 from config import DATA_US_DIR, QULLAMAGGIE_RESULTS_DIR
 from utils import ensure_dir, load_csvs_parallel
+from .earnings_data_collector import EarningsDataCollector
 
 # 결과 저장 경로 설정
 BREAKOUT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'breakout_results.csv')
@@ -267,7 +268,7 @@ def check_vcp_pattern(df):
     return adr_contraction and low_rising and volume_contraction
 
 # 에피소드 피벗 셋업 스크리닝 함수
-def screen_episode_pivot_setup(ticker, df):
+def screen_episode_pivot_setup(ticker, df, enable_earnings_filter=True):
     """
     에피소드 피벗 셋업 스크리닝 함수
     
@@ -287,6 +288,11 @@ def screen_episode_pivot_setup(ticker, df):
         'gap_percent': None,
         'volume_ratio': None,
         'ma50_relation': None,
+        'earnings_surprise': None,
+        'eps_surprise_pct': None,
+        'revenue_surprise_pct': None,
+        'yoy_eps_growth': None,
+        'yoy_revenue_growth': None,
         'stop_loss': None,
         'risk_reward_ratio': None,
         'score': 0
@@ -328,6 +334,34 @@ def screen_episode_pivot_setup(ticker, df):
     result_dict['volume_ratio'] = volume_ratio
     volume_surge_condition = volume_ratio >= 3.0
     
+    # 실적 서프라이즈 조건 추가 (선택적)
+    if enable_earnings_filter:
+        earnings_collector = EarningsDataCollector()
+        earnings_surprise = earnings_collector.get_earnings_surprise(ticker)
+        
+        if earnings_surprise:
+            surprise_condition = earnings_surprise['meets_criteria']
+            result_dict['earnings_surprise'] = True
+            result_dict['eps_surprise_pct'] = earnings_surprise['eps_surprise_pct']
+            result_dict['revenue_surprise_pct'] = earnings_surprise['revenue_surprise_pct']
+            result_dict['yoy_eps_growth'] = earnings_surprise['yoy_eps_growth']
+            result_dict['yoy_revenue_growth'] = earnings_surprise['yoy_revenue_growth']
+        else:
+            surprise_condition = False  # 실적 데이터 없으면 조건 미충족
+            result_dict['earnings_surprise'] = False
+            result_dict['eps_surprise_pct'] = None
+            result_dict['revenue_surprise_pct'] = None
+            result_dict['yoy_eps_growth'] = None
+            result_dict['yoy_revenue_growth'] = None
+    else:
+        # 실적 필터 비활성화 시 항상 통과
+        surprise_condition = True
+        result_dict['earnings_surprise'] = None
+        result_dict['eps_surprise_pct'] = None
+        result_dict['revenue_surprise_pct'] = None
+        result_dict['yoy_eps_growth'] = None
+        result_dict['yoy_revenue_growth'] = None
+    
     # 3.3 매수 및 관리 전략
     # 손절: 갭업 전 고점 하회 시
     result_dict['stop_loss'] = prev['high']
@@ -338,12 +372,13 @@ def screen_episode_pivot_setup(ticker, df):
     reward = target_price - latest['close']
     result_dict['risk_reward_ratio'] = reward / risk if risk > 0 else 0
     
-    # 모든 조건 결합
+    # 모든 조건 결합 (실적 서프라이즈 조건 포함)
     all_conditions = [
         no_excessive_rise,
         above_ma50,
         gap_up_condition,
-        volume_surge_condition
+        volume_surge_condition,
+        surprise_condition  # 실적 서프라이즈 조건 (선택적)
     ]
     
     # 점수 계산 (충족된 조건 수)

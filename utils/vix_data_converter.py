@@ -34,7 +34,7 @@ def convert_vix_data() -> bool:
         
         # US 형식으로 변환
         df_us = pd.DataFrame()
-        df_us['date'] = pd.to_datetime(df_options['date']).dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
+        df_us['date'] = pd.to_datetime(df_options['date'], utc=True).dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
         df_us['symbol'] = 'VIX'
         
         # OHLC 데이터 매핑 (VIX는 일반적으로 open 데이터가 없으므로 low 값을 사용)

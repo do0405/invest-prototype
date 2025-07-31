@@ -17,7 +17,6 @@ class InvestmentStrategy(Enum):
     QUALITY = "quality"
     BALANCED = "balanced"
     TECHNICAL = "technical"
-    FUNDAMENTAL = "fundamental"
     RISK_AVERSE = "risk_averse"
     AGGRESSIVE = "aggressive"
 
@@ -77,59 +76,9 @@ class CriteriaWeights:
                 'category': 'technical'
             },
             
-            # Fundamental Indicators
-            'pe_ratio': {
-                'type': CriteriaType.COST,  # Lower P/E is generally better for value
-                'description': 'Price-to-Earnings Ratio',
-                'optimal_range': (5, 25),
-                'category': 'fundamental'
-            },
-            'pb_ratio': {
-                'type': CriteriaType.COST,  # Lower P/B is generally better
-                'description': 'Price-to-Book Ratio',
-                'optimal_range': (0.5, 3),
-                'category': 'fundamental'
-            },
-            'roe': {
-                'type': CriteriaType.BENEFIT,  # Higher ROE is better
-                'description': 'Return on Equity (%)',
-                'optimal_range': (15, 50),
-                'category': 'fundamental'
-            },
-            'debt_to_equity': {
-                'type': CriteriaType.COST,  # Lower debt is generally better
-                'description': 'Debt-to-Equity Ratio',
-                'optimal_range': (0, 1),
-                'category': 'fundamental'
-            },
-            'revenue_growth': {
-                'type': CriteriaType.BENEFIT,  # Higher growth is better
-                'description': 'Revenue Growth Rate (%)',
-                'category': 'fundamental'
-            },
-            'eps_growth': {
-                'type': CriteriaType.BENEFIT,  # Higher EPS growth is better
-                'description': 'Earnings Per Share Growth (%)',
-                'category': 'fundamental'
-            },
-            'profit_margin': {
-                'type': CriteriaType.BENEFIT,  # Higher margins are better
-                'description': 'Net Profit Margin (%)',
-                'category': 'fundamental'
-            },
-            'current_ratio': {
-                'type': CriteriaType.BENEFIT,  # Higher liquidity is generally better
-                'description': 'Current Ratio',
-                'optimal_range': (1.5, 3),
-                'category': 'fundamental'
-            },
+            # Fundamental indicators removed as requested
             
-            # Market Indicators
-            'market_cap': {
-                'type': CriteriaType.BENEFIT,  # Can be benefit or cost depending on strategy
-                'description': 'Market Capitalization',
-                'category': 'market'
-            },
+            # Market Indicators (market_cap removed as requested)
             'relative_strength': {
                 'type': CriteriaType.BENEFIT,  # Higher relative strength vs market
                 'description': 'Relative Strength vs Market',
@@ -189,28 +138,18 @@ class CriteriaWeights:
         """
         return {
             InvestmentStrategy.GROWTH: {
-                # Focus on growth metrics
-                'revenue_growth': 0.20,
-                'eps_growth': 0.20,
-                'price_momentum_60d': 0.15,
-                'roe': 0.10,
-                'relative_strength': 0.10,
-                'pe_ratio': 0.05,  # Less important for growth
-                'profit_margin': 0.08,
-                'price_momentum_20d': 0.07,
-                'volume_ratio': 0.05
+                # Focus on technical growth metrics
+                'price_momentum_60d': 0.30,
+                'relative_strength': 0.25,
+                'price_momentum_20d': 0.25,
+                'volume_ratio': 0.20
             },
             
             InvestmentStrategy.VALUE: {
-                # Focus on valuation metrics
-                'pe_ratio': 0.25,
-                'pb_ratio': 0.20,
-                'dividend_yield': 0.15,
-                'debt_to_equity': 0.10,
-                'current_ratio': 0.10,
-                'roe': 0.08,
-                'profit_margin': 0.07,
-                'revenue_growth': 0.05
+                # Focus on technical value metrics
+                'dividend_yield': 0.40,
+                'volatility_20d': 0.30,  # Lower volatility preferred
+                'sharpe_ratio': 0.30
             },
             
             InvestmentStrategy.MOMENTUM: {
@@ -225,32 +164,20 @@ class CriteriaWeights:
             },
             
             InvestmentStrategy.QUALITY: {
-                # Focus on quality metrics
-                'roe': 0.20,
-                'profit_margin': 0.18,
-                'debt_to_equity': 0.15,
-                'current_ratio': 0.12,
-                'revenue_growth': 0.10,
-                'eps_growth': 0.10,
-                'sharpe_ratio': 0.08,
-                'institutional_ownership': 0.07
+                # Focus on technical quality metrics
+                'sharpe_ratio': 0.40,
+                'institutional_ownership': 0.30,
+                'volatility_20d': 0.30  # Lower volatility for quality
             },
             
             InvestmentStrategy.BALANCED: {
-                # Balanced approach across all categories
-                'roe': 0.12,
-                'price_momentum_20d': 0.10,
-                'pe_ratio': 0.10,
-                'revenue_growth': 0.10,
-                'relative_strength': 0.08,
-                'debt_to_equity': 0.08,
-                'profit_margin': 0.08,
-                'volume_ratio': 0.07,
-                'eps_growth': 0.07,
-                'dividend_yield': 0.06,
-                'current_ratio': 0.06,
-                'volatility_20d': 0.04,
-                'pb_ratio': 0.04
+                # Balanced approach across technical categories
+                'price_momentum_20d': 0.20,
+                'relative_strength': 0.20,
+                'volume_ratio': 0.15,
+                'dividend_yield': 0.15,
+                'volatility_20d': 0.15,
+                'sharpe_ratio': 0.15
             },
             
             InvestmentStrategy.TECHNICAL: {
@@ -265,41 +192,22 @@ class CriteriaWeights:
                 'atr_normalized': 0.05
             },
             
-            InvestmentStrategy.FUNDAMENTAL: {
-                # Focus on fundamental analysis
-                'roe': 0.18,
-                'revenue_growth': 0.16,
-                'eps_growth': 0.14,
-                'pe_ratio': 0.12,
-                'profit_margin': 0.10,
-                'debt_to_equity': 0.10,
-                'pb_ratio': 0.08,
-                'current_ratio': 0.07,
-                'dividend_yield': 0.05
-            },
-            
             InvestmentStrategy.RISK_AVERSE: {
                 # Focus on low-risk, stable investments
-                'volatility_20d': 0.20,  # Lower volatility preferred
-                'beta': 0.15,  # Lower beta preferred
-                'debt_to_equity': 0.15,
-                'current_ratio': 0.12,
-                'dividend_yield': 0.10,
-                'sharpe_ratio': 0.10,
-                'max_drawdown': 0.08,
-                'profit_margin': 0.05,
-                'institutional_ownership': 0.05
+                'volatility_20d': 0.30,  # Lower volatility preferred
+                'beta': 0.25,  # Lower beta preferred
+                'dividend_yield': 0.20,
+                'sharpe_ratio': 0.15,
+                'max_drawdown': 0.10
             },
             
             InvestmentStrategy.AGGRESSIVE: {
                 # Focus on high-growth, high-risk investments
-                'price_momentum_60d': 0.22,
-                'revenue_growth': 0.20,
-                'eps_growth': 0.18,
-                'relative_strength': 0.15,
-                'volume_ratio': 0.10,
-                'beta': 0.08,  # Higher beta acceptable
-                'price_momentum_20d': 0.07
+                'price_momentum_60d': 0.30,
+                'relative_strength': 0.25,
+                'volume_ratio': 0.20,
+                'beta': 0.15,  # Higher beta acceptable
+                'price_momentum_20d': 0.10
             }
         }
         

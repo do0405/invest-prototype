@@ -11,6 +11,7 @@ import yfinance as yf
 from datetime import datetime, timedelta
 from pytz import timezone
 from concurrent.futures import ThreadPoolExecutor
+from typing import List, Set
 
 from utils import (
     ensure_dir, get_us_market_today, clean_tickers, safe_filename
@@ -24,6 +25,128 @@ from config import (
 # 대신 Yahoo Finance나 다른 안정적인 소스를 사용하는 것을 권장
 
 # 크라켄 관련 함수 제거됨
+
+def get_sp500_symbols() -> List[str]:
+    """S&P 500 구성 종목 가져오기"""
+    try:
+        print("📈 S&P 500 종목 리스트 업데이트 중...")
+        sp500_url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+        tables = pd.read_html(sp500_url)
+        sp500_df = tables[0]
+        symbols = sp500_df['Symbol'].tolist()
+        
+        # 일부 기호 정리 (예: BRK.B -> BRK-B)
+        cleaned_symbols = []
+        for symbol in symbols:
+            if '.' in symbol:
+                symbol = symbol.replace('.', '-')
+            cleaned_symbols.append(symbol)
+        
+        print(f"✅ S&P 500 종목 {len(cleaned_symbols)}개 수집 완료")
+        return cleaned_symbols
+    except Exception as e:
+        print(f"⚠️ S&P 500 목록 가져오기 실패: {e}")
+        return []
+
+def get_nasdaq_100_symbols() -> List[str]:
+    """NASDAQ 100 구성 종목 가져오기"""
+    try:
+        print("📈 NASDAQ 100 종목 리스트 업데이트 중...")
+        nasdaq_url = "https://en.wikipedia.org/wiki/Nasdaq-100"
+        tables = pd.read_html(nasdaq_url)
+        nasdaq_df = tables[4]  # NASDAQ 100 구성 종목 테이블
+        symbols = nasdaq_df['Ticker'].tolist()
+        
+        print(f"✅ NASDAQ 100 종목 {len(symbols)}개 수집 완료")
+        return symbols
+    except Exception as e:
+        print(f"⚠️ NASDAQ 100 목록 가져오기 실패: {e}")
+        return []
+
+def get_ipo_symbols() -> List[str]:
+    """최근 IPO 종목에서 심볼 추출"""
+    try:
+        print("🏢 최근 IPO 종목 확인 중...")
+        from screeners.ipo_investment.ipo_data_collector import RealIPODataCollector
+        
+        collector = RealIPODataCollector()
+        result = collector.collect_all_ipo_data()
+        
+        symbols = []
+        # 최근 IPO에서 심볼 추출
+        for ipo in result.get('recent_ipos', []):
+            symbol = ipo.get('symbol', ipo.get('ticker', ''))
+            if symbol and symbol.strip():
+                symbols.append(symbol.strip())
+        
+        # 예정된 IPO에서 심볼 추출
+        for ipo in result.get('upcoming_ipos', []):
+            symbol = ipo.get('symbol', ipo.get('ticker', ''))
+            if symbol and symbol.strip():
+                symbols.append(symbol.strip())
+        
+        # 중복 제거
+        symbols = list(set(symbols))
+        print(f"✅ IPO 종목 {len(symbols)}개 수집 완료")
+        return symbols
+    except Exception as e:
+        print(f"⚠️ IPO 종목 가져오기 실패: {e}")
+        return []
+
+def update_symbol_list() -> Set[str]:
+    """새로운 종목 리스트 업데이트"""
+    print("\n🔄 종목 리스트 업데이트 시작...")
+    
+    # 기존 종목 목록
+    try:
+        from data_collectors.stock_metadata_collector import get_symbols
+        existing_symbols = set(get_symbols())
+        print(f"📊 기존 종목 수: {len(existing_symbols)}개")
+    except Exception as e:
+        print(f"⚠️ 기존 종목 로드 실패: {e}")
+        existing_symbols = set()
+    
+    # 새로운 종목 수집
+    new_symbols = set()
+    
+    # S&P 500 종목 추가
+    sp500_symbols = get_sp500_symbols()
+    new_symbols.update(sp500_symbols)
+    
+    # NASDAQ 100 종목 추가
+    nasdaq_symbols = get_nasdaq_100_symbols()
+    new_symbols.update(nasdaq_symbols)
+    
+    # IPO 종목 추가
+    ipo_symbols = get_ipo_symbols()
+    new_symbols.update(ipo_symbols)
+    
+    # 기존에 없는 새로운 종목만 필터링
+    truly_new_symbols = new_symbols - existing_symbols
+    
+    if truly_new_symbols:
+        print(f"🆕 새로 발견된 종목: {len(truly_new_symbols)}개")
+        print(f"   예시: {list(truly_new_symbols)[:10]}")
+        
+        # 새로운 종목들의 빈 CSV 파일 생성 (다음 수집 시 포함되도록)
+        for symbol in truly_new_symbols:
+            try:
+                safe_symbol = safe_filename(symbol)
+                csv_path = os.path.join(DATA_US_DIR, f"{safe_symbol}.csv")
+                if not os.path.exists(csv_path):
+                    # 빈 CSV 파일 생성 (헤더만)
+                    empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
+                    empty_df.to_csv(csv_path, index=False)
+                    print(f"📝 새 종목 파일 생성: {symbol}")
+            except Exception as e:
+                print(f"⚠️ {symbol} 파일 생성 실패: {e}")
+    else:
+        print("✅ 새로운 종목이 없습니다.")
+    
+    # 전체 종목 목록 반환
+    all_symbols = existing_symbols.union(new_symbols)
+    print(f"📈 총 종목 수: {len(all_symbols)}개")
+    return all_symbols
 
 # 미국 주식 단일 종목 데이터 가져오기
 def fetch_us_single(ticker, start, end):
@@ -113,7 +236,8 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
         path = os.path.join(save_dir, f"{safe_ticker}.csv")
         if os.path.exists(path):
             try:
-                existing = pd.read_csv(path, parse_dates=["date"])
+                existing = pd.read_csv(path)
+                existing["date"] = pd.to_datetime(existing["date"], utc=True)
                 if "date" not in existing.columns:
                     raise ValueError("❌ 'date' 컬럼 없음")
 
@@ -298,25 +422,38 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
 # 크라켄 관련 함수 제거됨
 
 # 메인 데이터 수집 함수
-def collect_data(max_us_chunks=None, start_chunk=0):
+def collect_data(max_us_chunks=None, start_chunk=0, update_symbols=True):
     # 필요한 디렉토리 생성
     for directory in [DATA_DIR, DATA_US_DIR, RESULTS_DIR]:
         ensure_dir(directory)
         
     print("\n🇺🇸 미국 주식 데이터 수집 시작...")
     
-    # 기존 CSV 파일들을 기반으로 종목 목록 생성
-    try:
+    # 종목 리스트 업데이트 (선택적)
+    if update_symbols:
+        try:
+            print("\n🔄 1단계: 종목 리스트 업데이트")
+            all_symbols = update_symbol_list()
+            us_tickers = list(all_symbols)
+        except Exception as e:
+            print(f"⚠️ 종목 리스트 업데이트 실패: {e}")
+            print("📊 기존 CSV 파일 기반으로 진행합니다.")
+            # 기존 방식으로 폴백
+            from data_collectors.stock_metadata_collector import get_symbols
+            us_tickers = get_symbols()
+    else:
+        print("\n📊 기존 CSV 파일들을 기반으로 종목 목록 생성")
         from data_collectors.stock_metadata_collector import get_symbols
         us_tickers = get_symbols()
-        
-        if not us_tickers:
-            print("⚠️ 기존 CSV 파일에서 종목을 찾을 수 없습니다. 기본 종목 리스트를 사용합니다.")
-            us_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "NFLX", "AMD", "CRM"]
-        
-        print(f"📊 총 {len(us_tickers)}개 종목의 OHLCV 데이터를 업데이트합니다.")
-        
-        # OHLCV 데이터 수집 실행
+    
+    if not us_tickers:
+        print("⚠️ 종목을 찾을 수 없습니다. 데이터 수집을 중단합니다.")
+        return
+    
+    print(f"\n📊 2단계: 총 {len(us_tickers)}개 종목의 OHLCV 데이터를 업데이트합니다.")
+    
+    # OHLCV 데이터 수집 실행
+    try:
         fetch_and_save_us_ohlcv_chunked(
             tickers=us_tickers,
             save_dir=DATA_US_DIR,
@@ -329,17 +466,7 @@ def collect_data(max_us_chunks=None, start_chunk=0):
         
     except Exception as e:
         print(f"❌ OHLCV 데이터 수집 중 오류 발생: {e}")
-        print("⚠️ 기본 종목 리스트로 데이터 수집을 시도합니다.")
-        us_tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "NVDA", "META", "NFLX", "AMD", "CRM"]
-        fetch_and_save_us_ohlcv_chunked(
-            tickers=us_tickers,
-            save_dir=DATA_US_DIR,
-            chunk_size=5,
-            pause=3.0,
-            start_chunk=start_chunk,
-            max_chunks=max_us_chunks,
-            max_workers=3
-        )
+        print("⚠️ 데이터 수집을 중단합니다.")
 
 # 명령행 인터페이스
 if __name__ == "__main__":
@@ -348,10 +475,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Mark Minervini 스크리너 - 데이터 수집")
     parser.add_argument("--max-us-chunks", type=int, help="최대 미국 주식 청크 수 제한")
     parser.add_argument("--start-chunk", type=int, default=0, help="시작할 청크 번호")
+    parser.add_argument("--no-symbol-update", action="store_true", help="종목 리스트 업데이트 건너뛰기")
     
     args = parser.parse_args()
     
     collect_data(
         max_us_chunks=args.max_us_chunks,
-        start_chunk=args.start_chunk
+        start_chunk=args.start_chunk,
+        update_symbols=not args.no_symbol_update
     )

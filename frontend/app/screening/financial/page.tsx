@@ -94,11 +94,24 @@ export default function FinancialScreeningPage() {
       
       <div className="mb-6 p-4 bg-green-50 rounded-lg">
         <h2 className="text-lg font-semibold text-green-800 mb-2">재무제표 분석 스크리닝</h2>
-        <p className="text-green-700">
+        <p className="text-green-700 mb-3">
           기업의 재무제표를 분석하여 건전한 재무구조와 성장 잠재력을 가진 종목들을 선별합니다.
           매출 성장률, 영업이익률, ROE, 부채비율 등의 재무지표를 종합적으로 평가합니다.
           {selectedSymbol ? '' : ' 종목을 클릭하면 차트를 볼 수 있습니다.'}
         </p>
+        <div className="mt-3 p-3 bg-white rounded-lg border border-green-200">
+          <h3 className="text-sm font-semibold text-green-800 mb-2">🔧 데이터 처리 개선</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs text-green-700">
+            <div>
+              <strong>⚡ 재무 데이터 처리 최적화:</strong>
+              <br />대용량 재무 데이터 병렬 처리로 분석 속도 향상
+            </div>
+            <div>
+              <strong>🚀 시스템 안정성 강화:</strong>
+              <br />메모리 관리 개선으로 안정적인 재무 분석 제공
+            </div>
+          </div>
+        </div>
       </div>
       {data.length > 0 ? (
         <SimpleDataTable 

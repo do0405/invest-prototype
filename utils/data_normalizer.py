@@ -105,7 +105,7 @@ class DataNormalizer:
             
             # 날짜 컬럼 정규화
             if 'date' in df.columns:
-                df['date'] = pd.to_datetime(df['date'], errors='coerce')
+                df['date'] = pd.to_datetime(df['date'], errors='coerce', utc=True)
                 df['date'] = df['date'].dt.strftime('%Y-%m-%d')
             else:
                 print(f"⚠️ VIX 데이터에 'date' 컬럼이 없습니다. 현재 컬럼: {list(df.columns)}")

@@ -5,7 +5,6 @@ from .common import (
     MARKET_REGIME_CRITERIA,
     calculate_high_low_index,
     calculate_advance_decline_trend,
-    calculate_put_call_ratio,
     calculate_ma_distance,
     count_consecutive_below_ma
 )
@@ -72,12 +71,7 @@ def check_risk_management_conditions(index_data: Dict[str, pd.DataFrame]) -> Tup
     additional_conditions.append(vix_condition)
     details['vix_high'] = vix_condition
 
-    # Put/Call Ratio > 1.2
-    pc_ratio = calculate_put_call_ratio()
-    pc_condition = pc_ratio > 1.2
-    additional_conditions.append(pc_condition)
-    details['put_call_very_high'] = pc_condition
-    details['put_call_ratio'] = pc_ratio
+    # Put/Call Ratio 조건 제거됨
 
     # High-Low Index < 30
     hl_index = calculate_high_low_index(index_data)

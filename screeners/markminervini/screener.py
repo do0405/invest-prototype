@@ -410,6 +410,22 @@ def run_us_screening():
             print(top_10[['symbol'] + [f'cond{i}' for i in range(1, 9)] + ['rs_score', 'met_count']])
         else:
             print("\n⚠️ 모든 조건을 만족하는 종목이 없습니다.")
+            
+        # 통합 스크리너 실행 (패턴 감지 포함)
+        try:
+            print("\n🔍 통합 패턴 감지 스크리너 실행 중...")
+            from .integrated_screener import run_integrated_screening
+            
+            # 기본 스크리너 결과에서 상위 100개 심볼만 패턴 감지
+            top_symbols = filtered_df.head(100)['symbol'].tolist() if len(filtered_df) > 0 else []
+            if top_symbols:
+                pattern_results = run_integrated_screening(max_symbols=len(top_symbols))
+                print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 심볼 처리")
+            else:
+                print("⚠️ 패턴 감지할 심볼이 없습니다.")
+        except Exception as e:
+            print(f"⚠️ 통합 패턴 감지 오류: {e}")
+            
     except Exception as e:
         print(f"❌ 미국 주식 스크리닝 오류: {e}")
 

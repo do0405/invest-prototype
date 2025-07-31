@@ -109,7 +109,7 @@ class PriceCalculator:
             if os.path.exists(path):
                 try:
                     df = pd.read_csv(path)
-                    df['date'] = pd.to_datetime(df['date'])
+                    df['date'] = pd.to_datetime(df['date'], utc=True)
                     df = df.sort_values('date')
                     df_recent = df.tail(days)
                     if not df_recent.empty:
@@ -155,7 +155,7 @@ class PriceCalculator:
             if os.path.exists(path):
                 try:
                     df = pd.read_csv(path)
-                    df['date'] = pd.to_datetime(df['date']).dt.date
+                    df['date'] = pd.to_datetime(df['date'], utc=True).dt.date
                     for i in range(5):
                         target = next_day.date() + timedelta(days=i)
                         row = df[df['date'] == target]

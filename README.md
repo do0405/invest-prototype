@@ -101,46 +101,46 @@ chmod +x scripts/deploy.sh
 ### 기본 스크리닝 실행
 ```bash
 # 전체 프로세스 실행 (데이터 수집 + 스크리닝)
-python main.py  # 실행 시 us_with_rs.csv 파일이 자동 갱신됩니다
+py main.py  # 실행 시 us_with_rs.csv 파일이 자동 갱신됩니다
 # 데이터 수집을 건너뛰는 경우에도 동일
-python main.py --skip-data
+py main.py --skip-data
 
 # 특정 스크리너 실행 예시
-python main.py --task setup
+py main.py --task setup
 
 # 포트폴리오 관리만 실행
-python main.py --task portfolio --skip-data
+py main.py --task portfolio --skip-data
 ```
 
 ### 스케줄러 사용
 ```bash
 # `--skip-data` 스크리너가 끝날 때마다 1분 후 다시 실행하며,
 # 한국 시각 14:30 이후 첫 실행이 완료되면 1분 뒤에 전체 모드를 한 번 수행합니다.
-python main.py --schedule
+py main.py --schedule
 
 # 간단한 유지용 실행을 수동으로 하려면
-python main.py --task screening --skip-data
+py main.py --task screening --skip-data
 ```
 
 ### 포트폴리오 관리
 ```bash
 # 개별 전략 실행
-python strategy1.py  # 트렌드 하이 모멘텀
-python strategy2.py  # 밸류 모멘텀
+py strategy1.py  # 트렌드 하이 모멘텀
+py strategy2.py  # 밸류 모멘텀
 # ... strategy6.py까지
 
 # 포트폴리오 통합 관리
-python portfolio_integration.py
+py portfolio_integration.py
 ```
 
 ### 백엔드 API 서버
 ```bash
 # 개별 실행 (환경 변수 자동 로드)
 cd backend
-python api_server.py
+py api_server.py
 
 # 또는 환경 변수와 함께 실행
-BACKEND_PORT=5000 FLASK_ENV=development python api_server.py
+BACKEND_PORT=5000 FLASK_ENV=development py api_server.py
 ```
 
 주요 엔드포인트:
@@ -170,7 +170,7 @@ npm start
 명령으로 개별 실행할 수 있습니다.
 
 ```bash
-python data_collectors/stock_metadata_collector.py
+py data_collectors/stock_metadata_collector.py
 ```
 
 파일 경로는 `config.STOCK_METADATA_PATH` 설정을 따릅니다.
@@ -265,12 +265,12 @@ npm install
 ### 1. 일일 스크리닝
 
 # 매일 장 마감 후 실행
-python main.py --integrated
+py main.py --integrated
 
 2. 포트폴리오 모니터링
 
 # 포트폴리오 성과 추적
-python portfolio_integration.py
+py portfolio_integration.py
 
 # API를 통한 실시간 모니터링
-python backend/api_server.py
+py backend/api_server.py

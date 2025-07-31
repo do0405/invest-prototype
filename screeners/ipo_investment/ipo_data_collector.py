@@ -21,21 +21,12 @@ import pandas as pd
 import requests
 from pathlib import Path
 
-# 모듈화된 데이터 소스들
+# SEC Edgar 데이터 소스만 사용
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-try:
-    from data_sources.sec_edgar_source import SecEdgarSource
-    print("✅ SecEdgar 데이터 소스 import 성공")
-except ImportError as e:
-    print(f"❌ SecEdgar Import 오류: {e}")
-    # 기본 데이터 소스 사용
-    from data_sources.base_source import BaseDataSource
-    
-    SecEdgarSource = BaseDataSource
-    print("⚠️ BaseDataSource 사용")
+from data_sources.sec_edgar_source import SecEdgarSource
 
 # 로깅 설정 (중복 방지)
 logging.basicConfig(
@@ -48,16 +39,24 @@ logger = logging.getLogger(__name__)
 class RealIPODataCollector:
     """실제 IPO 데이터 수집기"""
     
-    def __init__(self, data_dir: str = "../../data/IPO"):
+    def __init__(self, data_dir: str = None):
+        # 기본 데이터 디렉토리 설정
+        if data_dir is None:
+            # config에서 DATA_DIR 가져오기
+            try:
+                sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+                from config import DATA_DIR
+                data_dir = os.path.join(DATA_DIR, 'IPO')
+            except ImportError:
+                data_dir = "../../data/IPO"
+        
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
         
-        # 데이터 소스들 초기화 (SecEdgar만 사용)
-        self.sources = [
-            SecEdgarSource()  # SEC Edgar 소스만 사용
-        ]
+        # SEC Edgar 데이터 소스만 사용
+        self.sec_edgar_source = SecEdgarSource()
         
-        logger.info("실제 IPO 데이터 수집기 초기화 완료")
+        logger.info(f"IPO 데이터 수집기 초기화 완료: {self.data_dir}")
     
     # 기존 개별 메서드들은 모듈화된 데이터 소스로 이동됨
     
@@ -91,8 +90,8 @@ class RealIPODataCollector:
             logger.warning(f"{file_prefix} 데이터가 비어있어 파일을 저장하지 않습니다.")
             return {}
         
+        # 타임스탬프 포함 파일명 사용
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        
         # CSV 파일 저장
         csv_filename = f"{file_prefix}_{timestamp}.csv"
         csv_path = self.data_dir / csv_filename
@@ -115,42 +114,34 @@ class RealIPODataCollector:
         }
     
     def collect_all_ipo_data(self) -> Dict[str, Any]:
-        """모든 IPO 데이터 수집 및 저장"""
-        logger.info("실제 IPO 데이터 수집 시작")
+        """SEC Edgar에서 IPO 데이터 수집 및 저장"""
+        logger.info("SEC Edgar IPO 데이터 수집 시작")
         
-        # 최근 IPO 데이터 수집 (모든 소스 통합)
         recent_ipos = []
         upcoming_ipos = []
         
-        for source in self.sources:
-            source_name = source.__class__.__name__
-            try:
-                # 소스 사용 가능 여부 확인
-                if hasattr(source, 'is_available'):
-                    available = source.is_available()
-                    logger.info(f"{source_name} 사용 가능: {available}")
-                    if not available:
-                        continue
+        try:
+            # SEC Edgar 사용 가능 여부 확인
+            if self.sec_edgar_source.is_available():
+                logger.info("SEC Edgar에서 데이터 수집 중...")
                 
-                # 데이터 수집 시도
-                logger.info(f"{source_name}에서 데이터 수집 중...")
-                recent_data = source.get_recent_ipos(months_back=3)
-                upcoming_data = source.get_upcoming_ipos(months_ahead=3)
-                
+                # 최근 IPO 데이터 수집
+                recent_data = self.sec_edgar_source.get_recent_ipos(months_back=6)
                 if recent_data:
                     recent_ipos.extend(recent_data)
-                    logger.info(f"{source_name}: 최근 IPO {len(recent_data)}개 수집")
+                    logger.info(f"SEC Edgar: 최근 IPO {len(recent_data)}개 수집")
                 
+                # 예정된 IPO 데이터 수집
+                upcoming_data = self.sec_edgar_source.get_upcoming_ipos(months_ahead=3)
                 if upcoming_data:
                     upcoming_ipos.extend(upcoming_data)
-                    logger.info(f"{source_name}: 예정 IPO {len(upcoming_data)}개 수집")
+                    logger.info(f"SEC Edgar: 예정 IPO {len(upcoming_data)}개 수집")
                     
-                if not recent_data and not upcoming_data:
-                    logger.warning(f"{source_name}: 데이터 없음")
-                    
-            except Exception as e:
-                logger.error(f"{source_name} 데이터 수집 실패: {e}")
-                continue
+            else:
+                logger.warning("SEC Edgar API를 사용할 수 없습니다.")
+                
+        except Exception as e:
+            logger.error(f"SEC Edgar 데이터 수집 실패: {e}")
         
         # 데이터 정리 및 중복 제거
         recent_ipos = self._clean_and_deduplicate(recent_ipos)
@@ -160,7 +151,7 @@ class RealIPODataCollector:
         recent_files = self._save_to_files(recent_ipos, 'recent_ipos')
         upcoming_files = self._save_to_files(upcoming_ipos, 'upcoming_ipos')
         
-        logger.info("전체 IPO 데이터 수집 및 저장 완료")
+        logger.info("SEC Edgar IPO 데이터 수집 및 저장 완료")
         
         return {
             'recent_ipos': recent_ipos,
@@ -168,12 +159,20 @@ class RealIPODataCollector:
             'files': {
                 'recent': recent_files,
                 'upcoming': upcoming_files
-            }
+            },
+            'source': 'sec_edgar'
         }
 
     def get_recent_ipos(self, days_back: int = 365) -> pd.DataFrame:
         """최근 IPO 데이터를 파일에서 로드"""
+        # 타임스탬프가 포함된 파일들을 우선 확인
         csv_files = sorted(self.data_dir.glob('recent_ipos_*.csv'))
+        if not csv_files:
+            # 타임스탬프 없는 파일을 확인
+            recent_ipos_file = self.data_dir / 'recent_ipos.csv'
+            if recent_ipos_file.exists():
+                csv_files = [recent_ipos_file]
+        
         if not csv_files:
             return pd.DataFrame()
 
@@ -198,7 +197,7 @@ class RealIPODataCollector:
 
         df_all = pd.concat(df_list, ignore_index=True)
         if 'ipo_date' in df_all.columns:
-            df_all['ipo_date'] = pd.to_datetime(df_all['ipo_date'], errors='coerce')
+            df_all['ipo_date'] = pd.to_datetime(df_all['ipo_date'], errors='coerce', utc=True)
             cutoff = pd.Timestamp.utcnow() - pd.Timedelta(days=days_back)
             df_all = df_all[df_all['ipo_date'] >= cutoff]
         return df_all

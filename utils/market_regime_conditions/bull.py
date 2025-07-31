@@ -5,7 +5,6 @@ from .common import (
     MARKET_REGIME_CRITERIA,
     calculate_high_low_index,
     calculate_advance_decline_trend,
-    calculate_put_call_ratio,
     calculate_ma_distance,
     count_consecutive_below_ma
 )
@@ -74,12 +73,7 @@ def check_bull_conditions(index_data: Dict[str, pd.DataFrame]) -> Tuple[bool, Di
     details['vix_moderate'] = vix_condition
 
     
-    # Put/Call Ratio 0.7-0.9
-    pc_ratio = calculate_put_call_ratio()
-    pc_condition = 0.7 <= pc_ratio <= 0.9
-    additional_conditions.append(pc_condition)
-    details['put_call_moderate'] = pc_condition
-    details['put_call_ratio'] = pc_ratio
+    # Put/Call Ratio 조건 제거됨
 
     # High-Low Index 50-70
     hl_index = calculate_high_low_index(index_data)

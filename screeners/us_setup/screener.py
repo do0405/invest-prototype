@@ -12,6 +12,7 @@ import pandas as pd
 
 from config import DATA_US_DIR, US_SETUP_RESULTS_DIR
 from utils import ensure_dir, fetch_market_cap
+from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary
 
 US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')
 
@@ -113,6 +114,25 @@ def screen_us_setup() -> pd.DataFrame:
         df_res.to_json(US_SETUP_RESULTS_PATH.replace('.csv', '.json'),
                        orient='records', indent=2)
         print(f"💾 결과 저장 완료: {US_SETUP_RESULTS_PATH}")
+        
+        # 새로운 티커 추적
+        tracker_file = os.path.join(US_SETUP_RESULTS_DIR, "new_us_setup_tickers.csv")
+        new_tickers = track_new_tickers(
+            current_results=results,
+            tracker_file=tracker_file,
+            symbol_key='symbol',
+            retention_days=14
+        )
+        
+        # 요약 정보 생성
+        summary = create_screener_summary(
+            screener_name="US Setup",
+            total_candidates=len(results),
+            new_tickers=len(new_tickers),
+            results_paths={'csv': US_SETUP_RESULTS_PATH, 'json': US_SETUP_RESULTS_PATH.replace('.csv', '.json')}
+        )
+        
+        print(f"✅ US 셋업 스크리닝 완료: {len(df_res)}개 종목, 신규 {len(new_tickers)}개")
         return df_res
     else:
         # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
