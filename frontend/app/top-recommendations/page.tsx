@@ -7,12 +7,9 @@ import { apiClient, ScreeningData } from '@/lib/api';
 
 interface TopStock extends ScreeningData {
   rank: number;
-  score: number;
+  topsis_score: number;
+  rs_score: number;
   price_momentum_20d: number;
-  rsi_14: number;
-  pe_ratio: number;
-  roe: number;
-  relative_strength: number;
 }
 
 export default function TopRecommendationsPage() {
@@ -47,20 +44,14 @@ export default function TopRecommendationsPage() {
   }, []);
 
   const getScoreColor = (score: number) => {
-    if (score >= 0.5) return 'text-green-600 font-bold';
-    if (score >= 0.3) return 'text-blue-600 font-semibold';
-    if (score >= 0.1) return 'text-yellow-600';
-    return 'text-gray-600';
-  };
-
-  const getRSIColor = (rsi: number) => {
-    if (rsi >= 70) return 'text-red-600'; // 과매수
-    if (rsi <= 30) return 'text-green-600'; // 과매도
-    return 'text-gray-900';
+    if (score > 0.8) return 'text-green-600 font-bold';
+    if (score > 0.6) return 'text-blue-600 font-semibold';
+    if (score > 0.4) return 'text-yellow-600';
+    return 'text-red-600';
   };
 
   const getMomentumColor = (momentum: number) => {
-    if (momentum > 50) return 'text-green-600';
+    if (momentum > 10) return 'text-green-600';
     if (momentum > 0) return 'text-blue-600';
     return 'text-red-600';
   };
@@ -148,8 +139,8 @@ export default function TopRecommendationsPage() {
                   <span className="text-lg font-semibold">{stock.symbol}</span>
                 </div>
                 <div className="text-sm opacity-90">
-                  <div>TOPSIS 점수: {stock.score.toFixed(4)}</div>
-                  <div>RS 점수: {stock.relative_strength.toFixed(0)}</div>
+                  <div>TOPSIS 점수: {stock.topsis_score.toFixed(4)}</div>
+                  <div>RS 점수: {stock.rs_score.toFixed(1)}</div>
                   <div>20일 모멘텀: {stock.price_momentum_20d.toFixed(1)}%</div>
                 </div>
               </div>
@@ -172,19 +163,10 @@ export default function TopRecommendationsPage() {
                       TOPSIS 점수
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      20일 모멘텀
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      RSI (14)
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      P/E 비율
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      ROE
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       RS 점수
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      20일 모멘텀
                     </th>
                   </tr>
                 </thead>
@@ -208,29 +190,18 @@ export default function TopRecommendationsPage() {
                         <span className="font-semibold text-blue-600 text-lg">{stock.symbol}</span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={getScoreColor(stock.score)}>
-                          {stock.score.toFixed(4)}
+                        <span className={getScoreColor(stock.topsis_score)}>
+                          {stock.topsis_score.toFixed(4)}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={stock.rs_score > 80 ? 'text-green-600' : stock.rs_score > 60 ? 'text-blue-600' : 'text-gray-900'}>
+                          {stock.rs_score.toFixed(1)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={getMomentumColor(stock.price_momentum_20d)}>
                           {stock.price_momentum_20d.toFixed(1)}%
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={getRSIColor(stock.rsi_14)}>
-                          {stock.rsi_14.toFixed(1)}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {stock.pe_ratio.toFixed(1)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {stock.roe.toFixed(1)}%
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="font-semibold text-purple-600">
-                          {stock.relative_strength.toFixed(0)}
                         </span>
                       </td>
                     </tr>

@@ -32,8 +32,7 @@ class SecEdgarSource(BaseIPODataSource):
         """SEC EDGAR API 사용 가능 여부 확인"""
         try:
             # SEC API 연결 테스트
-            test_url = "https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json"
-            response = requests.get(test_url, headers=self.headers, timeout=15)
+            response = requests.get("https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json", headers=self.headers, timeout=15)
             available = response.status_code == 200
             logger.info(f"SEC EDGAR API 사용 가능: {available}")
             return available
@@ -197,8 +196,27 @@ class SecEdgarSource(BaseIPODataSource):
         try:
             # 티커 필드에서 직접 추출
             tickers = source_data.get('tickers', [])
-            if tickers and len(tickers) > 0 and tickers[0] and isinstance(tickers[0], str):
+            if tickers and len(tickers) > 0 and tickers[0] is not None and isinstance(tickers[0], str) and tickers[0].strip():
                 return tickers[0].upper().strip()
+            
+            # 회사명에서 괄호 안의 심볼 추출 (예: "SPECTRAL IP, INC. (SMIP)")
+            display_names = source_data.get('display_names', [])
+            if display_names and display_names[0]:
+                company_name = display_names[0]
+                # 괄호 안의 심볼 패턴 찾기
+                ticker_match = re.search(r'\(([A-Z]{1,5}(?:,\s*[A-Z]{1,5})*)\)', company_name)
+                if ticker_match:
+                    # 여러 심볼이 있는 경우 첫 번째만 사용
+                    symbols = ticker_match.group(1).split(',')
+                    return symbols[0].strip().upper()
+            
+            # entity_name에서도 시도
+            entity_name = source_data.get('entity_name', '')
+            if entity_name:
+                ticker_match = re.search(r'\(([A-Z]{1,5}(?:,\s*[A-Z]{1,5})*)\)', entity_name)
+                if ticker_match:
+                    symbols = ticker_match.group(1).split(',')
+                    return symbols[0].strip().upper()
             
             # 파일명에서 추출 시도
             file_name = source_data.get('file_name', '')
@@ -227,14 +245,16 @@ class SecEdgarSource(BaseIPODataSource):
     def _extract_exchange(self, source_data: Dict) -> str:
         """거래소 정보 추출"""
         # 파일 설명에서 거래소 정보 찾기
-        file_desc = source_data.get('file_description', '').upper()
-        
-        if 'NASDAQ' in file_desc:
-            return 'NASDAQ'
-        elif 'NYSE' in file_desc:
-            return 'NYSE'
-        elif 'AMEX' in file_desc:
-            return 'AMEX'
+        file_desc = source_data.get('file_description', '')
+        if file_desc and isinstance(file_desc, str):
+            file_desc = file_desc.upper()
+            
+            if 'NASDAQ' in file_desc:
+                return 'NASDAQ'
+            elif 'NYSE' in file_desc:
+                return 'NYSE'
+            elif 'AMEX' in file_desc:
+                return 'AMEX'
         
         return 'N/A'
     
@@ -276,26 +296,3 @@ class SecEdgarSource(BaseIPODataSource):
                 pass
         
         return False
-
-# 테스트용 함수
-def test_sec_edgar_source():
-    """SEC Edgar 소스 테스트"""
-    source = SecEdgarSource()
-    
-    print(f"SEC EDGAR 사용 가능: {source.is_available()}")
-    
-    if source.is_available():
-        print("\n최근 IPO 데이터 수집 중...")
-        recent = source.get_recent_ipos(months_back=1)
-        print(f"최근 IPO: {len(recent)}개")
-        
-        if recent:
-            print("\n첫 번째 IPO 예시:")
-            print(json.dumps(recent[0], indent=2, ensure_ascii=False))
-        
-        print("\n예정된 IPO 데이터 수집 중...")
-        upcoming = source.get_upcoming_ipos()
-        print(f"예정된 IPO: {len(upcoming)}개")
-
-if __name__ == "__main__":
-    test_sec_edgar_source()

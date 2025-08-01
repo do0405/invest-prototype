@@ -183,45 +183,9 @@ class StockRankingSystem:
             # Market cap calculation removed as requested
             current_price = df['close'].iloc[-1]
             
-            # Relative strength using Mark Minervini method
-            try:
-                # 마크 미너비니 방식의 상대강도 계산
-                # 3개월(63일), 6개월(126일), 9개월(189일), 12개월(252일) 성과 가중 평균
-                spy_data = self.load_stock_data('SPY')
-                if spy_data is not None and len(df) >= 252 and len(spy_data) >= 252:
-                    # 최근 252일 데이터 사용
-                    stock_prices = df['close'].tail(252).values
-                    spy_prices = spy_data['close'].tail(252).values
-                    
-                    if len(stock_prices) >= 252 and len(spy_prices) >= 252:
-                        # 각 기간별 수익률 계산
-                        p3 = (stock_prices[-1] - stock_prices[-63]) / stock_prices[-63] * 100  # 3개월
-                        p6 = (stock_prices[-1] - stock_prices[-126]) / stock_prices[-126] * 100  # 6개월
-                        p9 = (stock_prices[-1] - stock_prices[-189]) / stock_prices[-189] * 100  # 9개월
-                        p12 = (stock_prices[-1] - stock_prices[-252]) / stock_prices[-252] * 100  # 12개월
-                        
-                        # SPY 기간별 수익률 계산
-                        b3 = (spy_prices[-1] - spy_prices[-63]) / spy_prices[-63] * 100
-                        b6 = (spy_prices[-1] - spy_prices[-126]) / spy_prices[-126] * 100
-                        b9 = (spy_prices[-1] - spy_prices[-189]) / spy_prices[-189] * 100
-                        b12 = (spy_prices[-1] - spy_prices[-252]) / spy_prices[-252] * 100
-                        
-                        # 가중 평균 계산 (최근 3개월에 40% 가중치)
-                        stock_score = 0.4 * p3 + 0.2 * p6 + 0.2 * p9 + 0.2 * p12
-                        bench_score = 0.4 * b3 + 0.2 * b6 + 0.2 * b9 + 0.2 * b12
-                        
-                        # 상대강도 = 종목 점수 / 벤치마크 점수 * 100
-                        if bench_score != 0:
-                            indicators['relative_strength'] = stock_score / bench_score * 100
-                        else:
-                            indicators['relative_strength'] = 100  # 벤치마크가 0이면 기본값
-                    else:
-                        indicators['relative_strength'] = 50  # 데이터 부족시 중간값
-                else:
-                    indicators['relative_strength'] = 50  # 데이터 부족시 중간값
-            except Exception as e:
-                print(f"⚠️ {symbol} 상대강도 계산 오류: {e}")
-                indicators['relative_strength'] = 50  # 오류시 중간값
+            # RS 점수는 배치로 계산하므로 여기서는 기본값 설정
+            # 실제 RS 점수는 calculate_batch_rs_scores에서 계산됨
+            indicators['relative_strength'] = 50  # 기본값, 나중에 배치로 업데이트
                 
             # Beta calculation
             try:
@@ -246,6 +210,69 @@ class StockRankingSystem:
             self.logger.error(f"Error calculating market indicators for {symbol}: {e}")
             
         return indicators
+    
+    def calculate_batch_rs_scores(self, symbols: List[str]) -> Dict[str, float]:
+        """Mark Minervini 방식으로 배치 RS 점수 계산"""
+        try:
+            from utils.relative_strength import calculate_rs_score
+            
+            # 모든 종목 데이터를 결합
+            combined_data_list = []
+            
+            # SPY 데이터 로드
+            spy_data = self.load_stock_data('SPY')
+            if spy_data is None:
+                self.logger.warning("SPY 데이터를 로드할 수 없습니다. RS 점수 계산을 건너뜁니다.")
+                return {symbol: 50 for symbol in symbols}
+            
+            # SPY 데이터 추가
+            spy_df = spy_data.copy()
+            spy_df['symbol'] = 'SPY'
+            if 'date' in spy_df.columns:
+                spy_df['date'] = pd.to_datetime(spy_df['date'])
+            combined_data_list.append(spy_df[['date', 'symbol', 'close']])
+            
+            # 각 종목 데이터 추가
+            valid_symbols = []
+            for symbol in symbols:
+                try:
+                    df = self.load_stock_data(symbol)
+                    if df is not None and len(df) >= 252:
+                        stock_df = df.copy()
+                        stock_df['symbol'] = symbol
+                        if 'date' in stock_df.columns:
+                            stock_df['date'] = pd.to_datetime(stock_df['date'])
+                        combined_data_list.append(stock_df[['date', 'symbol', 'close']])
+                        valid_symbols.append(symbol)
+                except Exception as e:
+                    self.logger.warning(f"종목 {symbol} 데이터 로드 실패: {e}")
+                    continue
+            
+            if not combined_data_list:
+                return {symbol: 50 for symbol in symbols}
+            
+            # 데이터 결합
+            combined_df = pd.concat(combined_data_list, ignore_index=True)
+            combined_df = combined_df.set_index(['date', 'symbol'])
+            
+            # RS 점수 계산 (고도화된 버전 사용)
+            print("📊 고도화된 RS 점수 계산 중...")
+            rs_scores = calculate_rs_score(combined_df, price_col='close', use_enhanced=True)
+            print(f"✅ RS 점수 계산 완료: {len(rs_scores)}개 종목")
+            
+            # 결과 딕셔너리 생성
+            result = {}
+            for symbol in symbols:
+                if symbol in rs_scores:
+                    result[symbol] = rs_scores[symbol]
+                else:
+                    result[symbol] = 50  # 기본값
+            
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"배치 RS 점수 계산 오류: {e}")
+            return {symbol: 50 for symbol in symbols}
         
     def calculate_all_indicators(self, symbol: str) -> Dict[str, float]:
         """Calculate all indicators for a stock.
@@ -312,18 +339,38 @@ class StockRankingSystem:
         stock_data = {}
         valid_symbols = []
         
+        # 먼저 유효한 종목들을 식별
         for symbol in symbols:
             try:
                 df = self.load_stock_data(symbol)
                 if df is not None and len(df) >= min_data_points:
-                    indicators = self.calculate_all_indicators(symbol)
-                    if indicators:  # Only include if we have indicators
-                        stock_data[symbol] = indicators
-                        valid_symbols.append(symbol)
+                    valid_symbols.append(symbol)
                 else:
                     self.logger.debug(f"Insufficient data for {symbol}")
             except Exception as e:
                 self.logger.error(f"Error processing {symbol}: {e}")
+        
+        if not valid_symbols:
+            self.logger.error("No valid symbols found")
+            return pd.DataFrame()
+        
+        # 배치로 RS 점수 계산
+        print(f"📊 {len(valid_symbols)}개 종목에 대한 배치 RS 점수 계산 시작...")
+        batch_rs_scores = self.calculate_batch_rs_scores(valid_symbols)
+        
+        # 각 종목의 지표 계산
+        for symbol in valid_symbols:
+            try:
+                indicators = self.calculate_all_indicators(symbol)
+                if indicators:  # Only include if we have indicators
+                    # 배치로 계산된 RS 점수로 업데이트
+                    indicators['relative_strength'] = batch_rs_scores.get(symbol, 50)
+                    stock_data[symbol] = indicators
+            except Exception as e:
+                self.logger.error(f"Error calculating indicators for {symbol}: {e}")
+        
+        # 실제로 지표가 계산된 종목들만 유지
+        valid_symbols = list(stock_data.keys())
                 
         if not stock_data:
             self.logger.error("No valid stock data found")

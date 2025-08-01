@@ -39,16 +39,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
   ];
 
   const markminerviniItems = [
-    { id: 'advanced_financial_results', name: 'Advanced Financial Results', icon: '💰' },
-    { id: 'integrated_results', name: 'Integrated Results', icon: '🔗' },
-    { id: 'new_tickers', name: 'New Tickers', icon: '🆕' },
-    { id: 'previous_us_with_rs', name: 'Previous US with RS', icon: '📈' },
-    { id: 'us_with_rs', name: 'US with RS', icon: '🇺🇸' },
-    { id: 'us_setup_results', name: 'US Setup Results', icon: '⚙️' },
-    { id: 'us_gainers_results', name: 'US Gainers Results', icon: '📈' },
-    { id: 'pattern_detection_results', name: 'Pattern Detection', icon: '📊' },
-    { id: 'financial_screening', name: 'Financial Screening', icon: '💰' },
-    { id: 'integrated_screening', name: 'Integrated Screening', icon: '🔗' },
+    { id: 'image_pattern_results', name: '이미지 패턴 분석', icon: '🖼️' },
+    { id: 'integrated_pattern_results', name: '통합 패턴 분석', icon: '🔗' },
+    { id: 'integrated_results', name: '최종 통합 결과', icon: '🎯' },
   ];
 
   const qullamaggieItems = [
@@ -77,6 +70,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
       { id: 'buy-signals', name: 'Buy Signals', icon: '🟢' },
       { id: 'sell-signals', name: 'Sell Signals', icon: '🔴' },
     ]},
+    { id: 'us-setup', name: 'US Setup', icon: '⚙️', href: '/us-setup' },
+    { id: 'us-gainers', name: 'US Gainers', icon: '📈', href: '/us-gainers' },
     { id: 'volatility-skew', name: 'Volatility Skew', icon: '⚡', href: '/volatility-skew' },
     { id: 'momentum', name: 'Momentum Signals', icon: '📈', href: '/strategy/momentum-signals' },
     { id: 'leader-stock', name: 'Leader Stock', icon: '👑', href: '/strategy/leader-stock' },

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import SimpleDataTable from '@/components/SimpleDataTable';
+import DataTable from '@/components/DataTable';
 import TradingViewChart from '@/components/TradingViewChart';
 import { apiClient, ScreeningData } from '@/lib/api';
 
@@ -114,12 +114,21 @@ export default function FinancialScreeningPage() {
         </div>
       </div>
       {data.length > 0 ? (
-        <SimpleDataTable 
+        <DataTable 
           data={data} 
-          columns={simpleColumns}
+          columns={simpleColumns.map(col => ({
+            key: col.key,
+            header: col.header,
+            render: col.render
+          }))}
           title="재무제표 분석 우량 종목"
           description={`총 ${data.length}개 종목에서 우수한 재무지표 확인`}
           onRowClick={handleRowClick}
+          loading={loading}
+          itemsPerPage={20}
+          showPagination={true}
+          paginationType="loadMore"
+          showInlineChart={false}
         />
       ) : (
         <div className="text-center text-gray-500">No data available</div>

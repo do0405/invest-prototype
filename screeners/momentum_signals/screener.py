@@ -102,10 +102,16 @@ class StanWeinsteinStage2Screener:
                     df['date'] = pd.to_datetime(df['date'], utc=True)
                     df = df.sort_values('date')
                     indices[symbol] = df
+                    logger.info(f"{symbol} 지수 데이터 로드 성공: {len(df)}일")
                 except Exception as e:
                     logger.warning(f"{symbol} 지수 데이터 로드 실패: {e}")
+            else:
+                logger.warning(f"{symbol} 지수 데이터 파일 없음: {file_path}")
         
-        logger.info(f"시장 지수 로드 완료: {list(indices.keys())}")
+        if indices:
+            logger.info(f"시장 지수 로드 완료: {list(indices.keys())}")
+        else:
+            logger.warning("시장 지수 데이터를 찾을 수 없습니다")
         return indices
     
     def _check_market_environment(self) -> bool:

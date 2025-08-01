@@ -117,6 +117,14 @@ export class ApiClient {
     return this.request<ScreeningData[]>('/api/momentum-signals');
   }
 
+  async getUSSetupResults() {
+    return this.request<ScreeningData[]>('/api/us-setup');
+  }
+
+  async getUSGainersResults() {
+    return this.request<ScreeningData[]>('/api/us-gainers');
+  }
+
   // Qullamaggie screener endpoints
   async getQullamaggieBreakout() {
     return this.request<ScreeningData[]>('/api/qullamaggie/breakout');

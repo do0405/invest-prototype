@@ -13,12 +13,13 @@ import json
 from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Optional
 from .pattern_detection_core import detect_vcp, detect_cup_and_handle
+from config import ADVANCED_FINANCIAL_RESULTS_PATH, MARKMINERVINI_RESULTS_DIR
 
 # 로깅 설정
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def run_pattern_detection_on_financial_results(input_file: str = "advanced_financial_results.csv",
+def run_pattern_detection_on_financial_results(input_file: str = None,
                                               output_csv: str = "pattern_detection_results.csv",
                                               output_json: str = "pattern_detection_results.json") -> None:
     """재무 결과 파일의 종목들에 대해 패턴 감지를 수행하고 결과를 저장
@@ -29,6 +30,14 @@ def run_pattern_detection_on_financial_results(input_file: str = "advanced_finan
         output_json: 출력 JSON 파일 경로
     """
     try:
+        # 기본 파일 경로 설정
+        if input_file is None:
+            input_file = ADVANCED_FINANCIAL_RESULTS_PATH
+        
+        # 출력 파일 절대 경로 설정
+        output_csv = os.path.join(MARKMINERVINI_RESULTS_DIR, output_csv)
+        output_json = os.path.join(MARKMINERVINI_RESULTS_DIR, output_json)
+        
         # 재무 결과 파일 존재 여부 확인
         if not os.path.exists(input_file):
             logger.warning(f"재무 결과 파일이 존재하지 않습니다: {input_file}")
@@ -164,6 +173,147 @@ def run_pattern_detection_on_financial_results(input_file: str = "advanced_finan
     except Exception as e:
         logger.error(f"배치 분석 중 오류 발생: {str(e)}")
         raise
+
+def run_pattern_detection_on_all_symbols(symbols: List[str],
+                                        output_csv: str = "pattern_detection_results.csv",
+                                        output_json: str = "pattern_detection_results.json") -> List[Dict]:
+    """모든 스크리너 결과 심볼들에 대해 패턴 감지를 수행
+    
+    Args:
+        symbols: 분석할 심볼 리스트
+        output_csv: 출력 CSV 파일 경로
+        output_json: 출력 JSON 파일 경로
+        
+    Returns:
+        패턴 감지 결과 리스트
+    """
+    try:
+        from config import DATA_US_DIR
+        import traceback
+        
+        # 출력 파일 절대 경로 설정
+        output_csv = os.path.join(MARKMINERVINI_RESULTS_DIR, output_csv)
+        output_json = os.path.join(MARKMINERVINI_RESULTS_DIR, output_json)
+        
+        logger.info(f"모든 스크리너 결과 심볼 {len(symbols)}개에 대한 패턴 감지 시작")
+        
+        results = []
+        total_processed = 0
+        vcp_detected = 0
+        cup_handle_detected = 0
+        both_patterns = 0
+        
+        for symbol in symbols:
+            try:
+                # CSV 파일 경로
+                csv_file = os.path.join(DATA_US_DIR, f"{symbol}.csv")
+                
+                if not os.path.exists(csv_file):
+                    logger.debug(f"데이터 파일이 존재하지 않습니다: {csv_file}")
+                    continue
+                
+                # 데이터 로드
+                df = pd.read_csv(csv_file)
+                
+                # 컬럼명 정규화
+                df.columns = [c.lower() for c in df.columns]
+                
+                # 필수 컬럼 확인
+                required_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+                if not all(col in df.columns for col in required_columns):
+                    logger.warning(f"{symbol}: 필수 컬럼이 누락되었습니다")
+                    continue
+                
+                # 데이터 충분성 확인
+                if len(df) < 100:
+                    logger.debug(f"{symbol}: 데이터가 부족합니다 ({len(df)}행)")
+                    continue
+                
+                # 날짜 컬럼 처리
+                df['date'] = pd.to_datetime(df['date'])
+                df = df.sort_values('date')
+                
+                # 패턴 감지 수행
+                vcp_result = detect_vcp(df)
+                cup_handle_result = detect_cup_and_handle(df)
+                
+                # 결과 저장
+                result = {
+                    'symbol': symbol,
+                    'vcp_detected': vcp_result['detected'],
+                    'vcp_confidence': vcp_result['confidence'],
+                    'cup_handle_detected': cup_handle_result['detected'],
+                    'cup_handle_confidence': cup_handle_result['confidence'],
+                    'analysis_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                }
+                
+                results.append(result)
+                total_processed += 1
+                
+                # 통계 업데이트
+                if vcp_result['detected']:
+                    vcp_detected += 1
+                if cup_handle_result['detected']:
+                    cup_handle_detected += 1
+                if vcp_result['detected'] and cup_handle_result['detected']:
+                    both_patterns += 1
+                
+                # 진행 상황 출력 (100개마다)
+                if total_processed % 100 == 0:
+                    logger.info(f"진행 상황: {total_processed}개 심볼 처리 완료")
+                    
+            except Exception as e:
+                logger.warning(f"{symbol} 처리 중 오류: {e}")
+                continue
+        
+        # 결과 DataFrame 생성
+        if results:
+            results_df = pd.DataFrame(results)
+            
+            # CSV 파일로 저장
+            results_df.to_csv(output_csv, index=False)
+            logger.info(f"결과가 {output_csv}에 저장되었습니다.")
+            
+            # JSON 파일로 저장
+            results_json = {
+                'analysis_summary': {
+                    'total_symbols_processed': total_processed,
+                    'vcp_patterns_detected': vcp_detected,
+                    'cup_handle_patterns_detected': cup_handle_detected,
+                    'both_patterns_detected': both_patterns,
+                    'vcp_percentage': round(vcp_detected / total_processed * 100, 1) if total_processed > 0 else 0,
+                    'cup_handle_percentage': round(cup_handle_detected / total_processed * 100, 1) if total_processed > 0 else 0,
+                    'both_patterns_percentage': round(both_patterns / total_processed * 100, 1) if total_processed > 0 else 0,
+                    'analysis_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                },
+                'results': results
+            }
+            
+            with open(output_json, 'w', encoding='utf-8') as f:
+                json.dump(results_json, f, indent=2, ensure_ascii=False)
+            logger.info(f"결과가 {output_json}에 저장되었습니다.")
+            
+            # 결과 요약 출력
+            logger.info(f"\n=== 패턴 감지 결과 요약 ===")
+            logger.info(f"총 처리된 심볼: {total_processed}")
+            logger.info(f"VCP 패턴 감지: {vcp_detected}개 ({vcp_detected/total_processed*100:.1f}%)")
+            logger.info(f"Cup&Handle 패턴 감지: {cup_handle_detected}개 ({cup_handle_detected/total_processed*100:.1f}%)")
+            logger.info(f"두 패턴 모두 감지: {both_patterns}개 ({both_patterns/total_processed*100:.1f}%)")
+        else:
+            logger.warning("처리된 결과가 없습니다.")
+            # 빈 결과 파일 생성
+            empty_df = pd.DataFrame()
+            empty_df.to_csv(output_csv, index=False)
+            with open(output_json, 'w', encoding='utf-8') as f:
+                json.dump([], f, ensure_ascii=False, indent=2)
+        
+        return results
+        
+    except Exception as e:
+        logger.error(f"패턴 감지 중 오류 발생: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return []
 
 def main():
     """메인 실행 함수"""

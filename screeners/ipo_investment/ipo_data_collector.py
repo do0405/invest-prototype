@@ -118,7 +118,6 @@ class RealIPODataCollector:
         logger.info("SEC Edgar IPO 데이터 수집 시작")
         
         recent_ipos = []
-        upcoming_ipos = []
         
         try:
             # SEC Edgar 사용 가능 여부 확인
@@ -130,12 +129,6 @@ class RealIPODataCollector:
                 if recent_data:
                     recent_ipos.extend(recent_data)
                     logger.info(f"SEC Edgar: 최근 IPO {len(recent_data)}개 수집")
-                
-                # 예정된 IPO 데이터 수집
-                upcoming_data = self.sec_edgar_source.get_upcoming_ipos(months_ahead=3)
-                if upcoming_data:
-                    upcoming_ipos.extend(upcoming_data)
-                    logger.info(f"SEC Edgar: 예정 IPO {len(upcoming_data)}개 수집")
                     
             else:
                 logger.warning("SEC Edgar API를 사용할 수 없습니다.")
@@ -145,20 +138,16 @@ class RealIPODataCollector:
         
         # 데이터 정리 및 중복 제거
         recent_ipos = self._clean_and_deduplicate(recent_ipos)
-        upcoming_ipos = self._clean_and_deduplicate(upcoming_ipos)
         
         # 파일 저장
         recent_files = self._save_to_files(recent_ipos, 'recent_ipos')
-        upcoming_files = self._save_to_files(upcoming_ipos, 'upcoming_ipos')
         
         logger.info("SEC Edgar IPO 데이터 수집 및 저장 완료")
         
         return {
             'recent_ipos': recent_ipos,
-            'upcoming_ipos': upcoming_ipos,
             'files': {
-                'recent': recent_files,
-                'upcoming': upcoming_files
+                'recent': recent_files
             },
             'source': 'sec_edgar'
         }
@@ -210,8 +199,7 @@ def main():
         results = collector.collect_all_ipo_data()
         
         print("\n=== 수집 결과 ===")
-        print(f"과거 IPO 데이터: {len(results['recent_ipos'])}개")
-        print(f"예정된 IPO 데이터: {len(results['upcoming_ipos'])}개")
+        print(f"최근 IPO 데이터: {len(results['recent_ipos'])}개")
         
         # 샘플 데이터 출력
         if results['recent_ipos']:
@@ -221,15 +209,6 @@ def main():
                 company = ipo.get('company_name', 'N/A')
                 date = ipo.get('ipo_date', 'N/A')
                 print(f"- {symbol}: {company} ({date})")
-        
-        if results['upcoming_ipos']:
-            print("\n=== 예정된 IPO 샘플 ===")
-            for ipo in results['upcoming_ipos'][:3]:
-                symbol = ipo.get('symbol', 'N/A')
-                company = ipo.get('company_name', 'N/A')
-                date = ipo.get('expected_ipo_date', 'N/A')
-                print(f"- {symbol}: {company} ({date})")
-        
             
     except Exception as e:
         logger.error(f"IPO 데이터 수집 중 오류 발생: {e}")
@@ -243,7 +222,6 @@ if __name__ == "__main__":
         
         print(f"\n✅ IPO 데이터 수집 완료!")
         print(f"📊 최근 IPO: {len(results['recent_ipos'])}개")
-        print(f"📅 예정된 IPO: {len(results['upcoming_ipos'])}개")
         
         # 저장된 파일 정보
         print("\n=== 저장된 파일 ===")
@@ -251,9 +229,6 @@ if __name__ == "__main__":
         if files.get('recent'):
             print(f"- recent_csv: {files['recent']['csv']}")
             print(f"- recent_json: {files['recent']['json']}")
-        if files.get('upcoming'):
-            print(f"- upcoming_csv: {files['upcoming']['csv']}")
-            print(f"- upcoming_json: {files['upcoming']['json']}")
             
     except Exception as e:
         logger.error(f"IPO 데이터 수집 중 오류 발생: {e}")

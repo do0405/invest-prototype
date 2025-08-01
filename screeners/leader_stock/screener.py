@@ -43,11 +43,11 @@ class MarketReversalLeaderScreener:
         ensure_dir(LEADER_STOCK_RESULTS_DIR)
         
         if skip_data:
-            self.market_state = "UNKNOWN"
-            self.fgi_value = 50
+            self.fgi_value = self._fetch_fear_greed_index()  # skip-data 모드에서도 FGI는 가져옴
+            self.market_state = self._determine_market_state()
             self.ftd_confirmed = False
             self.rs_scores = {}
-            logger.info("Skip data mode: 시장 데이터 로드 건너뜀")
+            logger.info("Skip data mode: 주식 데이터 로드 건너뜀 (FGI는 조회)")
         else:
             self.fgi_value = self._fetch_fear_greed_index()
             self.market_state = self._determine_market_state()

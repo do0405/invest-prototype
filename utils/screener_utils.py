@@ -47,9 +47,9 @@ def save_screening_results(results: List[Dict[str, Any]],
     """
     ensure_dir(output_dir)
     
-    # 파일명 생성
+    # 파일명 생성 (시간 정보 제거, 날짜만 포함)
     if include_timestamp:
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime('%Y%m%d')
         base_filename = f"{filename_prefix}_{timestamp}"
     else:
         base_filename = filename_prefix
@@ -188,23 +188,3 @@ def create_screener_summary(screener_name: str,
         'results_files': results_paths,
         'status': 'completed'
     }
-
-
-def enhance_screener_with_tracking(screener_func):
-    """
-    기존 스크리너 함수에 티커 추적 기능을 추가하는 데코레이터
-    
-    Args:
-        screener_func: 원본 스크리너 함수
-    
-    Returns:
-        향상된 스크리너 함수
-    """
-    def wrapper(*args, **kwargs):
-        # 원본 스크리너 실행
-        results = screener_func(*args, **kwargs)
-        
-        # 추가 처리 로직이 필요한 경우 여기에 구현
-        return results
-    
-    return wrapper

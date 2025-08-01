@@ -121,8 +121,8 @@ class MarketBreadthCollector:
     
     # Put/Call Ratio 데이터 수집 기능 제거됨
     
-    def _process_file_for_high_low(self, file_path: str, days: int) -> Dict[pd.Timestamp, Dict[str, int]]:
-        """Process a single file for high-low index calculation."""
+    def _process_file_for_high_low(self, file_path: str, days: int, start_date: pd.Timestamp = None) -> Dict[pd.Timestamp, Dict[str, int]]:
+        """Process a single file for high-low index calculation with incremental update support."""
         date_map: Dict[pd.Timestamp, Dict[str, int]] = {}
         try:
             df = pd.read_csv(file_path)
@@ -132,12 +132,30 @@ class MarketBreadthCollector:
             
             df['date'] = pd.to_datetime(df['date'], utc=True)
             df = df.sort_values('date')
-            df = df.tail(252 + days)
+            
+            # 증분 업데이트인 경우 start_date 이후 데이터만 처리
+            if start_date is not None:
+                df_recent = df[df['date'] > start_date]
+                if len(df_recent) == 0:
+                    return date_map
+                # 52주 계산을 위해 충분한 과거 데이터 확보
+                df_full = df.tail(252 + len(df_recent))
+                process_days = len(df_recent)
+            else:
+                df_full = df.tail(252 + days)
+                process_days = days
 
-            for i in range(-days, 0):
-                row = df.iloc[i]
+            for i in range(-process_days, 0):
+                row = df_full.iloc[i]
                 date = row['date']
-                window = df.iloc[: i + 252] if i != -days else df.iloc[:252]
+                # 증분 업데이트인 경우 start_date 이후만 처리
+                if start_date is not None and date <= start_date:
+                    continue
+                    
+                window = df_full.iloc[: i + 252] if i != -process_days else df_full.iloc[:252]
+                if len(window) < 50:  # 최소 데이터 요구사항
+                    continue
+                    
                 high_52w = window['high'].max()
                 low_52w = window['low'].min()
                 record = date_map.setdefault(date, {'highs': 0, 'lows': 0, 'total': 0})
@@ -168,23 +186,26 @@ class MarketBreadthCollector:
 
             print(f"📈 {len(csv_files)}개 파일을 병렬 처리로 분석 중...")
             
-            # 병렬 처리로 파일들 처리 (개선된 스레드 안전성)
+            # 병렬 처리로 파일들 처리 (증분 업데이트 지원)
             from concurrent.futures import ThreadPoolExecutor, as_completed
             
             date_map: Dict[pd.Timestamp, Dict[str, int]] = {}
             all_file_results = []  # 모든 파일 결과를 임시 저장
             
+            # 증분 업데이트를 위한 시작 날짜 설정
+            start_date = last_date if last_date is not None else None
+            
             # 최대 8개 워커로 병렬 처리
             max_workers = min(8, len(csv_files))
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
-                future_to_file = {executor.submit(self._process_file_for_high_low, file, days): file for file in csv_files}
+                future_to_file = {executor.submit(self._process_file_for_high_low, file, update_days, start_date): file for file in csv_files}
                 
                 completed = 0
                 for future in as_completed(future_to_file):
                     file_result = future.result()
                     all_file_results.append(file_result)
                     completed += 1
-                    if completed % 100 == 0:
+                    if completed % 100 == 0 or (last_date is None and completed % 100 == 0):
                         print(f"진행률: {completed}/{len(csv_files)} 파일 처리 완료")
             
             # 결과 병합 (메인 스레드에서 안전하게 처리)
@@ -196,7 +217,8 @@ class MarketBreadthCollector:
                     date_map[date]['lows'] += values['lows']
                     date_map[date]['total'] += values['total']
 
-            hl_data = [
+            # 새로운 데이터 생성
+            new_hl_data = [
                 {
                     'date': d,
                     'new_highs': v['highs'],
@@ -206,13 +228,31 @@ class MarketBreadthCollector:
                 for d, v in sorted(date_map.items())
             ]
             
-            # DataFrame 생성
-            hl_df = pd.DataFrame(hl_data)
+            # 기존 데이터와 병합
+            if existing_data is not None and len(new_hl_data) > 0:
+                # 기존 데이터에서 중복 날짜 제거
+                new_dates = set(pd.to_datetime([item['date'] for item in new_hl_data]))
+                existing_filtered = existing_data[~existing_data['date'].isin(new_dates)]
+                
+                # 새 데이터와 기존 데이터 결합
+                new_df = pd.DataFrame(new_hl_data)
+                new_df['date'] = pd.to_datetime(new_df['date'])
+                hl_df = pd.concat([existing_filtered, new_df], ignore_index=True)
+                hl_df = hl_df.sort_values('date').reset_index(drop=True)
+                
+                print(f"✅ 증분 업데이트: {len(new_hl_data)}개 새 레코드 추가")
+            else:
+                # 전체 업데이트
+                hl_df = pd.DataFrame(new_hl_data)
+                if len(hl_df) > 0:
+                    hl_df['date'] = pd.to_datetime(hl_df['date'])
             
             # 파일 저장
-            hl_file = os.path.join(BREADTH_DATA_DIR, 'high_low.csv')
-            hl_df.to_csv(hl_file, index=False)
-            print(f"✅ High-Low Index 데이터 저장 완료: {hl_file} ({len(hl_df)}개 레코드)")
+            if len(hl_df) > 0:
+                hl_df.to_csv(hl_file, index=False)
+                print(f"✅ High-Low Index 데이터 저장 완료: {hl_file} (총 {len(hl_df)}개 레코드)")
+            else:
+                print("⚠️ 저장할 새로운 데이터가 없습니다.")
             
             return True
             
@@ -221,9 +261,25 @@ class MarketBreadthCollector:
             return False
     
     def collect_advance_decline_data(self, days: int = 252) -> bool:
-        """Advance-Decline 데이터를 실제 종목 데이터를 사용해 계산"""
+        """Advance-Decline 데이터를 실제 종목 데이터를 사용해 계산 (증분 업데이트)"""
         try:
             print("📊 Advance-Decline 데이터 수집 중...")
+            
+            # 기존 데이터 확인
+            ad_file = os.path.join(BREADTH_DATA_DIR, 'advance_decline.csv')
+            existing_data = None
+            last_date = None
+            
+            if os.path.exists(ad_file):
+                try:
+                    existing_data = pd.read_csv(ad_file)
+                    existing_data['date'] = pd.to_datetime(existing_data['date'], utc=True)
+                    last_date = existing_data['date'].max()
+                    print(f"✅ 기존 Advance-Decline 데이터 확인 (최신: {last_date.strftime('%Y-%m-%d')})")
+                except Exception as e:
+                    print(f"⚠️ 기존 데이터 로드 오류: {e}, 전체 재수집 진행")
+                    existing_data = None
+                    last_date = None
 
             csv_files = [
                 os.path.join(DATA_US_DIR, f)
@@ -235,6 +291,14 @@ class MarketBreadthCollector:
                 print('❌ 종목 데이터를 찾을 수 없습니다.')
                 return False
 
+            # 증분 업데이트인지 전체 업데이트인지 결정
+            if last_date is not None:
+                update_days = min(7, days)
+                print(f"📈 증분 업데이트: 최근 {update_days}일 데이터 처리 중...")
+            else:
+                update_days = days
+                print(f"📈 전체 업데이트: {len(csv_files)}개 파일 처리 중...")
+
             date_map: Dict[pd.Timestamp, Dict[str, int]] = {}
 
             for file in csv_files:
@@ -245,11 +309,26 @@ class MarketBreadthCollector:
                         continue
                     df['date'] = pd.to_datetime(df['date'], utc=True)
                     df = df.sort_values('date')
-                    df = df.tail(days + 1)
+                    
+                    # 증분 업데이트인 경우 필요한 데이터만 처리
+                    if last_date is not None:
+                        # 최신 날짜 이후 데이터만 처리하되, 이전 날짜 하나는 포함 (비교용)
+                        df_filtered = df[df['date'] > last_date - pd.Timedelta(days=1)]
+                        if len(df_filtered) < 2:  # 비교할 데이터가 없으면 스킵
+                            continue
+                        df = df_filtered
+                    else:
+                        df = df.tail(update_days + 1)
+                    
                     for i in range(1, len(df)):
                         cur = df.iloc[i]
                         prev = df.iloc[i - 1]
                         date = cur['date']
+                        
+                        # 증분 업데이트인 경우 last_date 이후만 처리
+                        if last_date is not None and date <= last_date:
+                            continue
+                            
                         rec = date_map.setdefault(date, {'advancing': 0, 'declining': 0, 'total': 0})
                         if pd.isna(cur['close']) or pd.isna(prev['close']):
                             continue
@@ -261,7 +340,8 @@ class MarketBreadthCollector:
                 except Exception:
                     continue
 
-            ad_data = [
+            # 새로운 데이터 생성
+            new_ad_data = [
                 {
                     'date': d,
                     'advancing': v['advancing'],
@@ -271,8 +351,24 @@ class MarketBreadthCollector:
                 for d, v in sorted(date_map.items())
             ]
             
-            # DataFrame 생성
-            ad_df = pd.DataFrame(ad_data)
+            # 기존 데이터와 병합
+            if existing_data is not None and len(new_ad_data) > 0:
+                # 기존 데이터에서 중복 날짜 제거
+                new_dates = set(pd.to_datetime([item['date'] for item in new_ad_data]))
+                existing_filtered = existing_data[~existing_data['date'].isin(new_dates)]
+                
+                # 새 데이터와 기존 데이터 결합
+                new_df = pd.DataFrame(new_ad_data)
+                new_df['date'] = pd.to_datetime(new_df['date'])
+                ad_df = pd.concat([existing_filtered, new_df], ignore_index=True)
+                ad_df = ad_df.sort_values('date').reset_index(drop=True)
+                
+                print(f"✅ 증분 업데이트: {len(new_ad_data)}개 새 레코드 추가")
+            else:
+                # 전체 업데이트
+                ad_df = pd.DataFrame(new_ad_data)
+                if len(ad_df) > 0:
+                    ad_df['date'] = pd.to_datetime(ad_df['date'])
             
             # 데이터 검증
             if ad_df.empty:
@@ -287,8 +383,11 @@ class MarketBreadthCollector:
             
             # 파일 저장
             ad_file = os.path.join(BREADTH_DATA_DIR, 'advance_decline.csv')
-            ad_df.to_csv(ad_file, index=False)
-            print(f"✅ Advance-Decline 데이터 저장 완료: {ad_file} ({len(ad_df)}개 레코드)")
+            if len(ad_df) > 0:
+                ad_df.to_csv(ad_file, index=False)
+                print(f"✅ Advance-Decline 데이터 저장 완료: {ad_file} (총 {len(ad_df)}개 레코드)")
+            else:
+                print("⚠️ 저장할 새로운 데이터가 없습니다.")
             
             return True
             

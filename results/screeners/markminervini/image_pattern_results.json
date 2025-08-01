@@ -1,7 +1,7 @@
 [
   {
     "symbol": "ASPS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -10,7 +10,7 @@
   },
   {
     "symbol": "OUST",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -19,7 +19,7 @@
   },
   {
     "symbol": "VERV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": false,
@@ -28,7 +28,7 @@
   },
   {
     "symbol": "OWLT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -37,7 +37,7 @@
   },
   {
     "symbol": "TPC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -46,7 +46,7 @@
   },
   {
     "symbol": "CRS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -55,7 +55,7 @@
   },
   {
     "symbol": "FGEN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": false,
@@ -64,7 +64,7 @@
   },
   {
     "symbol": "ATRO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -73,7 +73,7 @@
   },
   {
     "symbol": "JBL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -82,7 +82,7 @@
   },
   {
     "symbol": "STRT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -91,7 +91,7 @@
   },
   {
     "symbol": "ALMU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -100,7 +100,7 @@
   },
   {
     "symbol": "MSGM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -109,7 +109,7 @@
   },
   {
     "symbol": "RCL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -118,7 +118,7 @@
   },
   {
     "symbol": "AKBA",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -127,7 +127,7 @@
   },
   {
     "symbol": "PLTR",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -136,7 +136,7 @@
   },
   {
     "symbol": "XYF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -145,7 +145,7 @@
   },
   {
     "symbol": "BBIO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -154,7 +154,7 @@
   },
   {
     "symbol": "ESLT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -163,7 +163,7 @@
   },
   {
     "symbol": "PL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -172,7 +172,7 @@
   },
   {
     "symbol": "CUK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -181,7 +181,7 @@
   },
   {
     "symbol": "TTMI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -190,7 +190,7 @@
   },
   {
     "symbol": "EYE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -199,7 +199,7 @@
   },
   {
     "symbol": "CCL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -208,7 +208,7 @@
   },
   {
     "symbol": "ISSC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -217,7 +217,7 @@
   },
   {
     "symbol": "RDUS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -226,7 +226,7 @@
   },
   {
     "symbol": "ADPT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -235,7 +235,7 @@
   },
   {
     "symbol": "GOGO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -244,7 +244,7 @@
   },
   {
     "symbol": "MDAI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -253,7 +253,7 @@
   },
   {
     "symbol": "AS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -262,7 +262,7 @@
   },
   {
     "symbol": "TME",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -271,7 +271,7 @@
   },
   {
     "symbol": "SLDP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -280,7 +280,7 @@
   },
   {
     "symbol": "CVNA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -289,7 +289,7 @@
   },
   {
     "symbol": "OLO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -298,7 +298,7 @@
   },
   {
     "symbol": "GOSS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -307,7 +307,7 @@
   },
   {
     "symbol": "LEDS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -316,7 +316,7 @@
   },
   {
     "symbol": "KEP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -325,7 +325,7 @@
   },
   {
     "symbol": "BPMC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -334,7 +334,7 @@
   },
   {
     "symbol": "GHM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -343,7 +343,7 @@
   },
   {
     "symbol": "AMZE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -352,7 +352,7 @@
   },
   {
     "symbol": "WWD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -361,7 +361,7 @@
   },
   {
     "symbol": "DASH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -370,7 +370,7 @@
   },
   {
     "symbol": "GH",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -379,7 +379,7 @@
   },
   {
     "symbol": "AAP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -388,7 +388,7 @@
   },
   {
     "symbol": "TGEN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -397,7 +397,7 @@
   },
   {
     "symbol": "RGLS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -406,7 +406,7 @@
   },
   {
     "symbol": "NEON",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -415,7 +415,7 @@
   },
   {
     "symbol": "NVMI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -424,7 +424,7 @@
   },
   {
     "symbol": "AZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -433,7 +433,7 @@
   },
   {
     "symbol": "ASM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -442,7 +442,7 @@
   },
   {
     "symbol": "EXEL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -451,7 +451,7 @@
   },
   {
     "symbol": "BLBX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -460,7 +460,7 @@
   },
   {
     "symbol": "CTMX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -469,7 +469,7 @@
   },
   {
     "symbol": "BKSY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -478,7 +478,7 @@
   },
   {
     "symbol": "BA",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -487,7 +487,7 @@
   },
   {
     "symbol": "NPO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -496,7 +496,7 @@
   },
   {
     "symbol": "FTEK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -505,7 +505,7 @@
   },
   {
     "symbol": "OCFT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -514,7 +514,7 @@
   },
   {
     "symbol": "CAR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -523,7 +523,7 @@
   },
   {
     "symbol": "SXT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -532,7 +532,7 @@
   },
   {
     "symbol": "JFIN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -541,7 +541,7 @@
   },
   {
     "symbol": "TGI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -550,7 +550,7 @@
   },
   {
     "symbol": "CLS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -559,7 +559,7 @@
   },
   {
     "symbol": "WOR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -568,7 +568,7 @@
   },
   {
     "symbol": "WTS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -577,7 +577,7 @@
   },
   {
     "symbol": "MIRM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -586,7 +586,7 @@
   },
   {
     "symbol": "IIIN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -595,7 +595,7 @@
   },
   {
     "symbol": "TATT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -604,7 +604,7 @@
   },
   {
     "symbol": "DCO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -613,7 +613,7 @@
   },
   {
     "symbol": "IREN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -622,7 +622,7 @@
   },
   {
     "symbol": "PARR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -631,7 +631,7 @@
   },
   {
     "symbol": "TIGO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -640,7 +640,7 @@
   },
   {
     "symbol": "MT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -649,7 +649,7 @@
   },
   {
     "symbol": "CMP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -658,7 +658,7 @@
   },
   {
     "symbol": "CALX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -667,7 +667,7 @@
   },
   {
     "symbol": "ALG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -676,7 +676,7 @@
   },
   {
     "symbol": "SIMO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -685,7 +685,7 @@
   },
   {
     "symbol": "KGC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -694,7 +694,7 @@
   },
   {
     "symbol": "UPST",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -703,7 +703,7 @@
   },
   {
     "symbol": "WW",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": false,
@@ -712,7 +712,7 @@
   },
   {
     "symbol": "GLYC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -721,7 +721,7 @@
   },
   {
     "symbol": "SPRC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -730,7 +730,7 @@
   },
   {
     "symbol": "SNSE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -739,7 +739,7 @@
   },
   {
     "symbol": "ORLA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -748,7 +748,7 @@
   },
   {
     "symbol": "STEM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": false,
@@ -757,7 +757,7 @@
   },
   {
     "symbol": "INUV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -766,7 +766,7 @@
   },
   {
     "symbol": "CFSB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -775,7 +775,7 @@
   },
   {
     "symbol": "PASG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -784,7 +784,7 @@
   },
   {
     "symbol": "GTES",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -793,7 +793,7 @@
   },
   {
     "symbol": "INDP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -802,7 +802,7 @@
   },
   {
     "symbol": "KTOS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -811,7 +811,7 @@
   },
   {
     "symbol": "SLE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": false,
@@ -820,7 +820,7 @@
   },
   {
     "symbol": "BOLT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -829,7 +829,7 @@
   },
   {
     "symbol": "TMCWW",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -838,7 +838,7 @@
   },
   {
     "symbol": "JFBR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": false,
@@ -847,7 +847,7 @@
   },
   {
     "symbol": "KULR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -856,7 +856,7 @@
   },
   {
     "symbol": "TRUG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": false,
@@ -865,7 +865,7 @@
   },
   {
     "symbol": "BREA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -874,7 +874,7 @@
   },
   {
     "symbol": "INKT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -883,7 +883,7 @@
   },
   {
     "symbol": "LIXTW",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -892,7 +892,7 @@
   },
   {
     "symbol": "DBVT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -901,7 +901,7 @@
   },
   {
     "symbol": "ABVE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -910,7 +910,7 @@
   },
   {
     "symbol": "RAPT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -919,7 +919,7 @@
   },
   {
     "symbol": "CX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -928,7 +928,7 @@
   },
   {
     "symbol": "TOI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -937,7 +937,7 @@
   },
   {
     "symbol": "AIMD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -946,7 +946,7 @@
   },
   {
     "symbol": "WPM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -955,7 +955,7 @@
   },
   {
     "symbol": "TMC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -964,7 +964,7 @@
   },
   {
     "symbol": "PRCH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -973,7 +973,7 @@
   },
   {
     "symbol": "ROMA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -982,7 +982,7 @@
   },
   {
     "symbol": "SVT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -991,7 +991,7 @@
   },
   {
     "symbol": "SY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1000,7 +1000,7 @@
   },
   {
     "symbol": "NAK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1009,7 +1009,7 @@
   },
   {
     "symbol": "WRBY",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -1018,7 +1018,7 @@
   },
   {
     "symbol": "CNVS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1027,7 +1027,7 @@
   },
   {
     "symbol": "ARTL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1036,7 +1036,7 @@
   },
   {
     "symbol": "VIGL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1045,7 +1045,7 @@
   },
   {
     "symbol": "PSIX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1054,7 +1054,7 @@
   },
   {
     "symbol": "OCG",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -1063,7 +1063,7 @@
   },
   {
     "symbol": "AMPX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1072,7 +1072,7 @@
   },
   {
     "symbol": "SRFM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": false,
@@ -1081,7 +1081,7 @@
   },
   {
     "symbol": "LEU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -1090,7 +1090,7 @@
   },
   {
     "symbol": "XTKG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1099,7 +1099,7 @@
   },
   {
     "symbol": "DVS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1108,7 +1108,7 @@
   },
   {
     "symbol": "ALNT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1117,7 +1117,7 @@
   },
   {
     "symbol": "RKLB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1126,7 +1126,7 @@
   },
   {
     "symbol": "CDTX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1135,7 +1135,7 @@
   },
   {
     "symbol": "CVAC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1144,7 +1144,7 @@
   },
   {
     "symbol": "CTEV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -1153,7 +1153,7 @@
   },
   {
     "symbol": "GROY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1162,7 +1162,7 @@
   },
   {
     "symbol": "TG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1171,7 +1171,7 @@
   },
   {
     "symbol": "SNPX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1180,7 +1180,7 @@
   },
   {
     "symbol": "TAOX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1189,7 +1189,7 @@
   },
   {
     "symbol": "BWFG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1198,7 +1198,7 @@
   },
   {
     "symbol": "YYGH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1207,7 +1207,7 @@
   },
   {
     "symbol": "HOOD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1216,7 +1216,7 @@
   },
   {
     "symbol": "C",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1225,7 +1225,7 @@
   },
   {
     "symbol": "HSAI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1234,7 +1234,7 @@
   },
   {
     "symbol": "VRNA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1243,7 +1243,7 @@
   },
   {
     "symbol": "U",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1252,7 +1252,7 @@
   },
   {
     "symbol": "WF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1261,7 +1261,7 @@
   },
   {
     "symbol": "PLYA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1270,7 +1270,7 @@
   },
   {
     "symbol": "SOGP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1279,7 +1279,7 @@
   },
   {
     "symbol": "USAS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1288,7 +1288,7 @@
   },
   {
     "symbol": "HWM",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.8,
     "cup_handle_detected": true,
@@ -1297,7 +1297,7 @@
   },
   {
     "symbol": "IONQ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1306,7 +1306,7 @@
   },
   {
     "symbol": "PRPO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1315,7 +1315,7 @@
   },
   {
     "symbol": "FENC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1324,7 +1324,7 @@
   },
   {
     "symbol": "REVG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1333,7 +1333,7 @@
   },
   {
     "symbol": "VVOS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1342,7 +1342,7 @@
   },
   {
     "symbol": "SATX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1351,7 +1351,7 @@
   },
   {
     "symbol": "UI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -1360,7 +1360,7 @@
   },
   {
     "symbol": "DIST",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1369,7 +1369,7 @@
   },
   {
     "symbol": "CRDO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1378,7 +1378,7 @@
   },
   {
     "symbol": "AL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1387,7 +1387,7 @@
   },
   {
     "symbol": "OKYO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1396,7 +1396,7 @@
   },
   {
     "symbol": "GRNQ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1405,7 +1405,7 @@
   },
   {
     "symbol": "MATH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": false,
@@ -1414,7 +1414,7 @@
   },
   {
     "symbol": "ALLT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1423,7 +1423,7 @@
   },
   {
     "symbol": "RAYA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1432,7 +1432,7 @@
   },
   {
     "symbol": "MP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1441,7 +1441,7 @@
   },
   {
     "symbol": "SGHC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1450,7 +1450,7 @@
   },
   {
     "symbol": "RSI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1459,7 +1459,7 @@
   },
   {
     "symbol": "ASTS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1468,7 +1468,7 @@
   },
   {
     "symbol": "ITRN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1477,7 +1477,7 @@
   },
   {
     "symbol": "PGY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1486,7 +1486,7 @@
   },
   {
     "symbol": "TVRD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1495,7 +1495,7 @@
   },
   {
     "symbol": "SOFI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1504,7 +1504,7 @@
   },
   {
     "symbol": "ATYR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1513,7 +1513,7 @@
   },
   {
     "symbol": "PPIH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1522,7 +1522,7 @@
   },
   {
     "symbol": "VHC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1531,7 +1531,7 @@
   },
   {
     "symbol": "AVAL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1540,7 +1540,7 @@
   },
   {
     "symbol": "FULC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1549,7 +1549,7 @@
   },
   {
     "symbol": "THTX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1558,7 +1558,7 @@
   },
   {
     "symbol": "PJT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1567,7 +1567,7 @@
   },
   {
     "symbol": "PMEC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1576,7 +1576,7 @@
   },
   {
     "symbol": "VIOT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1585,7 +1585,7 @@
   },
   {
     "symbol": "CDE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1594,7 +1594,7 @@
   },
   {
     "symbol": "TMQ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1603,7 +1603,7 @@
   },
   {
     "symbol": "ROKU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1612,7 +1612,7 @@
   },
   {
     "symbol": "SNES",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1621,7 +1621,7 @@
   },
   {
     "symbol": "RBLX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1630,7 +1630,7 @@
   },
   {
     "symbol": "BTCL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1639,7 +1639,7 @@
   },
   {
     "symbol": "BTFX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1648,7 +1648,7 @@
   },
   {
     "symbol": "CYD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1657,7 +1657,7 @@
   },
   {
     "symbol": "ATHE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1666,7 +1666,7 @@
   },
   {
     "symbol": "BITU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1675,7 +1675,7 @@
   },
   {
     "symbol": "FARO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -1684,7 +1684,7 @@
   },
   {
     "symbol": "UUU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1693,7 +1693,7 @@
   },
   {
     "symbol": "THM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1702,7 +1702,7 @@
   },
   {
     "symbol": "BLDE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1711,7 +1711,7 @@
   },
   {
     "symbol": "ATAI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1720,7 +1720,7 @@
   },
   {
     "symbol": "URBN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1729,7 +1729,7 @@
   },
   {
     "symbol": "PLBY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1738,7 +1738,7 @@
   },
   {
     "symbol": "SNT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1747,7 +1747,7 @@
   },
   {
     "symbol": "SBSW",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1756,7 +1756,7 @@
   },
   {
     "symbol": "OSS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1765,7 +1765,7 @@
   },
   {
     "symbol": "COIN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -1774,7 +1774,7 @@
   },
   {
     "symbol": "MSTR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -1783,7 +1783,7 @@
   },
   {
     "symbol": "HTZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1792,7 +1792,7 @@
   },
   {
     "symbol": "INDV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1801,7 +1801,7 @@
   },
   {
     "symbol": "GEV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -1810,7 +1810,7 @@
   },
   {
     "symbol": "WLDN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1819,7 +1819,7 @@
   },
   {
     "symbol": "PVLA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1828,7 +1828,7 @@
   },
   {
     "symbol": "LMB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1837,7 +1837,7 @@
   },
   {
     "symbol": "ACHR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1846,7 +1846,7 @@
   },
   {
     "symbol": "NXT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1855,7 +1855,7 @@
   },
   {
     "symbol": "BITX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1864,7 +1864,7 @@
   },
   {
     "symbol": "RMNI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1873,7 +1873,7 @@
   },
   {
     "symbol": "SEI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1882,7 +1882,7 @@
   },
   {
     "symbol": "SLSR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1891,7 +1891,7 @@
   },
   {
     "symbol": "TCI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1900,7 +1900,7 @@
   },
   {
     "symbol": "JOBY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1909,7 +1909,7 @@
   },
   {
     "symbol": "QD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1918,7 +1918,7 @@
   },
   {
     "symbol": "EVEX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1927,7 +1927,7 @@
   },
   {
     "symbol": "AHR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1936,7 +1936,7 @@
   },
   {
     "symbol": "FPH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1945,7 +1945,7 @@
   },
   {
     "symbol": "ESP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1954,7 +1954,7 @@
   },
   {
     "symbol": "SRRK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1963,7 +1963,7 @@
   },
   {
     "symbol": "BOSC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -1972,7 +1972,7 @@
   },
   {
     "symbol": "EPRX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -1981,7 +1981,7 @@
   },
   {
     "symbol": "SAH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -1990,7 +1990,7 @@
   },
   {
     "symbol": "KOPN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": false,
@@ -1999,7 +1999,7 @@
   },
   {
     "symbol": "MGNI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2008,7 +2008,7 @@
   },
   {
     "symbol": "AGX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2017,7 +2017,7 @@
   },
   {
     "symbol": "FUTU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2026,7 +2026,7 @@
   },
   {
     "symbol": "PAC",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -2035,7 +2035,7 @@
   },
   {
     "symbol": "APYX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2044,7 +2044,7 @@
   },
   {
     "symbol": "FSI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2053,7 +2053,7 @@
   },
   {
     "symbol": "CPS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2062,7 +2062,7 @@
   },
   {
     "symbol": "MBOT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2071,7 +2071,7 @@
   },
   {
     "symbol": "SSSS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2080,7 +2080,7 @@
   },
   {
     "symbol": "GORO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2089,7 +2089,7 @@
   },
   {
     "symbol": "SKE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2098,7 +2098,7 @@
   },
   {
     "symbol": "GHRS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2107,7 +2107,7 @@
   },
   {
     "symbol": "IPX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2116,7 +2116,7 @@
   },
   {
     "symbol": "CRPT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2125,7 +2125,7 @@
   },
   {
     "symbol": "POET",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2134,7 +2134,7 @@
   },
   {
     "symbol": "YMM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2143,7 +2143,7 @@
   },
   {
     "symbol": "FIX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -2152,7 +2152,7 @@
   },
   {
     "symbol": "ESE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2161,7 +2161,7 @@
   },
   {
     "symbol": "SRAD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2170,7 +2170,7 @@
   },
   {
     "symbol": "MGIC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2179,7 +2179,7 @@
   },
   {
     "symbol": "MS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2188,7 +2188,7 @@
   },
   {
     "symbol": "APH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2197,7 +2197,7 @@
   },
   {
     "symbol": "XMTR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2206,7 +2206,7 @@
   },
   {
     "symbol": "FORD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2215,7 +2215,7 @@
   },
   {
     "symbol": "EFOI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2224,7 +2224,7 @@
   },
   {
     "symbol": "KFS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2233,7 +2233,7 @@
   },
   {
     "symbol": "TPR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2242,7 +2242,7 @@
   },
   {
     "symbol": "AP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2251,7 +2251,7 @@
   },
   {
     "symbol": "ZG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2260,7 +2260,7 @@
   },
   {
     "symbol": "RFIL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2269,7 +2269,7 @@
   },
   {
     "symbol": "MGTX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2278,7 +2278,7 @@
   },
   {
     "symbol": "LIF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2287,7 +2287,7 @@
   },
   {
     "symbol": "TSAT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2296,7 +2296,7 @@
   },
   {
     "symbol": "TRVI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2305,7 +2305,7 @@
   },
   {
     "symbol": "ETNB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2314,7 +2314,7 @@
   },
   {
     "symbol": "PZG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2323,7 +2323,7 @@
   },
   {
     "symbol": "AWI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2332,7 +2332,7 @@
   },
   {
     "symbol": "OPOF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2341,7 +2341,7 @@
   },
   {
     "symbol": "CKPT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2350,7 +2350,7 @@
   },
   {
     "symbol": "BE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2359,7 +2359,7 @@
   },
   {
     "symbol": "VST",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2368,7 +2368,7 @@
   },
   {
     "symbol": "APEI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2377,7 +2377,7 @@
   },
   {
     "symbol": "IHS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2386,7 +2386,7 @@
   },
   {
     "symbol": "ATI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2395,7 +2395,7 @@
   },
   {
     "symbol": "DC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2404,7 +2404,7 @@
   },
   {
     "symbol": "BCS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2413,7 +2413,7 @@
   },
   {
     "symbol": "VZLA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2422,7 +2422,7 @@
   },
   {
     "symbol": "JNUG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2431,7 +2431,7 @@
   },
   {
     "symbol": "RYTM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2440,7 +2440,7 @@
   },
   {
     "symbol": "DHX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": false,
@@ -2449,7 +2449,7 @@
   },
   {
     "symbol": "ARKW",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2458,7 +2458,7 @@
   },
   {
     "symbol": "PPTA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2467,7 +2467,7 @@
   },
   {
     "symbol": "XERS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2476,7 +2476,7 @@
   },
   {
     "symbol": "IBIT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2485,7 +2485,7 @@
   },
   {
     "symbol": "WRLD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2494,7 +2494,7 @@
   },
   {
     "symbol": "ABCL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2503,7 +2503,7 @@
   },
   {
     "symbol": "HODL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2512,7 +2512,7 @@
   },
   {
     "symbol": "EZBC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2521,7 +2521,7 @@
   },
   {
     "symbol": "BTCW",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -2530,7 +2530,7 @@
   },
   {
     "symbol": "FBTC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2539,7 +2539,7 @@
   },
   {
     "symbol": "BITB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2548,7 +2548,7 @@
   },
   {
     "symbol": "FIVE",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -2557,7 +2557,7 @@
   },
   {
     "symbol": "BRRR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2566,7 +2566,7 @@
   },
   {
     "symbol": "BTCO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2575,7 +2575,7 @@
   },
   {
     "symbol": "CLBR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2584,7 +2584,7 @@
   },
   {
     "symbol": "DEFI",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -2593,7 +2593,7 @@
   },
   {
     "symbol": "NTGR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2602,7 +2602,7 @@
   },
   {
     "symbol": "ELTX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2611,7 +2611,7 @@
   },
   {
     "symbol": "SII",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2620,7 +2620,7 @@
   },
   {
     "symbol": "NRIM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2629,7 +2629,7 @@
   },
   {
     "symbol": "FLEX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2638,7 +2638,7 @@
   },
   {
     "symbol": "AVXL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2647,7 +2647,7 @@
   },
   {
     "symbol": "ARKF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2656,7 +2656,7 @@
   },
   {
     "symbol": "ICL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2665,7 +2665,7 @@
   },
   {
     "symbol": "MAXI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2674,7 +2674,7 @@
   },
   {
     "symbol": "NEXT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2683,7 +2683,7 @@
   },
   {
     "symbol": "TOST",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2692,7 +2692,7 @@
   },
   {
     "symbol": "FORTY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2701,7 +2701,7 @@
   },
   {
     "symbol": "FINV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2710,7 +2710,7 @@
   },
   {
     "symbol": "ENLT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2719,7 +2719,7 @@
   },
   {
     "symbol": "AAMI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2728,7 +2728,7 @@
   },
   {
     "symbol": "SIFY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2737,7 +2737,7 @@
   },
   {
     "symbol": "JCI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2746,7 +2746,7 @@
   },
   {
     "symbol": "ELVA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2755,7 +2755,7 @@
   },
   {
     "symbol": "MPAA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2764,7 +2764,7 @@
   },
   {
     "symbol": "DB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2773,7 +2773,7 @@
   },
   {
     "symbol": "SAN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2782,7 +2782,7 @@
   },
   {
     "symbol": "GBTC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2791,7 +2791,7 @@
   },
   {
     "symbol": "NN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2800,7 +2800,7 @@
   },
   {
     "symbol": "YALA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2809,7 +2809,7 @@
   },
   {
     "symbol": "MAG",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -2818,7 +2818,7 @@
   },
   {
     "symbol": "CCB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2827,7 +2827,7 @@
   },
   {
     "symbol": "ODC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2836,7 +2836,7 @@
   },
   {
     "symbol": "CBRL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -2845,7 +2845,7 @@
   },
   {
     "symbol": "VIRT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2854,7 +2854,7 @@
   },
   {
     "symbol": "GS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -2863,7 +2863,7 @@
   },
   {
     "symbol": "BLOK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2872,7 +2872,7 @@
   },
   {
     "symbol": "NYC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2881,7 +2881,7 @@
   },
   {
     "symbol": "ALGM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2890,7 +2890,7 @@
   },
   {
     "symbol": "CSV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2899,7 +2899,7 @@
   },
   {
     "symbol": "IMMX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2908,7 +2908,7 @@
   },
   {
     "symbol": "BITQ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2917,7 +2917,7 @@
   },
   {
     "symbol": "PSIL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2926,7 +2926,7 @@
   },
   {
     "symbol": "HYMC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2935,7 +2935,7 @@
   },
   {
     "symbol": "ARMN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2944,7 +2944,7 @@
   },
   {
     "symbol": "BASE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2953,7 +2953,7 @@
   },
   {
     "symbol": "SYF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2962,7 +2962,7 @@
   },
   {
     "symbol": "STCE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2971,7 +2971,7 @@
   },
   {
     "symbol": "SAND",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -2980,7 +2980,7 @@
   },
   {
     "symbol": "LFCR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -2989,7 +2989,7 @@
   },
   {
     "symbol": "PBPB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -2998,7 +2998,7 @@
   },
   {
     "symbol": "PGEN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3007,7 +3007,7 @@
   },
   {
     "symbol": "NEU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -3016,7 +3016,7 @@
   },
   {
     "symbol": "OMAB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3025,7 +3025,7 @@
   },
   {
     "symbol": "PBI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3034,7 +3034,7 @@
   },
   {
     "symbol": "CCEC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3043,7 +3043,7 @@
   },
   {
     "symbol": "WILC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3052,7 +3052,7 @@
   },
   {
     "symbol": "SLM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3061,7 +3061,7 @@
   },
   {
     "symbol": "ARKK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -3070,7 +3070,7 @@
   },
   {
     "symbol": "ATAT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3079,7 +3079,7 @@
   },
   {
     "symbol": "HEES",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3088,7 +3088,7 @@
   },
   {
     "symbol": "EMX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3097,7 +3097,7 @@
   },
   {
     "symbol": "BH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3106,7 +3106,7 @@
   },
   {
     "symbol": "WEBL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3115,7 +3115,7 @@
   },
   {
     "symbol": "KEQU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3124,7 +3124,7 @@
   },
   {
     "symbol": "KEN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3133,7 +3133,7 @@
   },
   {
     "symbol": "DRS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3142,7 +3142,7 @@
   },
   {
     "symbol": "MYRG",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -3151,7 +3151,7 @@
   },
   {
     "symbol": "CAKE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3160,7 +3160,7 @@
   },
   {
     "symbol": "UFO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3169,7 +3169,7 @@
   },
   {
     "symbol": "LITE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3178,7 +3178,7 @@
   },
   {
     "symbol": "ROK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3187,7 +3187,7 @@
   },
   {
     "symbol": "BWAY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3196,7 +3196,7 @@
   },
   {
     "symbol": "SHLD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3205,7 +3205,7 @@
   },
   {
     "symbol": "AVGO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3214,7 +3214,7 @@
   },
   {
     "symbol": "ACMR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3223,7 +3223,7 @@
   },
   {
     "symbol": "PRA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3232,7 +3232,7 @@
   },
   {
     "symbol": "EURL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3241,7 +3241,7 @@
   },
   {
     "symbol": "AIBU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3250,7 +3250,7 @@
   },
   {
     "symbol": "SURG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -3259,7 +3259,7 @@
   },
   {
     "symbol": "VIK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3268,7 +3268,7 @@
   },
   {
     "symbol": "TWI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3277,7 +3277,7 @@
   },
   {
     "symbol": "RERE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3286,7 +3286,7 @@
   },
   {
     "symbol": "NUKZ",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -3295,7 +3295,7 @@
   },
   {
     "symbol": "PRIM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3304,7 +3304,7 @@
   },
   {
     "symbol": "STN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3313,7 +3313,7 @@
   },
   {
     "symbol": "PPLT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3322,7 +3322,7 @@
   },
   {
     "symbol": "TCBX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3331,7 +3331,7 @@
   },
   {
     "symbol": "PLTM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -3340,7 +3340,7 @@
   },
   {
     "symbol": "STNE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3349,7 +3349,7 @@
   },
   {
     "symbol": "SSBI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3358,7 +3358,7 @@
   },
   {
     "symbol": "ARKD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3367,7 +3367,7 @@
   },
   {
     "symbol": "MCB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3376,7 +3376,7 @@
   },
   {
     "symbol": "ARKX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3385,7 +3385,7 @@
   },
   {
     "symbol": "JOYY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -3394,7 +3394,7 @@
   },
   {
     "symbol": "USFD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3403,7 +3403,7 @@
   },
   {
     "symbol": "OR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3412,7 +3412,7 @@
   },
   {
     "symbol": "ESQ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3421,7 +3421,7 @@
   },
   {
     "symbol": "HSBC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3430,7 +3430,7 @@
   },
   {
     "symbol": "MOS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -3439,7 +3439,7 @@
   },
   {
     "symbol": "DBD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3448,7 +3448,7 @@
   },
   {
     "symbol": "CTLP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3457,7 +3457,7 @@
   },
   {
     "symbol": "FBIOP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -3466,7 +3466,7 @@
   },
   {
     "symbol": "GENI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3475,7 +3475,7 @@
   },
   {
     "symbol": "PAAS",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -3484,7 +3484,7 @@
   },
   {
     "symbol": "SANM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3493,7 +3493,7 @@
   },
   {
     "symbol": "DXPE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3502,7 +3502,7 @@
   },
   {
     "symbol": "SNEX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3511,7 +3511,7 @@
   },
   {
     "symbol": "FNGO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3520,7 +3520,7 @@
   },
   {
     "symbol": "UNTY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3529,7 +3529,7 @@
   },
   {
     "symbol": "DLTR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -3538,7 +3538,7 @@
   },
   {
     "symbol": "RL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3547,7 +3547,7 @@
   },
   {
     "symbol": "GE",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -3556,7 +3556,7 @@
   },
   {
     "symbol": "WBD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3565,7 +3565,7 @@
   },
   {
     "symbol": "FSM",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -3574,7 +3574,7 @@
   },
   {
     "symbol": "GREK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3583,7 +3583,7 @@
   },
   {
     "symbol": "ARKA",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -3592,7 +3592,7 @@
   },
   {
     "symbol": "CHEF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3601,7 +3601,7 @@
   },
   {
     "symbol": "BWEB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3610,7 +3610,7 @@
   },
   {
     "symbol": "FBL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.2,
     "cup_handle_detected": true,
@@ -3619,7 +3619,7 @@
   },
   {
     "symbol": "FNGG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3628,7 +3628,7 @@
   },
   {
     "symbol": "ASA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3637,7 +3637,7 @@
   },
   {
     "symbol": "DGP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3646,7 +3646,7 @@
   },
   {
     "symbol": "SIL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3655,7 +3655,7 @@
   },
   {
     "symbol": "ULS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3664,7 +3664,7 @@
   },
   {
     "symbol": "MTZ",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -3673,7 +3673,7 @@
   },
   {
     "symbol": "CEG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -3682,7 +3682,7 @@
   },
   {
     "symbol": "ARKQ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3691,7 +3691,7 @@
   },
   {
     "symbol": "SENEA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3700,7 +3700,7 @@
   },
   {
     "symbol": "BELFB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3709,7 +3709,7 @@
   },
   {
     "symbol": "GPI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3718,7 +3718,7 @@
   },
   {
     "symbol": "VEON",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3727,7 +3727,7 @@
   },
   {
     "symbol": "MOMO",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -3736,7 +3736,7 @@
   },
   {
     "symbol": "TDS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3745,7 +3745,7 @@
   },
   {
     "symbol": "LRCX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3754,7 +3754,7 @@
   },
   {
     "symbol": "SLND",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3763,7 +3763,7 @@
   },
   {
     "symbol": "RRBI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3772,7 +3772,7 @@
   },
   {
     "symbol": "AEIS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3781,7 +3781,7 @@
   },
   {
     "symbol": "GF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -3790,7 +3790,7 @@
   },
   {
     "symbol": "METU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3799,7 +3799,7 @@
   },
   {
     "symbol": "KAR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3808,7 +3808,7 @@
   },
   {
     "symbol": "COF",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -3817,7 +3817,7 @@
   },
   {
     "symbol": "BTRN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3826,7 +3826,7 @@
   },
   {
     "symbol": "X",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3835,7 +3835,7 @@
   },
   {
     "symbol": "EMR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3844,7 +3844,7 @@
   },
   {
     "symbol": "CBNK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3853,7 +3853,7 @@
   },
   {
     "symbol": "SKLZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3862,7 +3862,7 @@
   },
   {
     "symbol": "SENEB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3871,7 +3871,7 @@
   },
   {
     "symbol": "WBS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3880,7 +3880,7 @@
   },
   {
     "symbol": "OVBC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3889,7 +3889,7 @@
   },
   {
     "symbol": "KALV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -3898,7 +3898,7 @@
   },
   {
     "symbol": "BTI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3907,7 +3907,7 @@
   },
   {
     "symbol": "UAL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3916,7 +3916,7 @@
   },
   {
     "symbol": "NTRS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3925,7 +3925,7 @@
   },
   {
     "symbol": "LZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3934,7 +3934,7 @@
   },
   {
     "symbol": "NATH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3943,7 +3943,7 @@
   },
   {
     "symbol": "CTOS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3952,7 +3952,7 @@
   },
   {
     "symbol": "FET",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3961,7 +3961,7 @@
   },
   {
     "symbol": "FGM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3970,7 +3970,7 @@
   },
   {
     "symbol": "MNMD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3979,7 +3979,7 @@
   },
   {
     "symbol": "SLVP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -3988,7 +3988,7 @@
   },
   {
     "symbol": "MGYR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -3997,7 +3997,7 @@
   },
   {
     "symbol": "GILT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4006,7 +4006,7 @@
   },
   {
     "symbol": "CASY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -4015,7 +4015,7 @@
   },
   {
     "symbol": "BUZZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4024,7 +4024,7 @@
   },
   {
     "symbol": "ENVA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4033,7 +4033,7 @@
   },
   {
     "symbol": "CXW",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4042,7 +4042,7 @@
   },
   {
     "symbol": "CAE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4051,7 +4051,7 @@
   },
   {
     "symbol": "WNS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4060,7 +4060,7 @@
   },
   {
     "symbol": "CNM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -4069,7 +4069,7 @@
   },
   {
     "symbol": "FHN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4078,7 +4078,7 @@
   },
   {
     "symbol": "CCLDO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -4087,7 +4087,7 @@
   },
   {
     "symbol": "PERI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4096,7 +4096,7 @@
   },
   {
     "symbol": "PUK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4105,7 +4105,7 @@
   },
   {
     "symbol": "CUBI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4114,7 +4114,7 @@
   },
   {
     "symbol": "KT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4123,7 +4123,7 @@
   },
   {
     "symbol": "MGRM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4132,7 +4132,7 @@
   },
   {
     "symbol": "TGTX",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -4141,7 +4141,7 @@
   },
   {
     "symbol": "LAUR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4150,7 +4150,7 @@
   },
   {
     "symbol": "NGVT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4159,7 +4159,7 @@
   },
   {
     "symbol": "GEL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4168,7 +4168,7 @@
   },
   {
     "symbol": "EIS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4177,7 +4177,7 @@
   },
   {
     "symbol": "GDXJ",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -4186,7 +4186,7 @@
   },
   {
     "symbol": "LBRDA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -4195,7 +4195,7 @@
   },
   {
     "symbol": "UBER",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -4204,7 +4204,7 @@
   },
   {
     "symbol": "NUS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4213,7 +4213,7 @@
   },
   {
     "symbol": "GSIB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4222,7 +4222,7 @@
   },
   {
     "symbol": "CEE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4231,7 +4231,7 @@
   },
   {
     "symbol": "GOAU",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -4240,7 +4240,7 @@
   },
   {
     "symbol": "XAR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -4249,7 +4249,7 @@
   },
   {
     "symbol": "SHOP",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -4258,7 +4258,7 @@
   },
   {
     "symbol": "FAS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -4267,7 +4267,7 @@
   },
   {
     "symbol": "SGDJ",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -4276,7 +4276,7 @@
   },
   {
     "symbol": "NIC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4285,7 +4285,7 @@
   },
   {
     "symbol": "IZRL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4294,7 +4294,7 @@
   },
   {
     "symbol": "WHLRD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4303,7 +4303,7 @@
   },
   {
     "symbol": "FTI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4312,7 +4312,7 @@
   },
   {
     "symbol": "JBTM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4321,7 +4321,7 @@
   },
   {
     "symbol": "HGV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4330,7 +4330,7 @@
   },
   {
     "symbol": "GNTY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4339,7 +4339,7 @@
   },
   {
     "symbol": "BETH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4348,7 +4348,7 @@
   },
   {
     "symbol": "QTUM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4357,7 +4357,7 @@
   },
   {
     "symbol": "EPR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4366,7 +4366,7 @@
   },
   {
     "symbol": "FSS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4375,7 +4375,7 @@
   },
   {
     "symbol": "TBPH",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4384,7 +4384,7 @@
   },
   {
     "symbol": "PLPC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4393,7 +4393,7 @@
   },
   {
     "symbol": "BNGE",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4402,7 +4402,7 @@
   },
   {
     "symbol": "SGI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4411,7 +4411,7 @@
   },
   {
     "symbol": "UPV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4420,7 +4420,7 @@
   },
   {
     "symbol": "THFF",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4429,7 +4429,7 @@
   },
   {
     "symbol": "DERM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4438,7 +4438,7 @@
   },
   {
     "symbol": "SPRX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4447,7 +4447,7 @@
   },
   {
     "symbol": "HAFC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4456,7 +4456,7 @@
   },
   {
     "symbol": "BPAY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4465,7 +4465,7 @@
   },
   {
     "symbol": "TSM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -4474,7 +4474,7 @@
   },
   {
     "symbol": "TRMB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4483,7 +4483,7 @@
   },
   {
     "symbol": "AZZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4492,7 +4492,7 @@
   },
   {
     "symbol": "TMAT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4501,7 +4501,7 @@
   },
   {
     "symbol": "ING",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4510,7 +4510,7 @@
   },
   {
     "symbol": "OND",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4519,7 +4519,7 @@
   },
   {
     "symbol": "HBCP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4528,7 +4528,7 @@
   },
   {
     "symbol": "WFC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4537,7 +4537,7 @@
   },
   {
     "symbol": "EWO",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -4546,7 +4546,7 @@
   },
   {
     "symbol": "AGMI",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.6,
     "cup_handle_detected": true,
@@ -4555,7 +4555,7 @@
   },
   {
     "symbol": "STT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4564,7 +4564,7 @@
   },
   {
     "symbol": "IAI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4573,7 +4573,7 @@
   },
   {
     "symbol": "CHAT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4582,7 +4582,7 @@
   },
   {
     "symbol": "BDL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -4591,7 +4591,7 @@
   },
   {
     "symbol": "GTX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4600,7 +4600,7 @@
   },
   {
     "symbol": "ALV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4609,7 +4609,7 @@
   },
   {
     "symbol": "SSYS",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4618,7 +4618,7 @@
   },
   {
     "symbol": "CTBB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4627,7 +4627,7 @@
   },
   {
     "symbol": "LUV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4636,7 +4636,7 @@
   },
   {
     "symbol": "CHN",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4645,7 +4645,7 @@
   },
   {
     "symbol": "PLOW",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4654,7 +4654,7 @@
   },
   {
     "symbol": "RING",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4663,7 +4663,7 @@
   },
   {
     "symbol": "ITA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4672,7 +4672,7 @@
   },
   {
     "symbol": "METV",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4681,7 +4681,7 @@
   },
   {
     "symbol": "FPX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4690,7 +4690,7 @@
   },
   {
     "symbol": "ROKT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4699,7 +4699,7 @@
   },
   {
     "symbol": "FEUZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4708,7 +4708,7 @@
   },
   {
     "symbol": "EPOL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4717,7 +4717,7 @@
   },
   {
     "symbol": "ATLC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -4726,7 +4726,7 @@
   },
   {
     "symbol": "RYAAY",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4735,7 +4735,7 @@
   },
   {
     "symbol": "MAKX",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4744,7 +4744,7 @@
   },
   {
     "symbol": "FOSLL",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4753,7 +4753,7 @@
   },
   {
     "symbol": "GAMR",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4762,7 +4762,7 @@
   },
   {
     "symbol": "ECVT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4771,7 +4771,7 @@
   },
   {
     "symbol": "FWONK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4780,7 +4780,7 @@
   },
   {
     "symbol": "ALAI",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4789,7 +4789,7 @@
   },
   {
     "symbol": "BETZ",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4798,7 +4798,7 @@
   },
   {
     "symbol": "BKNG",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": false,
@@ -4807,7 +4807,7 @@
   },
   {
     "symbol": "BFC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4816,7 +4816,7 @@
   },
   {
     "symbol": "ISRA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4825,7 +4825,7 @@
   },
   {
     "symbol": "CTDD",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4834,7 +4834,7 @@
   },
   {
     "symbol": "SYBT",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.0,
     "cup_handle_detected": true,
@@ -4843,7 +4843,7 @@
   },
   {
     "symbol": "BK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4852,7 +4852,7 @@
   },
   {
     "symbol": "VNM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4861,7 +4861,7 @@
   },
   {
     "symbol": "SRBK",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4870,7 +4870,7 @@
   },
   {
     "symbol": "KMDA",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,
@@ -4879,7 +4879,7 @@
   },
   {
     "symbol": "CM",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4888,7 +4888,7 @@
   },
   {
     "symbol": "SEIC",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.3,
     "cup_handle_detected": true,
@@ -4897,7 +4897,7 @@
   },
   {
     "symbol": "NTB",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.1,
     "cup_handle_detected": true,
@@ -4906,7 +4906,7 @@
   },
   {
     "symbol": "JPM",
-    "image_generated": true,
+
     "vcp_detected": true,
     "vcp_confidence": 0.5,
     "cup_handle_detected": true,
@@ -4915,7 +4915,7 @@
   },
   {
     "symbol": "LOUP",
-    "image_generated": true,
+
     "vcp_detected": false,
     "vcp_confidence": 0.4,
     "cup_handle_detected": true,

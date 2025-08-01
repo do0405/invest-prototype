@@ -116,41 +116,49 @@ class IntegratedScreener:
             if stock_data is None or len(stock_data) < 40:
                 return {
                     'symbol': symbol,
-                    'data_available': False,
-                    'image_generated': False,
-                    'vcp_detected': False,
-                    'vcp_confidence': 0.0,
-                    'cup_handle_detected': False,
-                    'cup_handle_confidence': 0.0,
-                    'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'error': 'Insufficient data'
+                'data_available': False,
+                'image_generated': False,
+                'vcp_detected': False,
+                'vcp_confidence': 0.0,
+                'vcp_confidence_level': 'None',
+                'vcp_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
+                'cup_handle_detected': False,
+                'cup_handle_confidence': 0.0,
+                'cup_handle_confidence_level': 'None',
+                'cup_handle_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
+                'processing_date': datetime.now().strftime('%Y-%m-%d'),
+                'error': 'Insufficient data'
                 }
             
             # 2. 차트 이미지 생성
             image_success = self.chart_generator.generate_chart_image(symbol, stock_data)
             
-            # 3. 고급 수학적 패턴 분석
-            pattern_results = self.pattern_analyzer.analyze_patterns_from_data(symbol, stock_data)
+            # 3. 향상된 다차원 패턴 분석
+            pattern_results = self.pattern_analyzer.analyze_patterns_enhanced(symbol, stock_data)
             
-            # 4. 결과 통합
+            # 4. 결과 통합 (다차원 평가 포함)
             result = {
                 'symbol': symbol,
                 'data_available': True,
                 'image_generated': image_success,
                 'vcp_detected': pattern_results['vcp']['detected'],
                 'vcp_confidence': pattern_results['vcp']['confidence'],
+                'vcp_confidence_level': pattern_results['vcp']['confidence_level'],
+                'vcp_dimensional_scores': pattern_results['vcp']['dimensional_scores'],
                 'cup_handle_detected': pattern_results['cup_handle']['detected'],
                 'cup_handle_confidence': pattern_results['cup_handle']['confidence'],
+                'cup_handle_confidence_level': pattern_results['cup_handle']['confidence_level'],
+                'cup_handle_dimensional_scores': pattern_results['cup_handle']['dimensional_scores'],
                 'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
             
-            # 패턴 감지 로깅
+            # 패턴 감지 로깅 (다차원 평가 포함)
             if result['vcp_detected'] or result['cup_handle_detected']:
                 patterns = []
                 if result['vcp_detected']:
-                    patterns.append(f"VCP({result['vcp_confidence']:.3f})")
+                    patterns.append(f"VCP({result['vcp_confidence']:.3f}/{result['vcp_confidence_level']})")
                 if result['cup_handle_detected']:
-                    patterns.append(f"Cup&Handle({result['cup_handle_confidence']:.3f})")
+                    patterns.append(f"Cup&Handle({result['cup_handle_confidence']:.3f}/{result['cup_handle_confidence_level']})")
                 logger.info(f"{symbol}: 패턴 감지됨 - {', '.join(patterns)}")
             
             return result
@@ -163,8 +171,12 @@ class IntegratedScreener:
                 'image_generated': False,
                 'vcp_detected': False,
                 'vcp_confidence': 0.0,
+                'vcp_confidence_level': 'None',
+                'vcp_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
                 'cup_handle_detected': False,
                 'cup_handle_confidence': 0.0,
+                'cup_handle_confidence_level': 'None',
+                'cup_handle_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
                 'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 'error': str(e)
             }
@@ -209,8 +221,12 @@ class IntegratedScreener:
                     'image_generated': False,
                     'vcp_detected': False,
                     'vcp_confidence': 0.0,
+                    'vcp_confidence_level': 'None',
+                    'vcp_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
                     'cup_handle_detected': False,
                     'cup_handle_confidence': 0.0,
+                    'cup_handle_confidence_level': 'None',
+                    'cup_handle_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
                     'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     'error': str(e)
                 })
@@ -276,18 +292,18 @@ class IntegratedScreener:
         print(f"🎯 두 패턴 모두 감지: {both_patterns:,} ({both_patterns/total_count*100:.1f}%)")
         print("="*70)
         
-        # 상위 패턴 감지 결과 출력
+        # 상위 패턴 감지 결과 출력 (신뢰도 순)
         if vcp_detected > 0:
-            print("\n🔍 VCP 패턴 감지된 상위 10개 심볼:")
+            print("\n🔍 VCP 패턴 감지된 상위 10개 심볼 (신뢰도 순):")
             vcp_symbols = results_df[results_df['vcp_detected']].nlargest(10, 'vcp_confidence')
-            for _, row in vcp_symbols.iterrows():
-                print(f"  {row['symbol']}: {row['vcp_confidence']:.3f}")
+            for i, (_, row) in enumerate(vcp_symbols.iterrows(), 1):
+                print(f"  {i:2d}. {row['symbol']}: {row['vcp_confidence']:.3f}")
         
         if cup_handle_detected > 0:
-            print("\n☕ Cup&Handle 패턴 감지된 상위 10개 심볼:")
+            print("\n☕ Cup&Handle 패턴 감지된 상위 10개 심볼 (신뢰도 순):")
             cup_symbols = results_df[results_df['cup_handle_detected']].nlargest(10, 'cup_handle_confidence')
-            for _, row in cup_symbols.iterrows():
-                print(f"  {row['symbol']}: {row['cup_handle_confidence']:.3f}")
+            for i, (_, row) in enumerate(cup_symbols.iterrows(), 1):
+                print(f"  {i:2d}. {row['symbol']}: {row['cup_handle_confidence']:.3f}")
 
 
 def run_integrated_screening(max_symbols: Optional[int] = None) -> pd.DataFrame:

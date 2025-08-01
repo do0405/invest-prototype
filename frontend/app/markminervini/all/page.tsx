@@ -5,6 +5,7 @@ import SimpleDataTable from '@/components/SimpleDataTable';
 import EnhancedDataTable from '@/components/EnhancedDataTable';
 import TradingViewChart from '@/components/TradingViewChart';
 import ScreeningSummary from '@/components/ScreeningSummary';
+import NumberInputFilter, { NumberFilter } from '@/components/NumberInputFilter';
 import { MagnifyingGlassIcon, ChartBarIcon, CalendarIcon, TrophyIcon } from '@heroicons/react/24/outline';
 
 interface ScreenerResult {
@@ -22,13 +23,7 @@ interface ScreenerData {
   lastUpdated?: string;
 }
 
-interface SliderFilter {
-  key: string;
-  min: number;
-  max: number;
-  value: [number, number];
-  step: number;
-}
+// SliderFilter 인터페이스는 NumberInputFilter 컴포넌트의 NumberFilter로 대체됨
 
 type SortOption = 'symbol' | 'rs_score' | 'signal_date' | 'met_count';
 type SortDirection = 'asc' | 'desc';
@@ -39,7 +34,7 @@ export default function AllMarkminerviniPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [expandedScreeners, setExpandedScreeners] = useState<Set<string>>(new Set());
-  const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
+  const [numberFilters, setNumberFilters] = useState<NumberFilter[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('rs_score');
@@ -47,14 +42,11 @@ export default function AllMarkminerviniPage() {
   const [showChart, setShowChart] = useState(true);
   const [activeTab, setActiveTab] = useState<'all' | 'new_tickers'>('all');
 
+  // 패턴이 적용된 3가지 결과만 표시 (고도화 단계별)
   const screeners = useMemo(() => [
-    { id: 'advanced_financial_results', name: 'Advanced Financial Results', icon: '💰' },
-    { id: 'integrated_results', name: 'Integrated Results', icon: '🔗' },
-    { id: 'new_tickers', name: 'New Tickers', icon: '🆕' },
-    { id: 'previous_us_with_rs', name: 'Previous US with RS', icon: '📈' },
-    { id: 'us_setup_results', name: 'US Setup Results', icon: '⚙️' },
-    { id: 'us_gainers_results', name: 'US Gainers Results', icon: '📈' },
-    { id: 'pattern_detection_results', name: 'Pattern Detection', icon: '📊' },
+    { id: 'image_pattern_results', name: '1단계: 이미지 패턴 분석', icon: '🖼️', description: 'VCP, Cup & Handle 패턴 이미지 분석 결과' },
+    { id: 'integrated_pattern_results', name: '2단계: 통합 패턴 분석', icon: '🔗', description: '수학적 알고리즘 기반 패턴 검증 결과' },
+    { id: 'integrated_results', name: '3단계: 최종 통합 결과', icon: '🎯', description: '기술적+재무적+패턴 조건을 모두 만족하는 최종 결과' },
   ], []);
 
   useEffect(() => {
@@ -89,7 +81,7 @@ export default function AllMarkminerviniPage() {
         
         setScreenersData(results);
         console.log('Screeners data after fetch:', results); // ADDED LOG
-        initializeSliderFilters(results);
+        initializeNumberFilters(results);
         setError(null);
       } catch (err) {
         console.error('Error fetching screeners:', err);
@@ -102,7 +94,7 @@ export default function AllMarkminerviniPage() {
     fetchAllScreeners();
   }, [screeners]);
 
-  const initializeSliderFilters = (screenersData: ScreenerData[]) => {
+  const initializeNumberFilters = (screenersData: ScreenerData[]) => {
     if (screenersData.length === 0) return;
     
     // 모든 스크리너 데이터를 합쳐서 공통 숫자 컬럼 찾기
@@ -118,7 +110,7 @@ export default function AllMarkminerviniPage() {
       return values.length > 0;
     });
 
-    const filters: SliderFilter[] = numericColumns.map(key => {
+    const filters: NumberFilter[] = numericColumns.map(key => {
       const values = allData.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val)) as number[];
       const min = Math.min(...values);
       const max = Math.max(...values);
@@ -133,7 +125,7 @@ export default function AllMarkminerviniPage() {
       };
     });
 
-    setSliderFilters(filters);
+    setNumberFilters(filters);
   };
 
   const toggleScreenerExpansion = (screenerId: string) => {
@@ -154,14 +146,14 @@ export default function AllMarkminerviniPage() {
       const searchMatch = !searchTerm || 
         item.symbol?.toString().toLowerCase().includes(searchTerm.toLowerCase());
       
-      // 슬라이더 필터링
-      const sliderMatch = sliderFilters.every(filter => {
+      // 숫자 입력 필터링
+      const numberMatch = numberFilters.every(filter => {
         const value = item[filter.key];
         if (typeof value !== 'number' || isNaN(value)) return true;
         return value >= filter.value[0] && value <= filter.value[1];
       });
       
-      return searchMatch && sliderMatch;
+      return searchMatch && numberMatch;
     });
 
     // 정렬
@@ -189,8 +181,8 @@ export default function AllMarkminerviniPage() {
 
 
 
-  const handleSliderChange = (filterKey: string, newValue: [number, number]) => {
-    setSliderFilters(prev => 
+  const handleNumberFilterChange = (filterKey: string, newValue: [number, number]) => {
+    setNumberFilters(prev => 
       prev.map(filter => 
         filter.key === filterKey 
           ? { ...filter, value: newValue }
@@ -200,12 +192,17 @@ export default function AllMarkminerviniPage() {
   };
 
   const resetFilters = () => {
-    setSliderFilters(prev => 
+    setNumberFilters(prev => 
       prev.map(filter => ({
         ...filter,
         value: [filter.min, filter.max]
       }))
     );
+    setSearchTerm('');
+  };
+
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
   };
 
   if (loading) {
@@ -241,6 +238,14 @@ export default function AllMarkminerviniPage() {
         >
           ← Back to Dashboard
         </Link>
+        
+         <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+          <span className="text-5xl">🎯</span>
+          Mark Minervini 패턴 분석 결과
+        </h1>
+        <p className="text-xl text-gray-600 mb-8">
+          Mark Minervini의 투자 전략을 기반으로 한 고도화된 패턴 분석 결과입니다. 기술적 조건 → 재무 조건 → 패턴 적용 순서로 진행된 3단계 스크리닝 결과를 확인하실 수 있습니다.
+        </p>
         
         {/* Screening Summary */}
         <div className="mb-8">
@@ -468,79 +473,14 @@ export default function AllMarkminerviniPage() {
         </div>
       </div>
 
-      {/* 필터 토글 버튼 */}
-      <div className="mb-6">
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-2"
-        >
-          <span className="text-lg">🎛️</span>
-          {showFilters ? 'Hide Filters' : 'Show Filters'}
-          <span className={`transform transition-transform duration-300 ${showFilters ? 'rotate-180' : ''}`}>
-            ▼
-          </span>
-        </button>
-      </div>
-
-      {/* 슬라이더 필터 패널 */}
-      <div className={`overflow-hidden transition-all duration-500 ease-in-out ${
-        showFilters 
-          ? 'max-h-96 opacity-100 transform translate-y-0' 
-          : 'max-h-0 opacity-0 transform -translate-y-4'
-      }`}>
-        <div className="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg p-6 mb-6 border border-gray-200">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-              <span>🎯</span>
-              Global Filter Controls
-            </h3>
-            <button
-              onClick={resetFilters}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-            >
-              Reset All
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sliderFilters.map((filter) => (
-              <div key={filter.key} className="space-y-3">
-                <label className="block text-sm font-medium text-gray-700">
-                  {filter.key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                </label>
-                <div className="px-3 py-2 bg-white rounded-lg border border-gray-200 shadow-sm">
-                  <div className="flex justify-between text-xs text-gray-500 mb-2">
-                    <span>{filter.value[0].toFixed(2)}</span>
-                    <span>{filter.value[1].toFixed(2)}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min={filter.min}
-                    max={filter.max}
-                    step={filter.step}
-                    value={filter.value[0]}
-                    onChange={(e) => handleSliderChange(filter.key, [parseFloat(e.target.value), filter.value[1]])}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb"
-                  />
-                  <input
-                    type="range"
-                    min={filter.min}
-                    max={filter.max}
-                    step={filter.step}
-                    value={filter.value[1]}
-                    onChange={(e) => handleSliderChange(filter.key, [filter.value[0], parseFloat(e.target.value)])}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider-thumb mt-1"
-                  />
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
-                    <span>Min: {filter.min.toFixed(2)}</span>
-                    <span>Max: {filter.max.toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* 숫자 입력 필터 컴포넌트 */}
+      <NumberInputFilter
+        filters={numberFilters}
+        onFilterChange={handleNumberFilterChange}
+        onResetFilters={resetFilters}
+        showFilters={showFilters}
+        onToggleFilters={toggleFilters}
+      />
       
       {/* 스크리너 결과 */}
       {activeTab === 'all' && (
@@ -561,6 +501,7 @@ export default function AllMarkminerviniPage() {
                       <span className="text-2xl">{screener?.icon}</span>
                       <div>
                         <h3 className="text-lg font-semibold">{screenerData.name}</h3>
+                        <p className="text-purple-100 text-xs mb-1">{screener?.description}</p>
                         <p className="text-purple-100 text-sm flex items-center gap-4">
                           <span className="flex items-center gap-1">
                             <TrophyIcon className="h-4 w-4" />
@@ -601,7 +542,8 @@ export default function AllMarkminerviniPage() {
                     const filteredData = getFilteredAndSortedData(screenerData.data);
                     console.log(`Filtered data for ${screenerData.name}:`, filteredData); // ADDED LOG
                     
-                    // 간단한 컬럼 구성: 종목명과 시그널 발생일만 표시
+                    // 데이터에 따른 동적 컬럼 구성
+                    const availableColumns = filteredData.length > 0 ? Object.keys(filteredData[0]) : [];
                     const simpleColumns = [
                       {
                         key: 'symbol',
@@ -609,25 +551,64 @@ export default function AllMarkminerviniPage() {
                         render: (item: Record<string, unknown>) => (
                           <span className="font-semibold text-purple-600">{String(item.symbol ?? 'N/A')}</span>
                         )
-                      },
-                      {
-                        key: 'signal_date',
-                        header: '시그널 발생일',
+                      }
+                    ];
+                    
+                    // 날짜 컬럼 추가 (우선순위: signal_date > detection_date > processing_date)
+                    if (availableColumns.includes('signal_date') || availableColumns.includes('detection_date') || availableColumns.includes('processing_date')) {
+                      simpleColumns.push({
+                        key: 'date',
+                        header: '날짜',
                         render: (item: Record<string, unknown>) => {
-                          const value = item.signal_date;
-                          // 날짜 형식 처리
+                          const value = item.signal_date || item.detection_date || item.processing_date;
                           if (value) {
                             try {
                               const date = new Date(value as string);
-                              return date.toLocaleDateString('ko-KR');
+                              return <span>{date.toLocaleDateString('ko-KR')}</span>;
                             } catch {
-                              return String(value);
+                              return <span>{String(value)}</span>;
                             }
                           }
-                          return 'N/A';
-                        }
-                      }
-                    ];
+                          return <span>N/A</span>;
+                         }
+                       });
+                     }
+                     
+                     // RS 점수 컬럼 추가
+                     if (availableColumns.includes('rs_score')) {
+                       simpleColumns.push({
+                         key: 'rs_score',
+                         header: 'RS 점수',
+                         render: (item: Record<string, unknown>) => {
+                           const value = item.rs_score;
+                           return <span>{value ? Number(value).toFixed(2) : 'N/A'}</span>;
+                         }
+                       });
+                     }
+                     
+                     // VCP 패턴 컬럼 추가
+                     if (availableColumns.includes('vcp_detected')) {
+                       simpleColumns.push({
+                         key: 'vcp_detected',
+                         header: 'VCP',
+                         render: (item: Record<string, unknown>) => {
+                           const value = item.vcp_detected;
+                           return <span>{value === true ? '✓' : value === false ? '✗' : 'N/A'}</span>;
+                         }
+                       });
+                     }
+                     
+                     // Cup & Handle 패턴 컬럼 추가
+                     if (availableColumns.includes('cup_handle_detected')) {
+                       simpleColumns.push({
+                         key: 'cup_handle_detected',
+                         header: 'C&H',
+                         render: (item: Record<string, unknown>) => {
+                           const value = item.cup_handle_detected;
+                           return <span>{value === true ? '✓' : value === false ? '✗' : 'N/A'}</span>;
+                         }
+                       });
+                    }
                     return filteredData.length > 0 ? (
                       <>
                         {screenerData.lastUpdated && (

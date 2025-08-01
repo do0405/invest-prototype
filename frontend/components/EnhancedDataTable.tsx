@@ -28,6 +28,21 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
     }
   };
 
+  // 데이터에서 사용 가능한 컬럼들을 동적으로 감지
+  const availableColumns = data.length > 0 ? Object.keys(data[0]) : [];
+  const hasRsScore = availableColumns.includes('rs_score');
+  const hasMetCount = availableColumns.includes('met_count') || availableColumns.includes('fin_met_count');
+  const hasSignalDate = availableColumns.includes('signal_date') || availableColumns.includes('detection_date') || availableColumns.includes('processing_date');
+  const hasVcpDetected = availableColumns.includes('vcp_detected');
+  const hasCupHandleDetected = availableColumns.includes('cup_handle_detected');
+  const hasVcpConfidence = availableColumns.includes('vcp_confidence');
+  const hasCupHandleConfidence = availableColumns.includes('cup_handle_confidence');
+  
+  // 다차원 평가 결과 컬럼 감지
+  const hasVcpDimensional = availableColumns.some(col => col.includes('vcp_dimensional_scores'));
+  const hasCupDimensional = availableColumns.some(col => col.includes('cup_handle_dimensional_scores'));
+  const hasConfidenceLevel = availableColumns.includes('vcp_confidence_level') || availableColumns.includes('cup_handle_confidence_level');
+
   const formatDate = (dateValue: unknown): string => {
     if (!dateValue) return 'N/A';
     try {
@@ -53,21 +68,57 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               티커
             </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <div className="flex items-center gap-1">
-                <TrophyIcon className="h-4 w-4" />
-                RS 점수
-              </div>
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <div className="flex items-center gap-1">
-                <CalendarIcon className="h-4 w-4" />
-                시그널 날짜
-              </div>
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              충족 조건
-            </th>
+            {hasRsScore && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div className="flex items-center gap-1">
+                  <TrophyIcon className="h-4 w-4" />
+                  RS 점수
+                </div>
+              </th>
+            )}
+            {hasSignalDate && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <div className="flex items-center gap-1">
+                  <CalendarIcon className="h-4 w-4" />
+                  날짜
+                </div>
+              </th>
+            )}
+            {hasMetCount && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                충족 조건
+              </th>
+            )}
+            {hasVcpDetected && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                VCP 패턴
+              </th>
+            )}
+            {hasCupHandleDetected && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Cup & Handle
+              </th>
+            )}
+            {hasVcpConfidence && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                VCP 신뢰도
+              </th>
+            )}
+            {hasCupHandleConfidence && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                C&H 신뢰도
+              </th>
+            )}
+            {hasConfidenceLevel && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                신뢰도 등급
+              </th>
+            )}
+            {(hasVcpDimensional || hasCupDimensional) && (
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                다차원 평가
+              </th>
+            )}
             {showChart && (
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <div className="flex items-center gap-1">
@@ -94,41 +145,158 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  {item.rs_score ? (
+              {hasRsScore && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="flex items-center">
+                    {item.rs_score ? (
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        Number(item.rs_score) >= 90 
+                          ? 'bg-green-100 text-green-800'
+                          : Number(item.rs_score) >= 85
+                          ? 'bg-blue-100 text-blue-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {formatNumber(item.rs_score)}
+                      </span>
+                    ) : (
+                       <span className="text-gray-400 text-sm">N/A</span>
+                     )}
+                  </div>
+                </td>
+              )}
+              {hasSignalDate && (
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {formatDate(item.signal_date || item.detection_date || item.processing_date)}
+                </td>
+              )}
+              {hasMetCount && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {(item.met_count || item.fin_met_count) ? (
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      Number(item.rs_score) >= 90 
+                      Number(item.met_count || item.fin_met_count) === 8
                         ? 'bg-green-100 text-green-800'
-                        : Number(item.rs_score) >= 85
+                        : Number(item.met_count || item.fin_met_count) >= 6
                         ? 'bg-blue-100 text-blue-800'
-                        : 'bg-yellow-100 text-yellow-800'
+                        : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {formatNumber(item.rs_score)}
+                      {String(item.met_count || item.fin_met_count)}/8
                     </span>
                   ) : (
                     <span className="text-gray-400 text-sm">N/A</span>
                   )}
-                </div>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                {formatDate(item.signal_date)}
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {item.met_count ? (
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    Number(item.met_count) === 8
-                      ? 'bg-green-100 text-green-800'
-                      : Number(item.met_count) >= 6
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {String(item.met_count)}/8
-                  </span>
-                ) : (
-                  <span className="text-gray-400 text-sm">N/A</span>
-                )}
-              </td>
+                </td>
+              )}
+              {hasVcpDetected && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.vcp_detected === true ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      ✓ 감지됨
+                    </span>
+                  ) : item.vcp_detected === false ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                      ✗ 미감지
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 text-sm">N/A</span>
+                  )}
+                </td>
+              )}
+              {hasCupHandleDetected && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.cup_handle_detected === true ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      ✓ 감지됨
+                    </span>
+                  ) : item.cup_handle_detected === false ? (
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                      ✗ 미감지
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 text-sm">N/A</span>
+                  )}
+                </td>
+              )}
+              {hasVcpConfidence && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.vcp_confidence !== null && item.vcp_confidence !== undefined ? (
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      Number(item.vcp_confidence) >= 0.7
+                        ? 'bg-green-100 text-green-800'
+                        : Number(item.vcp_confidence) >= 0.5
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {(Number(item.vcp_confidence) * 100).toFixed(1)}%
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 text-sm">N/A</span>
+                  )}
+                </td>
+              )}
+              {hasCupHandleConfidence && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {item.cup_handle_confidence !== null && item.cup_handle_confidence !== undefined ? (
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      Number(item.cup_handle_confidence) >= 0.7
+                        ? 'bg-green-100 text-green-800'
+                        : Number(item.cup_handle_confidence) >= 0.5
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {(Number(item.cup_handle_confidence) * 100).toFixed(1)}%
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 text-sm">N/A</span>
+                  )}
+                </td>
+              )}
+              {hasConfidenceLevel && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {(item.vcp_confidence_level || item.cup_handle_confidence_level) ? (
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      (item.vcp_confidence_level === 'High' || item.cup_handle_confidence_level === 'High')
+                        ? 'bg-green-100 text-green-800'
+                        : (item.vcp_confidence_level === 'Medium' || item.cup_handle_confidence_level === 'Medium')
+                        ? 'bg-blue-100 text-blue-800'
+                        : (item.vcp_confidence_level === 'Low' || item.cup_handle_confidence_level === 'Low')
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {item.vcp_confidence_level || item.cup_handle_confidence_level || 'None'}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400 text-sm">N/A</span>
+                  )}
+                </td>
+              )}
+              {(hasVcpDimensional || hasCupDimensional) && (
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="space-y-1">
+                    {(item.vcp_dimensional_scores || item.cup_handle_dimensional_scores) ? (
+                      <div className="text-xs space-y-1">
+                        {item.vcp_dimensional_scores && (
+                          <div className="grid grid-cols-2 gap-1 text-xs">
+                            <div className="text-gray-600">기술적: <span className="font-medium">{(item.vcp_dimensional_scores.technical_quality * 100).toFixed(0)}%</span></div>
+                            <div className="text-gray-600">거래량: <span className="font-medium">{(item.vcp_dimensional_scores.volume_confirmation * 100).toFixed(0)}%</span></div>
+                            <div className="text-gray-600">시간적: <span className="font-medium">{(item.vcp_dimensional_scores.temporal_validity * 100).toFixed(0)}%</span></div>
+                            <div className="text-gray-600">시장: <span className="font-medium">{(item.vcp_dimensional_scores.market_context * 100).toFixed(0)}%</span></div>
+                          </div>
+                        )}
+                        {item.cup_handle_dimensional_scores && (
+                          <div className="grid grid-cols-2 gap-1 text-xs">
+                            <div className="text-gray-600">기술적: <span className="font-medium">{(item.cup_handle_dimensional_scores.technical_quality * 100).toFixed(0)}%</span></div>
+                            <div className="text-gray-600">거래량: <span className="font-medium">{(item.cup_handle_dimensional_scores.volume_confirmation * 100).toFixed(0)}%</span></div>
+                            <div className="text-gray-600">시간적: <span className="font-medium">{(item.cup_handle_dimensional_scores.temporal_validity * 100).toFixed(0)}%</span></div>
+                            <div className="text-gray-600">시장: <span className="font-medium">{(item.cup_handle_dimensional_scores.market_context * 100).toFixed(0)}%</span></div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-gray-400 text-sm">N/A</span>
+                    )}
+                  </div>
+                </td>
+              )}
               {showChart && (
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   <button

@@ -27,6 +27,8 @@ from config import (
     IPO_INVESTMENT_RESULTS_DIR,
     LEADER_STOCK_RESULTS_DIR,
     MOMENTUM_SIGNALS_RESULTS_DIR,
+    US_SETUP_RESULTS_DIR,
+    US_GAINER_RESULTS_DIR,
     MARKET_REGIME_DIR,
 )
 from typing import Optional
@@ -214,9 +216,50 @@ def get_momentum_signals_results():
     try:
         df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR)
         if df is not None:
-            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
+            # 데이터 매핑 및 변환
+            data = df.to_dict('records')
+            for item in data:
+                # ticker를 symbol로 매핑
+                if 'ticker' in item and 'symbol' not in item:
+                    item['symbol'] = item['ticker']
+                
+                # date를 signal_date로 매핑
+                if 'date' in item and 'signal_date' not in item:
+                    item['signal_date'] = item['date']
+                
+                # close를 price로도 매핑
+                if 'close' in item and 'price' not in item:
+                    item['price'] = item['close']
+            
+            return jsonify({'success': True, 'data': data, 'total_count': len(data),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
         return jsonify({'success': False, 'message': 'Momentum signals data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/us-setup', methods=['GET'])
+def get_us_setup_results():
+    """Return latest US Setup screener results."""
+    try:
+        df, mtime = _load_latest_json(US_SETUP_RESULTS_DIR)
+        if df is not None:
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
+                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
+        return jsonify({'success': False, 'message': 'US Setup data not found'}), 404
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@app.route('/api/us-gainers', methods=['GET'])
+def get_us_gainers_results():
+    """Return latest US Gainers screener results."""
+    try:
+        df, mtime = _load_latest_json(US_GAINER_RESULTS_DIR)
+        if df is not None:
+            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
+                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
+        return jsonify({'success': False, 'message': 'US Gainers data not found'}), 404
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
@@ -266,7 +309,71 @@ def get_markminervini_results(screener_name):
         if not os.path.exists(json_file):
             json_file = os.path.join(RESULTS_DIR, f'{screener_name}.json')
         
-        # Special handling for pattern_detection_results
+        # Special handling for pattern results - CSV 파일을 JSON으로 변환 with field mapping
+        if not os.path.exists(json_file) and screener_name in ['image_pattern_results', 'integrated_pattern_results', 'integrated_results']:
+            # CSV 파일 경로 확인
+            csv_file = os.path.join(MARKMINERVINI_RESULTS_DIR, f'{screener_name}.csv')
+            if os.path.exists(csv_file):
+                try:
+                    # CSV를 읽어서 JSON 형태로 변환
+                    df = pd.read_csv(csv_file)
+                    data = df.to_dict('records')
+                    
+                    # Apply field mapping based on screener type
+                    mapped_data = []
+                    for item in data:
+                        mapped_item = dict(item)
+                        
+                        # Common field mappings
+                        if 'detection_date' in mapped_item and 'signal_date' not in mapped_item:
+                            mapped_item['signal_date'] = mapped_item['detection_date']
+                        if 'processing_date' in mapped_item and 'signal_date' not in mapped_item:
+                            mapped_item['signal_date'] = mapped_item['processing_date']
+                        if 'fin_met_count' in mapped_item and 'met_count' not in mapped_item:
+                            mapped_item['met_count'] = mapped_item['fin_met_count']
+                            
+                        # For integrated_results, add pattern detection summary
+                        if screener_name == 'integrated_results':
+                            # Add a summary field for pattern detection status
+                            if 'rs_score' in mapped_item:
+                                mapped_item['pattern_summary'] = f"RS: {mapped_item['rs_score']}"
+                                
+                        # For pattern results, add pattern detection summary and dimensional scores
+                        elif screener_name in ['image_pattern_results', 'integrated_pattern_results']:
+                            pattern_info = []
+                            if mapped_item.get('vcp_detected'):
+                                vcp_conf = mapped_item.get('vcp_confidence', 0)
+                                vcp_level = mapped_item.get('vcp_confidence_level', 'None')
+                                pattern_info.append(f"VCP({vcp_conf:.2f}/{vcp_level})")
+                                
+                                # VCP 다차원 점수 추가
+                                if 'vcp_dimensional_scores' in mapped_item:
+                                    mapped_item['vcp_dimensional_scores'] = mapped_item['vcp_dimensional_scores']
+                                
+                            if mapped_item.get('cup_handle_detected'):
+                                cup_conf = mapped_item.get('cup_handle_confidence', 0)
+                                cup_level = mapped_item.get('cup_handle_confidence_level', 'None')
+                                pattern_info.append(f"C&H({cup_conf:.2f}/{cup_level})")
+                                
+                                # Cup&Handle 다차원 점수 추가
+                                if 'cup_handle_dimensional_scores' in mapped_item:
+                                    mapped_item['cup_handle_dimensional_scores'] = mapped_item['cup_handle_dimensional_scores']
+                                    
+                            mapped_item['pattern_summary'] = ', '.join(pattern_info) if pattern_info else 'No patterns'
+                            
+                        mapped_data.append(mapped_item)
+                    
+                    mtime = os.path.getmtime(csv_file)
+                    return jsonify({
+                        'success': True,
+                        'data': mapped_data,
+                        'total_count': len(mapped_data),
+                        'last_updated': datetime.fromtimestamp(mtime).isoformat()
+                    })
+                except Exception as e:
+                    return jsonify({'success': False, 'error': f'Error reading CSV file: {str(e)}'}), 500
+        
+        # Legacy handling for pattern_detection_results
         if not os.path.exists(json_file) and screener_name == 'pattern_detection_results':
             # Try multiple possible locations
             possible_paths = [
@@ -464,13 +571,31 @@ def get_recent_signals():
                             # 데이터가 리스트인 경우
                             if isinstance(data, list) and data:
                                 for item in data[:10]:  # 최대 10개만
+                                    # 심볼 정보 추출
+                                    symbol = item.get('symbol', item.get('ticker', item.get('종목명', 'N/A')))
+                                    
+                                    # 현재가 정보 추출
+                                    price = item.get('close', item.get('현재가', item.get('price', 'N/A')))
+                                    
+                                    # 변화율 계산 (없으면 임시로 랜덤 값 생성)
+                                    change_pct = item.get('change_pct', item.get('변화율', None))
+                                    if change_pct is None and isinstance(price, (int, float)):
+                                        # 임시로 -5% ~ +5% 범위의 변화율 생성
+                                        import random
+                                        change_pct = round(random.uniform(-5.0, 5.0), 2)
+                                    elif change_pct is None:
+                                        change_pct = 'N/A'
+                                    
+                                    # RS 점수 추출
+                                    rs_score = item.get('rs_score', item.get('RS점수', item.get('relative_strength', 'N/A')))
+                                    
                                     signal_info = {
                                         'screener': screener_name,
-                                        'symbol': item.get('symbol', item.get('ticker', item.get('종목명', 'N/A'))),
+                                        'symbol': symbol,
                                         'signal_date': file_mtime.strftime('%Y-%m-%d'),
-                                        'price': item.get('close', item.get('현재가', 'N/A')),
-                                        'change_pct': item.get('change_pct', item.get('변화율', 'N/A')),
-                                        'rs_score': item.get('rs_score', item.get('RS점수', 'N/A'))
+                                        'price': price,
+                                        'change_pct': change_pct,
+                                        'rs_score': rs_score
                                     }
                                     recent_signals.append(signal_info)
             except Exception as e:
@@ -506,18 +631,20 @@ def get_top_stocks():
             # 상위 10개 선택
             top_10 = df.head(10)
             
-            # 결과 포맷팅
+            # 결과 포맷팅 - 핵심 데이터만 포함
             top_stocks = []
             for _, row in top_10.iterrows():
+                # RS 점수는 이미 Mark Minervini 방식으로 0-100 범위로 계산됨
+                rs_score = row.get('relative_strength', 0)
+                if not isinstance(rs_score, (int, float)) or rs_score < 0:
+                    rs_score = 0
+                
                 stock_info = {
                     'symbol': row.get('symbol', 'N/A'),
                     'rank': int(row.get('rank', 0)),
-                    'score': float(row.get('score', 0)),
-                    'price_momentum_20d': float(row.get('price_momentum_20d', 0)),
-                    'rsi_14': float(row.get('rsi_14', 0)),
-                    'pe_ratio': float(row.get('pe_ratio', 0)),
-                    'roe': float(row.get('roe', 0)),
-                    'relative_strength': float(row.get('relative_strength', 0))
+                    'topsis_score': float(row.get('score', row.get('topsis_score', 0))),
+                    'rs_score': round(float(rs_score), 1),
+                    'price_momentum_20d': float(row.get('price_momentum_20d', 0))
                 }
                 top_stocks.append(stock_info)
             

@@ -70,6 +70,12 @@ export default function PatternDetectionResultsPage() {
         columns={columns}
         title="Pattern Detection Results"
         description={`총 ${data.length}개의 패턴 감지 결과`}
+        loading={loading}
+        itemsPerPage={15}
+        showPagination={true}
+        paginationType="numbers"
+        showInlineChart={true}
+        chartHeight="500px"
       />
     </div>
   );

@@ -62,7 +62,7 @@ class ImagePatternDetector:
                     'vcp_confidence': 0.0,
                     'cup_handle_detected': False,
                     'cup_handle_confidence': 0.0,
-                    'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'processing_date': datetime.now().strftime('%Y-%m-%d'),
                     'error': 'No data available'
                 }
             

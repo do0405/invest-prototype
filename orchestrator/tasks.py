@@ -244,32 +244,32 @@ def collect_data_main(update_symbols: bool = True, skip_ohlcv: bool = False) -> 
     """
     print("\n💾 데이터 수집 시작...")
     try:
-        # 1. 기본 주가 데이터 수집 (종목 리스트 업데이트 포함)
+        # 1. 주식 메타데이터 업데이트 (OHLCV 수집 전에 실행)
+        print("\n📋 1단계: 주식 메타데이터 업데이트")
+        run_stock_metadata_collection()
+        
+        # 2. 기본 주가 데이터 수집 (종목 리스트 업데이트 포함)
         if not skip_ohlcv:
-            print("\n📈 1단계: 주가 데이터 수집")
+            print("\n📈 2단계: 주가 데이터 수집")
             if update_symbols:
                 print("🔄 종목 리스트 자동 업데이트 활성화")
             else:
                 print("📊 기존 종목 리스트 사용")
             collect_data(update_symbols=update_symbols)
         else:
-            print("\n⏭️ 1단계: OHLCV 데이터 수집 건너뛰기")
+            print("\n⏭️ 2단계: OHLCV 데이터 수집 건너뛰기")
         
-        # 2. 시장 폭 데이터 수집
-        print("\n📊 2단계: 시장 폭 데이터 수집")
+        # 3. 시장 폭 데이터 수집
+        print("\n📊 3단계: 시장 폭 데이터 수집")
         run_market_breadth_collection()
         
-        # 3. 시장 국면 분석
-        print("\n🔍 3단계: 시장 국면 분석")
+        # 4. 시장 국면 분석
+        print("\n🔍 4단계: 시장 국면 분석")
         run_market_regime_analysis()
         
-        # 4. IPO 데이터 수집 (SEC Edgar)
-        print("\n🏢 4단계: IPO 데이터 수집")
+        # 5. IPO 데이터 수집 (SEC Edgar)
+        print("\n🏢 5단계: IPO 데이터 수집")
         run_ipo_data_collection()
-        
-        # 5. 주식 메타데이터 업데이트
-        print("\n📋 5단계: 주식 메타데이터 업데이트")
-        run_stock_metadata_collection()
         
         print("✅ 모든 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
@@ -296,13 +296,13 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         run_us_screening()
         print("✅ 1단계: 미국 주식 스크리닝 완료.")
 
-        print("\n⏳ 2단계: 통합 스크리닝 실행 중...")
-        run_integrated_screening()
-        print("✅ 2단계: 통합 스크리닝 완료.")
-
-        print("\n⏳ 3단계: 고급 재무 스크리닝 실행 중...")
+        print("\n⏳ 2단계: 고급 재무 스크리닝 실행 중...")
         run_advanced_financial_screening(skip_data=skip_data)
-        print("✅ 3단계: 고급 재무 스크리닝 완료.")
+        print("✅ 2단계: 고급 재무 스크리닝 완료.")
+
+        print("\n⏳ 3단계: 통합 스크리닝 실행 중...")
+        run_integrated_screening()
+        print("✅ 3단계: 통합 스크리닝 완료.")
 
         print("\n⏳ 4단계: 새로운 티커 추적 실행 중...")
         track_new_tickers(ADVANCED_FINANCIAL_RESULTS_PATH)
@@ -340,13 +340,9 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         run_qullamaggie_strategy_task(skip_data=skip_data)
         print("✅ 12단계: 쿨라매기 전략 완료.")
 
-        print("\n⏳ 13단계: 시장 국면 분석 실행 중...")
-        run_market_regime_analysis(skip_data=skip_data)
-        print("✅ 13단계: 시장 국면 분석 완료.")
-
-        print("\n⏳ 14단계: 이미지 패턴 감지 실행 중...")
+        print("\n⏳ 13단계: 이미지 패턴 감지 실행 중...")
         run_image_pattern_detection_task(skip_data=skip_data)
-        print("✅ 14단계: 이미지 패턴 감지 완료.")
+        print("✅ 13단계: 이미지 패턴 감지 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:  # pragma: no cover - runtime log
@@ -457,8 +453,7 @@ def run_ipo_data_collection(days: int = 365) -> None:
         result = collector.collect_all_ipo_data()
         if result.get('files'):
             recent_count = len(result.get('recent_ipos', []))
-            upcoming_count = len(result.get('upcoming_ipos', []))
-            print(f"✅ IPO 데이터 저장 완료: {recent_count + upcoming_count}개")
+            print(f"✅ IPO 데이터 저장 완료: {recent_count}개")
         else:
             print("⚠️ IPO 데이터 저장 실패 또는 데이터 없음")
     except Exception as e:  # pragma: no cover - runtime log
@@ -481,10 +476,14 @@ def run_stock_metadata_collection() -> None:
         # 새로운 메타데이터 수집 (증분 업데이트)
         updated_data = updater.update_metadata(incremental=True, max_age_days=7)
         
-        if updated_data is not None:
-            print(f"✅ 주식 메타데이터 업데이트 완료: {len(updated_data)}개 종목")
+        if updated_data is not None and updated_data.get('status') == 'success':
+            updated_count = updated_data.get('updated_count', 0)
+            total_count = updated_data.get('total_count', 0)
+            print(f"✅ 주식 메타데이터 업데이트 완료: {updated_count}개 종목 업데이트 (전체 {total_count}개)")
         else:
             print("⚠️ 메타데이터 업데이트 실패")
+            if updated_data and 'error' in updated_data:
+                print(f"오류: {updated_data['error']}")
             
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 주식 메타데이터 수집 실패: {e}")
@@ -648,51 +647,27 @@ def run_scheduler() -> None:
     except KeyboardInterrupt:
         print("\n⏹️ 스케줄러 종료")
 
-def run_image_pattern_detection_task(skip_data: bool = False):
-    """
-    이미지 기반 패턴 감지 작업 실행 - 모든 스크리닝 결과 대상
-    
-    Args:
-        skip_data: 데이터 수집 건너뛰기
-    """
+def run_image_pattern_detection_task():
+    """13단계: 이미지 패턴 감지 실행"""
     try:
-        print("\n🖼️ 이미지 기반 패턴 감지 시작 (모든 스크리닝 결과 대상)")
-        
-        # 필요한 디렉토리 확인
-        ensure_dir(MARKMINERVINI_RESULTS_DIR)
+        print("이미지 패턴 감지 시작...")
         
         # 모든 스크리너 결과에서 심볼 수집
-        try:
-            from ranking.utils import load_all_screener_symbols
-            all_symbols = load_all_screener_symbols()
-            
-            if not all_symbols:
-                print("⚠️ 스크리너 결과에서 종목을 찾을 수 없습니다.")
-                return
-            
-            print(f"📈 {len(all_symbols)}개 종목에 대해 이미지 패턴 감지 시작")
-            
-            # 이미지 패턴 감지 실행 (모든 심볼 대상)
-            results = run_image_pattern_detection(max_symbols=len(all_symbols), skip_data=skip_data)
-            
-            if not results.empty:
-                print(f"✅ 이미지 패턴 감지 완료: {len(results)}개 심볼 처리")
-            else:
-                print("⚠️ 처리된 결과가 없습니다.")
-                
-        except ImportError:
-            print("⚠️ ranking.utils 모듈을 찾을 수 없어 기본 방식으로 실행합니다.")
-            # 기본 방식으로 실행 (기존 코드)
-            results = run_image_pattern_detection(skip_data=skip_data)
-            
-            if not results.empty:
-                print(f"✅ 이미지 패턴 감지 완료: {len(results)}개 심볼 처리")
-            else:
-                print("⚠️ 처리된 결과가 없습니다.")
-            
+        from ranking.utils import load_all_screener_symbols
+        symbols = load_all_screener_symbols()
+        
+        if not symbols:
+            print("이미지 패턴 감지를 위한 심볼이 없습니다.")
+            return
+        
+        # 이미지 패턴 감지 실행
+        from screeners.markminervini.image_pattern_detection import run_image_pattern_detection
+        run_image_pattern_detection(symbols)
+        
+        print("이미지 패턴 감지 완료")
     except Exception as e:
-        print(f"❌ 이미지 패턴 감지 실행 중 오류: {e}")
-        print(traceback.format_exc())
+        print(f"이미지 패턴 감지 중 오류 발생: {str(e)}")
+        raise
 
 def run_ranking_system_task(skip_data: bool = False):
     """

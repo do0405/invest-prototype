@@ -181,20 +181,3 @@ class DataNormalizer:
             print(f"⚠️ VIX 데이터 파일이 없습니다: {vix_file}")
             
         return success
-
-def main():
-    """메인 실행 함수"""
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from config import DATA_DIR
-    
-    normalizer = DataNormalizer()
-    success = normalizer.normalize_all_market_data(DATA_DIR)
-    
-    if success:
-        print("\n✅ 모든 데이터 정규화 완료")
-    else:
-        print("\n❌ 일부 데이터 정규화 실패")
-        
-if __name__ == "__main__":
-    main()

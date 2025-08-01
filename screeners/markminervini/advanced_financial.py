@@ -120,21 +120,6 @@ def run_advanced_financial_screening(force_update=False, skip_data=False):
                     integrated_json_path = INTEGRATED_RESULTS_PATH.replace('.csv', '.json')
                     final_df.to_json(integrated_json_path, orient='records', indent=2, force_ascii=False)
                     
-                    # 통합 스크리너 실행 (패턴 감지 포함)
-                    print("\n🔍 통합 패턴 감지 스크리너 실행 중...")
-                    try:
-                        from .integrated_screener import run_integrated_screening
-                        
-                        # 상위 50개 심볼만 패턴 감지
-                        top_symbols = final_df.head(50)['symbol'].tolist()
-                        if top_symbols:
-                            pattern_results = run_integrated_screening(max_symbols=len(top_symbols))
-                            print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 심볼 처리")
-                        else:
-                            print("⚠️ 패턴 감지할 심볼이 없습니다.")
-                    except Exception as e:
-                        print(f"⚠️ 통합 패턴 감지 오류: {e}")
-                    
                     # 에러가 있는 종목 출력
                     error_df = final_df[final_df['has_error'] == True]
                     if not error_df.empty:

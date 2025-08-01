@@ -79,6 +79,18 @@ def load_index_data(ticker: str, days: int = 200) -> Optional[pd.DataFrame]:
 
         df = pd.read_csv(file_path)
         df.columns = [c.lower() for c in df.columns]
+        
+        # VIX 데이터의 경우 컬럼명 매핑
+        if ticker == 'VIX':
+            if 'vix_close' in df.columns:
+                df['close'] = df['vix_close']
+            if 'vix_high' in df.columns:
+                df['high'] = df['vix_high']
+            if 'vix_low' in df.columns:
+                df['low'] = df['vix_low']
+            if 'vix_volume' in df.columns:
+                df['volume'] = df['vix_volume']
+        
         if 'date' not in df.columns:
             print(f"⚠️ {ticker} 데이터에 날짜 컬럼이 없습니다.")
             return None

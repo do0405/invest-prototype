@@ -26,42 +26,8 @@ from config import (
 
 # 크라켄 관련 함수 제거됨
 
-def get_sp500_symbols() -> List[str]:
-    """S&P 500 구성 종목 가져오기"""
-    try:
-        print("📈 S&P 500 종목 리스트 업데이트 중...")
-        sp500_url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-        tables = pd.read_html(sp500_url)
-        sp500_df = tables[0]
-        symbols = sp500_df['Symbol'].tolist()
-        
-        # 일부 기호 정리 (예: BRK.B -> BRK-B)
-        cleaned_symbols = []
-        for symbol in symbols:
-            if '.' in symbol:
-                symbol = symbol.replace('.', '-')
-            cleaned_symbols.append(symbol)
-        
-        print(f"✅ S&P 500 종목 {len(cleaned_symbols)}개 수집 완료")
-        return cleaned_symbols
-    except Exception as e:
-        print(f"⚠️ S&P 500 목록 가져오기 실패: {e}")
-        return []
-
-def get_nasdaq_100_symbols() -> List[str]:
-    """NASDAQ 100 구성 종목 가져오기"""
-    try:
-        print("📈 NASDAQ 100 종목 리스트 업데이트 중...")
-        nasdaq_url = "https://en.wikipedia.org/wiki/Nasdaq-100"
-        tables = pd.read_html(nasdaq_url)
-        nasdaq_df = tables[4]  # NASDAQ 100 구성 종목 테이블
-        symbols = nasdaq_df['Ticker'].tolist()
-        
-        print(f"✅ NASDAQ 100 종목 {len(symbols)}개 수집 완료")
-        return symbols
-    except Exception as e:
-        print(f"⚠️ NASDAQ 100 목록 가져오기 실패: {e}")
-        return []
+# 위키피디아 기반 S&P500, NASDAQ 100 데이터 수집 함수 제거됨
+# 기존 데이터 소스에서 종목 목록을 가져오는 방식으로 변경
 
 def get_ipo_symbols() -> List[str]:
     """최근 IPO 종목에서 심볼 추출"""
@@ -76,13 +42,13 @@ def get_ipo_symbols() -> List[str]:
         # 최근 IPO에서 심볼 추출
         for ipo in result.get('recent_ipos', []):
             symbol = ipo.get('symbol', ipo.get('ticker', ''))
-            if symbol and symbol.strip():
+            if symbol and symbol.strip() and symbol.strip().upper() != 'N/A':
                 symbols.append(symbol.strip())
         
         # 예정된 IPO에서 심볼 추출
         for ipo in result.get('upcoming_ipos', []):
             symbol = ipo.get('symbol', ipo.get('ticker', ''))
-            if symbol and symbol.strip():
+            if symbol and symbol.strip() and symbol.strip().upper() != 'N/A':
                 symbols.append(symbol.strip())
         
         # 중복 제거
@@ -109,15 +75,7 @@ def update_symbol_list() -> Set[str]:
     # 새로운 종목 수집
     new_symbols = set()
     
-    # S&P 500 종목 추가
-    sp500_symbols = get_sp500_symbols()
-    new_symbols.update(sp500_symbols)
-    
-    # NASDAQ 100 종목 추가
-    nasdaq_symbols = get_nasdaq_100_symbols()
-    new_symbols.update(nasdaq_symbols)
-    
-    # IPO 종목 추가
+    # IPO 종목 추가 (위키피디아 기반 S&P500, NASDAQ 100 수집 제거됨)
     ipo_symbols = get_ipo_symbols()
     new_symbols.update(ipo_symbols)
     
@@ -126,7 +84,6 @@ def update_symbol_list() -> Set[str]:
     
     if truly_new_symbols:
         print(f"🆕 새로 발견된 종목: {len(truly_new_symbols)}개")
-        print(f"   예시: {list(truly_new_symbols)[:10]}")
         
         # 새로운 종목들의 빈 CSV 파일 생성 (다음 수집 시 포함되도록)
         for symbol in truly_new_symbols:
@@ -251,7 +208,7 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                     start_date = today - timedelta(days=450)
                 else:
                     # 날짜 컬럼이 UTC 시간대로 변환되었는지 확인
-                    if not pd.api.types.is_datetime64tz_dtype(existing["date"]):
+                    if not isinstance(existing["date"].dtype, pd.DatetimeTZDtype):
                         existing["date"] = pd.to_datetime(existing["date"], utc=True)
 
                     # 330 영업일 제한 적용 (데이터가 330일 이상인 경우 오래된 데이터 제거)
@@ -336,9 +293,9 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
             before_len = len(existing)
             
             # 날짜 형식 통일 (모든 날짜를 UTC 시간대로 변환)
-            if not pd.api.types.is_datetime64tz_dtype(existing["date"]):
+            if not isinstance(existing["date"].dtype, pd.DatetimeTZDtype):
                 existing["date"] = pd.to_datetime(existing["date"], utc=True)
-            if not pd.api.types.is_datetime64tz_dtype(df_new["date"]):
+            if not isinstance(df_new["date"].dtype, pd.DatetimeTZDtype):
                 df_new["date"] = pd.to_datetime(df_new["date"], utc=True)
                 
             # 날짜 문자열 형식으로 변환하여 중복 제거 (시간대 문제 해결)
