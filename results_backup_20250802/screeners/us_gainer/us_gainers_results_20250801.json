@@ -1,0 +1,389 @@
+[
+  {
+    "symbol": "ALNY",
+    "price": 392.239990234375,
+    "change_pct": 15.432608689014016,
+    "volume": 3353500,
+    "relative_volume": 3.397153421465836,
+    "market_cap": 51827924992,
+    "eps_growth_qoq": 31.379009825340543
+  },
+  {
+    "symbol": "AUPH",
+    "price": 9.244999885559082,
+    "change_pct": 2.154692715077,
+    "volume": 5919800,
+    "relative_volume": 3.571081706334963,
+    "market_cap": 1337529600,
+    "eps_growth_qoq": 1533.589923023093
+  },
+  {
+    "symbol": "COUR",
+    "price": 12.640000343322754,
+    "change_pct": 5.685621262599416,
+    "volume": 5611000,
+    "relative_volume": 2.17373758765878,
+    "market_cap": 1978764032,
+    "eps_growth_qoq": 63.9072694461154
+  },
+  {
+    "symbol": "HII",
+    "price": 278.8599853515625,
+    "change_pct": 7.867862139207715,
+    "volume": 2038700,
+    "relative_volume": 4.147328520924154,
+    "market_cap": 10706689024,
+    "eps_growth_qoq": 21.138211382113823
+  },
+  {
+    "symbol": "KBR",
+    "price": 46.7400016784668,
+    "change_pct": 2.6801432522724156,
+    "volume": 3400500,
+    "relative_volume": 2.2990072903872805,
+    "market_cap": 5941908480,
+    "eps_growth_qoq": 52.63157894736842
+  },
+  {
+    "symbol": "MOD",
+    "price": 134.55999755859375,
+    "change_pct": 18.429848887362077,
+    "volume": 4507900,
+    "relative_volume": 4.153815030021148,
+    "market_cap": 7023233024,
+    "eps_growth_qoq": 20.975609756097562
+  },
+  {
+    "symbol": "PTC",
+    "price": 214.80999755859372,
+    "change_pct": 6.073775806330661,
+    "volume": 2618200,
+    "relative_volume": 2.380924955364856,
+    "market_cap": 25276641280,
+    "eps_growth_qoq": 97.78674968382138
+  },
+  {
+    "symbol": "AGCO",
+    "price": 117.97000122070312,
+    "change_pct": 10.624532910635498,
+    "volume": 3156300,
+    "relative_volume": 3.9418683795873255,
+    "market_cap": 8439159296,
+    "eps_growth_qoq": 2898.095238095238
+  },
+  {
+    "symbol": "ALHC",
+    "price": 13.779999732971191,
+    "change_pct": 5.999997945932245,
+    "volume": 14901100,
+    "relative_volume": 4.432643663572308,
+    "market_cap": 2596186368,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "ALL",
+    "price": 203.25,
+    "change_pct": 5.705222222980533,
+    "volume": 4538200,
+    "relative_volume": 2.9190572979648546,
+    "market_cap": 52739207168,
+    "eps_growth_qoq": 254.45378151260502
+  },
+  {
+    "symbol": "AMSC",
+    "price": 56.84999847412109,
+    "change_pct": 29.38097462653253,
+    "volume": 5312500,
+    "relative_volume": 4.510349394658048,
+    "market_cap": 2428391936,
+    "eps_growth_qoq": 458.0082987551867
+  },
+  {
+    "symbol": "APLD",
+    "price": 13.140000343322754,
+    "change_pct": 31.006985973570767,
+    "volume": 137804100,
+    "relative_volume": 2.6743111912906214,
+    "market_cap": 3207542784,
+    "eps_growth_qoq": 74.37034153655408
+  },
+  {
+    "symbol": "APLS",
+    "price": 22.34000015258789,
+    "change_pct": 17.57894817151522,
+    "volume": 7000200,
+    "relative_volume": 2.7531624411200593,
+    "market_cap": 2889429248,
+    "eps_growth_qoq": 54.29547302792085
+  },
+  {
+    "symbol": "APPF",
+    "price": 267.3800048828125,
+    "change_pct": 3.1558612232038152,
+    "volume": 539800,
+    "relative_volume": 2.0638632757489055,
+    "market_cap": 11334597632,
+    "eps_growth_qoq": 14.648057865723482
+  },
+  {
+    "symbol": "ARGX",
+    "price": 670.3300170898438,
+    "change_pct": 11.9287349419815,
+    "volume": 1377300,
+    "relative_volume": 3.139348030072217,
+    "market_cap": 41144692736,
+    "eps_growth_qoq": 44.780461323309865
+  },
+  {
+    "symbol": "BTU",
+    "price": 16.149999618530273,
+    "change_pct": 4.734108551391003,
+    "volume": 13362200,
+    "relative_volume": 2.707520439832091,
+    "market_cap": 1932307584,
+    "eps_growth_qoq": 12.418300653594772
+  },
+  {
+    "symbol": "BWA",
+    "price": 36.79999923706055,
+    "change_pct": 6.573995186830683,
+    "volume": 5151300,
+    "relative_volume": 2.105697027833151,
+    "market_cap": 8206541824,
+    "eps_growth_qoq": 42.675159235668794
+  },
+  {
+    "symbol": "CMRE",
+    "price": 10.09000015258789,
+    "change_pct": 5.654449749403345,
+    "volume": 1336000,
+    "relative_volume": 2.5377470080877704,
+    "market_cap": 1478854784,
+    "eps_growth_qoq": 186.30904723779022
+  },
+  {
+    "symbol": "CNMD",
+    "price": 51.150001525878906,
+    "change_pct": 2.0143640776329796,
+    "volume": 1209400,
+    "relative_volume": 2.9319016507886304,
+    "market_cap": 1612278144,
+    "eps_growth_qoq": 254.8873426110007
+  },
+  {
+    "symbol": "ERJ",
+    "price": 57.58000183105469,
+    "change_pct": 5.015502294662433,
+    "volume": 6437200,
+    "relative_volume": 3.5304247675981024,
+    "market_cap": 10410247168,
+    "eps_growth_qoq": 60.96491228070175
+  },
+  {
+    "symbol": "EVTC",
+    "price": 36.150001525878906,
+    "change_pct": 10.314314985962913,
+    "volume": 1185000,
+    "relative_volume": 3.5276606301165963,
+    "market_cap": 2241929216,
+    "eps_growth_qoq": 23.734825551172676
+  },
+  {
+    "symbol": "FSS",
+    "price": 126.56999969482422,
+    "change_pct": 2.1137578145129288,
+    "volume": 1729300,
+    "relative_volume": 2.9751227233105473,
+    "market_cap": 7395334656,
+    "eps_growth_qoq": 54.21166306695464
+  },
+  {
+    "symbol": "LECO",
+    "price": 243.5,
+    "change_pct": 9.031477187826997,
+    "volume": 1040200,
+    "relative_volume": 2.7416251548456816,
+    "market_cap": 13369840640,
+    "eps_growth_qoq": 21.022559436900252
+  },
+  {
+    "symbol": "LNC",
+    "price": 38.11000061035156,
+    "change_pct": 11.43274783680457,
+    "volume": 6386100,
+    "relative_volume": 3.319690666093698,
+    "market_cap": 6271059968,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "MAS",
+    "price": 68.12999725341797,
+    "change_pct": 3.6512913036862216,
+    "volume": 5236400,
+    "relative_volume": 2.3257676645571825,
+    "market_cap": 14374933504,
+    "eps_growth_qoq": 45.16129032258064
+  },
+  {
+    "symbol": "MDXG",
+    "price": 7.190000057220459,
+    "change_pct": 10.27607481984587,
+    "volume": 2778900,
+    "relative_volume": 3.411067444348746,
+    "market_cap": 1071385920,
+    "eps_growth_qoq": 36.95002135839385
+  },
+  {
+    "symbol": "META",
+    "price": 773.4400024414062,
+    "change_pct": 11.252711841922626,
+    "volume": 38735900,
+    "relative_volume": 3.0980974756310924,
+    "market_cap": 1879558062080,
+    "eps_growth_qoq": 10.171833693823599
+  },
+  {
+    "symbol": "MMS",
+    "price": 73.86000061035156,
+    "change_pct": 3.692260465353403,
+    "volume": 916800,
+    "relative_volume": 2.0786523222727324,
+    "market_cap": 4098291968,
+    "eps_growth_qoq": 134.4135352946888
+  },
+  {
+    "symbol": "MTRN",
+    "price": 105.3000030517578,
+    "change_pct": 3.6315347104036055,
+    "volume": 479100,
+    "relative_volume": 2.331159984429739,
+    "market_cap": 2170624512,
+    "eps_growth_qoq": 42.04994914679625
+  },
+  {
+    "symbol": "OI",
+    "price": 13.010000228881836,
+    "change_pct": 2.6835055291281718,
+    "volume": 3607600,
+    "relative_volume": 2.2026078479657603,
+    "market_cap": 1998434560,
+    "eps_growth_qoq": 68.75
+  },
+  {
+    "symbol": "PI",
+    "price": 154.5800018310547,
+    "change_pct": 26.487196619817976,
+    "volume": 2703300,
+    "relative_volume": 5.382915173237754,
+    "market_cap": 4460033024,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "PRLB",
+    "price": 43.119998931884766,
+    "change_pct": 9.91587926342017,
+    "volume": 390200,
+    "relative_volume": 2.039686770603106,
+    "market_cap": 1033545664,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "ROKU",
+    "price": 94.16000366210938,
+    "change_pct": 2.3478300675101815,
+    "volume": 8818100,
+    "relative_volume": 2.47786294490765,
+    "market_cap": 11614322688,
+    "eps_growth_qoq": 22.83391470687521
+  },
+  {
+    "symbol": "RSI",
+    "price": 20.15999984741211,
+    "change_pct": 25.529268479518862,
+    "volume": 11191900,
+    "relative_volume": 7.820414875132182,
+    "market_cap": 4488027648,
+    "eps_growth_qoq": 162.66666666666666
+  },
+  {
+    "symbol": "SPGI",
+    "price": 551.0999755859375,
+    "change_pct": 4.1127383283080965,
+    "volume": 2494700,
+    "relative_volume": 2.2587440657453546,
+    "market_cap": 167131512832,
+    "eps_growth_qoq": 23.863636363636363
+  },
+  {
+    "symbol": "SUI",
+    "price": 124.02999877929688,
+    "change_pct": 6.372213038085794,
+    "volume": 3204600,
+    "relative_volume": 3.495075745182083,
+    "market_cap": 16299749376,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "TAL",
+    "price": 10.9399995803833,
+    "change_pct": 8.424176560368046,
+    "volume": 15595200,
+    "relative_volume": 2.4666959457286404,
+    "market_cap": 6419907072,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "TMDX",
+    "price": 118.97000122070312,
+    "change_pct": 10.46425681690315,
+    "volume": 3866100,
+    "relative_volume": 3.5875839029973093,
+    "market_cap": 4145801728,
+    "eps_growth_qoq": 35.92009968071023
+  },
+  {
+    "symbol": "UAN",
+    "price": 94.7300033569336,
+    "change_pct": 5.784478088941958,
+    "volume": 57300,
+    "relative_volume": 2.305216575030173,
+    "market_cap": 1017852544,
+    "eps_growth_qoq": 48.062312107133096
+  },
+  {
+    "symbol": "UDMY",
+    "price": 7.610000133514404,
+    "change_pct": 8.869819494959174,
+    "volume": 3222900,
+    "relative_volume": 2.7073675780642943,
+    "market_cap": 1084992768,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "USAR",
+    "price": 12.710000038146973,
+    "change_pct": 13.99103563218176,
+    "volume": 6542500,
+    "relative_volume": 2.2662259875589936,
+    "market_cap": 1293342464,
+    "eps_growth_qoq": 207.84517582816687
+  },
+  {
+    "symbol": "XYL",
+    "price": 144.6199951171875,
+    "change_pct": 10.735059998817608,
+    "volume": 3538900,
+    "relative_volume": 2.9055862630662195,
+    "market_cap": 34526642176,
+    "eps_growth_qoq": 33.72781065088758
+  },
+  {
+    "symbol": "ZWS",
+    "price": 44.25,
+    "change_pct": 3.050771809937114,
+    "volume": 2933700,
+    "relative_volume": 3.4126745626603125,
+    "market_cap": 7439353344,
+    "eps_growth_qoq": 15.825688073394495
+  }
+]

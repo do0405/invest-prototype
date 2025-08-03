@@ -23,9 +23,46 @@ def _collect_symbols_from_csv(directory: Path, patterns: List[str]) -> Set[str]:
     collected: Set[str] = set()
 
     for pattern in patterns:
-        for csv_path in directory.glob(pattern):
+        csv_files = list(directory.glob(pattern))
+        if not csv_files:
+            continue
+        
+        # 각 디렉토리별로 최신 파일들을 선택하는 로직
+        files_by_prefix = {}
+        
+        for csv_path in csv_files:
+            # 파일명에서 접두사 추출 (날짜 부분 제거)
+            filename = csv_path.stem
+            # 날짜 패턴 제거 (_20250801 형태)
+            import re
+            prefix = re.sub(r'_\d{8}$', '', filename)
+            
+            if prefix not in files_by_prefix:
+                files_by_prefix[prefix] = []
+            files_by_prefix[prefix].append(csv_path)
+        
+        # 각 접두사별로 최신 파일 선택
+        selected_files = []
+        for prefix, files in files_by_prefix.items():
+            if len(files) == 1:
+                selected_files.extend(files)
+            else:
+                # 날짜가 있는 파일들 중 최신 것 선택
+                dated_files = [f for f in files if re.search(r'_\d{8}$', f.stem)]
+                if dated_files:
+                    latest_file = max(dated_files, key=lambda x: x.stat().st_mtime)
+                    selected_files.append(latest_file)
+                else:
+                    # 날짜가 없는 파일들은 모두 포함
+                    selected_files.extend(files)
+        
+        for csv_path in selected_files:
             try:
-                df = pd.read_csv(csv_path)
+                from utils.screener_utils import read_csv_flexible
+                df = read_csv_flexible(str(csv_path))
+                if df is None or df.empty:
+                    logging.warning(f"{csv_path}: 읽기 실패 또는 빈 파일")
+                    continue
             except Exception as e:
                 logging.warning(f"{csv_path}: 읽기 실패 - {e}")
                 continue
@@ -46,8 +83,16 @@ def _collect_symbols_from_csv(directory: Path, patterns: List[str]) -> Set[str]:
             elif "종목명" in df.columns:
                 col = "종목명"
 
-            if col:
-                collected.update(df[col].dropna().astype(str).str.upper())
+            if col and col in df.columns:
+                # Series로 변환하여 .str 속성 사용 가능하도록 함
+                series = df[col].dropna().astype(str)
+                if hasattr(series, 'str'):
+                    collected.update(series.str.upper())
+                else:
+                    # DataFrame인 경우 첫 번째 컬럼 사용
+                    if isinstance(series, pd.DataFrame) and not series.empty:
+                        series = series.iloc[:, 0]
+                    collected.update(series.astype(str).str.upper())
 
     return collected
 

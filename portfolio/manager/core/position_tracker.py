@@ -41,7 +41,12 @@ class PositionTracker:
         """기존 포지션 데이터 로드"""
         if os.path.exists(self.positions_file):
             try:
-                return pd.read_csv(self.positions_file)
+                from utils.screener_utils import read_csv_flexible
+                df = read_csv_flexible(self.positions_file)
+                if df is not None:
+                    return df
+                else:
+                    print(f"⚠️ 포지션 파일 읽기 실패")
             except Exception as e:
                 print(f"⚠️ 포지션 파일 로드 실패: {e}")
         

@@ -1,0 +1,14 @@
+[
+  {
+    "ticker":"AZ",
+    "sector":"Technology",
+    "close":10.4300003052,
+    "volume":531100,
+    "volume_ratio":2.4989413259,
+    "rsi_14":63.5462496999,
+    "above_30w_sma":true,
+    "above_10w_sma":true,
+    "market_stage":"stage1",
+    "date":"2025-06-21"
+  }
+]

@@ -39,28 +39,57 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         self.grade_description_map = {info["grade"]: info["description"] for info in self.data_quality_grades.values()}
 
     def get_large_cap_stocks(self) -> List[str]:
-        """S&P 500 전체 종목 가져오기"""
-        try:
-            # S&P 500 구성 종목 가져오기
-            sp500_url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-            tables = pd.read_html(sp500_url)
-            sp500_df = tables[0]
-            symbols = sp500_df['Symbol'].tolist()
-            
-            # 일부 기호 정리 (예: BRK.B -> BRK-B)
-            cleaned_symbols = []
-            for symbol in symbols:
-                if '.' in symbol:
-                    symbol = symbol.replace('.', '-')
-                cleaned_symbols.append(symbol)
-            
-            print(f"✅ S&P 500 구성 종목 {len(cleaned_symbols)}개 로드 완료")
-            return cleaned_symbols  # 전체 종목 반환
-            
-        except Exception as e:
-            print(f"⚠️ S&P 500 목록 가져오기 실패: {e}")
-            # 기본 대형주 목록 반환
-            return ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK-B', 'UNH', 'JNJ']
+        """S&P 500 전체 종목 가져오기 (네트워크 오류 처리 강화)"""
+        import time
+        
+        # 재시도 설정
+        max_retries = 3
+        retry_delay = 2  # 초
+        
+        for attempt in range(max_retries):
+            try:
+                print(f"📡 S&P 500 목록 가져오기 시도 {attempt + 1}/{max_retries}...")
+                
+                # S&P 500 구성 종목 가져오기
+                sp500_url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+                
+                # pandas read_html로 테이블 가져오기
+                tables = pd.read_html(sp500_url)
+                sp500_df = tables[0]
+                symbols = sp500_df['Symbol'].tolist()
+                
+                # 일부 기호 정리 (예: BRK.B -> BRK-B)
+                cleaned_symbols = []
+                for symbol in symbols:
+                    if '.' in symbol:
+                        symbol = symbol.replace('.', '-')
+                    cleaned_symbols.append(symbol)
+                
+                print(f"✅ S&P 500 구성 종목 {len(cleaned_symbols)}개 로드 완료")
+                return cleaned_symbols  # 전체 종목 반환
+                
+            except requests.exceptions.RequestException as e:
+                print(f"🌐 네트워크 오류 (시도 {attempt + 1}/{max_retries}): {e}")
+                if attempt < max_retries - 1:
+                    print(f"⏳ {retry_delay}초 후 재시도...")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2  # 지수 백오프
+                else:
+                    print(f"❌ 최대 재시도 횟수 초과. 기본 목록 사용")
+            except Exception as e:
+                print(f"⚠️ S&P 500 목록 가져오기 실패 (시도 {attempt + 1}/{max_retries}): {type(e).__name__}: {e}")
+                if attempt < max_retries - 1:
+                    print(f"⏳ {retry_delay}초 후 재시도...")
+                    time.sleep(retry_delay)
+                    retry_delay *= 2
+                else:
+                    print(f"❌ 모든 재시도 실패. 기본 목록 사용")
+        
+        # 모든 시도 실패 시 기본 대형주 목록 반환
+        default_stocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'NVDA', 'META', 'TSLA', 'BRK-B', 'UNH', 'JNJ', 
+                         'V', 'JPM', 'WMT', 'PG', 'MA', 'HD', 'CVX', 'ABBV', 'BAC', 'KO']
+        print(f"🔄 기본 대형주 목록 사용: {len(default_stocks)}개 종목")
+        return default_stocks
     
     def get_options_data(self, symbol: str) -> Tuple[Optional[Dict], str]:
         """옵션 데이터 가져오기 - 유연한 하이브리드 접근법"""
@@ -376,16 +405,17 @@ class VolatilitySkewScreener(SkewCalculationsMixin):
         return "\n".join(report)
 
     def save_results(self, results: List[Dict]) -> str:
-        """결과를 CSV 파일로 저장 (타임스탬프 없는 파일명 사용)"""
+        """결과를 CSV 파일로 저장 (날짜만 포함한 파일명 사용)"""
         if not results:
             return ""
         
-        # 결과 저장 (타임스탬프 포함 파일명 사용)
+        # 결과 저장 (날짜만 포함한 파일명 사용)
         results_paths = save_screening_results(
             results=results,
             output_dir=self.results_dir,
             filename_prefix="volatility_skew_screening",
-            include_timestamp=True
+            include_timestamp=True,
+            incremental_update=True
         )
         
         return results_paths['csv_path']

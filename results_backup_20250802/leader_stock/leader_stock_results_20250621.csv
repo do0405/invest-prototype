@@ -1,0 +1,2 @@
+ticker,sector,close,volume,volume_ratio,rsi_14,above_30w_sma,above_10w_sma,market_stage,date
+AZ,Technology,10.43000030517578,531100,2.4989413259304567,63.546249699876405,True,True,stage1,2025-06-21

@@ -85,28 +85,118 @@ class RealIPODataCollector:
         return cleaned_ipos
     
     def _save_to_files(self, data: List[Dict[str, Any]], file_prefix: str) -> Dict[str, str]:
-        """데이터를 CSV와 JSON 파일로 저장"""
+        """데이터를 CSV와 JSON 파일로 저장 (증분 업데이트 지원, 1년 이상 된 데이터 자동 정리)"""
         if not data:
             logger.warning(f"{file_prefix} 데이터가 비어있어 파일을 저장하지 않습니다.")
             return {}
         
-        # 타임스탬프 포함 파일명 사용
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        # CSV 파일 저장
-        csv_filename = f"{file_prefix}_{timestamp}.csv"
+        # 날짜만 포함한 파일명 사용 (시간 정보 제거)
+        date_str = datetime.now().strftime('%Y%m%d')
+        csv_filename = f"{file_prefix}_{date_str}.csv"
+        json_filename = f"{file_prefix}_{date_str}.json"
         csv_path = self.data_dir / csv_filename
-        
-        df = pd.DataFrame(data)
-        df.to_csv(csv_path, index=False, encoding='utf-8')
-        logger.info(f"CSV 파일 저장 완료: {csv_path} ({len(data)}개 IPO)")
-        
-        # JSON 파일 저장
-        json_filename = f"{file_prefix}_{timestamp}.json"
         json_path = self.data_dir / json_filename
         
+        new_df = pd.DataFrame(data)
+        
+        # 1년 기준 날짜 계산 (pandas Timestamp로 변환)
+        one_year_ago = pd.Timestamp(datetime.now() - timedelta(days=365))
+        
+        # 증분 업데이트 처리
+        if csv_path.exists():
+            try:
+                existing_df = pd.read_csv(csv_path)
+                
+                # 기존 데이터에서 1년 이상 된 데이터 제거
+                if 'ipo_date' in existing_df.columns:
+                    existing_df['ipo_date'] = pd.to_datetime(existing_df['ipo_date'], errors='coerce')
+                    before_filter = len(existing_df)
+                    # NaT 값 제거 후 날짜 비교
+                    valid_dates_mask = existing_df['ipo_date'].notna()
+                    existing_df = existing_df[valid_dates_mask & (existing_df['ipo_date'] >= one_year_ago)]
+                    after_filter = len(existing_df)
+                    if before_filter > after_filter:
+                        logger.info(f"🗑️ 1년 이상 된 IPO 데이터 {before_filter - after_filter}개 제거")
+                
+                # 기본 키 컬럼 확인 (symbol 또는 ticker)
+                key_col = None
+                for col in ['symbol', 'ticker', 'company_name']:
+                    if col in new_df.columns:
+                        key_col = col
+                        break
+                
+                if key_col and key_col in existing_df.columns:
+                    # 기존 데이터에서 새 데이터와 중복되는 항목 제거
+                    existing_df = existing_df[~existing_df[key_col].isin(new_df[key_col])]
+                    
+                    # 기존 데이터와 새 데이터 병합
+                    combined_df = pd.concat([existing_df, new_df], ignore_index=True)
+                    
+                    # 날짜 컬럼이 있으면 날짜순 정렬 (최신순)
+                    date_cols = [col for col in combined_df.columns if 'date' in col.lower()]
+                    if date_cols:
+                        # 날짜 컬럼을 datetime으로 변환 후 정렬
+                        sort_col = date_cols[0]
+                        combined_df[sort_col] = pd.to_datetime(combined_df[sort_col], errors='coerce')
+                        # NaT 값을 마지막에 배치하여 정렬
+                        combined_df = combined_df.sort_values(sort_col, ascending=False, na_position='last')
+                    
+                    final_df = combined_df
+                    logger.info(f"🔄 증분 업데이트: 기존 {len(existing_df)}개 + 신규 {len(new_df)}개 = 총 {len(final_df)}개 IPO")
+                else:
+                    final_df = new_df
+                    logger.info(f"⚠️ 키 컬럼 불일치, 전체 교체: {len(new_df)}개 IPO")
+            except Exception as e:
+                logger.warning(f"기존 파일 읽기 실패 ({e}), 전체 교체: {len(new_df)}개 IPO")
+                final_df = new_df
+        else:
+            final_df = new_df
+            logger.info(f"✅ 신규 저장: {len(new_df)}개 IPO")
+        
+        # 최종 데이터에서도 1년 이상 된 데이터 필터링
+        if 'ipo_date' in final_df.columns:
+            final_df['ipo_date'] = pd.to_datetime(final_df['ipo_date'], errors='coerce')
+            before_final_filter = len(final_df)
+            # NaT 값 제거 후 날짜 비교
+            valid_dates_mask = final_df['ipo_date'].notna()
+            final_df = final_df[valid_dates_mask & (final_df['ipo_date'] >= one_year_ago)]
+            after_final_filter = len(final_df)
+            if before_final_filter > after_final_filter:
+                logger.info(f"📅 최종 저장 전 1년 이상 된 데이터 {before_final_filter - after_final_filter}개 추가 제거")
+        
+        # CSV 파일 저장
+        final_df.to_csv(csv_path, index=False, encoding='utf-8')
+        logger.info(f"CSV 파일 저장 완료: {csv_path} (최근 1년 데이터 {len(final_df)}개)")
+        
+        # JSON 파일 증분 업데이트
+        if json_path.exists():
+            try:
+                with open(json_path, 'r', encoding='utf-8') as f:
+                    existing_json = json.load(f)
+                
+                # JSON도 동일하게 증분 업데이트
+                key_col = None
+                for col in ['symbol', 'ticker', 'company_name']:
+                    if col in data[0]:
+                        key_col = col
+                        break
+                
+                if key_col:
+                    existing_keys = {item.get(key_col) for item in existing_json if key_col in item}
+                    # 기존 항목에서 업데이트된 항목 제거
+                    updated_existing = [item for item in existing_json 
+                                      if item.get(key_col) not in {d.get(key_col) for d in data}]
+                    combined_json = updated_existing + data
+                else:
+                    combined_json = data
+            except Exception:
+                combined_json = data
+        else:
+            combined_json = data
+        
         with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        logger.info(f"JSON 파일 저장 완료: {json_path} ({len(data)}개 IPO)")
+            json.dump(combined_json, f, ensure_ascii=False, indent=2)
+        logger.info(f"JSON 파일 저장 완료: {json_path}")
         
         return {
             'csv': str(csv_path),
@@ -167,8 +257,10 @@ class RealIPODataCollector:
 
         df_list = []
         for file in csv_files:
-            df = pd.read_csv(file)
-            df.columns = [c.lower() for c in df.columns]
+            from utils.screener_utils import read_csv_flexible
+            df = read_csv_flexible(str(file))
+            if df is None:
+                continue
             if 'ticker' in df.columns and 'symbol' not in df.columns:
                 df.rename(columns={'ticker': 'symbol'}, inplace=True)
             if 'date' in df.columns and 'ipo_date' not in df.columns:

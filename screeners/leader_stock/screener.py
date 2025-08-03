@@ -22,7 +22,7 @@ from config import (
 )
 from utils.calc_utils import get_us_market_today
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
-from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary
+from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary, read_csv_flexible
 
 
 # 결과 저장 디렉토리
@@ -243,8 +243,8 @@ class MarketReversalLeaderScreener:
         
         if os.path.exists(US_WITH_RS_PATH):
             try:
-                rs_df = pd.read_csv(US_WITH_RS_PATH)
-                if 'symbol' in rs_df.columns and 'rs_score' in rs_df.columns:
+                rs_df = read_csv_flexible(US_WITH_RS_PATH, required_columns=['symbol', 'rs_score'])
+                if rs_df is not None:
                     rs_scores = rs_df.set_index('symbol')['rs_score'].to_dict()
                     logger.info(f"RS 점수 로드 완료: {len(rs_scores)}개 종목")
             except Exception as e:
@@ -257,11 +257,14 @@ class MarketReversalLeaderScreener:
         try:
             spy_path = os.path.join(DATA_US_DIR, 'SPY.csv')
             if os.path.exists(spy_path):
-                self.spx_df = pd.read_csv(spy_path)
-                self.spx_df.columns = [c.lower() for c in self.spx_df.columns]
-                self.spx_df['date'] = pd.to_datetime(self.spx_df['date'])
-                self.spx_df = self.spx_df.sort_values('date')
-                logger.info(f"SPX 데이터 로드 완료: {len(self.spx_df)}일")
+                self.spx_df = read_csv_flexible(spy_path, required_columns=['date', 'close'])
+                if self.spx_df is not None:
+                    self.spx_df['date'] = pd.to_datetime(self.spx_df['date'])
+                    self.spx_df = self.spx_df.sort_values('date')
+                    logger.info(f"SPX 데이터 로드 완료: {len(self.spx_df)}일")
+                else:
+                    self.spx_df = pd.DataFrame()
+                    logger.warning("SPX 데이터 로드 실패")
             else:
                 self.spx_df = pd.DataFrame()
                 logger.warning("SPX 데이터 파일 없음")
@@ -657,13 +660,14 @@ class MarketReversalLeaderScreener:
             # 리더 점수 기준으로 내림차순 정렬
             results_df = results_df.sort_values(['leader_score', 'rs_rating'], ascending=[False, False])
             
-            # 결과 저장 (타임스탬프 포함 파일명 사용)
+            # 결과 저장 (날짜만 포함한 파일명 사용)
             results_list = results_df.to_dict('records')
             results_paths = save_screening_results(
                 results=results_list,
                 output_dir=LEADER_STOCK_RESULTS_DIR,
                 filename_prefix="market_reversal_leaders",
-                include_timestamp=True
+                include_timestamp=True,
+                incremental_update=True
             )
             
             logger.info(f"스크리닝 결과 저장 완료: {results_paths['csv_path']} ({len(results_df)}개 종목)")
@@ -709,7 +713,8 @@ def run_leader_stock_screening(skip_data=False):
         results=results_list,
         output_dir=LEADER_STOCK_RESULTS_DIR,
         filename_prefix="market_reversal_leaders",
-        include_timestamp=True
+        include_timestamp=True,
+        incremental_update=True
     )
     
     # 새로운 티커 추적

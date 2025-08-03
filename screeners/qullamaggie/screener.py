@@ -125,54 +125,51 @@ def run_qullamaggie_screening(setup_type=None, enable_earnings_filter=True):
     
     # 브레이크아웃 셋업 결과 저장
     if setup_type is None or setup_type == 'breakout':
-        breakout_df = pd.DataFrame(results['breakout'])
-        if not breakout_df.empty:
+        breakout_results = results['breakout']
+        if breakout_results:
             # 점수 기준 내림차순 정렬
-            breakout_df = breakout_df.sort_values('score', ascending=False)
-            breakout_df.to_csv(BREAKOUT_RESULTS_PATH, index=False)
-            # JSON 파일 생성
-            breakout_df.to_json(BREAKOUT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            print(f"✅ 브레이크아웃 셋업 결과 저장 완료: {len(breakout_df)}개 종목")
-        else:
-            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
-            empty_breakout_df = pd.DataFrame(columns=['ticker', 'score', 'passed', 'setup_type', 'date'])
-            empty_breakout_df.to_csv(BREAKOUT_RESULTS_PATH, index=False)
-            empty_breakout_df.to_json(BREAKOUT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            print(f"⚠️ 브레이크아웃 셋업 결과 없음. 빈 파일 생성: {BREAKOUT_RESULTS_PATH}")
+            breakout_results = sorted(breakout_results, key=lambda x: x['score'], reverse=True)
+        
+        results_paths = save_screening_results(
+            results=breakout_results,
+            output_dir=QULLAMAGGIE_RESULTS_DIR,
+            filename_prefix="breakout_results",
+            include_timestamp=True,
+            incremental_update=True
+        )
+        print(f"✅ 브레이크아웃 셋업 결과 저장 완료: {len(breakout_results)}개 종목")
     
     # 에피소드 피벗 셋업 결과 저장
     if setup_type is None or setup_type == 'episode_pivot':
-        episode_pivot_df = pd.DataFrame(results['episode_pivot'])
-        if not episode_pivot_df.empty:
+        episode_pivot_results = results['episode_pivot']
+        if episode_pivot_results:
             # 점수 기준 내림차순 정렬
-            episode_pivot_df = episode_pivot_df.sort_values('score', ascending=False)
-            episode_pivot_df.to_csv(EPISODE_PIVOT_RESULTS_PATH, index=False)
-            # JSON 파일 생성
-            episode_pivot_df.to_json(EPISODE_PIVOT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            print(f"✅ 에피소드 피벗 셋업 결과 저장 완료: {len(episode_pivot_df)}개 종목")
-        else:
-            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
-            empty_episode_df = pd.DataFrame(columns=['ticker', 'score', 'passed', 'setup_type', 'date'])
-            empty_episode_df.to_csv(EPISODE_PIVOT_RESULTS_PATH, index=False)
-            empty_episode_df.to_json(EPISODE_PIVOT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            print(f"⚠️ 에피소드 피벗 셋업 결과 없음. 빈 파일 생성: {EPISODE_PIVOT_RESULTS_PATH}")
+            episode_pivot_results = sorted(episode_pivot_results, key=lambda x: x['score'], reverse=True)
+        
+        results_paths = save_screening_results(
+            results=episode_pivot_results,
+            output_dir=QULLAMAGGIE_RESULTS_DIR,
+            filename_prefix="episode_pivot_results",
+            include_timestamp=True,
+            incremental_update=True
+        )
+        print(f"✅ 에피소드 피벗 셋업 결과 저장 완료: {len(episode_pivot_results)}개 종목")
     
     # 파라볼릭 숏 셋업 결과 저장
     if setup_type is None or setup_type == 'parabolic_short':
-        parabolic_short_df = pd.DataFrame(results['parabolic_short'])
-        if not parabolic_short_df.empty:
+        parabolic_short_results = results['parabolic_short']
+        if parabolic_short_results:
             # 점수 기준 내림차순 정렬
-            parabolic_short_df = parabolic_short_df.sort_values('score', ascending=False)
-            parabolic_short_df.to_csv(PARABOLIC_SHORT_RESULTS_PATH, index=False)
-            # JSON 파일 생성
-            parabolic_short_df.to_json(PARABOLIC_SHORT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            print(f"✅ 파라볼릭 숏 셋업 결과 저장 완료: {len(parabolic_short_df)}개 종목")
-        else:
-            # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
-            empty_parabolic_df = pd.DataFrame(columns=['ticker', 'score', 'passed', 'setup_type', 'date'])
-            empty_parabolic_df.to_csv(PARABOLIC_SHORT_RESULTS_PATH, index=False)
-            empty_parabolic_df.to_json(PARABOLIC_SHORT_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
-            print(f"⚠️ 파라볼릭 숏 셋업 결과 없음. 빈 파일 생성: {PARABOLIC_SHORT_RESULTS_PATH}")
+            parabolic_short_results = sorted(parabolic_short_results, key=lambda x: x['score'], reverse=True)
+        
+        results_paths = save_screening_results(
+            results=parabolic_short_results,
+            output_dir=QULLAMAGGIE_RESULTS_DIR,
+            filename_prefix="parabolic_short_results",
+            include_timestamp=True,
+            incremental_update=True
+        )
+        print(f"✅ 파라볼릭 숏 셋업 결과 저장 완료: {len(parabolic_short_results)}개 종목")
     
     # 새로운 티커 추적
     print("\n🔍 새로운 티커 추적 중...")

@@ -28,11 +28,50 @@ class SecEdgarSource(BaseIPODataSource):
         # IPO 관련 폼 타입들
         self.ipo_forms = ['S-1', 'S-1/A', '424B4', '424B1', 'F-1', 'F-1/A']
         
+        # 연결 설정
+        self.timeout = 30  # 타임아웃 증가
+        self.max_retries = 3
+        self.retry_delay = 2  # 재시도 간격 (초)
+        
+    def _make_request_with_retry(self, url: str, params: dict = None) -> requests.Response:
+        """재시도 로직이 포함된 HTTP 요청"""
+        for attempt in range(self.max_retries):
+            try:
+                response = requests.get(
+                    url, 
+                    params=params, 
+                    headers=self.headers, 
+                    timeout=self.timeout
+                )
+                
+                if response.status_code == 200:
+                    return response
+                elif response.status_code == 429:  # Rate limit
+                    logger.warning(f"Rate limit 도달, {self.retry_delay * 2}초 대기...")
+                    time.sleep(self.retry_delay * 2)
+                    continue
+                else:
+                    logger.warning(f"HTTP {response.status_code} 응답, 재시도 {attempt + 1}/{self.max_retries}")
+                    
+            except requests.exceptions.ConnectTimeout:
+                logger.warning(f"연결 타임아웃, 재시도 {attempt + 1}/{self.max_retries}")
+            except requests.exceptions.ReadTimeout:
+                logger.warning(f"읽기 타임아웃, 재시도 {attempt + 1}/{self.max_retries}")
+            except requests.exceptions.ConnectionError as e:
+                logger.warning(f"연결 오류: {e}, 재시도 {attempt + 1}/{self.max_retries}")
+            except Exception as e:
+                logger.error(f"요청 실패: {e}, 재시도 {attempt + 1}/{self.max_retries}")
+            
+            if attempt < self.max_retries - 1:
+                time.sleep(self.retry_delay)
+        
+        raise requests.exceptions.RequestException(f"최대 재시도 횟수 초과: {url}")
+    
     def is_available(self) -> bool:
         """SEC EDGAR API 사용 가능 여부 확인"""
         try:
             # SEC API 연결 테스트
-            response = requests.get("https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json", headers=self.headers, timeout=15)
+            response = self._make_request_with_retry("https://data.sec.gov/api/xbrl/companyfacts/CIK0000320193.json")
             available = response.status_code == 200
             logger.info(f"SEC EDGAR API 사용 가능: {available}")
             return available
@@ -64,20 +103,12 @@ class SecEdgarSource(BaseIPODataSource):
                         'count': 100
                     }
                     
-                    response = requests.get(
-                        self.search_url, 
-                        params=params, 
-                        headers=self.headers, 
-                        timeout=15
-                    )
+                    response = self._make_request_with_retry(self.search_url, params)
                     
-                    if response.status_code == 200:
-                        data = response.json()
-                        filings = self._parse_search_results(data, form_type)
-                        recent_ipos.extend(filings)
-                        logger.info(f"{form_type} 폼에서 {len(filings)}개 IPO 관련 서류 발견")
-                    else:
-                        logger.warning(f"{form_type} 검색 실패: HTTP {response.status_code}")
+                    data = response.json()
+                    filings = self._parse_search_results(data, form_type)
+                    recent_ipos.extend(filings)
+                    logger.info(f"{form_type} 폼에서 {len(filings)}개 IPO 관련 서류 발견")
                         
                 except Exception as e:
                     logger.error(f"{form_type} 폼 검색 중 오류: {e}")
@@ -114,23 +145,17 @@ class SecEdgarSource(BaseIPODataSource):
                 'count': 50
             }
             
-            response = requests.get(
-                self.search_url, 
-                params=params, 
-                headers=self.headers, 
-                timeout=15
-            )
+            response = self._make_request_with_retry(self.search_url, params)
             
-            if response.status_code == 200:
-                data = response.json()
-                potential_ipos = self._parse_search_results(data, 'S-1/F-1')
-                
-                # 아직 상장되지 않은 것들 필터링 (간단한 휴리스틱)
-                for ipo in potential_ipos:
-                    if self._is_likely_upcoming_ipo(ipo):
-                        ipo['type'] = 'Upcoming IPO (Estimated)'
-                        ipo['estimated_date'] = 'TBD'
-                        upcoming_ipos.append(ipo)
+            data = response.json()
+            potential_ipos = self._parse_search_results(data, 'S-1/F-1')
+            
+            # 아직 상장되지 않은 것들 필터링 (간단한 휴리스틱)
+            for ipo in potential_ipos:
+                if self._is_likely_upcoming_ipo(ipo):
+                    ipo['type'] = 'Upcoming IPO (Estimated)'
+                    ipo['estimated_date'] = 'TBD'
+                    upcoming_ipos.append(ipo)
                         
         except Exception as e:
             logger.error(f"SEC EDGAR 예정 IPO 데이터 수집 실패: {e}")

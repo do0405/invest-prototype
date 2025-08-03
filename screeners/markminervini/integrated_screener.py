@@ -74,16 +74,20 @@ class IntegratedScreener:
             
             if os.path.exists(advanced_results_path):
                 logger.info("Advanced financial results에서 티커 목록 로드")
-                advanced_df = pd.read_csv(advanced_results_path)
-                return advanced_df['symbol'].tolist()
+                from utils.screener_utils import read_csv_flexible
+                advanced_df = read_csv_flexible(advanced_results_path, required_columns=['symbol'])
+                if advanced_df is not None:
+                    return advanced_df['symbol'].tolist()
             
             # 2. 기본 스크리너 결과에서 티커 목록 가져오기
             basic_results_path = os.path.join(self.results_dir, 'screener_results.csv')
             
             if os.path.exists(basic_results_path):
                 logger.info("기본 스크리너 결과에서 티커 목록 로드")
-                basic_df = pd.read_csv(basic_results_path)
-                return basic_df['symbol'].tolist()
+                from utils.screener_utils import read_csv_flexible
+                basic_df = read_csv_flexible(basic_results_path, required_columns=['symbol'])
+                if basic_df is not None:
+                    return basic_df['symbol'].tolist()
             
             # 3. 로컬 데이터 디렉토리에서 직접 티커 목록 가져오기
             data_dir = os.path.join(project_root, 'data', 'us')
@@ -149,7 +153,7 @@ class IntegratedScreener:
                 'cup_handle_confidence': pattern_results['cup_handle']['confidence'],
                 'cup_handle_confidence_level': pattern_results['cup_handle']['confidence_level'],
                 'cup_handle_dimensional_scores': pattern_results['cup_handle']['dimensional_scores'],
-                'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                'processing_date': datetime.now().strftime('%Y-%m-%d')
             }
             
             # 패턴 감지 로깅 (다차원 평가 포함)
@@ -177,7 +181,7 @@ class IntegratedScreener:
                 'cup_handle_confidence': 0.0,
                 'cup_handle_confidence_level': 'None',
                 'cup_handle_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
-                'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'processing_date': datetime.now().strftime('%Y-%m-%d'),
                 'error': str(e)
             }
     
@@ -249,18 +253,49 @@ class IntegratedScreener:
         return results_df
     
     def save_results(self, results_df: pd.DataFrame):
-        """결과를 CSV와 JSON으로 저장
+        """결과를 CSV와 JSON으로 저장 (증분 업데이트 지원)
         
         Args:
             results_df: 결과 DataFrame
         """
         try:
+            if results_df.empty:
+                # 빈 결과 파일 생성 (완전한 헤더 포함)
+                empty_df = pd.DataFrame(columns=[
+                    'symbol', 'data_available', 'image_generated', 'vcp_detected', 'vcp_confidence',
+                    'vcp_confidence_level', 'vcp_dimensional_scores', 'cup_handle_detected',
+                    'cup_handle_confidence', 'cup_handle_confidence_level', 'cup_handle_dimensional_scores',
+                    'processing_date', 'error'
+                ])
+                empty_df.to_csv(self.pattern_results_csv, index=False, encoding='utf-8-sig')
+                with open(self.pattern_results_json, 'w', encoding='utf-8') as f:
+                    json.dump([], f, indent=2, ensure_ascii=False)
+                logger.info(f"빈 결과 파일 생성: {self.pattern_results_csv}")
+                return
+            
+            # 증분 업데이트 처리
+            if os.path.exists(self.pattern_results_csv):
+                try:
+                    existing_df = pd.read_csv(self.pattern_results_csv)
+                    # 새 데이터와 기존 데이터 병합
+                    combined_df = pd.concat([existing_df, results_df], ignore_index=True)
+                    # 중복 제거 (symbol 기준)
+                    combined_df = combined_df.drop_duplicates(subset=['symbol'], keep='last')
+                    # processing_date 기준 내림차순 정렬 유지
+                    combined_df = combined_df.sort_values('processing_date', ascending=False)
+                    final_df = combined_df
+                except Exception as e:
+                    logger.warning(f"기존 파일 읽기 실패, 새 파일로 저장: {e}")
+                    final_df = results_df
+            else:
+                final_df = results_df
+            
             # CSV 저장
-            results_df.to_csv(self.pattern_results_csv, index=False, encoding='utf-8-sig')
+            final_df.to_csv(self.pattern_results_csv, index=False, encoding='utf-8-sig')
             logger.info(f"CSV 결과 저장: {self.pattern_results_csv}")
             
             # JSON 저장
-            results_dict = results_df.to_dict('records')
+            results_dict = final_df.to_dict('records')
             with open(self.pattern_results_json, 'w', encoding='utf-8') as f:
                 json.dump(results_dict, f, indent=2, ensure_ascii=False)
             logger.info(f"JSON 결과 저장: {self.pattern_results_json}")

@@ -12,7 +12,7 @@ import pandas as pd
 
 from config import DATA_US_DIR, US_GAINER_RESULTS_DIR
 from utils import ensure_dir, fetch_market_cap, fetch_quarterly_eps_growth
-from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary
+from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary, read_csv_flexible
 
 US_GAINERS_RESULTS_PATH = os.path.join(US_GAINER_RESULTS_DIR, 'us_gainers_results.csv')
 
@@ -37,7 +37,9 @@ def screen_us_gainers() -> pd.DataFrame:
             
         file_path = os.path.join(DATA_US_DIR, file)
         try:
-            df = pd.read_csv(file_path)
+            df = read_csv_flexible(file_path, required_columns=['close', 'volume', 'date'])
+            if df is None:
+                return None
         except Exception:
             return None
 
@@ -128,7 +130,8 @@ def screen_us_gainers() -> pd.DataFrame:
             results=results,
             output_dir=US_GAINER_RESULTS_DIR,
             filename_prefix="us_gainers_results",
-            include_timestamp=True
+            include_timestamp=True,
+            incremental_update=True
         )
         
         # 새로운 티커 추적

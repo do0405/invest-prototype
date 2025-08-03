@@ -46,7 +46,11 @@ class ChartGenerator:
                 return None
             
             # CSV 파일 읽기
-            data = pd.read_csv(csv_path)
+            from utils.screener_utils import read_csv_flexible
+            data = read_csv_flexible(csv_path, required_columns=['date', 'open', 'high', 'low', 'close', 'volume'])
+            if data is None:
+                logger.warning(f"{symbol}: CSV 파일 읽기 실패 ({csv_path})")
+                return None
             
             # 컬럼명 확인 및 정리
             if len(data.columns) >= 7:

@@ -36,23 +36,54 @@ class DataManager:
         """
         cache_file = os.path.join(self.cache_dir, f"ipo_data_{days_back}days.csv")
         
-        # 캐시 확인
+        # 캐시 확인 및 1년 이상 된 데이터 정리
         if use_cache and os.path.exists(cache_file):
             cache_age = datetime.now() - datetime.fromtimestamp(os.path.getmtime(cache_file))
             if cache_age < timedelta(hours=6):  # 6시간 이내 캐시 사용
                 logger.info("캐시된 IPO 데이터 사용")
-                df = pd.read_csv(cache_file)
-                # 날짜 형식 정규화 및 UTC 변환
-                df['ipo_date'] = pd.to_datetime(df['ipo_date'], errors='coerce')
-                if df['ipo_date'].dt.tz is None:
-                    df['ipo_date'] = df['ipo_date'].dt.tz_localize('UTC')
+                from utils.screener_utils import read_csv_flexible
+                df = read_csv_flexible(cache_file, required_columns=['ipo_date'])
+                if df is None:
+                    logger.warning("캐시 파일 읽기 실패, 새로운 데이터 수집")
                 else:
-                    df['ipo_date'] = df['ipo_date'].dt.tz_convert('UTC')
+                    # 날짜 형식 정규화 및 UTC 변환
+                    df['ipo_date'] = pd.to_datetime(df['ipo_date'], errors='coerce')
+                    if df['ipo_date'].dt.tz is None:
+                        df['ipo_date'] = df['ipo_date'].dt.tz_localize('UTC')
+                    else:
+                        df['ipo_date'] = df['ipo_date'].dt.tz_convert('UTC')
+                    
+                    # 1년 이상 된 데이터 제거
+                    one_year_ago = pd.Timestamp.utcnow() - pd.Timedelta(days=365)
+                    before_filter = len(df)
+                    df = df[df['ipo_date'] >= one_year_ago]
+                    after_filter = len(df)
+                    
+                    if before_filter > after_filter:
+                        logger.info(f"캐시에서 1년 이상 된 IPO 데이터 {before_filter - after_filter}개 제거")
+                        # 정리된 데이터로 캐시 업데이트
+                        df.to_csv(cache_file, index=False)
+                    
+                    if not df.empty:
+                        logger.info(f"캐시된 IPO 데이터 사용 (최근 1년 데이터 {len(df)}개)")
                 return df
         
-        # 새로운 데이터 수집
-        logger.info("새로운 IPO 데이터 수집")
+        # 새로운 데이터 수집 (실제 수집된 파일 우선 확인)
+        logger.info("IPO 데이터 로드 시작")
         ipo_data = self.ipo_collector.get_recent_ipos(days_back)
+        
+        if ipo_data.empty:
+            logger.warning("수집된 IPO 데이터가 없습니다. 새로운 데이터 수집을 시도합니다.")
+            # 실제 데이터 수집 시도
+            try:
+                results = self.ipo_collector.collect_all_ipo_data()
+                if results and results.get('recent_ipos'):
+                    ipo_data = pd.DataFrame(results['recent_ipos'])
+                    logger.info(f"새로운 IPO 데이터 수집 완료: {len(ipo_data)}개")
+            except Exception as e:
+                logger.error(f"IPO 데이터 수집 실패: {e}")
+        else:
+            logger.info(f"기존 IPO 데이터 로드 완료: {len(ipo_data)}개")
         if not ipo_data.empty:
             # 날짜 형식 정규화 및 UTC 변환
             ipo_data['ipo_date'] = pd.to_datetime(ipo_data['ipo_date'], errors='coerce')
@@ -89,12 +120,10 @@ class DataManager:
             
             ipo_date = ipo_info.iloc[0]['ipo_date']
             
-            # 성과 분석
-            performance = self.ipo_collector.get_ipo_performance(symbol, ipo_date)
-            
             analysis = {
                 'ipo_info': ipo_info.iloc[0].to_dict(),
-                'performance': performance,
+                'ipo_date': ipo_date,
+                'symbol': symbol
             }
             
             return analysis

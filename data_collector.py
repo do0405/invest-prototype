@@ -229,7 +229,7 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
             start_date = today - timedelta(days=450)
 
         if start_date >= today:
-            print(f"[US] ⏩ 최신 상태 (또는 오늘은 거래일 아님): {ticker}")
+            print(f"[US] ⏩ 최신 상태: {ticker} (마지막 데이터: {last_date})")
             return False
 
         print(f"[DEBUG] {ticker}: 수집 시작일 {start_date}, 종료일 {today}")

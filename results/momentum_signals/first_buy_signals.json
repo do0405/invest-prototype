@@ -232,10 +232,6 @@
     "first_signal_date":"2025-07-30"
   },
   {
-    "symbol":"TEST",
-    "first_signal_date":"2025-07-30"
-  },
-  {
     "symbol":"SVT",
     "first_signal_date":null
   },
@@ -409,6 +405,66 @@
   },
   {
     "symbol":"MISL",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"FIG",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"TOYO",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"RSI",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"SANM",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"FSS",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"ATFV",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"AWI",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"CYBR",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"ODDS",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"IQM",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"ARTY",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"PFGC",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"FFTY",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"OKYO",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"TCI",
     "first_signal_date":null
   }
 ]

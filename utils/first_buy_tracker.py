@@ -43,7 +43,12 @@ def update_first_buy_signals(df: pd.DataFrame, results_dir: str,
             return
 
     if date_col and date_col in df.columns:
-        date_series = pd.to_datetime(df[date_col], errors="coerce", utc=True).dt.strftime("%Y-%m-%d")
+        # 날짜 형식을 명시적으로 지정하여 파싱 경고 방지
+        try:
+            date_series = pd.to_datetime(df[date_col], format="%Y-%m-%d", errors="coerce", utc=True).dt.strftime("%Y-%m-%d")
+        except ValueError:
+            # 형식이 맞지 않는 경우 자동 파싱 사용
+            date_series = pd.to_datetime(df[date_col], errors="coerce", utc=True).dt.strftime("%Y-%m-%d")
     else:
         if run_date is None:
             run_date = datetime.now().strftime("%Y-%m-%d")

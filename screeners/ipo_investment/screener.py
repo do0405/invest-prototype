@@ -41,10 +41,20 @@ class IPOInvestmentScreener:
         # 데이터 매니저 초기화
         self.data_manager = DataManager()
         
-        # IPO 데이터 로드 (skip_data가 True면 빈 데이터프레임 사용)
+        # IPO 데이터 로드 (skip_data가 True면 기존 저장된 데이터 확인)
         if skip_data:
-            self.ipo_data = pd.DataFrame()
-            self.logger.info("Skip data mode: IPO 데이터 로드 건너뜀")
+            # DataManager를 통해 실제 수집된 데이터 로드 시도
+            try:
+                self.ipo_data = self.data_manager.get_ipo_data(days_back=365, use_cache=True)
+                if not self.ipo_data.empty:
+                    self.logger.info(f"Skip data mode: 실제 IPO 데이터 로드 완료 ({len(self.ipo_data)}개)")
+                else:
+                    self.ipo_data = self._load_existing_ipo_data()
+                    self.logger.info("Skip data mode: 기존 결과 파일에서 데이터 확인")
+            except Exception as e:
+                self.logger.error(f"DataManager IPO 데이터 로드 실패: {e}")
+                self.ipo_data = self._load_existing_ipo_data()
+                self.logger.info("Skip data mode: 기존 결과 파일에서 데이터 확인")
         else:
             self.ipo_data = self._load_ipo_data()
         
@@ -58,7 +68,7 @@ class IPOInvestmentScreener:
         
         # 분석기 초기화
         self.pattern_analyzer = IPOPatternAnalyzer()
-        self.track_analyzer = IPOTrackAnalyzer(self.ipo_data, self.vix, self.sector_rs)
+        self.track_analyzer = IPOTrackAnalyzer()
         self.result_processor = IPOResultProcessor(self.today)
     
     def _load_ipo_data(self):
@@ -84,30 +94,147 @@ class IPOInvestmentScreener:
             self.logger.error(f"IPO 데이터 로드 중 오류: {e}")
             return pd.DataFrame()
     
+    def _load_existing_ipo_data(self):
+        """기존 저장된 IPO 데이터 로드 (skip_data 모드용)"""
+        try:
+            # 기존 IPO 결과 파일에서 데이터 로드
+            from utils.screener_utils import find_latest_file
+            latest_file = find_latest_file(IPO_INVESTMENT_RESULTS_DIR, "ipo_investment", "csv")
+            
+            if latest_file:
+                try:
+                    existing_data = pd.read_csv(latest_file)
+                    if not existing_data.empty and 'symbol' in existing_data.columns:
+                        # 기본 IPO 데이터 구조로 변환
+                        ipo_data = pd.DataFrame({
+                            'symbol': existing_data['symbol'],
+                            'ipo_date': pd.to_datetime('2024-01-01'),  # 기본값
+                            'ipo_price': 20.0,  # 기본값
+                            'sector': 'Technology'  # 기본값
+                        })
+                        self.logger.info(f"기존 IPO 데이터 로드: {len(ipo_data)}개 종목")
+                        return ipo_data
+                except (pd.errors.EmptyDataError, pd.errors.ParserError):
+                    self.logger.warning("기존 IPO 파일이 비어있거나 손상됨")
+                    return pd.DataFrame()
+                
+                # 빈 데이터프레임인 경우
+                if existing_data.empty:
+                    self.logger.warning("기존 IPO 파일이 비어있음")
+                    return pd.DataFrame()
+            
+            self.logger.warning("기존 IPO 데이터 파일을 찾을 수 없음")
+            return pd.DataFrame()
+            
+        except Exception as e:
+            self.logger.error(f"기존 IPO 데이터 로드 중 오류: {e}")
+            return pd.DataFrame()
+    
     def _get_recent_ipos(self, days: int = 365) -> pd.DataFrame:
-        """최근 IPO 종목을 ipo_data에서 필터링"""
+        """최근 IPO 종목을 ipo_data에서 필터링 (정확히 1년 기준)"""
         if self.ipo_data.empty:
             return pd.DataFrame()
 
+        # 정확히 1년(365일) 기준으로 필터링
         cutoff_date = pd.Timestamp(self.today - timedelta(days=days), tz='UTC')
+        
         # ipo_date가 timezone-aware인지 확인하고 맞춰줌
-        if self.ipo_data['ipo_date'].dt.tz is None:
-            cutoff_date = cutoff_date.tz_localize(None)
-        recent = self.ipo_data[self.ipo_data['ipo_date'] >= cutoff_date].copy()
+        if 'ipo_date' in self.ipo_data.columns:
+            if self.ipo_data['ipo_date'].dt.tz is None:
+                cutoff_date = cutoff_date.tz_localize(None)
+            recent = self.ipo_data[self.ipo_data['ipo_date'] >= cutoff_date].copy()
+            self.logger.info(f"최근 {days}일 내 IPO 데이터로 필터링 (기준일: {cutoff_date.strftime('%Y-%m-%d')})")
+        else:
+            # ipo_date 컬럼이 없는 경우 모든 데이터 사용
+            recent = self.ipo_data.copy()
+            self.logger.info("ipo_date 컬럼이 없어 모든 IPO 데이터를 사용합니다.")
         if recent.empty:
+            self.logger.info("날짜 필터링 후 IPO 데이터가 비어있습니다.")
+            return pd.DataFrame()
+        
+        self.logger.info(f"날짜 필터링 후 IPO 데이터: {len(recent)}개")
+        
+        # symbol이 있는 종목만 필터링
+        if 'symbol' in recent.columns:
+            recent = recent[recent['symbol'].notna() & (recent['symbol'] != '') & (recent['symbol'] != 'N/A')]
+            self.logger.info(f"symbol 필터링 후 IPO 데이터: {len(recent)}개")
+        
+        if recent.empty:
+            self.logger.info("symbol 필터링 후 IPO 데이터가 비어있습니다.")
             return pd.DataFrame()
 
-
-        # 상장가와 섹터 정보가 없는 경우 제외
-        recent.dropna(subset=['ipo_price', 'sector'], inplace=True)
-        recent = recent[recent['ipo_price'] > 0]
+        # 상장가 정보 처리 (선택적)
+        if 'ipo_price' in recent.columns:
+            # ipo_price가 숫자가 아닌 경우 기본값 설정
+            recent['ipo_price'] = pd.to_numeric(recent['ipo_price'], errors='coerce')
+            recent['ipo_price'] = recent['ipo_price'].fillna(20.0)  # 기본값 20달러
+        else:
+            recent['ipo_price'] = 20.0  # 기본값
+        
+        # 섹터 정보가 없는 경우 기본값 설정
+        if 'sector' not in recent.columns:
+            recent['sector'] = 'Unknown'
+        else:
+            recent['sector'] = recent['sector'].fillna('Unknown')
+            
         if recent.empty:
             return pd.DataFrame()
-        recent['days_since_ipo'] = (self.today - recent['ipo_date']).dt.days
+            
+        # days_since_ipo 계산
+        if 'ipo_date' in recent.columns:
+            today_ts = pd.Timestamp(self.today, tz='UTC')
+            recent['days_since_ipo'] = (today_ts - recent['ipo_date']).dt.days
+        else:
+            recent['days_since_ipo'] = 30  # 기본값
+            
+        self.logger.info(f"최종 IPO 데이터: {len(recent)}개")
         return recent
     
     
 
+    
+    def _validate_listing_status(self, ticker: str) -> bool:
+        """실제 상장 여부 확인 - OHLCV 데이터 존재 여부로 판단"""
+        try:
+            # 최근 30일 데이터로 빠른 검증
+            data = yf.download(ticker, period="1mo", interval="1d", auto_adjust=False, progress=False)
+            
+            if data.empty:
+                return False
+                
+            # MultiIndex 컬럼 처리
+            if isinstance(data.columns, pd.MultiIndex):
+                data.columns = [col[0] if isinstance(col, tuple) else col for col in data.columns]
+            
+            # 필수 OHLCV 컬럼 확인
+            required_cols = ['Open', 'High', 'Low', 'Close', 'Volume']
+            missing_cols = [col for col in required_cols if col not in data.columns]
+            
+            if missing_cols:
+                logger.debug(f"{ticker}: 필수 컬럼 누락 - {missing_cols}")
+                return False
+            
+            # 실제 거래 데이터 확인 (하루라도 유효한 데이터가 있는지)
+            price_data = data[['Open', 'High', 'Low', 'Close']].dropna()
+            volume_data = data['Volume'].dropna()
+            
+            # 하루라도 유효한 가격 데이터가 있는지 확인
+            has_price_data = len(price_data) > 0
+            # 하루라도 유효한 거래량 데이터가 있는지 확인  
+            has_volume_data = len(volume_data) > 0
+            # 하루라도 거래량이 0보다 큰 날이 있는지 확인
+            has_recent_trading = len(volume_data[volume_data > 0]) > 0
+            
+            is_valid = has_price_data and has_volume_data and has_recent_trading
+            
+            if not is_valid:
+                logger.debug(f"{ticker}: 상장 검증 실패 - 가격데이터: {has_price_data}, 거래량데이터: {has_volume_data}, 최근거래: {has_recent_trading}")
+            
+            return is_valid
+            
+        except Exception as e:
+            logger.debug(f"{ticker}: 상장 검증 중 오류 - {e}")
+            return False
     
     def screen_ipo_investments(self):
         """IPO 투자 전략 스크리닝 실행"""
@@ -125,14 +252,45 @@ class IPOInvestmentScreener:
             
         logger.info(f"최근 1년 내 IPO 종목 수: {len(recent_ipos)}")
         
+        # 실제 상장된 종목만 필터링
+        logger.info("실제 상장 여부 검증 중...")
+        valid_ipos = []
+        invalid_count = 0
+        
+        for _, ipo in recent_ipos.iterrows():
+            ticker = ipo.get('ticker', ipo.get('symbol', ''))
+            if not ticker or ticker == 'N/A':
+                invalid_count += 1
+                continue
+                
+            # SPAC 종목 사전 필터링
+            company_name = ipo.get('company_name', '')
+            if any(keyword in company_name.upper() for keyword in ['ACQUISITION CORP', 'SPAC', 'ACQUISITION CO']):
+                logger.debug(f"{ticker}: SPAC 종목으로 제외")
+                invalid_count += 1
+                continue
+            
+            # 실제 상장 여부 검증
+            if self._validate_listing_status(ticker):
+                valid_ipos.append(ipo)
+            else:
+                invalid_count += 1
+        
+        if not valid_ipos:
+            logger.info("실제 상장된 IPO 종목이 없습니다.")
+            return pd.DataFrame()
+        
+        valid_ipos_df = pd.DataFrame(valid_ipos)
+        logger.info(f"상장 검증 완료: {len(valid_ipos_df)}개 유효, {invalid_count}개 제외")
+        
         # 결과 저장용 데이터프레임
         base_results = []
         breakout_results = []
         track1_results = []
         track2_results = []
         
-        # 각 IPO 종목 분석
-        for _, ipo in recent_ipos.iterrows():
+        # 각 IPO 종목 분석 (검증된 종목만)
+        for ipo in valid_ipos:
             try:
                 # 컬럼명 통일 (symbol 또는 ticker)
                 ticker = ipo.get('ticker', ipo.get('symbol', ''))
@@ -144,23 +302,71 @@ class IPOInvestmentScreener:
                 if data.empty:
                     continue
                 
-                # 데이터프레임 형식 변환
+                # 데이터프레임 형식 변환 (MultiIndex 컬럼 처리)
                 df = data.reset_index()
-                df.columns = ['date', 'open', 'high', 'low', 'close', 'volume']
+                
+                # MultiIndex 컬럼 구조 확인 및 평탄화
+                if isinstance(df.columns, pd.MultiIndex):
+                    # MultiIndex인 경우 레벨 0만 사용
+                    df.columns = [col[0] if isinstance(col, tuple) else col for col in df.columns]
+                
+                # 컬럼명 정규화
+                df.columns = [col.lower().replace(' ', '_') for col in df.columns]
+                
+                # 필수 컬럼 확인 및 매핑
+                column_mapping = {
+                    'date': 'date',
+                    'open': 'open', 
+                    'high': 'high',
+                    'low': 'low',
+                    'close': 'close',
+                    'volume': 'volume',
+                    'adj_close': 'adj_close'  # 있으면 유지, 없으면 무시
+                }
+                
+                # 필수 컬럼이 있는지 확인
+                required_cols = ['open', 'high', 'low', 'close', 'volume']
+                missing_cols = [col for col in required_cols if col not in df.columns]
+                
+                if missing_cols:
+                    logger.warning(f"{ticker}: 필수 컬럼 누락 {missing_cols}")
+                    continue
+                
+                # 데이터 타입 확인 및 변환
+                for col in required_cols:
+                    if col in df.columns:
+                        # 문자열이나 객체 타입인 경우 숫자로 변환 시도
+                        if df[col].dtype == 'object' or df[col].dtype == 'string':
+                            try:
+                                df[col] = pd.to_numeric(df[col], errors='coerce')
+                            except Exception as e:
+                                logger.error(f"{ticker}: {col} 컬럼 타입 변환 실패: {e}")
+                                continue
+                
+                # NaN 값이 있는 행 제거
+                df = df.dropna(subset=required_cols)
+                
+                if df.empty:
+                    logger.warning(f"{ticker}: 데이터 정리 후 빈 데이터프레임")
+                    continue
+                    
                 df = df.sort_values('date')
                 
                 # IPO 분석 데이터 가져오기
                 ipo_analysis = self.data_manager.get_ipo_analysis(ticker)
                 
+                # IPO 발행가 정보 추가
+                ipo_price = ipo.get('ipo_price', 0)
+                
                 # 베이스 패턴 확인
-                has_base, base_info = self.pattern_analyzer.check_ipo_base_pattern(df)
+                has_base, base_info = self.pattern_analyzer.check_ipo_base_pattern(df, ipo_price)
 
                 # 브레이크아웃 확인
                 has_breakout, breakout_info = self.pattern_analyzer.check_ipo_breakout(df)
 
                 # Track1/Track2 조건 확인
-                track1_pass, track1_info = self.track_analyzer.check_track1(ticker, df)
-                track2_pass, track2_info = self.track_analyzer.check_track2(ticker, df)
+                track1_pass, track1_info = self.track_analyzer.check_track1(df, ipo_price)
+                track2_pass, track2_info = self.track_analyzer.check_track2(df, ipo_price)
                 
                 # 패턴 형성 시점 결정
                 pattern_formation_date = self.today.strftime('%Y-%m-%d')  # 기본값
@@ -182,7 +388,6 @@ class IPOInvestmentScreener:
                         'days_since_ipo': ipo['days_since_ipo'],
                         'pattern_type': 'base',
                         'current_price': base_info['current_price'],
-                        'score': base_info['base_score'],
                         'date': base_info.get('pattern_formation_date', self.today.strftime('%Y-%m-%d')),
                         'screening_date': self.today.strftime('%Y-%m-%d')
                     }
@@ -198,7 +403,6 @@ class IPOInvestmentScreener:
                         'days_since_ipo': ipo['days_since_ipo'],
                         'pattern_type': 'breakout',
                         'current_price': breakout_info['current_price'],
-                        'score': breakout_info['breakout_score'],
                         'date': breakout_info.get('pattern_formation_date', self.today.strftime('%Y-%m-%d')),
                         'screening_date': self.today.strftime('%Y-%m-%d')
                     }
@@ -252,10 +456,7 @@ class IPOInvestmentScreener:
         logger.info(f"Track1: {len(track1_results)}개, Track2: {len(track2_results)}개")
         
         # CSV 및 JSON 파일로 저장
-        self.result_processor.save_results(base_df, 'base_patterns')
-        self.result_processor.save_results(breakout_df, 'breakouts')
-        self.result_processor.save_results(track1_df, 'track1')
-        self.result_processor.save_results(track2_df, 'track2')
+        self.result_processor.save_results(base_results, breakout_results, track1_results, track2_results)
 
         # 통합 결과
         dfs = [base_df, breakout_df, track1_df, track2_df]
@@ -283,7 +484,8 @@ def run_ipo_investment_screening(skip_data=False):
         results=results_list,
         output_dir=IPO_INVESTMENT_RESULTS_DIR,
         filename_prefix="ipo_investment_results",
-        include_timestamp=True
+        include_timestamp=True,
+        incremental_update=True
     )
     
     # 새로운 티커 추적
@@ -291,7 +493,7 @@ def run_ipo_investment_screening(skip_data=False):
     new_tickers = track_new_tickers(
         current_results=results_list,
         tracker_file=tracker_file,
-        symbol_key='symbol',
+        symbol_key='ticker',  # IPO 스크리너는 ticker 키 사용
         retention_days=30  # IPO는 30일간 추적
     )
     

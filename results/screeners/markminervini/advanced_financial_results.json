@@ -4,693 +4,918 @@
     "fin_met_count":7.0,
     "has_error":false,
     "rs_score":96.6,
-    "rs_percentile":81.1004784689,
+    "rs_percentile":81.7051509769,
     "fin_percentile":100.0,
-    "total_percentile":181.1004784689
+    "total_percentile":181.7051509769
   },
   {
     "symbol":"COMM",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":96.56,
-    "rs_percentile":80.8612440191,
-    "fin_percentile":74.269005848,
-    "total_percentile":155.1302498671
+    "rs_percentile":81.5275310835,
+    "fin_percentile":73.8425925926,
+    "total_percentile":155.3701236761
   },
   {
     "symbol":"DFEN",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":95.83,
-    "rs_percentile":76.5550239234,
-    "fin_percentile":74.269005848,
-    "total_percentile":150.8240297714
+    "rs_percentile":76.0213143872,
+    "fin_percentile":73.8425925926,
+    "total_percentile":149.8639069798
   },
   {
     "symbol":"TBMCR",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":95.44,
-    "rs_percentile":73.4449760766,
-    "fin_percentile":74.269005848,
-    "total_percentile":147.7139819245
+    "rs_percentile":73.3570159858,
+    "fin_percentile":73.8425925926,
+    "total_percentile":147.1996085784
+  },
+  {
+    "symbol":"CKPT",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":95.43,
+    "rs_percentile":73.1793960924,
+    "fin_percentile":73.8425925926,
+    "total_percentile":147.021988685
+  },
+  {
+    "symbol":"KORU",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":95.35,
+    "rs_percentile":72.6465364121,
+    "fin_percentile":73.8425925926,
+    "total_percentile":146.4891290047
   },
   {
     "symbol":"FBL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":95.1,
-    "rs_percentile":71.2918660287,
-    "fin_percentile":74.269005848,
-    "total_percentile":145.5608718767
+    "rs_percentile":70.8703374778,
+    "fin_percentile":73.8425925926,
+    "total_percentile":144.7129300704
   },
   {
     "symbol":"JBL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":94.99,
-    "rs_percentile":70.8133971292,
-    "fin_percentile":74.269005848,
-    "total_percentile":145.0824029771
+    "rs_percentile":70.3374777975,
+    "fin_percentile":73.8425925926,
+    "total_percentile":144.1800703901
   },
   {
     "symbol":"ARKW",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":94.87,
-    "rs_percentile":69.8564593301,
-    "fin_percentile":74.269005848,
-    "total_percentile":144.1254651781
+    "rs_percentile":69.2717584369,
+    "fin_percentile":73.8425925926,
+    "total_percentile":143.1143510295
   },
   {
     "symbol":"METU",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":94.74,
-    "rs_percentile":68.8995215311,
-    "fin_percentile":74.269005848,
-    "total_percentile":143.1685273791
+    "rs_percentile":68.3836589698,
+    "fin_percentile":73.8425925926,
+    "total_percentile":142.2262515624
   },
   {
     "symbol":"SMDD",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":94.58,
-    "rs_percentile":67.4641148325,
-    "fin_percentile":74.269005848,
-    "total_percentile":141.7331206805
-  },
-  {
-    "symbol":"JFBR",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":99.72,
-    "rs_percentile":99.2822966507,
-    "fin_percentile":41.2280701754,
-    "total_percentile":140.5103668262
+    "rs_percentile":67.3179396092,
+    "fin_percentile":73.8425925926,
+    "total_percentile":141.1605322018
   },
   {
     "symbol":"ARKF",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":94.38,
-    "rs_percentile":65.7894736842,
-    "fin_percentile":74.269005848,
-    "total_percentile":140.0584795322
+    "rs_percentile":65.8969804618,
+    "fin_percentile":73.8425925926,
+    "total_percentile":139.7395730544
   },
   {
     "symbol":"AIBU",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":94.22,
-    "rs_percentile":65.0717703349,
-    "fin_percentile":74.269005848,
-    "total_percentile":139.3407761829
+    "rs_percentile":65.3641207815,
+    "fin_percentile":73.8425925926,
+    "total_percentile":139.2067133741
   },
   {
     "symbol":"SCC",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":94.03,
-    "rs_percentile":63.8755980861,
-    "fin_percentile":74.269005848,
-    "total_percentile":138.1446039341
+    "rs_percentile":64.298401421,
+    "fin_percentile":73.8425925926,
+    "total_percentile":138.1409940136
   },
   {
-    "symbol":"XTKG",
+    "symbol":"JFBR",
     "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":99.0,
-    "rs_percentile":96.4114832536,
-    "fin_percentile":41.2280701754,
-    "total_percentile":137.639553429
+    "rs_score":99.72,
+    "rs_percentile":98.9342806394,
+    "fin_percentile":38.6574074074,
+    "total_percentile":137.5916880468
   },
   {
     "symbol":"BTFX",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":93.83,
-    "rs_percentile":62.4401913876,
-    "fin_percentile":74.269005848,
-    "total_percentile":136.7091972355
+    "rs_percentile":63.055062167,
+    "fin_percentile":73.8425925926,
+    "total_percentile":136.8976547596
   },
   {
     "symbol":"BTCL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":93.76,
-    "rs_percentile":61.961722488,
-    "fin_percentile":74.269005848,
-    "total_percentile":136.230728336
+    "rs_percentile":62.5222024867,
+    "fin_percentile":73.8425925926,
+    "total_percentile":136.3647950793
   },
   {
-    "symbol":"DALN",
+    "symbol":"BREA",
     "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":98.4,
-    "rs_percentile":93.7799043062,
-    "fin_percentile":41.2280701754,
-    "total_percentile":135.0079744817
+    "rs_score":99.45,
+    "rs_percentile":97.6909413854,
+    "fin_percentile":38.6574074074,
+    "total_percentile":136.3483487928
+  },
+  {
+    "symbol":"XTKG",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":99.0,
+    "rs_percentile":95.9147424512,
+    "fin_percentile":38.6574074074,
+    "total_percentile":134.5721498586
+  },
+  {
+    "symbol":"HEES",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":93.46,
+    "rs_percentile":60.3907637655,
+    "fin_percentile":73.8425925926,
+    "total_percentile":134.2333563581
   },
   {
     "symbol":"BITU",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":93.42,
-    "rs_percentile":59.8086124402,
-    "fin_percentile":74.269005848,
-    "total_percentile":134.0776182881
+    "rs_percentile":60.2131438721,
+    "fin_percentile":73.8425925926,
+    "total_percentile":134.0557364647
   },
   {
     "symbol":"WEBL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":93.27,
-    "rs_percentile":59.0909090909,
-    "fin_percentile":74.269005848,
-    "total_percentile":133.3599149389
+    "rs_percentile":59.325044405,
+    "fin_percentile":73.8425925926,
+    "total_percentile":133.1676369976
   },
   {
-    "symbol":"TLSA",
+    "symbol":"DALN",
     "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":97.8,
-    "rs_percentile":89.4736842105,
-    "fin_percentile":41.2280701754,
-    "total_percentile":130.701754386
+    "rs_score":98.4,
+    "rs_percentile":93.0728241563,
+    "fin_percentile":38.6574074074,
+    "total_percentile":131.7302315637
+  },
+  {
+    "symbol":"SIJ",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":92.85,
+    "rs_percentile":55.9502664298,
+    "fin_percentile":73.8425925926,
+    "total_percentile":129.7928590224
   },
   {
     "symbol":"ARKK",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.76,
-    "rs_percentile":54.5454545455,
-    "fin_percentile":74.269005848,
-    "total_percentile":128.8144603934
+    "rs_percentile":55.595026643,
+    "fin_percentile":73.8425925926,
+    "total_percentile":129.4376192356
   },
   {
     "symbol":"NUKZ",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.73,
-    "rs_percentile":54.0669856459,
-    "fin_percentile":74.269005848,
-    "total_percentile":128.3359914939
+    "rs_percentile":55.2397868561,
+    "fin_percentile":73.8425925926,
+    "total_percentile":129.0823794487
   },
   {
     "symbol":"ARKX",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.62,
-    "rs_percentile":53.3492822967,
-    "fin_percentile":74.269005848,
-    "total_percentile":127.6182881446
+    "rs_percentile":54.5293072824,
+    "fin_percentile":73.8425925926,
+    "total_percentile":128.371899875
   },
   {
     "symbol":"WWD",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.55,
-    "rs_percentile":52.8708133971,
-    "fin_percentile":74.269005848,
-    "total_percentile":127.1398192451
+    "rs_percentile":54.1740674956,
+    "fin_percentile":73.8425925926,
+    "total_percentile":128.0166600882
   },
   {
-    "symbol":"GOSS",
+    "symbol":"TLSA",
     "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":97.07,
-    "rs_percentile":85.8851674641,
-    "fin_percentile":41.2280701754,
-    "total_percentile":127.1132376396
+    "rs_score":97.8,
+    "rs_percentile":89.3428063943,
+    "fin_percentile":38.6574074074,
+    "total_percentile":128.0002138017
   },
   {
     "symbol":"SHLD",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.31,
-    "rs_percentile":51.4354066986,
-    "fin_percentile":74.269005848,
-    "total_percentile":125.7044125465
+    "rs_percentile":52.3978685613,
+    "fin_percentile":73.8425925926,
+    "total_percentile":126.2404611539
   },
   {
     "symbol":"ARKQ",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.25,
-    "rs_percentile":51.1961722488,
-    "fin_percentile":74.269005848,
-    "total_percentile":125.4651780968
+    "rs_percentile":52.2202486679,
+    "fin_percentile":73.8425925926,
+    "total_percentile":126.0628412604
+  },
+  {
+    "symbol":"OKYO",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":97.37,
+    "rs_percentile":87.3889875666,
+    "fin_percentile":38.6574074074,
+    "total_percentile":126.046394974
   },
   {
     "symbol":"FNGO",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.15,
-    "rs_percentile":50.7177033493,
-    "fin_percentile":74.269005848,
-    "total_percentile":124.9867091972
-  },
-  {
-    "symbol":"TOYO",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":96.87,
-    "rs_percentile":83.7320574163,
-    "fin_percentile":41.2280701754,
-    "total_percentile":124.9601275917
+    "rs_percentile":51.6873889876,
+    "fin_percentile":73.8425925926,
+    "total_percentile":125.5299815802
   },
   {
     "symbol":"SPRX",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":92.07,
-    "rs_percentile":49.7607655502,
-    "fin_percentile":74.269005848,
-    "total_percentile":124.0297713982
+    "rs_percentile":50.9769094139,
+    "fin_percentile":73.8425925926,
+    "total_percentile":124.8195020064
+  },
+  {
+    "symbol":"GOSS",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":97.07,
+    "rs_percentile":85.7904085258,
+    "fin_percentile":38.6574074074,
+    "total_percentile":124.4478159332
+  },
+  {
+    "symbol":"TPC",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.98,
+    "rs_percentile":85.2575488455,
+    "fin_percentile":38.6574074074,
+    "total_percentile":123.9149562529
+  },
+  {
+    "symbol":"BITX",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":91.94,
+    "rs_percentile":49.9111900533,
+    "fin_percentile":73.8425925926,
+    "total_percentile":123.7537826459
   },
   {
     "symbol":"FNGG",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.83,
-    "rs_percentile":48.8038277512,
-    "fin_percentile":74.269005848,
-    "total_percentile":123.0728335991
+    "rs_percentile":49.2007104796,
+    "fin_percentile":73.8425925926,
+    "total_percentile":123.0433030722
+  },
+  {
+    "symbol":"TOYO",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.87,
+    "rs_percentile":84.0142095915,
+    "fin_percentile":38.6574074074,
+    "total_percentile":122.6716169989
   },
   {
     "symbol":"PSIL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.76,
-    "rs_percentile":48.3253588517,
-    "fin_percentile":74.269005848,
-    "total_percentile":122.5943646996
+    "rs_percentile":48.4902309059,
+    "fin_percentile":73.8425925926,
+    "total_percentile":122.3328234985
+  },
+  {
+    "symbol":"BLOK",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":91.75,
+    "rs_percentile":48.3126110124,
+    "fin_percentile":73.8425925926,
+    "total_percentile":122.155203605
+  },
+  {
+    "symbol":"PMEC",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.73,
+    "rs_percentile":82.593250444,
+    "fin_percentile":38.6574074074,
+    "total_percentile":121.2506578515
   },
   {
     "symbol":"BWEB",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.57,
-    "rs_percentile":47.1291866029,
-    "fin_percentile":74.269005848,
-    "total_percentile":121.3981924508
+    "rs_percentile":47.2468916519,
+    "fin_percentile":73.8425925926,
+    "total_percentile":121.0894842445
+  },
+  {
+    "symbol":"UFO",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":91.52,
+    "rs_percentile":46.7140319716,
+    "fin_percentile":73.8425925926,
+    "total_percentile":120.5566245642
+  },
+  {
+    "symbol":"AKBA",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.5,
+    "rs_percentile":81.1722912966,
+    "fin_percentile":38.6574074074,
+    "total_percentile":119.829698704
+  },
+  {
+    "symbol":"ESGL",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.49,
+    "rs_percentile":80.9946714032,
+    "fin_percentile":38.6574074074,
+    "total_percentile":119.6520788106
+  },
+  {
+    "symbol":"STRT",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.46,
+    "rs_percentile":80.8170515098,
+    "fin_percentile":38.6574074074,
+    "total_percentile":119.4744589172
+  },
+  {
+    "symbol":"SBSW",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.42,
+    "rs_percentile":80.6394316163,
+    "fin_percentile":38.6574074074,
+    "total_percentile":119.2968390237
+  },
+  {
+    "symbol":"CYD",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.31,
+    "rs_percentile":80.1065719361,
+    "fin_percentile":38.6574074074,
+    "total_percentile":118.7639793435
   },
   {
     "symbol":"EVLV",
     "fin_met_count":5.0,
     "has_error":false,
     "rs_score":96.24,
-    "rs_percentile":79.4258373206,
-    "fin_percentile":41.2280701754,
-    "total_percentile":120.653907496
+    "rs_percentile":79.3960923623,
+    "fin_percentile":38.6574074074,
+    "total_percentile":118.0534997698
   },
   {
     "symbol":"HODL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.15,
-    "rs_percentile":43.7799043062,
-    "fin_percentile":74.269005848,
-    "total_percentile":118.0489101542
+    "rs_percentile":43.5168738899,
+    "fin_percentile":73.8425925926,
+    "total_percentile":117.3594664825
+  },
+  {
+    "symbol":"CAR",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":96.1,
+    "rs_percentile":78.5079928952,
+    "fin_percentile":38.6574074074,
+    "total_percentile":117.1654003026
   },
   {
     "symbol":"BTCW",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.13,
-    "rs_percentile":43.3014354067,
-    "fin_percentile":74.269005848,
-    "total_percentile":117.5704412547
+    "rs_percentile":43.161634103,
+    "fin_percentile":73.8425925926,
+    "total_percentile":117.0042266956
   },
   {
     "symbol":"EZBC",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.12,
-    "rs_percentile":43.0622009569,
-    "fin_percentile":74.269005848,
-    "total_percentile":117.3312068049
+    "rs_percentile":42.9840142096,
+    "fin_percentile":73.8425925926,
+    "total_percentile":116.8266068022
   },
   {
     "symbol":"BRRR",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.08,
-    "rs_percentile":42.5837320574,
-    "fin_percentile":74.269005848,
-    "total_percentile":116.8527379054
+    "rs_percentile":42.6287744227,
+    "fin_percentile":73.8425925926,
+    "total_percentile":116.4713670153
   },
   {
     "symbol":"BITB",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.07,
-    "rs_percentile":42.3444976077,
-    "fin_percentile":74.269005848,
-    "total_percentile":116.6135034556
+    "rs_percentile":42.4511545293,
+    "fin_percentile":73.8425925926,
+    "total_percentile":116.2937471219
   },
   {
     "symbol":"BTCO",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.04,
-    "rs_percentile":41.8660287081,
-    "fin_percentile":74.269005848,
-    "total_percentile":116.1350345561
-  },
-  {
-    "symbol":"ATRO",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":95.66,
-    "rs_percentile":74.8803827751,
-    "fin_percentile":41.2280701754,
-    "total_percentile":116.1084529506
+    "rs_percentile":42.2735346359,
+    "fin_percentile":73.8425925926,
+    "total_percentile":116.1161272285
   },
   {
     "symbol":"FBTC",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.02,
-    "rs_percentile":41.6267942584,
-    "fin_percentile":74.269005848,
-    "total_percentile":115.8958001063
+    "rs_percentile":42.0959147425,
+    "fin_percentile":73.8425925926,
+    "total_percentile":115.938507335
   },
   {
     "symbol":"IBIT",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":91.0,
-    "rs_percentile":41.3875598086,
-    "fin_percentile":74.269005848,
-    "total_percentile":115.6565656566
+    "rs_percentile":41.918294849,
+    "fin_percentile":73.8425925926,
+    "total_percentile":115.7608874416
   },
   {
     "symbol":"BUZZ",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.95,
-    "rs_percentile":40.6698564593,
-    "fin_percentile":74.269005848,
-    "total_percentile":114.9388623073
+    "rs_percentile":41.3854351687,
+    "fin_percentile":73.8425925926,
+    "total_percentile":115.2280277613
   },
   {
     "symbol":"ALAI",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.92,
-    "rs_percentile":40.4306220096,
-    "fin_percentile":74.269005848,
-    "total_percentile":114.6996278575
+    "rs_percentile":41.2078152753,
+    "fin_percentile":73.8425925926,
+    "total_percentile":115.0504078679
   },
   {
     "symbol":"DEFI",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.91,
-    "rs_percentile":40.1913875598,
-    "fin_percentile":74.269005848,
-    "total_percentile":114.4603934078
-  },
-  {
-    "symbol":"SEZL",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":99.08,
-    "rs_percentile":97.3684210526,
-    "fin_percentile":16.9590643275,
-    "total_percentile":114.3274853801
-  },
-  {
-    "symbol":"RGLS",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":99.04,
-    "rs_percentile":97.1291866029,
-    "fin_percentile":16.9590643275,
-    "total_percentile":114.0882509304
+    "rs_percentile":41.0301953819,
+    "fin_percentile":73.8425925926,
+    "total_percentile":114.8727879745
   },
   {
     "symbol":"GBTC",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.86,
-    "rs_percentile":39.7129186603,
-    "fin_percentile":74.269005848,
-    "total_percentile":113.9819245082
+    "rs_percentile":40.674955595,
+    "fin_percentile":73.8425925926,
+    "total_percentile":114.5175481876
+  },
+  {
+    "symbol":"RSI",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":95.82,
+    "rs_percentile":75.8436944938,
+    "fin_percentile":38.6574074074,
+    "total_percentile":114.5011019012
   },
   {
     "symbol":"CHAT",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.84,
-    "rs_percentile":39.4736842105,
-    "fin_percentile":74.269005848,
-    "total_percentile":113.7426900585
+    "rs_percentile":40.3197158082,
+    "fin_percentile":73.8425925926,
+    "total_percentile":114.1623084008
   },
   {
-    "symbol":"ESLT",
+    "symbol":"ATRO",
     "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":95.28,
-    "rs_percentile":72.2488038278,
-    "fin_percentile":41.2280701754,
-    "total_percentile":113.4768740032
+    "rs_score":95.66,
+    "rs_percentile":74.6003552398,
+    "fin_percentile":38.6574074074,
+    "total_percentile":113.2577626472
   },
   {
-    "symbol":"TDUP",
-    "fin_met_count":4.0,
+    "symbol":"GREK",
+    "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":98.97,
-    "rs_percentile":96.1722488038,
-    "fin_percentile":16.9590643275,
-    "total_percentile":113.1313131313
+    "rs_score":90.64,
+    "rs_percentile":38.8987566607,
+    "fin_percentile":73.8425925926,
+    "total_percentile":112.7413492533
   },
   {
-    "symbol":"ALMU",
+    "symbol":"QBTS",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":98.92,
-    "rs_percentile":95.9330143541,
-    "fin_percentile":16.9590643275,
-    "total_percentile":112.8920786816
+    "rs_score":99.36,
+    "rs_percentile":97.3357015986,
+    "fin_percentile":14.8148148148,
+    "total_percentile":112.1505164134
   },
   {
     "symbol":"ATFV",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.42,
-    "rs_percentile":37.0813397129,
-    "fin_percentile":74.269005848,
-    "total_percentile":111.3503455609
+    "rs_percentile":37.8330373002,
+    "fin_percentile":73.8425925926,
+    "total_percentile":111.6756298928
   },
   {
-    "symbol":"TME",
+    "symbol":"SEZL",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":99.08,
+    "rs_percentile":96.6252220249,
+    "fin_percentile":14.8148148148,
+    "total_percentile":111.4400368397
+  },
+  {
+    "symbol":"RGLS",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":99.04,
+    "rs_percentile":96.4476021314,
+    "fin_percentile":14.8148148148,
+    "total_percentile":111.2624169463
+  },
+  {
+    "symbol":"ESLT",
     "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":94.8,
-    "rs_percentile":69.3779904306,
-    "fin_percentile":41.2280701754,
-    "total_percentile":110.6060606061
+    "rs_score":95.28,
+    "rs_percentile":72.1136767318,
+    "fin_percentile":38.6574074074,
+    "total_percentile":110.7710841392
   },
   {
-    "symbol":"NVTS",
+    "symbol":"TDUP",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":98.28,
-    "rs_percentile":93.0622009569,
-    "fin_percentile":16.9590643275,
-    "total_percentile":110.0212652844
+    "rs_score":98.97,
+    "rs_percentile":95.7371225577,
+    "fin_percentile":14.8148148148,
+    "total_percentile":110.5519373725
   },
   {
-    "symbol":"PLTR",
+    "symbol":"ALMU",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":98.22,
-    "rs_percentile":92.8229665072,
-    "fin_percentile":16.9590643275,
-    "total_percentile":109.7820308347
+    "rs_score":98.92,
+    "rs_percentile":95.5595026643,
+    "fin_percentile":14.8148148148,
+    "total_percentile":110.3743174791
+  },
+  {
+    "symbol":"XPP",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":90.22,
+    "rs_percentile":36.0568383659,
+    "fin_percentile":73.8425925926,
+    "total_percentile":109.8994309585
   },
   {
     "symbol":"ECNS",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.03,
-    "rs_percentile":35.1674641148,
-    "fin_percentile":74.269005848,
-    "total_percentile":109.4364699628
+    "rs_percentile":35.701598579,
+    "fin_percentile":73.8425925926,
+    "total_percentile":109.5441911716
   },
   {
     "symbol":"GAMR",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":90.01,
-    "rs_percentile":34.9282296651,
-    "fin_percentile":74.269005848,
-    "total_percentile":109.197235513
+    "rs_percentile":35.5239786856,
+    "fin_percentile":73.8425925926,
+    "total_percentile":109.3665712782
   },
   {
     "symbol":"VNM",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.93,
-    "rs_percentile":34.2105263158,
-    "fin_percentile":74.269005848,
-    "total_percentile":108.4795321637
-  },
-  {
-    "symbol":"CLS",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":98.02,
-    "rs_percentile":91.3875598086,
-    "fin_percentile":16.9590643275,
-    "total_percentile":108.3466241361
+    "rs_percentile":34.6358792185,
+    "fin_percentile":73.8425925926,
+    "total_percentile":108.4784718111
   },
   {
     "symbol":"METV",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.86,
-    "rs_percentile":33.971291866,
-    "fin_percentile":74.269005848,
-    "total_percentile":108.240297714
+    "rs_percentile":34.458259325,
+    "fin_percentile":73.8425925926,
+    "total_percentile":108.3008519176
   },
   {
     "symbol":"KURE",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.84,
-    "rs_percentile":33.7320574163,
-    "fin_percentile":74.269005848,
-    "total_percentile":108.0010632642
+    "rs_percentile":34.2806394316,
+    "fin_percentile":73.8425925926,
+    "total_percentile":108.1232320242
+  },
+  {
+    "symbol":"TME",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":94.8,
+    "rs_percentile":68.9165186501,
+    "fin_percentile":38.6574074074,
+    "total_percentile":107.5739260575
+  },
+  {
+    "symbol":"HOOD",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":98.33,
+    "rs_percentile":92.7175843694,
+    "fin_percentile":14.8148148148,
+    "total_percentile":107.5323991843
+  },
+  {
+    "symbol":"NVTS",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":98.28,
+    "rs_percentile":92.539964476,
+    "fin_percentile":14.8148148148,
+    "total_percentile":107.3547792908
+  },
+  {
+    "symbol":"PLTR",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":98.22,
+    "rs_percentile":92.3623445826,
+    "fin_percentile":14.8148148148,
+    "total_percentile":107.1771593974
   },
   {
     "symbol":"CNEQ",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.68,
-    "rs_percentile":32.0574162679,
-    "fin_percentile":74.269005848,
-    "total_percentile":106.3264221159
+    "rs_percentile":32.5044404973,
+    "fin_percentile":73.8425925926,
+    "total_percentile":106.3470330899
   },
   {
     "symbol":"BNGE",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.66,
-    "rs_percentile":31.8181818182,
-    "fin_percentile":74.269005848,
-    "total_percentile":106.0871876661
+    "rs_percentile":32.3268206039,
+    "fin_percentile":73.8425925926,
+    "total_percentile":106.1694131965
   },
   {
-    "symbol":"OCFT",
+    "symbol":"CLS",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":97.76,
-    "rs_percentile":88.995215311,
-    "fin_percentile":16.9590643275,
-    "total_percentile":105.9542796385
-  },
-  {
-    "symbol":"HIMS",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":97.61,
-    "rs_percentile":88.2775119617,
-    "fin_percentile":16.9590643275,
-    "total_percentile":105.2365762892
-  },
-  {
-    "symbol":"GEV",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":97.58,
-    "rs_percentile":88.038277512,
-    "fin_percentile":16.9590643275,
-    "total_percentile":104.9973418394
+    "rs_score":98.02,
+    "rs_percentile":91.1190053286,
+    "fin_percentile":14.8148148148,
+    "total_percentile":105.9338201434
   },
   {
     "symbol":"RILYK",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.45,
-    "rs_percentile":30.6220095694,
-    "fin_percentile":74.269005848,
-    "total_percentile":104.8910154173
+    "rs_percentile":30.9058614565,
+    "fin_percentile":73.8425925926,
+    "total_percentile":104.7484540491
   },
   {
-    "symbol":"TTMI",
+    "symbol":"OCFT",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":97.24,
-    "rs_percentile":87.5598086124,
-    "fin_percentile":16.9590643275,
-    "total_percentile":104.5188729399
-  },
-  {
-    "symbol":"RDUS",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":93.96,
-    "rs_percentile":62.9186602871,
-    "fin_percentile":41.2280701754,
-    "total_percentile":104.1467304625
+    "rs_score":97.76,
+    "rs_percentile":88.9875666075,
+    "fin_percentile":14.8148148148,
+    "total_percentile":103.8023814223
   },
   {
     "symbol":"TRFK",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.31,
-    "rs_percentile":29.1866028708,
-    "fin_percentile":74.269005848,
-    "total_percentile":103.4556087188
+    "rs_percentile":29.8401420959,
+    "fin_percentile":73.8425925926,
+    "total_percentile":103.6827346885
+  },
+  {
+    "symbol":"PLTM",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":89.26,
+    "rs_percentile":29.4849023091,
+    "fin_percentile":73.8425925926,
+    "total_percentile":103.3274949017
+  },
+  {
+    "symbol":"HIMS",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":97.61,
+    "rs_percentile":88.2770870337,
+    "fin_percentile":14.8148148148,
+    "total_percentile":103.0919018486
+  },
+  {
+    "symbol":"PPLT",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":89.23,
+    "rs_percentile":29.1296625222,
+    "fin_percentile":73.8425925926,
+    "total_percentile":102.9722551148
+  },
+  {
+    "symbol":"GEV",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":97.58,
+    "rs_percentile":87.9218472469,
+    "fin_percentile":14.8148148148,
+    "total_percentile":102.7366620617
   },
   {
     "symbol":"FPX",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.18,
-    "rs_percentile":28.4688995215,
-    "fin_percentile":74.269005848,
-    "total_percentile":102.7379053695
+    "rs_percentile":28.7744227353,
+    "fin_percentile":73.8425925926,
+    "total_percentile":102.6170153279
+  },
+  {
+    "symbol":"RDUS",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":93.96,
+    "rs_percentile":63.4103019538,
+    "fin_percentile":38.6574074074,
+    "total_percentile":102.0677093612
+  },
+  {
+    "symbol":"TTMI",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":97.24,
+    "rs_percentile":87.2113676732,
+    "fin_percentile":14.8148148148,
+    "total_percentile":102.026182488
   },
   {
     "symbol":"XAR",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.04,
-    "rs_percentile":27.2727272727,
-    "fin_percentile":74.269005848,
-    "total_percentile":101.5417331207
+    "rs_percentile":27.3534635879,
+    "fin_percentile":73.8425925926,
+    "total_percentile":101.1960561805
   },
   {
     "symbol":"TMAT",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":89.01,
-    "rs_percentile":26.7942583732,
-    "fin_percentile":74.269005848,
-    "total_percentile":101.0632642212
+    "rs_percentile":26.9982238011,
+    "fin_percentile":73.8425925926,
+    "total_percentile":100.8408163937
   },
   {
     "symbol":"ESPO",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":88.99,
-    "rs_percentile":26.5550239234,
-    "fin_percentile":74.269005848,
-    "total_percentile":100.8240297714
+    "rs_percentile":26.6429840142,
+    "fin_percentile":73.8425925926,
+    "total_percentile":100.4855766068
   },
   {
     "symbol":"BTRN",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":88.94,
-    "rs_percentile":26.3157894737,
-    "fin_percentile":74.269005848,
-    "total_percentile":100.5847953216
+    "rs_percentile":26.4653641208,
+    "fin_percentile":73.8425925926,
+    "total_percentile":100.3079567134
+  },
+  {
+    "symbol":"RCL",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":93.59,
+    "rs_percentile":61.6341030195,
+    "fin_percentile":38.6574074074,
+    "total_percentile":100.2915104269
   },
   {
     "symbol":"WW",
@@ -706,3059 +931,4139 @@
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.89,
-    "rs_percentile":99.7607655502,
+    "rs_percentile":99.8223801066,
     "fin_percentile":0.0,
-    "total_percentile":99.7607655502
+    "total_percentile":99.8223801066
   },
   {
     "symbol":"PXLW",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.85,
-    "rs_percentile":99.5215311005,
+    "rs_percentile":99.6447602131,
     "fin_percentile":0.0,
-    "total_percentile":99.5215311005
+    "total_percentile":99.6447602131
   },
   {
-    "symbol":"LOUP",
+    "symbol":"QTUM",
     "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":88.66,
-    "rs_percentile":25.1196172249,
-    "fin_percentile":74.269005848,
-    "total_percentile":99.3886230728
+    "rs_score":88.82,
+    "rs_percentile":25.7548845471,
+    "fin_percentile":73.8425925926,
+    "total_percentile":99.5974771397
+  },
+  {
+    "symbol":"FGEN",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":99.82,
+    "rs_percentile":99.4671403197,
+    "fin_percentile":0.0,
+    "total_percentile":99.4671403197
+  },
+  {
+    "symbol":"SNSE",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":99.81,
+    "rs_percentile":99.2895204263,
+    "fin_percentile":0.0,
+    "total_percentile":99.2895204263
+  },
+  {
+    "symbol":"INUV",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":99.78,
+    "rs_percentile":99.1119005329,
+    "fin_percentile":0.0,
+    "total_percentile":99.1119005329
+  },
+  {
+    "symbol":"NERD",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":88.74,
+    "rs_percentile":25.2220248668,
+    "fin_percentile":73.8425925926,
+    "total_percentile":99.0646174594
   },
   {
     "symbol":"AYRO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.7,
-    "rs_percentile":99.043062201,
+    "rs_percentile":98.756660746,
     "fin_percentile":0.0,
-    "total_percentile":99.043062201
+    "total_percentile":98.756660746
   },
   {
     "symbol":"IKNA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.67,
-    "rs_percentile":98.8038277512,
+    "rs_percentile":98.5790408526,
     "fin_percentile":0.0,
-    "total_percentile":98.8038277512
+    "total_percentile":98.5790408526
+  },
+  {
+    "symbol":"LOUP",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":88.66,
+    "rs_percentile":24.6891651865,
+    "fin_percentile":73.8425925926,
+    "total_percentile":98.5317577791
+  },
+  {
+    "symbol":"BOLT",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":99.66,
+    "rs_percentile":98.4014209591,
+    "fin_percentile":0.0,
+    "total_percentile":98.4014209591
+  },
+  {
+    "symbol":"EYE",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":96.83,
+    "rs_percentile":83.4813499112,
+    "fin_percentile":14.8148148148,
+    "total_percentile":98.296164726
   },
   {
     "symbol":"FLYE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.59,
-    "rs_percentile":98.5645933014,
+    "rs_percentile":98.2238010657,
     "fin_percentile":0.0,
-    "total_percentile":98.5645933014
+    "total_percentile":98.2238010657
+  },
+  {
+    "symbol":"WBX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":99.52,
+    "rs_percentile":98.0461811723,
+    "fin_percentile":0.0,
+    "total_percentile":98.0461811723
   },
   {
     "symbol":"ABVX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.46,
-    "rs_percentile":98.3253588517,
+    "rs_percentile":97.8685612789,
     "fin_percentile":0.0,
-    "total_percentile":98.3253588517
+    "total_percentile":97.8685612789
   },
   {
     "symbol":"RAPT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.37,
-    "rs_percentile":98.0861244019,
+    "rs_percentile":97.513321492,
     "fin_percentile":0.0,
-    "total_percentile":98.0861244019
+    "total_percentile":97.513321492
   },
   {
     "symbol":"TGEN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.26,
-    "rs_percentile":97.8468899522,
+    "rs_percentile":97.1580817052,
     "fin_percentile":0.0,
-    "total_percentile":97.8468899522
+    "total_percentile":97.1580817052
+  },
+  {
+    "symbol":"SHPH",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":99.25,
+    "rs_percentile":96.9804618117,
+    "fin_percentile":0.0,
+    "total_percentile":96.9804618117
   },
   {
     "symbol":"FIG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.1,
-    "rs_percentile":97.6076555024,
+    "rs_percentile":96.8028419183,
     "fin_percentile":0.0,
-    "total_percentile":97.6076555024
+    "total_percentile":96.8028419183
   },
   {
-    "symbol":"UTES",
+    "symbol":"OND",
     "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":88.4,
-    "rs_percentile":22.7272727273,
-    "fin_percentile":74.269005848,
-    "total_percentile":96.9962785752
+    "rs_score":88.43,
+    "rs_percentile":22.7353463588,
+    "fin_percentile":73.8425925926,
+    "total_percentile":96.5779389514
+  },
+  {
+    "symbol":"BPAY",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":88.41,
+    "rs_percentile":22.5577264654,
+    "fin_percentile":73.8425925926,
+    "total_percentile":96.400319058
   },
   {
     "symbol":"ZEPP",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.02,
-    "rs_percentile":96.8899521531,
+    "rs_percentile":96.269982238,
     "fin_percentile":0.0,
-    "total_percentile":96.8899521531
+    "total_percentile":96.269982238
+  },
+  {
+    "symbol":"UTES",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":88.4,
+    "rs_percentile":22.3801065719,
+    "fin_percentile":73.8425925926,
+    "total_percentile":96.2226991645
   },
   {
     "symbol":"TOI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":99.01,
-    "rs_percentile":96.6507177033,
+    "rs_percentile":96.0923623446,
     "fin_percentile":0.0,
-    "total_percentile":96.6507177033
+    "total_percentile":96.0923623446
   },
   {
     "symbol":"ODDS",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":88.28,
-    "rs_percentile":22.009569378,
-    "fin_percentile":74.269005848,
-    "total_percentile":96.2785752259
+    "rs_percentile":22.0248667851,
+    "fin_percentile":73.8425925926,
+    "total_percentile":95.8674593777
   },
   {
     "symbol":"GSIB",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":88.22,
-    "rs_percentile":21.5311004785,
-    "fin_percentile":74.269005848,
-    "total_percentile":95.8001063264
+    "rs_percentile":21.6696269982,
+    "fin_percentile":73.8425925926,
+    "total_percentile":95.5122195908
   },
   {
     "symbol":"TSSI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.9,
-    "rs_percentile":95.6937799043,
+    "rs_percentile":95.3818827709,
     "fin_percentile":0.0,
-    "total_percentile":95.6937799043
+    "total_percentile":95.3818827709
+  },
+  {
+    "symbol":"AIMD",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.87,
+    "rs_percentile":95.2042628774,
+    "fin_percentile":0.0,
+    "total_percentile":95.2042628774
   },
   {
     "symbol":"SVT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.85,
-    "rs_percentile":95.4545454545,
+    "rs_percentile":95.026642984,
     "fin_percentile":0.0,
-    "total_percentile":95.4545454545
+    "total_percentile":95.026642984
   },
   {
     "symbol":"ITA",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":88.18,
-    "rs_percentile":21.0526315789,
-    "fin_percentile":74.269005848,
-    "total_percentile":95.3216374269
+    "rs_percentile":21.1367673179,
+    "fin_percentile":73.8425925926,
+    "total_percentile":94.9793599105
   },
   {
     "symbol":"PSIX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.82,
-    "rs_percentile":95.2153110048,
+    "rs_percentile":94.8490230906,
     "fin_percentile":0.0,
-    "total_percentile":95.2153110048
+    "total_percentile":94.8490230906
   },
   {
     "symbol":"PWRD",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":88.16,
-    "rs_percentile":20.8133971292,
-    "fin_percentile":74.269005848,
-    "total_percentile":95.0824029771
+    "rs_percentile":20.9591474245,
+    "fin_percentile":73.8425925926,
+    "total_percentile":94.8017400171
   },
   {
     "symbol":"DAVE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.81,
-    "rs_percentile":94.976076555,
+    "rs_percentile":94.6714031972,
     "fin_percentile":0.0,
-    "total_percentile":94.976076555
+    "total_percentile":94.6714031972
   },
   {
     "symbol":"OKLO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.78,
-    "rs_percentile":94.7368421053,
+    "rs_percentile":94.4937833037,
     "fin_percentile":0.0,
-    "total_percentile":94.7368421053
+    "total_percentile":94.4937833037
+  },
+  {
+    "symbol":"PRCH",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.77,
+    "rs_percentile":94.3161634103,
+    "fin_percentile":0.0,
+    "total_percentile":94.3161634103
   },
   {
     "symbol":"CDTX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.74,
-    "rs_percentile":94.4976076555,
+    "rs_percentile":94.1385435169,
     "fin_percentile":0.0,
-    "total_percentile":94.4976076555
+    "total_percentile":94.1385435169
+  },
+  {
+    "symbol":"AMPX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.71,
+    "rs_percentile":93.9609236234,
+    "fin_percentile":0.0,
+    "total_percentile":93.9609236234
   },
   {
     "symbol":"RKLB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.64,
-    "rs_percentile":94.2583732057,
+    "rs_percentile":93.78330373,
     "fin_percentile":0.0,
-    "total_percentile":94.2583732057
-  },
-  {
-    "symbol":"MP",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":98.44,
-    "rs_percentile":94.019138756,
-    "fin_percentile":0.0,
-    "total_percentile":94.019138756
+    "total_percentile":93.78330373
   },
   {
     "symbol":"FOSLL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":88.07,
-    "rs_percentile":19.6172248804,
-    "fin_percentile":74.269005848,
-    "total_percentile":93.8862307283
+    "rs_percentile":19.8934280639,
+    "fin_percentile":73.8425925926,
+    "total_percentile":93.7360206565
+  },
+  {
+    "symbol":"MNPR",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.52,
+    "rs_percentile":93.6056838366,
+    "fin_percentile":0.0,
+    "total_percentile":93.6056838366
+  },
+  {
+    "symbol":"LEU",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.45,
+    "rs_percentile":93.4280639432,
+    "fin_percentile":0.0,
+    "total_percentile":93.4280639432
+  },
+  {
+    "symbol":"MP",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.44,
+    "rs_percentile":93.2504440497,
+    "fin_percentile":0.0,
+    "total_percentile":93.2504440497
   },
   {
     "symbol":"SMR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.39,
-    "rs_percentile":93.5406698565,
+    "rs_percentile":92.8952042629,
     "fin_percentile":0.0,
-    "total_percentile":93.5406698565
-  },
-  {
-    "symbol":"HOOD",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":98.33,
-    "rs_percentile":93.3014354067,
-    "fin_percentile":0.0,
-    "total_percentile":93.3014354067
-  },
-  {
-    "symbol":"RSI",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":95.82,
-    "rs_percentile":76.3157894737,
-    "fin_percentile":16.9590643275,
-    "total_percentile":93.2748538012
+    "total_percentile":92.8952042629
   },
   {
     "symbol":"VNAM",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":87.94,
-    "rs_percentile":18.6602870813,
-    "fin_percentile":74.269005848,
-    "total_percentile":92.9292929293
+    "rs_percentile":19.0053285968,
+    "fin_percentile":73.8425925926,
+    "total_percentile":92.8479211894
   },
   {
     "symbol":"ATAI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.21,
-    "rs_percentile":92.5837320574,
+    "rs_percentile":92.1847246892,
     "fin_percentile":0.0,
-    "total_percentile":92.5837320574
-  },
-  {
-    "symbol":"VERV",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":95.72,
-    "rs_percentile":75.5980861244,
-    "fin_percentile":16.9590643275,
-    "total_percentile":92.5571504519
-  },
-  {
-    "symbol":"CRDO",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":98.13,
-    "rs_percentile":92.3444976077,
-    "fin_percentile":0.0,
-    "total_percentile":92.3444976077
-  },
-  {
-    "symbol":"VIGL",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":98.12,
-    "rs_percentile":92.1052631579,
-    "fin_percentile":0.0,
-    "total_percentile":92.1052631579
-  },
-  {
-    "symbol":"CPSH",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":95.67,
-    "rs_percentile":75.1196172249,
-    "fin_percentile":16.9590643275,
-    "total_percentile":92.0786815524
+    "total_percentile":92.1847246892
   },
   {
     "symbol":"CTBB",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":87.81,
-    "rs_percentile":17.7033492823,
-    "fin_percentile":74.269005848,
-    "total_percentile":91.9723551302
+    "rs_percentile":18.2948490231,
+    "fin_percentile":73.8425925926,
+    "total_percentile":92.1374416157
+  },
+  {
+    "symbol":"CRDO",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.13,
+    "rs_percentile":92.0071047957,
+    "fin_percentile":0.0,
+    "total_percentile":92.0071047957
+  },
+  {
+    "symbol":"MAKX",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":87.75,
+    "rs_percentile":18.1172291297,
+    "fin_percentile":73.8425925926,
+    "total_percentile":91.9598217223
+  },
+  {
+    "symbol":"VIGL",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":98.12,
+    "rs_percentile":91.8294849023,
+    "fin_percentile":0.0,
+    "total_percentile":91.8294849023
   },
   {
     "symbol":"TZUP",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":98.07,
-    "rs_percentile":91.8660287081,
+    "rs_percentile":91.6518650089,
     "fin_percentile":0.0,
-    "total_percentile":91.8660287081
+    "total_percentile":91.6518650089
   },
   {
-    "symbol":"JOBY",
+    "symbol":"FTEK",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":98.03,
-    "rs_percentile":91.6267942584,
+    "rs_score":98.06,
+    "rs_percentile":91.4742451155,
     "fin_percentile":0.0,
-    "total_percentile":91.6267942584
+    "total_percentile":91.4742451155
   },
   {
     "symbol":"SOCL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":87.71,
-    "rs_percentile":16.985645933,
-    "fin_percentile":74.269005848,
-    "total_percentile":91.254651781
+    "rs_percentile":17.5843694494,
+    "fin_percentile":73.8425925926,
+    "total_percentile":91.426962042
   },
   {
-    "symbol":"SATX",
+    "symbol":"JOBY",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":97.99,
-    "rs_percentile":91.1483253589,
+    "rs_score":98.03,
+    "rs_percentile":91.296625222,
     "fin_percentile":0.0,
-    "total_percentile":91.1483253589
+    "total_percentile":91.296625222
   },
   {
     "symbol":"ROKT",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":87.7,
-    "rs_percentile":16.7464114833,
-    "fin_percentile":74.269005848,
-    "total_percentile":91.0154173312
+    "rs_percentile":17.406749556,
+    "fin_percentile":73.8425925926,
+    "total_percentile":91.2493421485
+  },
+  {
+    "symbol":"SATX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":97.99,
+    "rs_percentile":90.9413854352,
+    "fin_percentile":0.0,
+    "total_percentile":90.9413854352
+  },
+  {
+    "symbol":"KEMQ",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":87.64,
+    "rs_percentile":17.0515097691,
+    "fin_percentile":73.8425925926,
+    "total_percentile":90.8941023617
   },
   {
     "symbol":"PGY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.96,
-    "rs_percentile":90.9090909091,
+    "rs_percentile":90.7637655417,
     "fin_percentile":0.0,
-    "total_percentile":90.9090909091
+    "total_percentile":90.7637655417
+  },
+  {
+    "symbol":"BLBX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":97.92,
+    "rs_percentile":90.5861456483,
+    "fin_percentile":0.0,
+    "total_percentile":90.5861456483
   },
   {
     "symbol":"VRNA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.89,
-    "rs_percentile":90.6698564593,
+    "rs_percentile":90.4085257549,
     "fin_percentile":0.0,
-    "total_percentile":90.6698564593
+    "total_percentile":90.4085257549
   },
   {
     "symbol":"DIST",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.88,
-    "rs_percentile":90.4306220096,
+    "rs_percentile":90.2309058615,
     "fin_percentile":0.0,
-    "total_percentile":90.4306220096
+    "total_percentile":90.2309058615
   },
   {
     "symbol":"BE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.87,
-    "rs_percentile":90.1913875598,
+    "rs_percentile":90.053285968,
     "fin_percentile":0.0,
-    "total_percentile":90.1913875598
+    "total_percentile":90.053285968
+  },
+  {
+    "symbol":"VERV",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":95.72,
+    "rs_percentile":75.1332149201,
+    "fin_percentile":14.8148148148,
+    "total_percentile":89.9480297349
+  },
+  {
+    "symbol":"PAYS",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":97.85,
+    "rs_percentile":89.8756660746,
+    "fin_percentile":0.0,
+    "total_percentile":89.8756660746
   },
   {
     "symbol":"ASTS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.84,
-    "rs_percentile":89.95215311,
+    "rs_percentile":89.6980461812,
     "fin_percentile":0.0,
-    "total_percentile":89.95215311
+    "total_percentile":89.6980461812
+  },
+  {
+    "symbol":"IZRL",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":87.41,
+    "rs_percentile":15.8081705151,
+    "fin_percentile":73.8425925926,
+    "total_percentile":89.6507631077
+  },
+  {
+    "symbol":"CPSH",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":95.67,
+    "rs_percentile":74.7779751332,
+    "fin_percentile":14.8148148148,
+    "total_percentile":89.592789948
   },
   {
     "symbol":"RBLX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.83,
-    "rs_percentile":89.7129186603,
+    "rs_percentile":89.5204262877,
     "fin_percentile":0.0,
-    "total_percentile":89.7129186603
-  },
-  {
-    "symbol":"GHM",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":95.31,
-    "rs_percentile":72.7272727273,
-    "fin_percentile":16.9590643275,
-    "total_percentile":89.6863370548
-  },
-  {
-    "symbol":"KEP",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":95.29,
-    "rs_percentile":72.4880382775,
-    "fin_percentile":16.9590643275,
-    "total_percentile":89.447102605
+    "total_percentile":89.5204262877
   },
   {
     "symbol":"VIOT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.79,
-    "rs_percentile":89.2344497608,
+    "rs_percentile":89.1651865009,
     "fin_percentile":0.0,
-    "total_percentile":89.2344497608
+    "total_percentile":89.1651865009
   },
   {
     "symbol":"XGN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.75,
-    "rs_percentile":88.7559808612,
+    "rs_percentile":88.809946714,
     "fin_percentile":0.0,
-    "total_percentile":88.7559808612
+    "total_percentile":88.809946714
   },
   {
     "symbol":"FORD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.74,
-    "rs_percentile":88.5167464115,
+    "rs_percentile":88.6323268206,
     "fin_percentile":0.0,
-    "total_percentile":88.5167464115
+    "total_percentile":88.6323268206
   },
   {
-    "symbol":"FCA",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":87.11,
-    "rs_percentile":13.6363636364,
-    "fin_percentile":74.269005848,
-    "total_percentile":87.9053694843
+    "symbol":"YSG",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":97.63,
+    "rs_percentile":88.4547069272,
+    "fin_percentile":0.0,
+    "total_percentile":88.4547069272
+  },
+  {
+    "symbol":"PRPO",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":97.6,
+    "rs_percentile":88.0994671403,
+    "fin_percentile":0.0,
+    "total_percentile":88.0994671403
+  },
+  {
+    "symbol":"AZ",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":97.48,
+    "rs_percentile":87.7442273535,
+    "fin_percentile":0.0,
+    "total_percentile":87.7442273535
   },
   {
     "symbol":"WLDN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.4,
-    "rs_percentile":87.7990430622,
+    "rs_percentile":87.56660746,
     "fin_percentile":0.0,
-    "total_percentile":87.7990430622
+    "total_percentile":87.56660746
   },
   {
-    "symbol":"BETZ",
+    "symbol":"FCA",
     "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":87.0,
-    "rs_percentile":13.1578947368,
-    "fin_percentile":74.269005848,
-    "total_percentile":87.4269005848
+    "rs_score":87.11,
+    "rs_percentile":13.4991119005,
+    "fin_percentile":73.8425925926,
+    "total_percentile":87.3417044931
+  },
+  {
+    "symbol":"GHM",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":95.31,
+    "rs_percentile":72.4689165187,
+    "fin_percentile":14.8148148148,
+    "total_percentile":87.2837313335
+  },
+  {
+    "symbol":"KEP",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":95.29,
+    "rs_percentile":72.2912966252,
+    "fin_percentile":14.8148148148,
+    "total_percentile":87.10611144
   },
   {
     "symbol":"OSS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.23,
-    "rs_percentile":87.3205741627,
+    "rs_percentile":87.0337477798,
     "fin_percentile":0.0,
-    "total_percentile":87.3205741627
-  },
-  {
-    "symbol":"IAI",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":86.96,
-    "rs_percentile":12.9186602871,
-    "fin_percentile":74.269005848,
-    "total_percentile":87.187666135
+    "total_percentile":87.0337477798
   },
   {
     "symbol":"ISSC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.22,
-    "rs_percentile":87.0813397129,
+    "rs_percentile":86.8561278863,
     "fin_percentile":0.0,
-    "total_percentile":87.0813397129
+    "total_percentile":86.8561278863
   },
   {
     "symbol":"THM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.16,
-    "rs_percentile":86.8421052632,
+    "rs_percentile":86.6785079929,
     "fin_percentile":0.0,
-    "total_percentile":86.8421052632
+    "total_percentile":86.6785079929
   },
   {
-    "symbol":"IQM",
+    "symbol":"BETZ",
     "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":86.92,
-    "rs_percentile":12.4401913876,
-    "fin_percentile":74.269005848,
-    "total_percentile":86.7091972355
+    "rs_score":87.0,
+    "rs_percentile":12.7886323268,
+    "fin_percentile":73.8425925926,
+    "total_percentile":86.6312249194
+  },
+  {
+    "symbol":"USAS",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":97.15,
+    "rs_percentile":86.5008880995,
+    "fin_percentile":0.0,
+    "total_percentile":86.5008880995
+  },
+  {
+    "symbol":"IAI",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.96,
+    "rs_percentile":12.6110124334,
+    "fin_percentile":73.8425925926,
+    "total_percentile":86.453605026
   },
   {
     "symbol":"TLN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.14,
-    "rs_percentile":86.6028708134,
+    "rs_percentile":86.323268206,
     "fin_percentile":0.0,
-    "total_percentile":86.6028708134
-  },
-  {
-    "symbol":"ARTY",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":86.91,
-    "rs_percentile":12.2009569378,
-    "fin_percentile":74.269005848,
-    "total_percentile":86.4699627858
+    "total_percentile":86.323268206
   },
   {
     "symbol":"LASR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.12,
-    "rs_percentile":86.3636363636,
+    "rs_percentile":86.1456483126,
     "fin_percentile":0.0,
-    "total_percentile":86.3636363636
+    "total_percentile":86.1456483126
+  },
+  {
+    "symbol":"IQM",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.92,
+    "rs_percentile":12.2557726465,
+    "fin_percentile":73.8425925926,
+    "total_percentile":86.0983652391
   },
   {
     "symbol":"DOMO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.09,
-    "rs_percentile":86.1244019139,
+    "rs_percentile":85.9680284192,
     "fin_percentile":0.0,
-    "total_percentile":86.1244019139
+    "total_percentile":85.9680284192
   },
   {
-    "symbol":"ONLN",
+    "symbol":"ARTY",
     "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":86.75,
-    "rs_percentile":11.4832535885,
-    "fin_percentile":74.269005848,
-    "total_percentile":85.7522594365
+    "rs_score":86.91,
+    "rs_percentile":12.0781527531,
+    "fin_percentile":73.8425925926,
+    "total_percentile":85.9207453457
+  },
+  {
+    "symbol":"MDAI",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":95.13,
+    "rs_percentile":71.0479573712,
+    "fin_percentile":14.8148148148,
+    "total_percentile":85.862772186
   },
   {
     "symbol":"ASPI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":97.01,
-    "rs_percentile":85.6459330144,
+    "rs_percentile":85.6127886323,
     "fin_percentile":0.0,
-    "total_percentile":85.6459330144
-  },
-  {
-    "symbol":"ONC",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":91.19,
-    "rs_percentile":44.2583732057,
-    "fin_percentile":41.2280701754,
-    "total_percentile":85.4864433812
+    "total_percentile":85.6127886323
   },
   {
     "symbol":"UCL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.99,
-    "rs_percentile":85.4066985646,
+    "rs_percentile":85.4351687389,
     "fin_percentile":0.0,
-    "total_percentile":85.4066985646
+    "total_percentile":85.4351687389
+  },
+  {
+    "symbol":"ONLN",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.75,
+    "rs_percentile":11.3676731794,
+    "fin_percentile":73.8425925926,
+    "total_percentile":85.210265772
   },
   {
     "symbol":"IOBT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.97,
-    "rs_percentile":85.1674641148,
+    "rs_percentile":85.079928952,
     "fin_percentile":0.0,
-    "total_percentile":85.1674641148
+    "total_percentile":85.079928952
+  },
+  {
+    "symbol":"EIS",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.73,
+    "rs_percentile":11.190053286,
+    "fin_percentile":73.8425925926,
+    "total_percentile":85.0326458786
   },
   {
     "symbol":"KTOS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.96,
-    "rs_percentile":84.9282296651,
+    "rs_percentile":84.9023090586,
     "fin_percentile":0.0,
-    "total_percentile":84.9282296651
+    "total_percentile":84.9023090586
   },
   {
     "symbol":"PVLA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.95,
-    "rs_percentile":84.6889952153,
+    "rs_percentile":84.7246891652,
     "fin_percentile":0.0,
-    "total_percentile":84.6889952153
+    "total_percentile":84.7246891652
+  },
+  {
+    "symbol":"FLKR",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.71,
+    "rs_percentile":10.8348134991,
+    "fin_percentile":73.8425925926,
+    "total_percentile":84.6774060917
   },
   {
     "symbol":"MGRM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.94,
-    "rs_percentile":84.4497607656,
+    "rs_percentile":84.5470692718,
     "fin_percentile":0.0,
-    "total_percentile":84.4497607656
+    "total_percentile":84.5470692718
   },
   {
     "symbol":"GOGO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.91,
-    "rs_percentile":84.2105263158,
+    "rs_percentile":84.3694493783,
     "fin_percentile":0.0,
-    "total_percentile":84.2105263158
-  },
-  {
-    "symbol":"FNGS",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":86.52,
-    "rs_percentile":9.8086124402,
-    "fin_percentile":74.269005848,
-    "total_percentile":84.0776182881
+    "total_percentile":84.3694493783
   },
   {
     "symbol":"SOFI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.89,
-    "rs_percentile":83.971291866,
+    "rs_percentile":84.1918294849,
     "fin_percentile":0.0,
-    "total_percentile":83.971291866
+    "total_percentile":84.1918294849
   },
   {
     "symbol":"ELVA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.86,
-    "rs_percentile":83.4928229665,
+    "rs_percentile":83.836589698,
     "fin_percentile":0.0,
-    "total_percentile":83.4928229665
+    "total_percentile":83.836589698
   },
   {
     "symbol":"FARO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.84,
-    "rs_percentile":83.2535885167,
+    "rs_percentile":83.6589698046,
     "fin_percentile":0.0,
-    "total_percentile":83.2535885167
+    "total_percentile":83.6589698046
+  },
+  {
+    "symbol":"FNGS",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.52,
+    "rs_percentile":9.5914742451,
+    "fin_percentile":73.8425925926,
+    "total_percentile":83.4340668377
   },
   {
     "symbol":"NET",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.82,
-    "rs_percentile":83.014354067,
+    "rs_percentile":83.3037300178,
     "fin_percentile":0.0,
-    "total_percentile":83.014354067
+    "total_percentile":83.3037300178
+  },
+  {
+    "symbol":"PL",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":96.77,
+    "rs_percentile":83.1261101243,
+    "fin_percentile":0.0,
+    "total_percentile":83.1261101243
   },
   {
     "symbol":"ICAD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.75,
-    "rs_percentile":82.7751196172,
+    "rs_percentile":82.9484902309,
     "fin_percentile":0.0,
-    "total_percentile":82.7751196172
-  },
-  {
-    "symbol":"LTL",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":86.4,
-    "rs_percentile":8.3732057416,
-    "fin_percentile":74.269005848,
-    "total_percentile":82.6422115896
+    "total_percentile":82.9484902309
   },
   {
     "symbol":"INOD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.74,
-    "rs_percentile":82.5358851675,
+    "rs_percentile":82.7708703375,
     "fin_percentile":0.0,
-    "total_percentile":82.5358851675
+    "total_percentile":82.7708703375
+  },
+  {
+    "symbol":"CMCL",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":94.67,
+    "rs_percentile":67.8507992895,
+    "fin_percentile":14.8148148148,
+    "total_percentile":82.6656141043
+  },
+  {
+    "symbol":"MQ",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.44,
+    "rs_percentile":8.703374778,
+    "fin_percentile":73.8425925926,
+    "total_percentile":82.5459673706
+  },
+  {
+    "symbol":"ONC",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":91.19,
+    "rs_percentile":43.8721136767,
+    "fin_percentile":38.6574074074,
+    "total_percentile":82.5295210841
   },
   {
     "symbol":"AGX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.72,
-    "rs_percentile":82.2966507177,
+    "rs_percentile":82.4156305506,
     "fin_percentile":0.0,
-    "total_percentile":82.2966507177
-  },
-  {
-    "symbol":"FFTY",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":86.24,
-    "rs_percentile":7.8947368421,
-    "fin_percentile":74.269005848,
-    "total_percentile":82.1637426901
-  },
-  {
-    "symbol":"WGS",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":96.67,
-    "rs_percentile":82.0574162679,
-    "fin_percentile":0.0,
-    "total_percentile":82.0574162679
+    "total_percentile":82.4156305506
   },
   {
     "symbol":"SLGL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.66,
-    "rs_percentile":81.8181818182,
+    "rs_percentile":82.2380106572,
     "fin_percentile":0.0,
-    "total_percentile":81.8181818182
+    "total_percentile":82.2380106572
   },
   {
-    "symbol":"DASH",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":94.18,
-    "rs_percentile":64.8325358852,
-    "fin_percentile":16.9590643275,
-    "total_percentile":81.7916002127
-  },
-  {
-    "symbol":"WTAI",
+    "symbol":"LTL",
     "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":86.09,
-    "rs_percentile":7.4162679426,
-    "fin_percentile":74.269005848,
-    "total_percentile":81.6852737905
+    "rs_score":86.4,
+    "rs_percentile":8.3481349911,
+    "fin_percentile":73.8425925926,
+    "total_percentile":82.1907275837
   },
   {
     "symbol":"RFIL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.65,
-    "rs_percentile":81.5789473684,
+    "rs_percentile":82.0603907638,
     "fin_percentile":0.0,
-    "total_percentile":81.5789473684
-  },
-  {
-    "symbol":"EWP",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":86.07,
-    "rs_percentile":7.1770334928,
-    "fin_percentile":74.269005848,
-    "total_percentile":81.4460393408
+    "total_percentile":82.0603907638
   },
   {
     "symbol":"SIFY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.63,
-    "rs_percentile":81.3397129187,
+    "rs_percentile":81.8827708703,
     "fin_percentile":0.0,
-    "total_percentile":81.3397129187
+    "total_percentile":81.8827708703
   },
   {
-    "symbol":"SIXG",
+    "symbol":"EWY",
     "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":86.03,
-    "rs_percentile":6.9377990431,
-    "fin_percentile":74.269005848,
-    "total_percentile":81.206804891
-  },
-  {
-    "symbol":"TIGO",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":90.9,
-    "rs_percentile":39.95215311,
-    "fin_percentile":41.2280701754,
-    "total_percentile":81.1802232855
+    "rs_score":86.31,
+    "rs_percentile":7.6376554174,
+    "fin_percentile":73.8425925926,
+    "total_percentile":81.48024801
   },
   {
     "symbol":"CVNA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.54,
-    "rs_percentile":80.6220095694,
+    "rs_percentile":81.3499111901,
     "fin_percentile":0.0,
-    "total_percentile":80.6220095694
+    "total_percentile":81.3499111901
+  },
+  {
+    "symbol":"EPOL",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.3,
+    "rs_percentile":7.460035524,
+    "fin_percentile":73.8425925926,
+    "total_percentile":81.3026281166
+  },
+  {
+    "symbol":"HERO",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.25,
+    "rs_percentile":7.2824156306,
+    "fin_percentile":73.8425925926,
+    "total_percentile":81.1250082231
+  },
+  {
+    "symbol":"FFTY",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.24,
+    "rs_percentile":7.1047957371,
+    "fin_percentile":73.8425925926,
+    "total_percentile":80.9473883297
+  },
+  {
+    "symbol":"WTAI",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.09,
+    "rs_percentile":6.7495559503,
+    "fin_percentile":73.8425925926,
+    "total_percentile":80.5921485429
+  },
+  {
+    "symbol":"PPIH",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":96.39,
+    "rs_percentile":80.4618117229,
+    "fin_percentile":0.0,
+    "total_percentile":80.4618117229
+  },
+  {
+    "symbol":"EWP",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":86.07,
+    "rs_percentile":6.5719360568,
+    "fin_percentile":73.8425925926,
+    "total_percentile":80.4145286494
   },
   {
     "symbol":"SNES",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.38,
-    "rs_percentile":80.3827751196,
+    "rs_percentile":80.2841918295,
     "fin_percentile":0.0,
-    "total_percentile":80.3827751196
+    "total_percentile":80.2841918295
   },
   {
-    "symbol":"BPMC",
-    "fin_met_count":5.0,
+    "symbol":"SIXG",
+    "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":90.78,
-    "rs_percentile":38.995215311,
-    "fin_percentile":41.2280701754,
-    "total_percentile":80.2232854864
+    "rs_score":86.03,
+    "rs_percentile":6.3943161634,
+    "fin_percentile":73.8425925926,
+    "total_percentile":80.236908756
+  },
+  {
+    "symbol":"ESP",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":94.19,
+    "rs_percentile":65.1865008881,
+    "fin_percentile":14.8148148148,
+    "total_percentile":80.0013157029
   },
   {
     "symbol":"CFSB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.27,
-    "rs_percentile":80.1435406699,
+    "rs_percentile":79.9289520426,
     "fin_percentile":0.0,
-    "total_percentile":80.1435406699
+    "total_percentile":79.9289520426
   },
   {
-    "symbol":"SPMO",
-    "fin_met_count":6.0,
+    "symbol":"DASH",
+    "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":85.84,
-    "rs_percentile":5.7416267943,
-    "fin_percentile":74.269005848,
-    "total_percentile":80.0106326422
+    "rs_score":94.18,
+    "rs_percentile":65.0088809947,
+    "fin_percentile":14.8148148148,
+    "total_percentile":79.8236958095
   },
   {
     "symbol":"TPR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.26,
-    "rs_percentile":79.9043062201,
+    "rs_percentile":79.7513321492,
     "fin_percentile":0.0,
-    "total_percentile":79.9043062201
+    "total_percentile":79.7513321492
   },
   {
     "symbol":"UUU",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.25,
-    "rs_percentile":79.6650717703,
+    "rs_percentile":79.5737122558,
     "fin_percentile":0.0,
-    "total_percentile":79.6650717703
+    "total_percentile":79.5737122558
   },
   {
-    "symbol":"BTI",
+    "symbol":"SPMO",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":85.84,
+    "rs_percentile":5.6838365897,
+    "fin_percentile":73.8425925926,
+    "total_percentile":79.5264291823
+  },
+  {
+    "symbol":"TIGO",
     "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":90.66,
-    "rs_percentile":38.2775119617,
-    "fin_percentile":41.2280701754,
-    "total_percentile":79.5055821372
+    "rs_score":90.9,
+    "rs_percentile":40.8525754885,
+    "fin_percentile":38.6574074074,
+    "total_percentile":79.5099828959
+  },
+  {
+    "symbol":"SGHC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":96.22,
+    "rs_percentile":79.2184724689,
+    "fin_percentile":0.0,
+    "total_percentile":79.2184724689
+  },
+  {
+    "symbol":"SNT",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":96.2,
+    "rs_percentile":79.0408525755,
+    "fin_percentile":0.0,
+    "total_percentile":79.0408525755
   },
   {
     "symbol":"AGIX",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.78,
-    "rs_percentile":5.023923445,
-    "fin_percentile":74.269005848,
-    "total_percentile":79.2929292929
-  },
-  {
-    "symbol":"PUK",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":90.61,
-    "rs_percentile":38.038277512,
-    "fin_percentile":41.2280701754,
-    "total_percentile":79.2663476874
+    "rs_percentile":5.1509769094,
+    "fin_percentile":73.8425925926,
+    "total_percentile":78.993569502
   },
   {
     "symbol":"LIF",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.19,
-    "rs_percentile":79.1866028708,
+    "rs_percentile":78.8632326821,
     "fin_percentile":0.0,
-    "total_percentile":79.1866028708
+    "total_percentile":78.8632326821
   },
   {
     "symbol":"ILDR",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.76,
-    "rs_percentile":4.7846889952,
-    "fin_percentile":74.269005848,
-    "total_percentile":79.0536948432
+    "rs_percentile":4.973357016,
+    "fin_percentile":73.8425925926,
+    "total_percentile":78.8159496086
+  },
+  {
+    "symbol":"PARR",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":96.15,
+    "rs_percentile":78.6856127886,
+    "fin_percentile":0.0,
+    "total_percentile":78.6856127886
+  },
+  {
+    "symbol":"EWO",
+    "fin_met_count":6.0,
+    "has_error":false,
+    "rs_score":85.75,
+    "rs_percentile":4.7957371226,
+    "fin_percentile":73.8425925926,
+    "total_percentile":78.6383297152
+  },
+  {
+    "symbol":"BPMC",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":90.78,
+    "rs_percentile":39.9644760213,
+    "fin_percentile":38.6574074074,
+    "total_percentile":78.6218834287
   },
   {
     "symbol":"ELTX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.08,
-    "rs_percentile":78.9473684211,
+    "rs_percentile":78.3303730018,
     "fin_percentile":0.0,
-    "total_percentile":78.9473684211
+    "total_percentile":78.3303730018
   },
   {
     "symbol":"GROY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":96.07,
-    "rs_percentile":78.7081339713,
+    "rs_percentile":78.1527531083,
     "fin_percentile":0.0,
-    "total_percentile":78.7081339713
+    "total_percentile":78.1527531083
   },
   {
-    "symbol":"PLBY",
+    "symbol":"SSSS",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":95.99,
-    "rs_percentile":78.4688995215,
+    "rs_score":96.04,
+    "rs_percentile":77.9751332149,
     "fin_percentile":0.0,
-    "total_percentile":78.4688995215
-  },
-  {
-    "symbol":"SRAD",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":95.97,
-    "rs_percentile":78.2296650718,
-    "fin_percentile":0.0,
-    "total_percentile":78.2296650718
+    "total_percentile":77.9751332149
   },
   {
     "symbol":"PPA",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.68,
-    "rs_percentile":3.8277511962,
-    "fin_percentile":74.269005848,
-    "total_percentile":78.0967570441
+    "rs_percentile":4.0852575488,
+    "fin_percentile":73.8425925926,
+    "total_percentile":77.9278501414
+  },
+  {
+    "symbol":"THTX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":96.0,
+    "rs_percentile":77.7975133215,
+    "fin_percentile":0.0,
+    "total_percentile":77.7975133215
+  },
+  {
+    "symbol":"BTI",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":90.66,
+    "rs_percentile":39.0763765542,
+    "fin_percentile":38.6574074074,
+    "total_percentile":77.7337839616
+  },
+  {
+    "symbol":"PLBY",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.99,
+    "rs_percentile":77.6198934281,
+    "fin_percentile":0.0,
+    "total_percentile":77.6198934281
+  },
+  {
+    "symbol":"SRAD",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.97,
+    "rs_percentile":77.4422735346,
+    "fin_percentile":0.0,
+    "total_percentile":77.4422735346
+  },
+  {
+    "symbol":"PUK",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":90.61,
+    "rs_percentile":38.7211367673,
+    "fin_percentile":38.6574074074,
+    "total_percentile":77.3785441747
   },
   {
     "symbol":"FUTU",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.94,
-    "rs_percentile":77.990430622,
+    "rs_percentile":77.2646536412,
     "fin_percentile":0.0,
-    "total_percentile":77.990430622
-  },
-  {
-    "symbol":"AHR",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":93.56,
-    "rs_percentile":61.004784689,
-    "fin_percentile":16.9590643275,
-    "total_percentile":77.9638490165
-  },
-  {
-    "symbol":"IHS",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":95.93,
-    "rs_percentile":77.7511961722,
-    "fin_percentile":0.0,
-    "total_percentile":77.7511961722
-  },
-  {
-    "symbol":"SANM",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":93.54,
-    "rs_percentile":60.7655502392,
-    "fin_percentile":16.9590643275,
-    "total_percentile":77.7246145667
+    "total_percentile":77.2646536412
   },
   {
     "symbol":"OGIG",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.51,
-    "rs_percentile":3.3492822967,
-    "fin_percentile":74.269005848,
-    "total_percentile":77.6182881446
+    "rs_percentile":3.3747779751,
+    "fin_percentile":73.8425925926,
+    "total_percentile":77.2173705677
+  },
+  {
+    "symbol":"IHS",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.93,
+    "rs_percentile":77.0870337478,
+    "fin_percentile":0.0,
+    "total_percentile":77.0870337478
   },
   {
     "symbol":"BELFB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.92,
-    "rs_percentile":77.5119617225,
+    "rs_percentile":76.9094138544,
     "fin_percentile":0.0,
-    "total_percentile":77.5119617225
-  },
-  {
-    "symbol":"ALNT",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":95.91,
-    "rs_percentile":77.2727272727,
-    "fin_percentile":0.0,
-    "total_percentile":77.2727272727
+    "total_percentile":76.9094138544
   },
   {
     "symbol":"IETC",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.48,
-    "rs_percentile":2.8708133971,
-    "fin_percentile":74.269005848,
-    "total_percentile":77.1398192451
+    "rs_percentile":3.0195381883,
+    "fin_percentile":73.8425925926,
+    "total_percentile":76.8621307809
   },
   {
-    "symbol":"SEI",
+    "symbol":"ALNT",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":95.87,
-    "rs_percentile":77.033492823,
+    "rs_score":95.91,
+    "rs_percentile":76.7317939609,
     "fin_percentile":0.0,
-    "total_percentile":77.033492823
+    "total_percentile":76.7317939609
   },
   {
     "symbol":"MISL",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.47,
-    "rs_percentile":2.6315789474,
-    "fin_percentile":74.269005848,
-    "total_percentile":76.9005847953
+    "rs_percentile":2.8419182948,
+    "fin_percentile":73.8425925926,
+    "total_percentile":76.6845108874
+  },
+  {
+    "symbol":"TSAT",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.88,
+    "rs_percentile":76.5541740675,
+    "fin_percentile":0.0,
+    "total_percentile":76.5541740675
+  },
+  {
+    "symbol":"SEI",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.87,
+    "rs_percentile":76.3765541741,
+    "fin_percentile":0.0,
+    "total_percentile":76.3765541741
   },
   {
     "symbol":"INDV",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.84,
-    "rs_percentile":76.7942583732,
+    "rs_percentile":76.1989342806,
     "fin_percentile":0.0,
-    "total_percentile":76.7942583732
+    "total_percentile":76.1989342806
   },
   {
-    "symbol":"CHN",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":90.16,
-    "rs_percentile":35.4066985646,
-    "fin_percentile":41.2280701754,
-    "total_percentile":76.63476874
-  },
-  {
-    "symbol":"COUR",
+    "symbol":"AHR",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":93.4,
-    "rs_percentile":59.5693779904,
-    "fin_percentile":16.9590643275,
-    "total_percentile":76.5284423179
-  },
-  {
-    "symbol":"RBRK",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":95.81,
-    "rs_percentile":76.0765550239,
-    "fin_percentile":0.0,
-    "total_percentile":76.0765550239
-  },
-  {
-    "symbol":"VST",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":95.79,
-    "rs_percentile":75.8373205742,
-    "fin_percentile":0.0,
-    "total_percentile":75.8373205742
+    "rs_score":93.56,
+    "rs_percentile":61.2788632327,
+    "fin_percentile":14.8148148148,
+    "total_percentile":76.0936780475
   },
   {
     "symbol":"GGME",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.3,
-    "rs_percentile":1.4354066986,
-    "fin_percentile":74.269005848,
-    "total_percentile":75.7044125465
+    "rs_percentile":1.9538188277,
+    "fin_percentile":73.8425925926,
+    "total_percentile":75.7964114203
   },
   {
-    "symbol":"BBIO",
+    "symbol":"SANM",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":93.22,
-    "rs_percentile":58.6124401914,
-    "fin_percentile":16.9590643275,
-    "total_percentile":75.5715045189
+    "rs_score":93.54,
+    "rs_percentile":60.9236234458,
+    "fin_percentile":14.8148148148,
+    "total_percentile":75.7384382606
+  },
+  {
+    "symbol":"RBRK",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.81,
+    "rs_percentile":75.6660746004,
+    "fin_percentile":0.0,
+    "total_percentile":75.6660746004
+  },
+  {
+    "symbol":"VST",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.79,
+    "rs_percentile":75.4884547069,
+    "fin_percentile":0.0,
+    "total_percentile":75.4884547069
+  },
+  {
+    "symbol":"EVEX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.74,
+    "rs_percentile":75.3108348135,
+    "fin_percentile":0.0,
+    "total_percentile":75.3108348135
   },
   {
     "symbol":"SFYF",
     "fin_met_count":6.0,
     "has_error":false,
     "rs_score":85.2,
-    "rs_percentile":1.1961722488,
-    "fin_percentile":74.269005848,
-    "total_percentile":75.4651780968
+    "rs_percentile":1.243339254,
+    "fin_percentile":73.8425925926,
+    "total_percentile":75.0859318466
   },
   {
     "symbol":"CCRD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.68,
-    "rs_percentile":75.3588516746,
+    "rs_percentile":74.9555950266,
     "fin_percentile":0.0,
-    "total_percentile":75.3588516746
+    "total_percentile":74.9555950266
   },
   {
-    "symbol":"TWLO",
-    "fin_met_count":4.0,
+    "symbol":"CHN",
+    "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":93.19,
-    "rs_percentile":58.1339712919,
-    "fin_percentile":16.9590643275,
-    "total_percentile":75.0930356194
-  },
-  {
-    "symbol":"TPTA",
-    "fin_met_count":6.0,
-    "has_error":false,
-    "rs_score":85.11,
-    "rs_percentile":0.7177033493,
-    "fin_percentile":74.269005848,
-    "total_percentile":74.9867091972
+    "rs_score":90.16,
+    "rs_percentile":35.8792184725,
+    "fin_percentile":38.6574074074,
+    "total_percentile":74.5366258799
   },
   {
     "symbol":"VFF",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.6,
-    "rs_percentile":74.6411483254,
+    "rs_percentile":74.4227353464,
     "fin_percentile":0.0,
-    "total_percentile":74.6411483254
+    "total_percentile":74.4227353464
   },
   {
     "symbol":"TRVI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.57,
-    "rs_percentile":74.4019138756,
+    "rs_percentile":74.2451154529,
     "fin_percentile":0.0,
-    "total_percentile":74.4019138756
+    "total_percentile":74.2451154529
   },
   {
-    "symbol":"ERJ",
-    "fin_met_count":4.0,
+    "symbol":"TPTA",
+    "fin_met_count":6.0,
     "has_error":false,
-    "rs_score":93.09,
-    "rs_percentile":57.4162679426,
-    "fin_percentile":16.9590643275,
-    "total_percentile":74.3753322701
+    "rs_score":85.11,
+    "rs_percentile":0.3552397869,
+    "fin_percentile":73.8425925926,
+    "total_percentile":74.1978323794
   },
   {
     "symbol":"NRG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.55,
-    "rs_percentile":74.1626794258,
+    "rs_percentile":74.0674955595,
     "fin_percentile":0.0,
-    "total_percentile":74.1626794258
+    "total_percentile":74.0674955595
+  },
+  {
+    "symbol":"EPRX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.53,
+    "rs_percentile":73.8898756661,
+    "fin_percentile":0.0,
+    "total_percentile":73.8898756661
+  },
+  {
+    "symbol":"BBIO",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":93.22,
+    "rs_percentile":58.9698046181,
+    "fin_percentile":14.8148148148,
+    "total_percentile":73.7846194329
   },
   {
     "symbol":"RMNI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.47,
-    "rs_percentile":73.9234449761,
+    "rs_percentile":73.7122557726,
     "fin_percentile":0.0,
-    "total_percentile":73.9234449761
+    "total_percentile":73.7122557726
   },
   {
     "symbol":"FEIM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.46,
-    "rs_percentile":73.6842105263,
+    "rs_percentile":73.5346358792,
     "fin_percentile":0.0,
-    "total_percentile":73.6842105263
+    "total_percentile":73.5346358792
   },
   {
-    "symbol":"COOP",
+    "symbol":"TWLO",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":93.04,
-    "rs_percentile":56.4593301435,
-    "fin_percentile":16.9590643275,
-    "total_percentile":73.418394471
+    "rs_score":93.19,
+    "rs_percentile":58.6145648313,
+    "fin_percentile":14.8148148148,
+    "total_percentile":73.4293796461
   },
   {
-    "symbol":"CKPT",
+    "symbol":"MGNI",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":95.43,
-    "rs_percentile":73.2057416268,
+    "rs_score":95.41,
+    "rs_percentile":73.0017761989,
     "fin_percentile":0.0,
-    "total_percentile":73.2057416268
-  },
-  {
-    "symbol":"APH",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":93.02,
-    "rs_percentile":56.2200956938,
-    "fin_percentile":16.9590643275,
-    "total_percentile":73.1791600213
+    "total_percentile":73.0017761989
   },
   {
     "symbol":"OLO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.36,
-    "rs_percentile":72.966507177,
+    "rs_percentile":72.8241563055,
     "fin_percentile":0.0,
-    "total_percentile":72.966507177
+    "total_percentile":72.8241563055
+  },
+  {
+    "symbol":"ERJ",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":93.09,
+    "rs_percentile":57.9040852575,
+    "fin_percentile":14.8148148148,
+    "total_percentile":72.7189000724
+  },
+  {
+    "symbol":"COOP",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":93.04,
+    "rs_percentile":57.1936056838,
+    "fin_percentile":14.8148148148,
+    "total_percentile":72.0084204987
   },
   {
     "symbol":"FIVE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.21,
-    "rs_percentile":72.009569378,
+    "rs_percentile":71.9360568384,
     "fin_percentile":0.0,
-    "total_percentile":72.009569378
+    "total_percentile":71.9360568384
+  },
+  {
+    "symbol":"APH",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":93.02,
+    "rs_percentile":57.0159857904,
+    "fin_percentile":14.8148148148,
+    "total_percentile":71.8308006052
   },
   {
     "symbol":"MIND",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.2,
-    "rs_percentile":71.7703349282,
+    "rs_percentile":71.7584369449,
     "fin_percentile":0.0,
-    "total_percentile":71.7703349282
+    "total_percentile":71.7584369449
+  },
+  {
+    "symbol":"SEDG",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.19,
+    "rs_percentile":71.5808170515,
+    "fin_percentile":0.0,
+    "total_percentile":71.5808170515
+  },
+  {
+    "symbol":"MGIC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.16,
+    "rs_percentile":71.4031971581,
+    "fin_percentile":0.0,
+    "total_percentile":71.4031971581
   },
   {
     "symbol":"KEN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.15,
-    "rs_percentile":71.5311004785,
+    "rs_percentile":71.2255772647,
     "fin_percentile":0.0,
-    "total_percentile":71.5311004785
+    "total_percentile":71.2255772647
+  },
+  {
+    "symbol":"AP",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":95.07,
+    "rs_percentile":70.6927175844,
+    "fin_percentile":0.0,
+    "total_percentile":70.6927175844
   },
   {
     "symbol":"QD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":95.06,
-    "rs_percentile":71.0526315789,
+    "rs_percentile":70.5150976909,
     "fin_percentile":0.0,
-    "total_percentile":71.0526315789
+    "total_percentile":70.5150976909
   },
   {
     "symbol":"STX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.98,
-    "rs_percentile":70.5741626794,
+    "rs_percentile":70.1598579041,
     "fin_percentile":0.0,
-    "total_percentile":70.5741626794
+    "total_percentile":70.1598579041
+  },
+  {
+    "symbol":"LMB",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":94.95,
+    "rs_percentile":69.9822380107,
+    "fin_percentile":0.0,
+    "total_percentile":69.9822380107
   },
   {
     "symbol":"WILC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.94,
-    "rs_percentile":70.3349282297,
+    "rs_percentile":69.8046181172,
     "fin_percentile":0.0,
-    "total_percentile":70.3349282297
-  },
-  {
-    "symbol":"AWI",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":89.3,
-    "rs_percentile":28.9473684211,
-    "fin_percentile":41.2280701754,
-    "total_percentile":70.1754385965
+    "total_percentile":69.8046181172
   },
   {
     "symbol":"DB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.9,
-    "rs_percentile":70.0956937799,
+    "rs_percentile":69.6269982238,
     "fin_percentile":0.0,
-    "total_percentile":70.0956937799
+    "total_percentile":69.6269982238
+  },
+  {
+    "symbol":"COE",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":94.89,
+    "rs_percentile":69.4493783304,
+    "fin_percentile":0.0,
+    "total_percentile":69.4493783304
   },
   {
     "symbol":"DCO",
     "fin_met_count":4.0,
     "has_error":false,
     "rs_score":92.59,
-    "rs_percentile":53.1100478469,
-    "fin_percentile":16.9590643275,
-    "total_percentile":70.0691121744
+    "rs_percentile":54.351687389,
+    "fin_percentile":14.8148148148,
+    "total_percentile":69.1665022038
   },
   {
     "symbol":"CLBR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.83,
-    "rs_percentile":69.6172248804,
+    "rs_percentile":69.0941385435,
     "fin_percentile":0.0,
-    "total_percentile":69.6172248804
+    "total_percentile":69.0941385435
   },
   {
     "symbol":"CPS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.79,
-    "rs_percentile":69.1387559809,
+    "rs_percentile":68.7388987567,
     "fin_percentile":0.0,
-    "total_percentile":69.1387559809
+    "total_percentile":68.7388987567
+  },
+  {
+    "symbol":"KFS",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":94.75,
+    "rs_percentile":68.5612788632,
+    "fin_percentile":0.0,
+    "total_percentile":68.5612788632
+  },
+  {
+    "symbol":"AWI",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":89.3,
+    "rs_percentile":29.6625222025,
+    "fin_percentile":38.6574074074,
+    "total_percentile":68.3199296099
   },
   {
     "symbol":"AVGO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.71,
-    "rs_percentile":68.6602870813,
+    "rs_percentile":68.2060390764,
     "fin_percentile":0.0,
-    "total_percentile":68.6602870813
+    "total_percentile":68.2060390764
   },
   {
     "symbol":"HNRG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.7,
-    "rs_percentile":68.4210526316,
+    "rs_percentile":68.0284191829,
     "fin_percentile":0.0,
-    "total_percentile":68.4210526316
+    "total_percentile":68.0284191829
   },
   {
-    "symbol":"COEP",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":94.68,
-    "rs_percentile":68.1818181818,
-    "fin_percentile":0.0,
-    "total_percentile":68.1818181818
+    "symbol":"GFI",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":89.25,
+    "rs_percentile":29.3072824156,
+    "fin_percentile":38.6574074074,
+    "total_percentile":67.964689823
   },
   {
     "symbol":"DXPE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.62,
-    "rs_percentile":67.9425837321,
+    "rs_percentile":67.6731793961,
     "fin_percentile":0.0,
-    "total_percentile":67.9425837321
+    "total_percentile":67.6731793961
   },
   {
-    "symbol":"DNA",
+    "symbol":"BOSC",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":92.19,
-    "rs_percentile":50.956937799,
-    "fin_percentile":16.9590643275,
-    "total_percentile":67.9160021265
+    "rs_score":92.37,
+    "rs_percentile":52.7531083481,
+    "fin_percentile":14.8148148148,
+    "total_percentile":67.5679231629
   },
   {
     "symbol":"ACMR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.59,
-    "rs_percentile":67.7033492823,
+    "rs_percentile":67.4955595027,
     "fin_percentile":0.0,
-    "total_percentile":67.7033492823
+    "total_percentile":67.4955595027
+  },
+  {
+    "symbol":"SLSR",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":94.57,
+    "rs_percentile":67.1403197158,
+    "fin_percentile":0.0,
+    "total_percentile":67.1403197158
   },
   {
     "symbol":"AFRM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.55,
-    "rs_percentile":67.2248803828,
+    "rs_percentile":66.9626998224,
     "fin_percentile":0.0,
-    "total_percentile":67.2248803828
+    "total_percentile":66.9626998224
+  },
+  {
+    "symbol":"CVAC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":94.54,
+    "rs_percentile":66.785079929,
+    "fin_percentile":0.0,
+    "total_percentile":66.785079929
+  },
+  {
+    "symbol":"DNA",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":92.19,
+    "rs_percentile":51.865008881,
+    "fin_percentile":14.8148148148,
+    "total_percentile":66.6798236958
   },
   {
     "symbol":"EOSE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.51,
-    "rs_percentile":66.985645933,
+    "rs_percentile":66.6074600355,
     "fin_percentile":0.0,
-    "total_percentile":66.985645933
-  },
-  {
-    "symbol":"KF",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":88.8,
-    "rs_percentile":25.5980861244,
-    "fin_percentile":41.2280701754,
-    "total_percentile":66.8261562998
+    "total_percentile":66.6074600355
   },
   {
     "symbol":"TPB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.48,
-    "rs_percentile":66.7464114833,
+    "rs_percentile":66.4298401421,
     "fin_percentile":0.0,
-    "total_percentile":66.7464114833
-  },
-  {
-    "symbol":"FLUT",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":88.78,
-    "rs_percentile":25.3588516746,
-    "fin_percentile":41.2280701754,
-    "total_percentile":66.5869218501
+    "total_percentile":66.4298401421
   },
   {
     "symbol":"IH",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.46,
-    "rs_percentile":66.5071770335,
+    "rs_percentile":66.2522202487,
     "fin_percentile":0.0,
-    "total_percentile":66.5071770335
-  },
-  {
-    "symbol":"AXIL",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":94.41,
-    "rs_percentile":66.2679425837,
-    "fin_percentile":0.0,
-    "total_percentile":66.2679425837
+    "total_percentile":66.2522202487
   },
   {
     "symbol":"MIR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.4,
-    "rs_percentile":66.028708134,
+    "rs_percentile":66.0746003552,
     "fin_percentile":0.0,
-    "total_percentile":66.028708134
+    "total_percentile":66.0746003552
   },
   {
     "symbol":"ABCL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.37,
-    "rs_percentile":65.5502392344,
+    "rs_percentile":65.7193605684,
     "fin_percentile":0.0,
-    "total_percentile":65.5502392344
-  },
-  {
-    "symbol":"PLYA",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":88.57,
-    "rs_percentile":24.1626794258,
-    "fin_percentile":41.2280701754,
-    "total_percentile":65.3907496013
+    "total_percentile":65.7193605684
   },
   {
     "symbol":"REVG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.29,
-    "rs_percentile":65.3110047847,
+    "rs_percentile":65.541740675,
     "fin_percentile":0.0,
-    "total_percentile":65.3110047847
-  },
-  {
-    "symbol":"MTRX",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":88.52,
-    "rs_percentile":23.6842105263,
-    "fin_percentile":41.2280701754,
-    "total_percentile":64.9122807018
+    "total_percentile":65.541740675
   },
   {
     "symbol":"IDCC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.16,
-    "rs_percentile":64.5933014354,
+    "rs_percentile":64.8312611012,
     "fin_percentile":0.0,
-    "total_percentile":64.5933014354
+    "total_percentile":64.8312611012
   },
   {
     "symbol":"URBN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.15,
-    "rs_percentile":64.3540669856,
+    "rs_percentile":64.6536412078,
     "fin_percentile":0.0,
-    "total_percentile":64.3540669856
+    "total_percentile":64.6536412078
   },
   {
     "symbol":"UI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.14,
-    "rs_percentile":64.1148325359,
+    "rs_percentile":64.4760213144,
     "fin_percentile":0.0,
-    "total_percentile":64.1148325359
+    "total_percentile":64.4760213144
+  },
+  {
+    "symbol":"KF",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":88.8,
+    "rs_percentile":25.5772646536,
+    "fin_percentile":38.6574074074,
+    "total_percentile":64.234672061
   },
   {
     "symbol":"AAMI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.02,
-    "rs_percentile":63.6363636364,
+    "rs_percentile":64.1207815275,
     "fin_percentile":0.0,
-    "total_percentile":63.6363636364
+    "total_percentile":64.1207815275
+  },
+  {
+    "symbol":"FLUT",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":88.78,
+    "rs_percentile":25.3996447602,
+    "fin_percentile":38.6574074074,
+    "total_percentile":64.0570521676
   },
   {
     "symbol":"TATT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.01,
-    "rs_percentile":63.3971291866,
+    "rs_percentile":63.9431616341,
     "fin_percentile":0.0,
-    "total_percentile":63.3971291866
-  },
-  {
-    "symbol":"GTX",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":91.46,
-    "rs_percentile":46.4114832536,
-    "fin_percentile":16.9590643275,
-    "total_percentile":63.3705475811
+    "total_percentile":63.9431616341
   },
   {
     "symbol":"FRHC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":94.0,
-    "rs_percentile":63.1578947368,
+    "rs_percentile":63.7655417407,
     "fin_percentile":0.0,
-    "total_percentile":63.1578947368
+    "total_percentile":63.7655417407
   },
   {
-    "symbol":"FSS",
+    "symbol":"ZDGE",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":91.4,
-    "rs_percentile":46.1722488038,
-    "fin_percentile":16.9590643275,
-    "total_percentile":63.1313131313
+    "rs_score":91.8,
+    "rs_percentile":48.8454706927,
+    "fin_percentile":14.8148148148,
+    "total_percentile":63.6602855075
+  },
+  {
+    "symbol":"TMQ",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.98,
+    "rs_percentile":63.5879218472,
+    "fin_percentile":0.0,
+    "total_percentile":63.5879218472
+  },
+  {
+    "symbol":"NVMI",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":88.68,
+    "rs_percentile":24.8667850799,
+    "fin_percentile":38.6574074074,
+    "total_percentile":63.5241924873
   },
   {
     "symbol":"SMCI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.94,
-    "rs_percentile":62.6794258373,
+    "rs_percentile":63.2326820604,
     "fin_percentile":0.0,
-    "total_percentile":62.6794258373
+    "total_percentile":63.2326820604
+  },
+  {
+    "symbol":"OPOF",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.82,
+    "rs_percentile":62.8774422735,
+    "fin_percentile":0.0,
+    "total_percentile":62.8774422735
   },
   {
     "symbol":"NEXT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.8,
-    "rs_percentile":62.2009569378,
+    "rs_percentile":62.6998223801,
     "fin_percentile":0.0,
-    "total_percentile":62.2009569378
+    "total_percentile":62.6998223801
   },
   {
-    "symbol":"KGC",
-    "fin_met_count":4.0,
+    "symbol":"PLYA",
+    "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":91.28,
-    "rs_percentile":45.2153110048,
-    "fin_percentile":16.9590643275,
-    "total_percentile":62.1743753323
+    "rs_score":88.57,
+    "rs_percentile":23.9786856128,
+    "fin_percentile":38.6574074074,
+    "total_percentile":62.6360930202
   },
   {
-    "symbol":"ZLAB",
-    "fin_met_count":4.0,
+    "symbol":"ENLT",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.71,
+    "rs_percentile":62.3445825933,
+    "fin_percentile":0.0,
+    "total_percentile":62.3445825933
+  },
+  {
+    "symbol":"MTRX",
+    "fin_met_count":5.0,
     "has_error":false,
-    "rs_score":91.27,
-    "rs_percentile":44.976076555,
-    "fin_percentile":16.9590643275,
-    "total_percentile":61.9351408825
+    "rs_score":88.52,
+    "rs_percentile":23.6234458259,
+    "fin_percentile":38.6574074074,
+    "total_percentile":62.2808532333
+  },
+  {
+    "symbol":"ARMN",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.62,
+    "rs_percentile":62.1669626998,
+    "fin_percentile":0.0,
+    "total_percentile":62.1669626998
   },
   {
     "symbol":"DOUG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.61,
-    "rs_percentile":61.7224880383,
+    "rs_percentile":61.9893428064,
     "fin_percentile":0.0,
-    "total_percentile":61.7224880383
+    "total_percentile":61.9893428064
   },
   {
     "symbol":"YALA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.6,
-    "rs_percentile":61.4832535885,
+    "rs_percentile":61.811722913,
     "fin_percentile":0.0,
-    "total_percentile":61.4832535885
-  },
-  {
-    "symbol":"LANV",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":88.11,
-    "rs_percentile":20.0956937799,
-    "fin_percentile":41.2280701754,
-    "total_percentile":61.3237639553
+    "total_percentile":61.811722913
   },
   {
     "symbol":"RYTM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.57,
-    "rs_percentile":61.2440191388,
+    "rs_percentile":61.4564831261,
     "fin_percentile":0.0,
-    "total_percentile":61.2440191388
+    "total_percentile":61.4564831261
   },
   {
-    "symbol":"CALX",
+    "symbol":"GTX",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":91.16,
-    "rs_percentile":44.019138756,
-    "fin_percentile":16.9590643275,
-    "total_percentile":60.9782030835
+    "rs_score":91.46,
+    "rs_percentile":46.3587921847,
+    "fin_percentile":14.8148148148,
+    "total_percentile":61.1736069995
+  },
+  {
+    "symbol":"SAN",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.55,
+    "rs_percentile":61.1012433393,
+    "fin_percentile":0.0,
+    "total_percentile":61.1012433393
+  },
+  {
+    "symbol":"FSS",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":91.4,
+    "rs_percentile":46.1811722913,
+    "fin_percentile":14.8148148148,
+    "total_percentile":60.9959871061
   },
   {
     "symbol":"WBD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.52,
-    "rs_percentile":60.5263157895,
+    "rs_percentile":60.7460035524,
     "fin_percentile":0.0,
-    "total_percentile":60.5263157895
-  },
-  {
-    "symbol":"CHEF",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":91.14,
-    "rs_percentile":43.5406698565,
-    "fin_percentile":16.9590643275,
-    "total_percentile":60.4997341839
+    "total_percentile":60.7460035524
   },
   {
     "symbol":"SNOW",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.48,
-    "rs_percentile":60.2870813397,
+    "rs_percentile":60.568383659,
     "fin_percentile":0.0,
-    "total_percentile":60.2870813397
+    "total_percentile":60.568383659
   },
   {
-    "symbol":"HEES",
+    "symbol":"COUR",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":93.46,
-    "rs_percentile":60.04784689,
+    "rs_score":93.4,
+    "rs_percentile":60.0355239787,
     "fin_percentile":0.0,
-    "total_percentile":60.04784689
-  },
-  {
-    "symbol":"SIMO",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":91.09,
-    "rs_percentile":42.8229665072,
-    "fin_percentile":16.9590643275,
-    "total_percentile":59.7820308347
+    "total_percentile":60.0355239787
   },
   {
     "symbol":"SOC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.36,
-    "rs_percentile":59.3301435407,
+    "rs_percentile":59.8579040853,
     "fin_percentile":0.0,
-    "total_percentile":59.3301435407
+    "total_percentile":59.8579040853
+  },
+  {
+    "symbol":"KGC",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":91.28,
+    "rs_percentile":44.9378330373,
+    "fin_percentile":14.8148148148,
+    "total_percentile":59.7526478521
+  },
+  {
+    "symbol":"DHX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.35,
+    "rs_percentile":59.6802841918,
+    "fin_percentile":0.0,
+    "total_percentile":59.6802841918
+  },
+  {
+    "symbol":"ZLAB",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":91.27,
+    "rs_percentile":44.7602131439,
+    "fin_percentile":14.8148148148,
+    "total_percentile":59.5750279587
+  },
+  {
+    "symbol":"WF",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.32,
+    "rs_percentile":59.5026642984,
+    "fin_percentile":0.0,
+    "total_percentile":59.5026642984
   },
   {
     "symbol":"ALNY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.24,
-    "rs_percentile":58.8516746411,
+    "rs_percentile":59.1474245115,
     "fin_percentile":0.0,
-    "total_percentile":58.8516746411
+    "total_percentile":59.1474245115
+  },
+  {
+    "symbol":"LANV",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":88.11,
+    "rs_percentile":20.2486678508,
+    "fin_percentile":38.6574074074,
+    "total_percentile":58.9060752582
   },
   {
     "symbol":"EMX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.21,
-    "rs_percentile":58.3732057416,
+    "rs_percentile":58.7921847247,
     "fin_percentile":0.0,
-    "total_percentile":58.3732057416
+    "total_percentile":58.7921847247
+  },
+  {
+    "symbol":"CALX",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":91.16,
+    "rs_percentile":43.6944937833,
+    "fin_percentile":14.8148148148,
+    "total_percentile":58.5093085981
+  },
+  {
+    "symbol":"HWM",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":93.17,
+    "rs_percentile":58.4369449378,
+    "fin_percentile":0.0,
+    "total_percentile":58.4369449378
   },
   {
     "symbol":"LTM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.13,
-    "rs_percentile":57.8947368421,
+    "rs_percentile":58.2593250444,
     "fin_percentile":0.0,
-    "total_percentile":57.8947368421
+    "total_percentile":58.2593250444
+  },
+  {
+    "symbol":"CHEF",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":91.14,
+    "rs_percentile":43.3392539964,
+    "fin_percentile":14.8148148148,
+    "total_percentile":58.1540688113
   },
   {
     "symbol":"LINC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.11,
-    "rs_percentile":57.6555023923,
+    "rs_percentile":58.081705151,
     "fin_percentile":0.0,
-    "total_percentile":57.6555023923
+    "total_percentile":58.081705151
   },
   {
     "symbol":"VSEC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.08,
-    "rs_percentile":57.1770334928,
+    "rs_percentile":57.7264653641,
     "fin_percentile":0.0,
-    "total_percentile":57.1770334928
+    "total_percentile":57.7264653641
+  },
+  {
+    "symbol":"SIMO",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":91.09,
+    "rs_percentile":42.8063943162,
+    "fin_percentile":14.8148148148,
+    "total_percentile":57.621209131
   },
   {
     "symbol":"TOST",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.07,
-    "rs_percentile":56.9377990431,
+    "rs_percentile":57.5488454707,
     "fin_percentile":0.0,
-    "total_percentile":56.9377990431
+    "total_percentile":57.5488454707
   },
   {
     "symbol":"VEON",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.05,
-    "rs_percentile":56.6985645933,
+    "rs_percentile":57.3712255773,
     "fin_percentile":0.0,
-    "total_percentile":56.6985645933
-  },
-  {
-    "symbol":"TEL",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":90.8,
-    "rs_percentile":39.2344497608,
-    "fin_percentile":16.9590643275,
-    "total_percentile":56.1935140883
-  },
-  {
-    "symbol":"FTI",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":87.37,
-    "rs_percentile":14.8325358852,
-    "fin_percentile":41.2280701754,
-    "total_percentile":56.0606060606
+    "total_percentile":57.3712255773
   },
   {
     "symbol":"GHLD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":93.0,
-    "rs_percentile":55.980861244,
+    "rs_percentile":56.838365897,
     "fin_percentile":0.0,
-    "total_percentile":55.980861244
+    "total_percentile":56.838365897
   },
   {
     "symbol":"DY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.97,
-    "rs_percentile":55.7416267943,
+    "rs_percentile":56.6607460036,
     "fin_percentile":0.0,
-    "total_percentile":55.7416267943
+    "total_percentile":56.6607460036
   },
   {
     "symbol":"SLNO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.96,
-    "rs_percentile":55.5023923445,
+    "rs_percentile":56.4831261101,
     "fin_percentile":0.0,
-    "total_percentile":55.5023923445
-  },
-  {
-    "symbol":"U",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":90.71,
-    "rs_percentile":38.5167464115,
-    "fin_percentile":16.9590643275,
-    "total_percentile":55.475810739
-  },
-  {
-    "symbol":"INTU",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":87.23,
-    "rs_percentile":14.1148325359,
-    "fin_percentile":41.2280701754,
-    "total_percentile":55.3429027113
+    "total_percentile":56.4831261101
   },
   {
     "symbol":"ACAD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.94,
-    "rs_percentile":55.2631578947,
+    "rs_percentile":56.3055062167,
     "fin_percentile":0.0,
-    "total_percentile":55.2631578947
+    "total_percentile":56.3055062167
   },
   {
     "symbol":"MTZ",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.86,
-    "rs_percentile":55.023923445,
+    "rs_percentile":56.1278863233,
     "fin_percentile":0.0,
-    "total_percentile":55.023923445
+    "total_percentile":56.1278863233
   },
   {
     "symbol":"RMBS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.79,
-    "rs_percentile":54.7846889952,
+    "rs_percentile":55.7726465364,
     "fin_percentile":0.0,
-    "total_percentile":54.7846889952
-  },
-  {
-    "symbol":"LPLA",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":90.5,
-    "rs_percentile":37.5598086124,
-    "fin_percentile":16.9590643275,
-    "total_percentile":54.5188729399
+    "total_percentile":55.7726465364
   },
   {
     "symbol":"CEG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.75,
-    "rs_percentile":54.3062200957,
+    "rs_percentile":55.4174067496,
     "fin_percentile":0.0,
-    "total_percentile":54.3062200957
+    "total_percentile":55.4174067496
   },
   {
     "symbol":"BH",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.71,
-    "rs_percentile":53.8277511962,
+    "rs_percentile":55.0621669627,
     "fin_percentile":0.0,
-    "total_percentile":53.8277511962
+    "total_percentile":55.0621669627
   },
   {
-    "symbol":"ROKU",
+    "symbol":"TEL",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":90.34,
-    "rs_percentile":36.8421052632,
-    "fin_percentile":16.9590643275,
-    "total_percentile":53.8011695906
+    "rs_score":90.8,
+    "rs_percentile":40.1420959147,
+    "fin_percentile":14.8148148148,
+    "total_percentile":54.9569107296
   },
   {
     "symbol":"AVXL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.67,
-    "rs_percentile":53.5885167464,
+    "rs_percentile":54.8845470693,
     "fin_percentile":0.0,
-    "total_percentile":53.5885167464
+    "total_percentile":54.8845470693
   },
   {
-    "symbol":"C",
+    "symbol":"ODC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":92.65,
+    "rs_percentile":54.7069271758,
+    "fin_percentile":0.0,
+    "total_percentile":54.7069271758
+  },
+  {
+    "symbol":"U",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":90.32,
-    "rs_percentile":36.3636363636,
-    "fin_percentile":16.9590643275,
-    "total_percentile":53.3227006911
-  },
-  {
-    "symbol":"RTX",
-    "fin_met_count":5.0,
-    "has_error":false,
-    "rs_score":86.86,
-    "rs_percentile":11.961722488,
-    "fin_percentile":41.2280701754,
-    "total_percentile":53.1897926635
-  },
-  {
-    "symbol":"SXT",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":90.3,
-    "rs_percentile":36.1244019139,
-    "fin_percentile":16.9590643275,
-    "total_percentile":53.0834662414
+    "rs_score":90.71,
+    "rs_percentile":39.6092362345,
+    "fin_percentile":14.8148148148,
+    "total_percentile":54.4240510493
   },
   {
     "symbol":"CW",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.53,
-    "rs_percentile":52.6315789474,
+    "rs_percentile":53.9964476021,
     "fin_percentile":0.0,
-    "total_percentile":52.6315789474
+    "total_percentile":53.9964476021
+  },
+  {
+    "symbol":"FTI",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":87.37,
+    "rs_percentile":15.2753108348,
+    "fin_percentile":38.6574074074,
+    "total_percentile":53.9327182422
+  },
+  {
+    "symbol":"APEI",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":92.52,
+    "rs_percentile":53.8188277087,
+    "fin_percentile":0.0,
+    "total_percentile":53.8188277087
   },
   {
     "symbol":"INSM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.48,
-    "rs_percentile":52.3923444976,
+    "rs_percentile":53.6412078153,
     "fin_percentile":0.0,
-    "total_percentile":52.3923444976
+    "total_percentile":53.6412078153
   },
   {
     "symbol":"CTOS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.47,
-    "rs_percentile":52.1531100478,
+    "rs_percentile":53.4635879218,
     "fin_percentile":0.0,
-    "total_percentile":52.1531100478
+    "total_percentile":53.4635879218
+  },
+  {
+    "symbol":"XERS",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":92.44,
+    "rs_percentile":53.2859680284,
+    "fin_percentile":0.0,
+    "total_percentile":53.2859680284
+  },
+  {
+    "symbol":"PZG",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":92.43,
+    "rs_percentile":53.108348135,
+    "fin_percentile":0.0,
+    "total_percentile":53.108348135
+  },
+  {
+    "symbol":"LPLA",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":90.5,
+    "rs_percentile":38.188277087,
+    "fin_percentile":14.8148148148,
+    "total_percentile":53.0030919018
   },
   {
     "symbol":"LQDA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.41,
-    "rs_percentile":51.9138755981,
+    "rs_percentile":52.9307282416,
     "fin_percentile":0.0,
-    "total_percentile":51.9138755981
+    "total_percentile":52.9307282416
+  },
+  {
+    "symbol":"INTU",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":87.23,
+    "rs_percentile":14.2095914742,
+    "fin_percentile":38.6574074074,
+    "total_percentile":52.8669988817
   },
   {
     "symbol":"CX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.35,
-    "rs_percentile":51.6746411483,
+    "rs_percentile":52.5754884547,
     "fin_percentile":0.0,
-    "total_percentile":51.6746411483
+    "total_percentile":52.5754884547
+  },
+  {
+    "symbol":"CELH",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":90.35,
+    "rs_percentile":37.4777975133,
+    "fin_percentile":14.8148148148,
+    "total_percentile":52.2926123281
+  },
+  {
+    "symbol":"ROKU",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":90.34,
+    "rs_percentile":37.3001776199,
+    "fin_percentile":14.8148148148,
+    "total_percentile":52.1149924347
+  },
+  {
+    "symbol":"ATAT",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":92.22,
+    "rs_percentile":52.0426287744,
+    "fin_percentile":0.0,
+    "total_percentile":52.0426287744
+  },
+  {
+    "symbol":"C",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":90.32,
+    "rs_percentile":36.944937833,
+    "fin_percentile":14.8148148148,
+    "total_percentile":51.7597526479
   },
   {
     "symbol":"SENEB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.14,
-    "rs_percentile":50.4784688995,
+    "rs_percentile":51.5097690941,
     "fin_percentile":0.0,
-    "total_percentile":50.4784688995
+    "total_percentile":51.5097690941
+  },
+  {
+    "symbol":"SXT",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":90.3,
+    "rs_percentile":36.5896980462,
+    "fin_percentile":14.8148148148,
+    "total_percentile":51.404512861
   },
   {
     "symbol":"SENEA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.13,
-    "rs_percentile":50.2392344498,
+    "rs_percentile":51.3321492007,
     "fin_percentile":0.0,
-    "total_percentile":50.2392344498
+    "total_percentile":51.3321492007
   },
   {
     "symbol":"AAME",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.09,
-    "rs_percentile":50.0,
+    "rs_percentile":51.1545293073,
     "fin_percentile":0.0,
-    "total_percentile":50.0
+    "total_percentile":51.1545293073
   },
   {
     "symbol":"BWMN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":92.06,
-    "rs_percentile":49.5215311005,
+    "rs_percentile":50.7992895204,
     "fin_percentile":0.0,
-    "total_percentile":49.5215311005
+    "total_percentile":50.7992895204
+  },
+  {
+    "symbol":"TGB",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":92.05,
+    "rs_percentile":50.621669627,
+    "fin_percentile":0.0,
+    "total_percentile":50.621669627
+  },
+  {
+    "symbol":"RTX",
+    "fin_met_count":5.0,
+    "has_error":false,
+    "rs_score":86.86,
+    "rs_percentile":11.9005328597,
+    "fin_percentile":38.6574074074,
+    "total_percentile":50.5579402671
+  },
+  {
+    "symbol":"PBI",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":92.01,
+    "rs_percentile":50.4440497336,
+    "fin_percentile":0.0,
+    "total_percentile":50.4440497336
+  },
+  {
+    "symbol":"BBW",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.99,
+    "rs_percentile":50.2664298401,
+    "fin_percentile":0.0,
+    "total_percentile":50.2664298401
   },
   {
     "symbol":"EBAY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.98,
-    "rs_percentile":49.2822966507,
+    "rs_percentile":50.0888099467,
     "fin_percentile":0.0,
-    "total_percentile":49.2822966507
-  },
-  {
-    "symbol":"ROK",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":89.69,
-    "rs_percentile":32.2966507177,
-    "fin_percentile":16.9590643275,
-    "total_percentile":49.2557150452
+    "total_percentile":50.0888099467
   },
   {
     "symbol":"VIK",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.93,
-    "rs_percentile":49.043062201,
+    "rs_percentile":49.7335701599,
     "fin_percentile":0.0,
-    "total_percentile":49.043062201
+    "total_percentile":49.7335701599
+  },
+  {
+    "symbol":"PPTA",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.86,
+    "rs_percentile":49.5559502664,
+    "fin_percentile":0.0,
+    "total_percentile":49.5559502664
+  },
+  {
+    "symbol":"SII",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.84,
+    "rs_percentile":49.378330373,
+    "fin_percentile":0.0,
+    "total_percentile":49.378330373
+  },
+  {
+    "symbol":"ARLO",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.82,
+    "rs_percentile":49.0230905861,
+    "fin_percentile":0.0,
+    "total_percentile":49.0230905861
   },
   {
     "symbol":"GE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.79,
-    "rs_percentile":48.5645933014,
+    "rs_percentile":48.6678507993,
     "fin_percentile":0.0,
-    "total_percentile":48.5645933014
-  },
-  {
-    "symbol":"WRBY",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":89.56,
-    "rs_percentile":31.5789473684,
-    "fin_percentile":16.9590643275,
-    "total_percentile":48.5380116959
+    "total_percentile":48.6678507993
   },
   {
     "symbol":"SHOP",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.74,
-    "rs_percentile":48.0861244019,
+    "rs_percentile":48.134991119,
     "fin_percentile":0.0,
-    "total_percentile":48.0861244019
-  },
-  {
-    "symbol":"NTRS",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":89.53,
-    "rs_percentile":31.1004784689,
-    "fin_percentile":16.9590643275,
-    "total_percentile":48.0595427964
+    "total_percentile":48.134991119
   },
   {
     "symbol":"SSBI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.7,
-    "rs_percentile":47.8468899522,
+    "rs_percentile":47.9573712256,
     "fin_percentile":0.0,
-    "total_percentile":47.8468899522
+    "total_percentile":47.9573712256
   },
   {
     "symbol":"LLYVK",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.66,
-    "rs_percentile":47.6076555024,
+    "rs_percentile":47.7797513321,
     "fin_percentile":0.0,
-    "total_percentile":47.6076555024
+    "total_percentile":47.7797513321
+  },
+  {
+    "symbol":"TCI",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.65,
+    "rs_percentile":47.6021314387,
+    "fin_percentile":0.0,
+    "total_percentile":47.6021314387
+  },
+  {
+    "symbol":"ROK",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":89.69,
+    "rs_percentile":32.6820603908,
+    "fin_percentile":14.8148148148,
+    "total_percentile":47.4968752056
   },
   {
     "symbol":"DLTR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.61,
-    "rs_percentile":47.3684210526,
+    "rs_percentile":47.4245115453,
     "fin_percentile":0.0,
-    "total_percentile":47.3684210526
+    "total_percentile":47.4245115453
   },
   {
     "symbol":"LLYVA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.55,
-    "rs_percentile":46.8899521531,
+    "rs_percentile":47.0692717584,
     "fin_percentile":0.0,
-    "total_percentile":46.8899521531
+    "total_percentile":47.0692717584
+  },
+  {
+    "symbol":"WRBY",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":89.56,
+    "rs_percentile":32.1492007105,
+    "fin_percentile":14.8148148148,
+    "total_percentile":46.9640155253
+  },
+  {
+    "symbol":"CTRN",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.54,
+    "rs_percentile":46.891651865,
+    "fin_percentile":0.0,
+    "total_percentile":46.891651865
+  },
+  {
+    "symbol":"NTRS",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":89.53,
+    "rs_percentile":31.7939609236,
+    "fin_percentile":14.8148148148,
+    "total_percentile":46.6087757384
   },
   {
     "symbol":"BBVA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.5,
-    "rs_percentile":46.6507177033,
+    "rs_percentile":46.5364120782,
     "fin_percentile":0.0,
-    "total_percentile":46.6507177033
+    "total_percentile":46.5364120782
   },
   {
-    "symbol":"NPO",
+    "symbol":"JCI",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":89.32,
-    "rs_percentile":29.4258373206,
-    "fin_percentile":16.9590643275,
-    "total_percentile":46.3849016481
+    "rs_score":89.51,
+    "rs_percentile":31.4387211368,
+    "fin_percentile":14.8148148148,
+    "total_percentile":46.2535359516
   },
   {
     "symbol":"GLW",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.36,
-    "rs_percentile":45.9330143541,
+    "rs_percentile":46.0035523979,
     "fin_percentile":0.0,
-    "total_percentile":45.9330143541
+    "total_percentile":46.0035523979
+  },
+  {
+    "symbol":"PBPB",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.35,
+    "rs_percentile":45.8259325044,
+    "fin_percentile":0.0,
+    "total_percentile":45.8259325044
   },
   {
     "symbol":"MYRG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.34,
-    "rs_percentile":45.6937799043,
+    "rs_percentile":45.648312611,
     "fin_percentile":0.0,
-    "total_percentile":45.6937799043
+    "total_percentile":45.648312611
+  },
+  {
+    "symbol":"FLEX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.32,
+    "rs_percentile":45.4706927176,
+    "fin_percentile":0.0,
+    "total_percentile":45.4706927176
+  },
+  {
+    "symbol":"IBEX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.31,
+    "rs_percentile":45.2930728242,
+    "fin_percentile":0.0,
+    "total_percentile":45.2930728242
   },
   {
     "symbol":"RL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.3,
-    "rs_percentile":45.4545454545,
+    "rs_percentile":45.1154529307,
     "fin_percentile":0.0,
-    "total_percentile":45.4545454545
+    "total_percentile":45.1154529307
+  },
+  {
+    "symbol":"NPO",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":89.32,
+    "rs_percentile":30.0177619893,
+    "fin_percentile":14.8148148148,
+    "total_percentile":44.8325768042
+  },
+  {
+    "symbol":"SAND",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.24,
+    "rs_percentile":44.5825932504,
+    "fin_percentile":0.0,
+    "total_percentile":44.5825932504
   },
   {
     "symbol":"X",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.23,
-    "rs_percentile":44.7368421053,
+    "rs_percentile":44.404973357,
     "fin_percentile":0.0,
-    "total_percentile":44.7368421053
+    "total_percentile":44.404973357
+  },
+  {
+    "symbol":"PRA",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":91.22,
+    "rs_percentile":44.2273534636,
+    "fin_percentile":0.0,
+    "total_percentile":44.2273534636
   },
   {
     "symbol":"BCS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":91.2,
-    "rs_percentile":44.4976076555,
+    "rs_percentile":44.0497335702,
     "fin_percentile":0.0,
-    "total_percentile":44.4976076555
-  },
-  {
-    "symbol":"SATS",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":91.06,
-    "rs_percentile":42.1052631579,
-    "fin_percentile":0.0,
-    "total_percentile":42.1052631579
+    "total_percentile":44.0497335702
   },
   {
     "symbol":"CIEN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.99,
-    "rs_percentile":41.1483253589,
+    "rs_percentile":41.7406749556,
     "fin_percentile":0.0,
-    "total_percentile":41.1483253589
+    "total_percentile":41.7406749556
   },
   {
     "symbol":"ESE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.96,
-    "rs_percentile":40.9090909091,
+    "rs_percentile":41.5630550622,
     "fin_percentile":0.0,
-    "total_percentile":40.9090909091
+    "total_percentile":41.5630550622
   },
   {
-    "symbol":"VEEV",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":88.36,
-    "rs_percentile":22.4880382775,
-    "fin_percentile":16.9590643275,
-    "total_percentile":39.447102605
+    "symbol":"CAKE",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":90.85,
+    "rs_percentile":40.4973357016,
+    "fin_percentile":0.0,
+    "total_percentile":40.4973357016
   },
   {
     "symbol":"SNEX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.72,
-    "rs_percentile":38.7559808612,
+    "rs_percentile":39.7868561279,
     "fin_percentile":0.0,
-    "total_percentile":38.7559808612
+    "total_percentile":39.7868561279
+  },
+  {
+    "symbol":"IMMX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":90.7,
+    "rs_percentile":39.431616341,
+    "fin_percentile":0.0,
+    "total_percentile":39.431616341
+  },
+  {
+    "symbol":"OMAB",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":90.67,
+    "rs_percentile":39.2539964476,
+    "fin_percentile":0.0,
+    "total_percentile":39.2539964476
   },
   {
     "symbol":"META",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.54,
-    "rs_percentile":37.7990430622,
+    "rs_percentile":38.5435168739,
     "fin_percentile":0.0,
-    "total_percentile":37.7990430622
+    "total_percentile":38.5435168739
   },
   {
-    "symbol":"RBKB",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":88.13,
-    "rs_percentile":20.5741626794,
-    "fin_percentile":16.9590643275,
-    "total_percentile":37.5332270069
+    "symbol":"BASE",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":90.51,
+    "rs_percentile":38.3658969805,
+    "fin_percentile":0.0,
+    "total_percentile":38.3658969805
   },
   {
     "symbol":"ULS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.49,
-    "rs_percentile":37.3205741627,
+    "rs_percentile":38.0106571936,
     "fin_percentile":0.0,
-    "total_percentile":37.3205741627
+    "total_percentile":38.0106571936
+  },
+  {
+    "symbol":"CCB",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":90.41,
+    "rs_percentile":37.6554174067,
+    "fin_percentile":0.0,
+    "total_percentile":37.6554174067
   },
   {
     "symbol":"OR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.33,
-    "rs_percentile":36.6028708134,
+    "rs_percentile":37.1225577265,
     "fin_percentile":0.0,
-    "total_percentile":36.6028708134
+    "total_percentile":37.1225577265
+  },
+  {
+    "symbol":"VEEV",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":88.36,
+    "rs_percentile":22.2024866785,
+    "fin_percentile":14.8148148148,
+    "total_percentile":37.0173014933
+  },
+  {
+    "symbol":"DK",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":90.31,
+    "rs_percentile":36.7673179396,
+    "fin_percentile":0.0,
+    "total_percentile":36.7673179396
   },
   {
     "symbol":"RYAAY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.27,
-    "rs_percentile":35.8851674641,
+    "rs_percentile":36.4120781528,
     "fin_percentile":0.0,
-    "total_percentile":35.8851674641
-  },
-  {
-    "symbol":"GTLS",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":88.01,
-    "rs_percentile":18.8995215311,
-    "fin_percentile":16.9590643275,
-    "total_percentile":35.8585858586
+    "total_percentile":36.4120781528
   },
   {
     "symbol":"TSM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.23,
-    "rs_percentile":35.6459330144,
+    "rs_percentile":36.2344582593,
     "fin_percentile":0.0,
-    "total_percentile":35.6459330144
+    "total_percentile":36.2344582593
+  },
+  {
+    "symbol":"RBKB",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":88.13,
+    "rs_percentile":20.6039076377,
+    "fin_percentile":14.8148148148,
+    "total_percentile":35.4187224525
   },
   {
     "symbol":"GEL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":90.0,
-    "rs_percentile":34.6889952153,
+    "rs_percentile":35.3463587922,
     "fin_percentile":0.0,
-    "total_percentile":34.6889952153
+    "total_percentile":35.3463587922
+  },
+  {
+    "symbol":"KAR",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.99,
+    "rs_percentile":35.1687388988,
+    "fin_percentile":0.0,
+    "total_percentile":35.1687388988
+  },
+  {
+    "symbol":"NTES",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.98,
+    "rs_percentile":34.9911190053,
+    "fin_percentile":0.0,
+    "total_percentile":34.9911190053
   },
   {
     "symbol":"TRMB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.96,
-    "rs_percentile":34.4497607656,
+    "rs_percentile":34.8134991119,
     "fin_percentile":0.0,
-    "total_percentile":34.4497607656
+    "total_percentile":34.8134991119
   },
   {
     "symbol":"HDSN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.81,
-    "rs_percentile":33.4928229665,
+    "rs_percentile":34.1030195382,
     "fin_percentile":0.0,
-    "total_percentile":33.4928229665
+    "total_percentile":34.1030195382
   },
   {
     "symbol":"OLLI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.8,
-    "rs_percentile":33.2535885167,
+    "rs_percentile":33.9253996448,
     "fin_percentile":0.0,
-    "total_percentile":33.2535885167
+    "total_percentile":33.9253996448
   },
   {
     "symbol":"TGI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.78,
-    "rs_percentile":33.014354067,
+    "rs_percentile":33.7477797513,
     "fin_percentile":0.0,
-    "total_percentile":33.014354067
+    "total_percentile":33.7477797513
   },
   {
     "symbol":"NG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.77,
-    "rs_percentile":32.7751196172,
+    "rs_percentile":33.5701598579,
     "fin_percentile":0.0,
-    "total_percentile":32.7751196172
+    "total_percentile":33.5701598579
+  },
+  {
+    "symbol":"MTW",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.75,
+    "rs_percentile":33.3925399645,
+    "fin_percentile":0.0,
+    "total_percentile":33.3925399645
+  },
+  {
+    "symbol":"NYC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.74,
+    "rs_percentile":33.214920071,
+    "fin_percentile":0.0,
+    "total_percentile":33.214920071
   },
   {
     "symbol":"AVPT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.72,
-    "rs_percentile":32.5358851675,
+    "rs_percentile":33.0373001776,
     "fin_percentile":0.0,
-    "total_percentile":32.5358851675
+    "total_percentile":33.0373001776
   },
   {
-    "symbol":"WTS",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":87.47,
-    "rs_percentile":15.5502392344,
-    "fin_percentile":16.9590643275,
-    "total_percentile":32.5093035619
-  },
-  {
-    "symbol":"FROG",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":87.4,
-    "rs_percentile":15.3110047847,
-    "fin_percentile":16.9590643275,
-    "total_percentile":32.2700691122
+    "symbol":"WOR",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.7,
+    "rs_percentile":32.8596802842,
+    "fin_percentile":0.0,
+    "total_percentile":32.8596802842
   },
   {
     "symbol":"WPM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.55,
-    "rs_percentile":31.3397129187,
+    "rs_percentile":31.9715808171,
     "fin_percentile":0.0,
-    "total_percentile":31.3397129187
+    "total_percentile":31.9715808171
+  },
+  {
+    "symbol":"PGEN",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.52,
+    "rs_percentile":31.6163410302,
+    "fin_percentile":0.0,
+    "total_percentile":31.6163410302
+  },
+  {
+    "symbol":"SPTN",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.48,
+    "rs_percentile":31.2611012433,
+    "fin_percentile":0.0,
+    "total_percentile":31.2611012433
   },
   {
     "symbol":"GENI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.47,
-    "rs_percentile":30.8612440191,
+    "rs_percentile":31.0834813499,
     "fin_percentile":0.0,
-    "total_percentile":30.8612440191
+    "total_percentile":31.0834813499
+  },
+  {
+    "symbol":"WTS",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":87.47,
+    "rs_percentile":16.163410302,
+    "fin_percentile":14.8148148148,
+    "total_percentile":30.9782251168
   },
   {
     "symbol":"AEM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.43,
-    "rs_percentile":30.3827751196,
+    "rs_percentile":30.7282415631,
     "fin_percentile":0.0,
-    "total_percentile":30.3827751196
-  },
-  {
-    "symbol":"NFG",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":87.08,
-    "rs_percentile":13.3971291866,
-    "fin_percentile":16.9590643275,
-    "total_percentile":30.3561935141
+    "total_percentile":30.7282415631
   },
   {
     "symbol":"ULTA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.38,
-    "rs_percentile":30.1435406699,
+    "rs_percentile":30.5506216696,
     "fin_percentile":0.0,
-    "total_percentile":30.1435406699
+    "total_percentile":30.5506216696
+  },
+  {
+    "symbol":"FROG",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":87.4,
+    "rs_percentile":15.6305506217,
+    "fin_percentile":14.8148148148,
+    "total_percentile":30.4453654365
   },
   {
     "symbol":"CCLDO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.34,
-    "rs_percentile":29.9043062201,
+    "rs_percentile":30.3730017762,
     "fin_percentile":0.0,
-    "total_percentile":29.9043062201
+    "total_percentile":30.3730017762
   },
   {
     "symbol":"HEI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.33,
-    "rs_percentile":29.6650717703,
+    "rs_percentile":30.1953818828,
     "fin_percentile":0.0,
-    "total_percentile":29.6650717703
+    "total_percentile":30.1953818828
+  },
+  {
+    "symbol":"VIRT",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":87.36,
+    "rs_percentile":15.0976909414,
+    "fin_percentile":14.8148148148,
+    "total_percentile":29.9125057562
   },
   {
     "symbol":"USFD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.2,
-    "rs_percentile":28.7081339713,
+    "rs_percentile":28.9520426288,
     "fin_percentile":0.0,
-    "total_percentile":28.7081339713
+    "total_percentile":28.9520426288
   },
   {
     "symbol":"BHST",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.17,
-    "rs_percentile":28.2296650718,
+    "rs_percentile":28.5968028419,
     "fin_percentile":0.0,
-    "total_percentile":28.2296650718
+    "total_percentile":28.5968028419
   },
   {
     "symbol":"BK",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.14,
-    "rs_percentile":27.990430622,
+    "rs_percentile":28.4191829485,
     "fin_percentile":0.0,
-    "total_percentile":27.990430622
+    "total_percentile":28.4191829485
+  },
+  {
+    "symbol":"CAE",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.12,
+    "rs_percentile":28.2415630551,
+    "fin_percentile":0.0,
+    "total_percentile":28.2415630551
+  },
+  {
+    "symbol":"AAP",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.09,
+    "rs_percentile":28.0639431616,
+    "fin_percentile":0.0,
+    "total_percentile":28.0639431616
+  },
+  {
+    "symbol":"PENG",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.08,
+    "rs_percentile":27.8863232682,
+    "fin_percentile":0.0,
+    "total_percentile":27.8863232682
   },
   {
     "symbol":"AZZ",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.06,
-    "rs_percentile":27.7511961722,
+    "rs_percentile":27.7087033748,
     "fin_percentile":0.0,
-    "total_percentile":27.7511961722
+    "total_percentile":27.7087033748
   },
   {
     "symbol":"GS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.05,
-    "rs_percentile":27.5119617225,
+    "rs_percentile":27.5310834813,
     "fin_percentile":0.0,
-    "total_percentile":27.5119617225
-  },
-  {
-    "symbol":"NCSM",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":86.59,
-    "rs_percentile":10.5263157895,
-    "fin_percentile":16.9590643275,
-    "total_percentile":27.485380117
+    "total_percentile":27.5310834813
   },
   {
     "symbol":"DERM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":89.02,
-    "rs_percentile":27.033492823,
+    "rs_percentile":27.1758436945,
     "fin_percentile":0.0,
-    "total_percentile":27.033492823
+    "total_percentile":27.1758436945
   },
   {
-    "symbol":"PFGC",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":86.49,
-    "rs_percentile":9.5693779904,
-    "fin_percentile":16.9590643275,
-    "total_percentile":26.5284423179
+    "symbol":"JOYY",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":89.0,
+    "rs_percentile":26.8206039076,
+    "fin_percentile":0.0,
+    "total_percentile":26.8206039076
   },
   {
     "symbol":"WNS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.93,
-    "rs_percentile":26.0765550239,
+    "rs_percentile":26.2877442274,
     "fin_percentile":0.0,
-    "total_percentile":26.0765550239
+    "total_percentile":26.2877442274
   },
   {
     "symbol":"GTES",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.9,
-    "rs_percentile":25.8373205742,
+    "rs_percentile":26.1101243339,
     "fin_percentile":0.0,
-    "total_percentile":25.8373205742
+    "total_percentile":26.1101243339
   },
   {
-    "symbol":"ALG",
+    "symbol":"GILT",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":88.84,
+    "rs_percentile":25.9325044405,
+    "fin_percentile":0.0,
+    "total_percentile":25.9325044405
+  },
+  {
+    "symbol":"SWAG",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":88.7,
+    "rs_percentile":25.0444049734,
+    "fin_percentile":0.0,
+    "total_percentile":25.0444049734
+  },
+  {
+    "symbol":"NCSM",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":86.43,
-    "rs_percentile":8.6124401914,
-    "fin_percentile":16.9590643275,
-    "total_percentile":25.5715045189
+    "rs_score":86.59,
+    "rs_percentile":9.946714032,
+    "fin_percentile":14.8148148148,
+    "total_percentile":24.7615288468
   },
   {
     "symbol":"PHAR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.61,
-    "rs_percentile":24.8803827751,
+    "rs_percentile":24.5115452931,
     "fin_percentile":0.0,
-    "total_percentile":24.8803827751
+    "total_percentile":24.5115452931
   },
   {
     "symbol":"CYBR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.59,
-    "rs_percentile":24.6411483254,
+    "rs_percentile":24.3339253996,
     "fin_percentile":0.0,
-    "total_percentile":24.6411483254
+    "total_percentile":24.3339253996
+  },
+  {
+    "symbol":"PFGC",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":86.49,
+    "rs_percentile":9.4138543517,
+    "fin_percentile":14.8148148148,
+    "total_percentile":24.2286691665
   },
   {
     "symbol":"MRCY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.58,
-    "rs_percentile":24.4019138756,
+    "rs_percentile":24.1563055062,
     "fin_percentile":0.0,
-    "total_percentile":24.4019138756
+    "total_percentile":24.1563055062
   },
   {
     "symbol":"ING",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.53,
-    "rs_percentile":23.9234449761,
+    "rs_percentile":23.8010657194,
     "fin_percentile":0.0,
-    "total_percentile":23.9234449761
-  },
-  {
-    "symbol":"BKD",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":86.02,
-    "rs_percentile":6.6985645933,
-    "fin_percentile":16.9590643275,
-    "total_percentile":23.6576289208
+    "total_percentile":23.8010657194
   },
   {
     "symbol":"AIP",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.51,
-    "rs_percentile":23.4449760766,
+    "rs_percentile":23.4458259325,
     "fin_percentile":0.0,
-    "total_percentile":23.4449760766
+    "total_percentile":23.4458259325
   },
   {
-    "symbol":"ZG",
+    "symbol":"ALG",
     "fin_met_count":4.0,
     "has_error":false,
-    "rs_score":85.94,
-    "rs_percentile":6.4593301435,
-    "fin_percentile":16.9590643275,
-    "total_percentile":23.418394471
+    "rs_score":86.43,
+    "rs_percentile":8.5257548845,
+    "fin_percentile":14.8148148148,
+    "total_percentile":23.3405696994
   },
   {
     "symbol":"LYG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.49,
-    "rs_percentile":23.2057416268,
+    "rs_percentile":23.2682060391,
     "fin_percentile":0.0,
-    "total_percentile":23.2057416268
+    "total_percentile":23.2682060391
+  },
+  {
+    "symbol":"BWAY",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":88.48,
+    "rs_percentile":23.0905861456,
+    "fin_percentile":0.0,
+    "total_percentile":23.0905861456
   },
   {
     "symbol":"MNMD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.45,
-    "rs_percentile":22.966507177,
+    "rs_percentile":22.9129662522,
     "fin_percentile":0.0,
-    "total_percentile":22.966507177
-  },
-  {
-    "symbol":"BYFC",
-    "fin_met_count":0.0,
-    "has_error":true,
-    "rs_score":88.32,
-    "rs_percentile":22.2488038278,
-    "fin_percentile":0.0,
-    "total_percentile":22.2488038278
-  },
-  {
-    "symbol":"RBC",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":85.8,
-    "rs_percentile":5.2631578947,
-    "fin_percentile":16.9590643275,
-    "total_percentile":22.2222222222
+    "total_percentile":22.9129662522
   },
   {
     "symbol":"NEM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.25,
-    "rs_percentile":21.7703349282,
+    "rs_percentile":21.8472468917,
     "fin_percentile":0.0,
-    "total_percentile":21.7703349282
+    "total_percentile":21.8472468917
   },
   {
     "symbol":"MCRI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.21,
-    "rs_percentile":21.2918660287,
+    "rs_percentile":21.4920071048,
     "fin_percentile":0.0,
-    "total_percentile":21.2918660287
+    "total_percentile":21.4920071048
+  },
+  {
+    "symbol":"CBRL",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":88.2,
+    "rs_percentile":21.3143872114,
+    "fin_percentile":0.0,
+    "total_percentile":21.3143872114
+  },
+  {
+    "symbol":"BKD",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":86.02,
+    "rs_percentile":6.21669627,
+    "fin_percentile":14.8148148148,
+    "total_percentile":21.0315110848
+  },
+  {
+    "symbol":"ESQ",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":88.14,
+    "rs_percentile":20.7815275311,
+    "fin_percentile":0.0,
+    "total_percentile":20.7815275311
   },
   {
     "symbol":"BWFG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.12,
-    "rs_percentile":20.3349282297,
+    "rs_percentile":20.4262877442,
     "fin_percentile":0.0,
-    "total_percentile":20.3349282297
+    "total_percentile":20.4262877442
+  },
+  {
+    "symbol":"RBC",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":85.8,
+    "rs_percentile":5.3285968028,
+    "fin_percentile":14.8148148148,
+    "total_percentile":20.1434116177
   },
   {
     "symbol":"PINS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.09,
-    "rs_percentile":19.8564593301,
+    "rs_percentile":20.0710479574,
     "fin_percentile":0.0,
-    "total_percentile":19.8564593301
+    "total_percentile":20.0710479574
   },
   {
     "symbol":"SCHW",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.06,
-    "rs_percentile":19.3779904306,
+    "rs_percentile":19.7158081705,
     "fin_percentile":0.0,
-    "total_percentile":19.3779904306
+    "total_percentile":19.7158081705
   },
   {
     "symbol":"SPNT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":88.02,
-    "rs_percentile":19.1387559809,
+    "rs_percentile":19.5381882771,
     "fin_percentile":0.0,
-    "total_percentile":19.1387559809
+    "total_percentile":19.5381882771
+  },
+  {
+    "symbol":"SLND",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":88.0,
+    "rs_percentile":19.3605683837,
+    "fin_percentile":0.0,
+    "total_percentile":19.3605683837
+  },
+  {
+    "symbol":"STN",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.97,
+    "rs_percentile":19.1829484902,
+    "fin_percentile":0.0,
+    "total_percentile":19.1829484902
   },
   {
     "symbol":"CLFD",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.9,
-    "rs_percentile":18.4210526316,
+    "rs_percentile":18.8277087034,
     "fin_percentile":0.0,
-    "total_percentile":18.4210526316
+    "total_percentile":18.8277087034
+  },
+  {
+    "symbol":"AIR",
+    "fin_met_count":4.0,
+    "has_error":false,
+    "rs_score":85.67,
+    "rs_percentile":3.9076376554,
+    "fin_percentile":14.8148148148,
+    "total_percentile":18.7224524702
   },
   {
     "symbol":"ITRN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.86,
-    "rs_percentile":18.1818181818,
+    "rs_percentile":18.6500888099,
     "fin_percentile":0.0,
-    "total_percentile":18.1818181818
+    "total_percentile":18.6500888099
   },
   {
     "symbol":"FFIV",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.83,
-    "rs_percentile":17.9425837321,
+    "rs_percentile":18.4724689165,
     "fin_percentile":0.0,
-    "total_percentile":17.9425837321
+    "total_percentile":18.4724689165
   },
   {
     "symbol":"NWG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.73,
-    "rs_percentile":17.4641148325,
+    "rs_percentile":17.9396092362,
     "fin_percentile":0.0,
-    "total_percentile":17.4641148325
-  },
-  {
-    "symbol":"R",
-    "fin_met_count":4.0,
-    "has_error":false,
-    "rs_score":85.1,
-    "rs_percentile":0.4784688995,
-    "fin_percentile":16.9590643275,
-    "total_percentile":17.437533227
+    "total_percentile":17.9396092362
   },
   {
     "symbol":"NVNO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.72,
-    "rs_percentile":17.2248803828,
+    "rs_percentile":17.7619893428,
     "fin_percentile":0.0,
-    "total_percentile":17.2248803828
+    "total_percentile":17.7619893428
+  },
+  {
+    "symbol":"BBUC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.69,
+    "rs_percentile":17.2291296625,
+    "fin_percentile":0.0,
+    "total_percentile":17.2291296625
   },
   {
     "symbol":"NDAQ",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.56,
-    "rs_percentile":16.5071770335,
+    "rs_percentile":16.8738898757,
     "fin_percentile":0.0,
-    "total_percentile":16.5071770335
+    "total_percentile":16.8738898757
   },
   {
     "symbol":"OPY",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.52,
-    "rs_percentile":16.2679425837,
+    "rs_percentile":16.6962699822,
     "fin_percentile":0.0,
-    "total_percentile":16.2679425837
+    "total_percentile":16.6962699822
   },
   {
     "symbol":"AIRT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.49,
-    "rs_percentile":16.028708134,
+    "rs_percentile":16.5186500888,
     "fin_percentile":0.0,
-    "total_percentile":16.028708134
+    "total_percentile":16.5186500888
   },
   {
     "symbol":"GL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.48,
-    "rs_percentile":15.7894736842,
+    "rs_percentile":16.3410301954,
     "fin_percentile":0.0,
-    "total_percentile":15.7894736842
+    "total_percentile":16.3410301954
+  },
+  {
+    "symbol":"BDL",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.46,
+    "rs_percentile":15.9857904085,
+    "fin_percentile":0.0,
+    "total_percentile":15.9857904085
   },
   {
     "symbol":"FHI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.38,
-    "rs_percentile":15.0717703349,
+    "rs_percentile":15.4529307282,
     "fin_percentile":0.0,
-    "total_percentile":15.0717703349
+    "total_percentile":15.4529307282
   },
   {
-    "symbol":"VIRT",
+    "symbol":"SGI",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":87.36,
-    "rs_percentile":14.5933014354,
+    "rs_score":87.32,
+    "rs_percentile":14.920071048,
     "fin_percentile":0.0,
-    "total_percentile":14.5933014354
+    "total_percentile":14.920071048
+  },
+  {
+    "symbol":"AEIS",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.3,
+    "rs_percentile":14.7424511545,
+    "fin_percentile":0.0,
+    "total_percentile":14.7424511545
   },
   {
     "symbol":"TDS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":87.27,
-    "rs_percentile":14.3540669856,
+    "rs_percentile":14.5648312611,
     "fin_percentile":0.0,
-    "total_percentile":14.3540669856
+    "total_percentile":14.5648312611
   },
   {
-    "symbol":"TENX",
+    "symbol":"CPNG",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":87.21,
-    "rs_percentile":13.8755980861,
+    "rs_score":87.25,
+    "rs_percentile":14.3872113677,
     "fin_percentile":0.0,
-    "total_percentile":13.8755980861
+    "total_percentile":14.3872113677
+  },
+  {
+    "symbol":"ZK",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.22,
+    "rs_percentile":14.0319715808,
+    "fin_percentile":0.0,
+    "total_percentile":14.0319715808
+  },
+  {
+    "symbol":"MOMO",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.14,
+    "rs_percentile":13.8543516874,
+    "fin_percentile":0.0,
+    "total_percentile":13.8543516874
+  },
+  {
+    "symbol":"BZ",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.12,
+    "rs_percentile":13.676731794,
+    "fin_percentile":0.0,
+    "total_percentile":13.676731794
+  },
+  {
+    "symbol":"NFG",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.08,
+    "rs_percentile":13.3214920071,
+    "fin_percentile":0.0,
+    "total_percentile":13.3214920071
+  },
+  {
+    "symbol":"BA",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.05,
+    "rs_percentile":13.1438721137,
+    "fin_percentile":0.0,
+    "total_percentile":13.1438721137
+  },
+  {
+    "symbol":"PTGX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":87.03,
+    "rs_percentile":12.9662522202,
+    "fin_percentile":0.0,
+    "total_percentile":12.9662522202
   },
   {
     "symbol":"MSFT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.93,
-    "rs_percentile":12.6794258373,
+    "rs_percentile":12.43339254,
     "fin_percentile":0.0,
-    "total_percentile":12.6794258373
+    "total_percentile":12.43339254
   },
   {
     "symbol":"DAIO",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.82,
-    "rs_percentile":11.7224880383,
+    "rs_percentile":11.7229129663,
     "fin_percentile":0.0,
-    "total_percentile":11.7224880383
+    "total_percentile":11.7229129663
+  },
+  {
+    "symbol":"LDWY",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":86.79,
+    "rs_percentile":11.5452930728,
+    "fin_percentile":0.0,
+    "total_percentile":11.5452930728
   },
   {
     "symbol":"JBTM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.72,
-    "rs_percentile":11.2440191388,
+    "rs_percentile":11.0124333925,
     "fin_percentile":0.0,
-    "total_percentile":11.2440191388
+    "total_percentile":11.0124333925
   },
   {
     "symbol":"BAP",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.7,
-    "rs_percentile":11.004784689,
+    "rs_percentile":10.6571936057,
     "fin_percentile":0.0,
-    "total_percentile":11.004784689
+    "total_percentile":10.6571936057
+  },
+  {
+    "symbol":"DBD",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":86.65,
+    "rs_percentile":10.4795737123,
+    "fin_percentile":0.0,
+    "total_percentile":10.4795737123
   },
   {
     "symbol":"MGYR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.64,
-    "rs_percentile":10.7655502392,
+    "rs_percentile":10.3019538188,
     "fin_percentile":0.0,
-    "total_percentile":10.7655502392
+    "total_percentile":10.3019538188
   },
   {
-    "symbol":"COMP",
+    "symbol":"PJT",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":86.56,
-    "rs_percentile":10.2870813397,
+    "rs_score":86.62,
+    "rs_percentile":10.1243339254,
     "fin_percentile":0.0,
-    "total_percentile":10.2870813397
+    "total_percentile":10.1243339254
   },
   {
     "symbol":"UGI",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.55,
-    "rs_percentile":10.04784689,
+    "rs_percentile":9.7690941385,
     "fin_percentile":0.0,
-    "total_percentile":10.04784689
+    "total_percentile":9.7690941385
   },
   {
     "symbol":"PRLB",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.47,
-    "rs_percentile":9.3301435407,
+    "rs_percentile":9.2362344583,
     "fin_percentile":0.0,
-    "total_percentile":9.3301435407
+    "total_percentile":9.2362344583
   },
   {
     "symbol":"GSL",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.46,
-    "rs_percentile":9.0909090909,
+    "rs_percentile":9.0586145648,
     "fin_percentile":0.0,
-    "total_percentile":9.0909090909
+    "total_percentile":9.0586145648
   },
   {
     "symbol":"MFG",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.45,
-    "rs_percentile":8.8516746411,
+    "rs_percentile":8.8809946714,
     "fin_percentile":0.0,
-    "total_percentile":8.8516746411
+    "total_percentile":8.8809946714
   },
   {
     "symbol":"TGS",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.34,
-    "rs_percentile":8.1339712919,
+    "rs_percentile":8.1705150977,
     "fin_percentile":0.0,
-    "total_percentile":8.1339712919
+    "total_percentile":8.1705150977
+  },
+  {
+    "symbol":"KLAC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":86.33,
+    "rs_percentile":7.9928952043,
+    "fin_percentile":0.0,
+    "total_percentile":7.9928952043
+  },
+  {
+    "symbol":"ARQT",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":86.32,
+    "rs_percentile":7.8152753108,
+    "fin_percentile":0.0,
+    "total_percentile":7.8152753108
   },
   {
     "symbol":"CSGP",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":86.11,
-    "rs_percentile":7.6555023923,
+    "rs_percentile":6.9271758437,
     "fin_percentile":0.0,
-    "total_percentile":7.6555023923
+    "total_percentile":6.9271758437
   },
   {
     "symbol":"PAC",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.91,
-    "rs_percentile":6.2200956938,
+    "rs_percentile":6.0390763766,
     "fin_percentile":0.0,
-    "total_percentile":6.2200956938
+    "total_percentile":6.0390763766
   },
   {
     "symbol":"HNNA",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.86,
-    "rs_percentile":5.980861244,
+    "rs_percentile":5.8614564831,
     "fin_percentile":0.0,
-    "total_percentile":5.980861244
+    "total_percentile":5.8614564831
   },
   {
     "symbol":"JPM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.81,
-    "rs_percentile":5.5023923445,
+    "rs_percentile":5.5062166963,
     "fin_percentile":0.0,
-    "total_percentile":5.5023923445
+    "total_percentile":5.5062166963
   },
   {
     "symbol":"BN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.74,
-    "rs_percentile":4.5454545455,
+    "rs_percentile":4.6181172291,
     "fin_percentile":0.0,
-    "total_percentile":4.5454545455
+    "total_percentile":4.6181172291
   },
   {
     "symbol":"EM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.72,
-    "rs_percentile":4.3062200957,
+    "rs_percentile":4.4404973357,
     "fin_percentile":0.0,
-    "total_percentile":4.3062200957
+    "total_percentile":4.4404973357
   },
   {
-    "symbol":"MSB",
+    "symbol":"LRCX",
     "fin_met_count":0.0,
     "has_error":true,
-    "rs_score":85.7,
-    "rs_percentile":4.0669856459,
+    "rs_score":85.69,
+    "rs_percentile":4.2628774423,
     "fin_percentile":0.0,
-    "total_percentile":4.0669856459
+    "total_percentile":4.2628774423
   },
   {
     "symbol":"BNT",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.66,
-    "rs_percentile":3.5885167464,
+    "rs_percentile":3.730017762,
     "fin_percentile":0.0,
-    "total_percentile":3.5885167464
+    "total_percentile":3.730017762
+  },
+  {
+    "symbol":"DIS",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":85.62,
+    "rs_percentile":3.5523978686,
+    "fin_percentile":0.0,
+    "total_percentile":3.5523978686
   },
   {
     "symbol":"CBRE",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.49,
-    "rs_percentile":3.1100478469,
+    "rs_percentile":3.1971580817,
     "fin_percentile":0.0,
-    "total_percentile":3.1100478469
+    "total_percentile":3.1971580817
   },
   {
     "symbol":"BVN",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.46,
-    "rs_percentile":2.3923444976,
+    "rs_percentile":2.6642984014,
     "fin_percentile":0.0,
-    "total_percentile":2.3923444976
+    "total_percentile":2.6642984014
   },
   {
     "symbol":"RLX",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.44,
-    "rs_percentile":2.1531100478,
+    "rs_percentile":2.486678508,
     "fin_percentile":0.0,
-    "total_percentile":2.1531100478
+    "total_percentile":2.486678508
   },
   {
     "symbol":"RNW",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.43,
-    "rs_percentile":1.9138755981,
+    "rs_percentile":2.3090586146,
     "fin_percentile":0.0,
-    "total_percentile":1.9138755981
+    "total_percentile":2.3090586146
   },
   {
     "symbol":"ETR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.36,
-    "rs_percentile":1.6746411483,
+    "rs_percentile":2.1314387211,
     "fin_percentile":0.0,
-    "total_percentile":1.6746411483
+    "total_percentile":2.1314387211
+  },
+  {
+    "symbol":"VIV",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":85.28,
+    "rs_percentile":1.7761989343,
+    "fin_percentile":0.0,
+    "total_percentile":1.7761989343
+  },
+  {
+    "symbol":"FET",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":85.25,
+    "rs_percentile":1.5985790409,
+    "fin_percentile":0.0,
+    "total_percentile":1.5985790409
+  },
+  {
+    "symbol":"CASY",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":85.21,
+    "rs_percentile":1.4209591474,
+    "fin_percentile":0.0,
+    "total_percentile":1.4209591474
+  },
+  {
+    "symbol":"MGTX",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":85.19,
+    "rs_percentile":1.0657193606,
+    "fin_percentile":0.0,
+    "total_percentile":1.0657193606
+  },
+  {
+    "symbol":"HSBC",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":85.18,
+    "rs_percentile":0.8880994671,
+    "fin_percentile":0.0,
+    "total_percentile":0.8880994671
   },
   {
     "symbol":"TR",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.16,
-    "rs_percentile":0.956937799,
+    "rs_percentile":0.7104795737,
     "fin_percentile":0.0,
-    "total_percentile":0.956937799
+    "total_percentile":0.7104795737
+  },
+  {
+    "symbol":"COF",
+    "fin_met_count":0.0,
+    "has_error":true,
+    "rs_score":85.15,
+    "rs_percentile":0.5328596803,
+    "fin_percentile":0.0,
+    "total_percentile":0.5328596803
   },
   {
     "symbol":"CALM",
     "fin_met_count":0.0,
     "has_error":true,
     "rs_score":85.06,
-    "rs_percentile":0.2392344498,
+    "rs_percentile":0.1776198934,
     "fin_percentile":0.0,
-    "total_percentile":0.2392344498
+    "total_percentile":0.1776198934
   }
 ]

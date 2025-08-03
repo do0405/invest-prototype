@@ -12,7 +12,7 @@ import pandas as pd
 
 from config import DATA_US_DIR, US_SETUP_RESULTS_DIR
 from utils import ensure_dir, fetch_market_cap
-from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary
+from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary, read_csv_flexible
 
 US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')
 
@@ -41,7 +41,9 @@ def screen_us_setup() -> pd.DataFrame:
             print(f"📈 진행률: {processed}/{total_files} ({processed/total_files*100:.1f}%)")
         file_path = os.path.join(DATA_US_DIR, file)
         try:
-            df = pd.read_csv(file_path)
+            df = read_csv_flexible(file_path, required_columns=['close', 'volume', 'date'])
+            if df is None:
+                continue
         except Exception:
             continue
 
@@ -110,10 +112,17 @@ def screen_us_setup() -> pd.DataFrame:
     
     if results:
         df_res = pd.DataFrame(results)
-        df_res.to_csv(US_SETUP_RESULTS_PATH, index=False)
-        df_res.to_json(US_SETUP_RESULTS_PATH.replace('.csv', '.json'),
-                       orient='records', indent=2)
-        print(f"💾 결과 저장 완료: {US_SETUP_RESULTS_PATH}")
+        
+        # 결과 저장 (JSON + CSV)
+        results_paths = save_screening_results(
+            results=results,
+            output_dir=US_SETUP_RESULTS_DIR,
+            filename_prefix="us_setup_results",
+            include_timestamp=True,
+            incremental_update=True
+        )
+        
+        print(f"💾 결과 저장 완료: {results_paths['csv_path']}")
         
         # 새로운 티커 추적
         tracker_file = os.path.join(US_SETUP_RESULTS_DIR, "new_us_setup_tickers.csv")
@@ -129,7 +138,7 @@ def screen_us_setup() -> pd.DataFrame:
             screener_name="US Setup",
             total_candidates=len(results),
             new_tickers=len(new_tickers),
-            results_paths={'csv': US_SETUP_RESULTS_PATH, 'json': US_SETUP_RESULTS_PATH.replace('.csv', '.json')}
+            results_paths=results_paths
         )
         
         print(f"✅ US 셋업 스크리닝 완료: {len(df_res)}개 종목, 신규 {len(new_tickers)}개")
@@ -137,9 +146,17 @@ def screen_us_setup() -> pd.DataFrame:
     else:
         # 빈 결과일 때도 칼럼명이 있는 빈 파일 생성
         empty_df = pd.DataFrame(columns=['symbol', 'price', 'market_cap', 'adr_percent', 'perf_1w_pct', 'perf_1m_pct', 'volume', 'avg_volume60'])
-        empty_df.to_csv(US_SETUP_RESULTS_PATH, index=False)
-        empty_df.to_json(US_SETUP_RESULTS_PATH.replace('.csv', '.json'), orient='records', indent=2)
-        print(f"⚠️ 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {US_SETUP_RESULTS_PATH}")
+        
+        # 빈 결과 저장
+        results_paths = save_screening_results(
+            results=[],
+            output_dir=US_SETUP_RESULTS_DIR,
+            filename_prefix="us_setup_results",
+            include_timestamp=True,
+            incremental_update=True
+        )
+        
+        print(f"⚠️ 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {results_paths['csv_path']}")
         return empty_df
 
 

@@ -92,24 +92,44 @@ class VolatilitySkewPortfolioStrategy:
     
     def _save_portfolio_signals(self, signals: List[Dict]) -> str:
         """
-        포트폴리오 신호를 CSV 파일로 저장합니다.
+        포트폴리오 신호를 CSV 파일로 저장합니다 (증분 업데이트 지원).
         """
         if not signals:
             return ""
         
         # DataFrame 생성
-        df = pd.DataFrame(signals)
+        new_df = pd.DataFrame(signals)
         
-        # 파일명 생성
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        filename = f"volatility_skew_portfolio_{timestamp}.csv"
+        # 파일명 생성 (날짜만 포함)
+        date_str = datetime.now().strftime('%Y%m%d')
+        filename = f"volatility_skew_portfolio_{date_str}.csv"
         filepath = os.path.join(OPTION_VOLATILITY_RESULTS_DIR, filename)
         buy_result_path = self.results_file
+        
+        # 증분 업데이트 처리
+        if os.path.exists(filepath):
+            try:
+                existing_df = pd.read_csv(filepath)
+                # 새 데이터와 기존 데이터 병합
+                combined_df = pd.concat([existing_df, new_df], ignore_index=True)
+                # 중복 제거 (종목명 기준)
+                combined_df = combined_df.drop_duplicates(subset=['종목명'], keep='last')
+                # 매수일 기준 내림차순 정렬 유지
+                combined_df = combined_df.sort_values('매수일', ascending=False)
+                df = combined_df
+            except Exception as e:
+                print(f"기존 파일 읽기 실패, 새 파일로 저장: {e}")
+                df = new_df
+        else:
+            df = new_df
         
         # CSV 저장
         df.to_csv(filepath, index=False, encoding='utf-8-sig')
         df.to_csv(buy_result_path, index=False, encoding='utf-8-sig')
-        df.to_json(buy_result_path.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
+        
+        # JSON 파일도 증분 업데이트
+        json_path = buy_result_path.replace('.csv', '.json')
+        df.to_json(json_path, orient='records', indent=2, force_ascii=False)
         
         # 최신 파일로도 저장 (포트폴리오 매니저가 읽을 수 있도록)
         latest_filepath = self.portfolio_file

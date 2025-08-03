@@ -1,97 +1,139 @@
 # -*- coding: utf-8 -*-
-"""IPO Track 분석 모듈"""
+"""IPO Track 분석기 - README.md 기반 구현"""
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Tuple
-from .indicators import calculate_base_pattern, calculate_track2_indicators
+from datetime import datetime
+import logging
 
+logger = logging.getLogger(__name__)
+
+def calculate_rsi(prices, period=14):
+    """RSI 계산 함수"""
+    delta = prices.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi.iloc[-1]
 
 class IPOTrackAnalyzer:
-    """IPO Track 분석 클래스"""
+    """IPO Track 분석기 클래스"""
     
-    def __init__(self, ipo_data: pd.DataFrame, vix: float, sector_rs: Dict):
-        """초기화"""
-        self.ipo_data = ipo_data
-        self.vix = vix
-        self.sector_rs = sector_rs
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
     
-    def check_track1(self, ticker: str, df: pd.DataFrame) -> Tuple[bool, Dict]:
-        """Track 1 조건 확인"""
-        ipo_row = self.ipo_data[self.ipo_data['ticker'] == ticker]
-        if ipo_row.empty:
+    def check_track1(self, df, ipo_price):
+        """Track 1 패턴 확인 - README.md 기반
+        
+        Track 1 조건:
+        - 하락폭: 현재가 < IPO 발행가 × 0.50 (50% 이상 하락)
+        - 거래량 증가: 당일거래량 > 5일 평균 × 1.8
+        - RSI 반전: RSI가 30 이하에서 35 이상으로 상승
+        - 지지 확인: 피보나치 61.8% 또는 50% 수준에서 지지
+        """
+        try:
+            if len(df) < 15:
+                return False, {}
+            
+            current_price = df['close'].iloc[-1]
+            current_volume = df['volume'].iloc[-1]
+            avg_5_volume = df['volume'].iloc[-5:].mean()
+            
+            # 50% 이상 하락 확인
+            decline_check = current_price < ipo_price * 0.50
+            
+            # 거래량 증가 확인
+            volume_check = current_volume > avg_5_volume * 1.8
+            
+            # RSI 반전 확인
+            rsi = calculate_rsi(df['close'], 14)
+            prev_rsi = calculate_rsi(df['close'].iloc[:-1], 14)
+            rsi_check = prev_rsi <= 30 and rsi >= 35
+            
+            track1_pattern = decline_check and volume_check and rsi_check
+            
+            track1_info = {
+                'current_price': current_price,
+                'ipo_price': ipo_price,
+                'decline_check': decline_check,
+                'volume_check': volume_check,
+                'rsi_check': rsi_check,
+                'current_rsi': rsi,
+                'prev_rsi': prev_rsi,
+                'volume_ratio': current_volume / avg_5_volume if avg_5_volume > 0 else 0,
+                'pattern_formation_date': df.index[-1].strftime('%Y-%m-%d') if hasattr(df.index[-1], 'strftime') else str(df.index[-1])
+            }
+            
+            return track1_pattern, track1_info
+            
+        except Exception as e:
+            self.logger.error(f"Track 1 패턴 분석 중 오류: {e}")
             return False, {}
-
-        ipo_info = ipo_row.iloc[0]
-        df = calculate_base_pattern(df)
-        recent = df.iloc[-1]
-
-        price_cond = ipo_info['ipo_price'] * 0.7 <= recent['close'] <= ipo_info['ipo_price'] * 0.9
-        rsi_cond = recent['rsi_14'] < 30
-        support_touch = recent['close'] <= recent['rolling_low'] * 1.02
-        volume_cond = recent['volume'] < recent['volume_sma_20'] * 0.5
-
-        sector_rs = self.sector_rs.get(ipo_info['sector'], {}).get('percentile', 0)
-        environment_cond = self.vix < 25 and sector_rs >= 50
-
-        fundamental_cond = (
-            ipo_info.get('ps_ratio', np.inf) < ipo_info.get('industry_ps_ratio', np.inf) and
-            ipo_info.get('revenue_growth', 0) > 20 and
-            ipo_info.get('equity_ratio', 0) > 30 and
-            ipo_info.get('cash_to_sales', 0) > 15
-        )
-
-        info = {
-            'price_cond': price_cond,
-            'rsi_cond': rsi_cond,
-            'support_touch': support_touch,
-            'volume_cond': volume_cond,
-            'environment_cond': environment_cond,
-            'fundamental_cond': fundamental_cond,
-            'sector_rs': sector_rs,
-            'vix': self.vix,
-            'current_price': recent['close'],
-            'ipo_price': ipo_info['ipo_price']
-        }
-
-        return all([price_cond, rsi_cond and support_touch, volume_cond, environment_cond, fundamental_cond]), info
-
-    def check_track2(self, ticker: str, df: pd.DataFrame) -> Tuple[bool, Dict]:
-        """Track 2 조건 확인"""
-        ipo_row = self.ipo_data[self.ipo_data['ticker'] == ticker]
-        if ipo_row.empty:
+    
+    def check_track2(self, df, ipo_price):
+        """Track 2 패턴 확인 - README.md 기반
+        
+        강한 모멘텀 조건:
+        - 상승폭: 현재가 > IPO 발행가 × 1.50 (50% 이상 상승)
+        - 승률: 최근 10일 중 7일 이상 상승
+        - 평균 상승: 최근 5일 평균 일일수익률 > 2%
+        - 이동평균: 10일 MA > 21일 MA > 50일 MA
+        - 거래량: 최근 5일 평균 > 전체기간 평균 × 1.3
+        - RSI: 60 < RSI < 85
+        """
+        try:
+            if len(df) < 50:
+                return False, {}
+            
+            current_price = df['close'].iloc[-1]
+            
+            # 50% 이상 상승 확인
+            if current_price > ipo_price * 1.50:
+                recent_10_days = df.iloc[-10:]
+                returns = recent_10_days['close'].pct_change().dropna()
+                up_days = sum(returns > 0)
+                
+                # 10일 중 7일 이상 상승 확인
+                if up_days >= 7:
+                    # 최근 5일 평균 수익률 2% 이상 확인
+                    recent_5_returns = returns.iloc[-5:]
+                    avg_return = recent_5_returns.mean()
+                    
+                    if avg_return > 0.02:
+                        # 이동평균 정렬 확인
+                        ma_10 = df['close'].iloc[-10:].mean()
+                        ma_21 = df['close'].iloc[-21:].mean()
+                        ma_50 = df['close'].iloc[-50:].mean()
+                        
+                        if ma_10 > ma_21 > ma_50:
+                            # 거래량 확인
+                            recent_5_volume = df['volume'].iloc[-5:].mean()
+                            total_volume = df['volume'].mean()
+                            
+                            if recent_5_volume > total_volume * 1.3:
+                                # RSI 확인
+                                rsi = calculate_rsi(df['close'], 14)
+                                if 60 < rsi < 85:
+                                    track2_info = {
+                                        'current_price': current_price,
+                                        'ipo_price': ipo_price,
+                                        'up_days': up_days,
+                                        'avg_return': avg_return,
+                                        'ma_10': ma_10,
+                                        'ma_21': ma_21,
+                                        'ma_50': ma_50,
+                                        'recent_5_volume': recent_5_volume,
+                                        'total_volume': total_volume,
+                                        'current_rsi': rsi,
+                                        'volume_ratio': recent_5_volume / total_volume if total_volume > 0 else 0,
+                                        'price_vs_ipo': (current_price / ipo_price - 1) * 100,
+                                        'pattern_formation_date': df.index[-1].strftime('%Y-%m-%d') if hasattr(df.index[-1], 'strftime') else str(df.index[-1])
+                                    }
+                                    return True, track2_info
+            
             return False, {}
-
-        ipo_info = ipo_row.iloc[0]
-        df = calculate_track2_indicators(df)
-        recent = df.iloc[-1]
-
-        price_momentum = len(df) >= 5 and (df['close'].iloc[4] / df['close'].iloc[0] - 1) >= 0.20
-        macd_signal = recent['macd'] > recent['macd_signal']
-        volume_surge = recent['volume'] >= recent['volume_sma_20'] * 3
-        institutional_buy = False
-
-        ema_break = df.iloc[-2]['close'] > df.iloc[-2]['ema_5'] and recent['close'] > recent['ema_5']
-        rsi_strong = recent['rsi_7'] > 70
-        stoch_cond = recent['stoch_k'] > recent['stoch_d'] and recent['stoch_k'] > 80
-        roc_cond = recent['roc_5'] > 15
-
-        sector_rs = self.sector_rs.get(ipo_info['sector'], {}).get('percentile', 0)
-        environment_cond = self.vix < 25 and sector_rs >= 50
-
-        info = {
-            'price_momentum': price_momentum,
-            'macd_signal': macd_signal,
-            'volume_surge': volume_surge,
-            'ema_break': ema_break,
-            'rsi_strong': rsi_strong,
-            'stoch_cond': stoch_cond,
-            'roc_cond': roc_cond,
-            'environment_cond': environment_cond,
-            'sector_rs': sector_rs,
-            'vix': self.vix,
-            'current_price': recent['close']
-        }
-
-        return all([price_momentum, macd_signal, volume_surge,
-                    ema_break, rsi_strong, stoch_cond, roc_cond, environment_cond]), info
+            
+        except Exception as e:
+            self.logger.error(f"Track 2 패턴 분석 중 오류: {e}")
+            return False, {}

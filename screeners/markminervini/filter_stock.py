@@ -110,6 +110,19 @@ def run_integrated_screening():
                 print("❌ 'fin_met_count' 컬럼이 없습니다.")
             return
         
+        # 재무데이터 부족한 종목 필터링 (액면병합 등 데이터 오염 가능성 높음)
+        before_filter_count = len(merged_df)
+        merged_df = merged_df[merged_df['fin_met_count'] > 0]
+        after_filter_count = len(merged_df)
+        filtered_out_count = before_filter_count - after_filter_count
+        
+        if filtered_out_count > 0:
+            print(f"🚫 재무데이터 부족 종목 {filtered_out_count}개 제외 (액면병합 등 데이터 오염 가능성)")
+        
+        if merged_df.empty:
+            print("❌ 재무데이터 필터링 후 결과가 없습니다.")
+            return
+        
         # RS 점수 열 처리
         if 'rs_score_x' in merged_df.columns:
             merged_df['rs_score'] = merged_df['rs_score_x']
@@ -144,8 +157,8 @@ def run_integrated_screening():
             print("\n🔍 통합 패턴 감지 스크리너 실행 중...")
             from .integrated_screener import run_integrated_screening
             
-            # 상위 30개 심볼만 패턴 감지
-            top_symbols = filtered_df.head(30)['symbol'].tolist()
+            # 모든 심볼에 대해 패턴 감지
+            top_symbols = filtered_df['symbol'].tolist()
             if top_symbols:
                 pattern_results = run_integrated_screening(max_symbols=len(top_symbols))
                 print(f"✅ 패턴 감지 완료: {len(pattern_results)}개 심볼 처리")

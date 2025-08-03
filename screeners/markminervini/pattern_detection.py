@@ -70,7 +70,10 @@ def analyze_tickers_from_results(results_dir: str, data_dir: str, output_dir: st
         file_path = os.path.join(data_dir, f"{symbol}.csv")
         if not os.path.exists(file_path):
             continue
-        df = pd.read_csv(file_path)
+        from utils.screener_utils import read_csv_flexible
+        df = read_csv_flexible(file_path, required_columns=['close', 'volume', 'date', 'high', 'low'])
+        if df is None:
+            continue
         date_col = next((c for c in df.columns if c.lower() in ['date', '날짜', '일자']), None)
         if not date_col:
             continue

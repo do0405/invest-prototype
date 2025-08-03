@@ -110,8 +110,10 @@ def process_stock_data(file, data_dir, min_days=200, recent_days=200):
     try:
         file_path = os.path.join(data_dir, file)
         symbol = extract_ticker_from_filename(file)
-        df = pd.read_csv(file_path)
-        df.columns = [col.lower() for col in df.columns]
+        from utils.screener_utils import read_csv_flexible
+        df = read_csv_flexible(file_path, required_columns=['date', 'close'])
+        if df is None:
+            return None, None, None
         if 'date' in df.columns:
             df['date'] = pd.to_datetime(df['date'], utc=True)
             df = df.sort_values('date')

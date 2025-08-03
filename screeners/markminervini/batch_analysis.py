@@ -49,7 +49,16 @@ def run_pattern_detection_on_financial_results(input_file: str = None,
             return
         
         # 재무 결과 파일 읽기
-        df = pd.read_csv(input_file)
+        from utils.screener_utils import read_csv_flexible
+        df = read_csv_flexible(input_file, required_columns=['symbol'])
+        if df is None:
+            logger.warning(f"재무 결과 파일 읽기 실패: {input_file}")
+            # 빈 결과 파일 생성
+            empty_df = pd.DataFrame()
+            empty_df.to_csv(output_csv, index=False)
+            with open(output_json, 'w', encoding='utf-8') as f:
+                json.dump([], f, ensure_ascii=False, indent=2)
+            return
         logger.info(f"재무 결과 파일에서 {len(df)}개 종목을 로드했습니다.")
         
         # 결과 저장용 리스트
@@ -63,7 +72,15 @@ def run_pattern_detection_on_financial_results(input_file: str = None,
         
         for index, row in df.iterrows():
             try:
-                symbol = row['Symbol']
+                # 컬럼명 확인 (symbol 또는 Symbol)
+                if 'symbol' in row:
+                    symbol = row['symbol']
+                elif 'Symbol' in row:
+                    symbol = row['Symbol']
+                else:
+                    logger.warning(f"심볼 컬럼을 찾을 수 없습니다: {list(row.index)}")
+                    continue
+                    
                 logger.info(f"처리 중: {symbol} ({index + 1}/{len(df)})")
                 
                 # 주가 데이터 가져오기 (1년치)
@@ -115,7 +132,9 @@ def run_pattern_detection_on_financial_results(input_file: str = None,
                     both_patterns += 1
                 
             except Exception as e:
-                logger.error(f"{symbol} 처리 중 오류: {str(e)}")
+                # symbol 변수가 정의되지 않은 경우를 대비
+                symbol_name = locals().get('symbol', f'행{index+1}')
+                logger.error(f"{symbol_name} 처리 중 오류: {str(e)}")
                 continue
         
         if not results:
@@ -213,15 +232,10 @@ def run_pattern_detection_on_all_symbols(symbols: List[str],
                     continue
                 
                 # 데이터 로드
-                df = pd.read_csv(csv_file)
-                
-                # 컬럼명 정규화
-                df.columns = [c.lower() for c in df.columns]
-                
-                # 필수 컬럼 확인
-                required_columns = ['date', 'open', 'high', 'low', 'close', 'volume']
-                if not all(col in df.columns for col in required_columns):
-                    logger.warning(f"{symbol}: 필수 컬럼이 누락되었습니다")
+                from utils.screener_utils import read_csv_flexible
+                df = read_csv_flexible(csv_file, required_columns=['date', 'open', 'high', 'low', 'close', 'volume'])
+                if df is None:
+                    logger.warning(f"{symbol}: 필수 컬럼이 누락되었거나 파일 읽기 실패")
                     continue
                 
                 # 데이터 충분성 확인

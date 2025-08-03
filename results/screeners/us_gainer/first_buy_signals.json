@@ -442,5 +442,53 @@
   {
     "symbol":"ZWS",
     "first_signal_date":"2025-08-01"
+  },
+  {
+    "symbol":"APLS",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"APPF",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"ARGX",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"CNMD",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"EVTC",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"LECO",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"LNC",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"MAS",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"META",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"TAL",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"VSEC",
+    "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"XYL",
+    "first_signal_date":"2025-08-03"
   }
 ]

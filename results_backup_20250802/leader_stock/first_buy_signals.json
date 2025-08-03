@@ -1,0 +1,30 @@
+[
+  {
+    "symbol":"SATX",
+    "first_signal_date":"2025-07-01"
+  },
+  {
+    "symbol":"RKLB",
+    "first_signal_date":"2025-07-01"
+  },
+  {
+    "symbol":"AMPX",
+    "first_signal_date":"2025-07-01"
+  },
+  {
+    "symbol":"PSIX",
+    "first_signal_date":"2025-07-01"
+  },
+  {
+    "symbol":"AEVA",
+    "first_signal_date":"2025-07-01"
+  },
+  {
+    "symbol":"CNVS",
+    "first_signal_date":"2025-07-01"
+  },
+  {
+    "symbol":"NEON",
+    "first_signal_date":"2025-07-01"
+  }
+]

@@ -1,275 +1,238 @@
 # -*- coding: utf-8 -*-
-"""IPO 패턴 분석 모듈"""
+"""IPO 패턴 분석기 - README.md 기반 구현"""
 
 import pandas as pd
 import numpy as np
-from typing import Dict, Tuple
-from .indicators import calculate_base_pattern, calculate_track2_indicators
+from datetime import datetime
+import logging
 
+logger = logging.getLogger(__name__)
+
+def calculate_rsi(prices, period=14):
+    """RSI 계산 함수"""
+    delta = prices.diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))
+    return rsi.iloc[-1]
 
 class IPOPatternAnalyzer:
-    """IPO 패턴 분석 클래스"""
+    """IPO 패턴 분석기 클래스"""
     
-    def check_ipo_base_pattern(self, df: pd.DataFrame, min_days: int = 30, max_days: int = 200) -> Tuple[bool, Dict]:
-        """IPO 베이스 패턴 확인 및 패턴 형성 시점 추적"""
-        # 데이터가 충분하지 않은 경우
-        if len(df) < min_days:
-            return False, {}
-            
-        # 너무 오래된 IPO인 경우
-        if len(df) > max_days:
-            return False, {}
+    def __init__(self):
+        self.logger = logging.getLogger(__name__)
+    
+    def check_ipo_base_pattern(self, df, ipo_price):
+        """베이스 패턴 확인 - README.md 기반
         
-        # 기술적 지표 계산
-        df = calculate_base_pattern(df)
-        
-        # 베이스 패턴 형성 시점 찾기 (최근 20일 내에서)
-        pattern_formation_date = None
-        best_base_score = 0
-        best_base_info = {}
-        
-        # 최근 20일 내에서 베이스 패턴 형성 시점 탐색
-        search_days = min(20, len(df))
-        for i in range(search_days):
-            current_idx = -(search_days - i)
+        베이스 형성 조건:
+        - 시간: 상장 후 5~25일 내
+        - 하락폭: 현재가 < IPO 첫날 종가 × 0.70 (30% 하락)
+        - 횡보 범위: (구간최고가 - 구간최저가) ÷ 구간평균 < 0.20
+        - 거래량 감소: 베이스 기간 평균거래량 < 전체 기간 평균거래량
+        """
+        try:
+            if len(df) < 25:
+                return False, {}
             
-            # 해당 시점에서 충분한 데이터가 있는지 확인
-            if current_idx + len(df) < min_days:
-                continue
-                
-            current_data = df.iloc[current_idx]
+            current_price = df['close'].iloc[-1]
+            ipo_first_close = ipo_price  # IPO 첫날 종가로 가정
             
-            # 해당 시점까지의 데이터로 베이스 패턴 조건 확인
-            end_idx = current_idx + len(df) if current_idx < 0 else current_idx + 1
-            analysis_df = df.iloc[:end_idx]
+            # 30% 하락 확인
+            decline_check = current_price < ipo_first_close * 0.70
             
-            if len(analysis_df) < 20:
-                continue
+            # 횡보 범위 확인 (최근 5~25일 구간)
+            period_high = df['high'].iloc[-25:].max()
+            period_low = df['low'].iloc[-25:].min()
+            period_avg = df['close'].iloc[-25:].mean()
+            range_check = (period_high - period_low) / period_avg < 0.20
             
-            # 베이스 패턴 조건 확인
-            # 1. 최근 20일 동안 가격 변동이 15% 이내 (베이스 형성)
-            recent_20_data = analysis_df.iloc[-20:]
-            recent_range = recent_20_data['price_range'].max()
-            base_formed = recent_range <= 15
+            # 거래량 감소 확인
+            base_period_volume = df['volume'].iloc[-25:].mean()
+            total_period_volume = df['volume'].mean()
+            volume_decrease = base_period_volume < total_period_volume
             
-            # 2. 거래량 감소 (베이스 형성 중 거래량 감소)
-            if len(analysis_df) >= 40:
-                volume_declining = recent_20_data['volume'].mean() < analysis_df.iloc[-40:-20]['volume'].mean()
-            else:
-                volume_declining = True  # 데이터 부족 시 통과
+            base_pattern = decline_check and range_check and volume_decrease
             
-            # 3. 종가가 20일 이동평균선 위에 있음
-            above_20_sma = current_data['close'] > current_data['sma_20']
-            
-            # 4. RSI가 과매도 구간에서 벗어남 (RSI > 40)
-            healthy_rsi = current_data['rsi_14'] > 40
-            
-            # 5. 최근 가격이 IPO 이후 고점의 70% 이상
-            ipo_high = analysis_df['high'].max()
-            price_strength = current_data['close'] >= ipo_high * 0.7
-            
-            # 베이스 패턴 점수 계산
-            base_score = sum([base_formed, volume_declining, above_20_sma, healthy_rsi, price_strength])
-            
-            # 더 높은 점수의 패턴을 찾으면 업데이트
-            if base_score >= 3 and base_score > best_base_score:
-                best_base_score = base_score
-                
-                # 패턴 형성 날짜 추출
-                if hasattr(current_data, 'name') and hasattr(current_data.name, 'strftime'):
-                    pattern_formation_date = current_data.name.strftime('%Y-%m-%d')
-                elif 'date' in df.columns:
-                    date_val = current_data.get('date')
-                    if pd.notna(date_val):
-                        if isinstance(date_val, str):
-                            pattern_formation_date = date_val
-                        else:
-                            pattern_formation_date = pd.to_datetime(date_val).strftime('%Y-%m-%d')
-                
-                best_base_info = {
-                    'base_score': base_score,
-                    'base_formed': base_formed,
-                    'volume_declining': volume_declining,
-                    'above_20_sma': above_20_sma,
-                    'healthy_rsi': healthy_rsi,
-                    'price_strength': price_strength,
-                    'recent_range': recent_range,
-                    'ipo_high': ipo_high,
-                    'current_price': current_data['close'],
-                    'price_to_high_ratio': current_data['close'] / ipo_high,
-                    'pattern_formation_date': pattern_formation_date
-                }
-        
-        # 패턴이 발견되지 않았으면 최신 데이터로 분석
-        if best_base_score == 0:
-            recent = df.iloc[-1]
-            
-            # 베이스 패턴 조건 확인
-            recent_range = df.iloc[-20:]['price_range'].max()
-            base_formed = recent_range <= 15
-            
-            volume_declining = df.iloc[-20:]['volume'].mean() < df.iloc[-40:-20]['volume'].mean() if len(df) >= 40 else True
-            above_20_sma = recent['close'] > recent['sma_20']
-            healthy_rsi = recent['rsi_14'] > 40
-            
-            ipo_high = df['high'].max()
-            price_strength = recent['close'] >= ipo_high * 0.7
-            
-            base_score = sum([base_formed, volume_declining, above_20_sma, healthy_rsi, price_strength])
-            
-            # 최신 데이터의 날짜 사용
-            if hasattr(recent, 'name') and hasattr(recent.name, 'strftime'):
-                pattern_formation_date = recent.name.strftime('%Y-%m-%d')
-            elif 'date' in df.columns:
-                date_val = recent.get('date')
-                if pd.notna(date_val):
-                    if isinstance(date_val, str):
-                        pattern_formation_date = date_val
-                    else:
-                        pattern_formation_date = pd.to_datetime(date_val).strftime('%Y-%m-%d')
-            
-            best_base_info = {
-                'base_score': base_score,
-                'base_formed': base_formed,
-                'volume_declining': volume_declining,
-                'above_20_sma': above_20_sma,
-                'healthy_rsi': healthy_rsi,
-                'price_strength': price_strength,
-                'recent_range': recent_range,
-                'ipo_high': ipo_high,
-                'current_price': recent['close'],
-                'price_to_high_ratio': recent['close'] / ipo_high,
-                'pattern_formation_date': pattern_formation_date
+            base_info = {
+                'current_price': current_price,
+                'ipo_first_close': ipo_first_close,
+                'decline_check': decline_check,
+                'range_check': range_check,
+                'volume_decrease': volume_decrease,
+                'period_range_ratio': (period_high - period_low) / period_avg,
+                'pattern_formation_date': df.index[-1].strftime('%Y-%m-%d') if hasattr(df.index[-1], 'strftime') else str(df.index[-1])
             }
             
-            best_base_score = base_score
-        
-        # 베이스 패턴 확인 (점수가 3점 이상이면 베이스 패턴으로 간주)
-        return best_base_score >= 3, best_base_info
-    
-    def check_ipo_breakout(self, df: pd.DataFrame) -> Tuple[bool, Dict]:
-        """IPO 브레이크아웃 확인 및 패턴 형성 시점 추적"""
-        # 데이터가 충분하지 않은 경우
-        if len(df) < 30:
+            return base_pattern, base_info
+            
+        except Exception as e:
+            self.logger.error(f"베이스 패턴 분석 중 오류: {e}")
             return False, {}
+    
+    def check_ipo_breakout(self, df):
+        """브레이크아웃 패턴 확인 - README.md 기반
         
-        # 기술적 지표 계산
-        df = calculate_base_pattern(df)
-        
-        # 브레이크아웃 패턴 형성 시점 찾기 (최근 10일 내에서)
-        pattern_formation_date = None
-        best_breakout_score = 0
-        best_breakout_info = {}
-        
-        # 최근 10일 내에서 브레이크아웃 패턴 형성 시점 탐색
-        search_days = min(10, len(df))
-        for i in range(search_days):
-            current_idx = -(search_days - i)
+        브레이크아웃 조건:
+        - 돌파: 현재가 > 구간 최고가 × 1.025 (2.5% 이상)
+        - 거래량: 당일거래량 > 10일 평균거래량 × 2.0
+        - 종가 확인: 종가 > 돌파수준 × 0.975 (돌파수준 -2.5% 이상)
+        - RSI: 50 < RSI < 85
+        """
+        try:
+            if len(df) < 25:
+                return False, {}
             
-            # 해당 시점에서 충분한 데이터가 있는지 확인
-            if current_idx + len(df) < 30:
-                continue
-                
-            current_data = df.iloc[current_idx]
+            current_price = df['close'].iloc[-1]
+            current_volume = df['volume'].iloc[-1]
+            avg_10_volume = df['volume'].iloc[-10:].mean()
             
-            # 이전 데이터 (당일 상승률 계산용)
-            if current_idx == -len(df):
-                continue  # 첫 번째 데이터는 이전 데이터가 없으므로 건너뜀
-            prev_data = df.iloc[current_idx - 1]
+            # 구간 최고가 (최근 25일)
+            base_high = df['high'].iloc[-25:].max()
             
-            # 해당 시점까지의 데이터로 브레이크아웃 조건 확인
-            end_idx = current_idx + len(df) if current_idx < 0 else current_idx + 1
-            analysis_df = df.iloc[:end_idx]
+            # 2.5% 돌파 확인
+            breakout_level = base_high * 1.025
+            breakout_check = current_price > breakout_level
             
-            if len(analysis_df) < 21:
-                continue
+            # 거래량 2배 이상 증가 확인
+            volume_check = current_volume > avg_10_volume * 2.0
             
-            # 브레이크아웃 조건 확인
-            # 1. 종가가 20일 고점 돌파
-            breakout_20d_high = current_data['close'] > analysis_df.iloc[-21:-1]['high'].max()
+            # 종가가 돌파 수준 근처에서 마감 확인
+            close_check = current_price > breakout_level * 0.975
             
-            # 2. 거래량 급증 (20일 평균 대비 2배 이상)
-            volume_surge = current_data['volume_ratio'] >= 2.0
+            # RSI 확인
+            rsi = calculate_rsi(df['close'], 14)
+            rsi_check = 50 < rsi < 85
             
-            # 3. 종가가 상단 밴드 돌파
-            breakout_upper_band = current_data['close'] > current_data['upper_band']
+            breakout_pattern = breakout_check and volume_check and close_check and rsi_check
             
-            # 4. 당일 가격 상승률 2% 이상
-            daily_gain = (current_data['close'] / prev_data['close'] - 1) * 100 >= 2
-            
-            # 5. RSI가 50 이상 (상승 모멘텀)
-            strong_rsi = current_data['rsi_14'] >= 50
-            
-            # 브레이크아웃 점수 계산
-            breakout_score = sum([breakout_20d_high, volume_surge, breakout_upper_band, daily_gain, strong_rsi])
-            
-            # 더 높은 점수의 패턴을 찾으면 업데이트
-            if breakout_score >= 3 and breakout_score > best_breakout_score:
-                best_breakout_score = breakout_score
-                
-                # 패턴 형성 날짜 추출
-                if hasattr(current_data, 'name') and hasattr(current_data.name, 'strftime'):
-                    pattern_formation_date = current_data.name.strftime('%Y-%m-%d')
-                elif 'date' in df.columns:
-                    date_val = current_data.get('date')
-                    if pd.notna(date_val):
-                        if isinstance(date_val, str):
-                            pattern_formation_date = date_val
-                        else:
-                            pattern_formation_date = pd.to_datetime(date_val).strftime('%Y-%m-%d')
-                
-                best_breakout_info = {
-                    'breakout_score': breakout_score,
-                    'breakout_20d_high': breakout_20d_high,
-                    'volume_surge': volume_surge,
-                    'breakout_upper_band': breakout_upper_band,
-                    'daily_gain': daily_gain,
-                    'strong_rsi': strong_rsi,
-                    'current_price': current_data['close'],
-                    'volume_ratio': current_data['volume_ratio'],
-                    'rsi': current_data['rsi_14'],
-                    'pattern_formation_date': pattern_formation_date
-                }
-        
-        # 패턴이 발견되지 않았으면 최신 데이터로 분석
-        if best_breakout_score == 0:
-            recent = df.iloc[-1]
-            prev = df.iloc[-2]
-            
-            # 브레이크아웃 조건 확인
-            breakout_20d_high = recent['close'] > df.iloc[-21:-1]['high'].max()
-            volume_surge = recent['volume_ratio'] >= 2.0
-            breakout_upper_band = recent['close'] > recent['upper_band']
-            daily_gain = (recent['close'] / prev['close'] - 1) * 100 >= 2
-            strong_rsi = recent['rsi_14'] >= 50
-            
-            breakout_score = sum([breakout_20d_high, volume_surge, breakout_upper_band, daily_gain, strong_rsi])
-            
-            # 최신 데이터의 날짜 사용
-            if hasattr(recent, 'name') and hasattr(recent.name, 'strftime'):
-                pattern_formation_date = recent.name.strftime('%Y-%m-%d')
-            elif 'date' in df.columns:
-                date_val = recent.get('date')
-                if pd.notna(date_val):
-                    if isinstance(date_val, str):
-                        pattern_formation_date = date_val
-                    else:
-                        pattern_formation_date = pd.to_datetime(date_val).strftime('%Y-%m-%d')
-            
-            best_breakout_info = {
-                'breakout_score': breakout_score,
-                'breakout_20d_high': breakout_20d_high,
-                'volume_surge': volume_surge,
-                'breakout_upper_band': breakout_upper_band,
-                'daily_gain': daily_gain,
-                'strong_rsi': strong_rsi,
-                'current_price': recent['close'],
-                'volume_ratio': recent['volume_ratio'],
-                'rsi': recent['rsi_14'],
-                'pattern_formation_date': pattern_formation_date
+            breakout_info = {
+                'current_price': current_price,
+                'base_high': base_high,
+                'breakout_level': breakout_level,
+                'breakout_check': breakout_check,
+                'volume_check': volume_check,
+                'close_check': close_check,
+                'rsi_check': rsi_check,
+                'current_rsi': rsi,
+                'pattern_formation_date': df.index[-1].strftime('%Y-%m-%d') if hasattr(df.index[-1], 'strftime') else str(df.index[-1])
             }
             
-            best_breakout_score = breakout_score
+            return breakout_pattern, breakout_info
+            
+        except Exception as e:
+            self.logger.error(f"브레이크아웃 패턴 분석 중 오류: {e}")
+            return False, {}
+    
+    def check_track1_pattern(self, df, ipo_price):
+        """Track 1 패턴 확인 - README.md 기반
         
-        # 브레이크아웃 확인 (점수가 3점 이상이면 브레이크아웃으로 간주)
-        return best_breakout_score >= 3, best_breakout_info
+        Track 1 조건:
+        - 하락폭: 현재가 < IPO 발행가 × 0.50 (50% 이상 하락)
+        - 거래량 증가: 당일거래량 > 5일 평균 × 1.8
+        - RSI 반전: RSI가 30 이하에서 35 이상으로 상승
+        - 지지 확인: 피보나치 61.8% 또는 50% 수준에서 지지
+        """
+        try:
+            if len(df) < 15:
+                return False, {}
+            
+            current_price = df['close'].iloc[-1]
+            current_volume = df['volume'].iloc[-1]
+            avg_5_volume = df['volume'].iloc[-5:].mean()
+            
+            # 50% 이상 하락 확인
+            decline_check = current_price < ipo_price * 0.50
+            
+            # 거래량 증가 확인
+            volume_check = current_volume > avg_5_volume * 1.8
+            
+            # RSI 반전 확인
+            rsi = calculate_rsi(df['close'], 14)
+            prev_rsi = calculate_rsi(df['close'].iloc[:-1], 14)
+            rsi_check = prev_rsi <= 30 and rsi >= 35
+            
+            track1_pattern = decline_check and volume_check and rsi_check
+            
+            track1_info = {
+                'current_price': current_price,
+                'ipo_price': ipo_price,
+                'decline_check': decline_check,
+                'volume_check': volume_check,
+                'rsi_check': rsi_check,
+                'current_rsi': rsi,
+                'prev_rsi': prev_rsi,
+                'pattern_formation_date': df.index[-1].strftime('%Y-%m-%d') if hasattr(df.index[-1], 'strftime') else str(df.index[-1])
+            }
+            
+            return track1_pattern, track1_info
+            
+        except Exception as e:
+            self.logger.error(f"Track 1 패턴 분석 중 오류: {e}")
+            return False, {}
+    
+    def check_track2_pattern(self, df, ipo_price):
+        """Track 2 패턴 확인 - README.md 기반
+        
+        강한 모멘텀 조건:
+        - 상승폭: 현재가 > IPO 발행가 × 1.50 (50% 이상 상승)
+        - 승률: 최근 10일 중 7일 이상 상승
+        - 평균 상승: 최근 5일 평균 일일수익률 > 2%
+        - 이동평균: 10일 MA > 21일 MA > 50일 MA
+        - 거래량: 최근 5일 평균 > 전체기간 평균 × 1.3
+        - RSI: 60 < RSI < 85
+        """
+        try:
+            if len(df) < 50:
+                return False, {}
+            
+            current_price = df['close'].iloc[-1]
+            
+            # 50% 이상 상승 확인
+            if current_price > ipo_price * 1.50:
+                recent_10_days = df.iloc[-10:]
+                returns = recent_10_days['close'].pct_change().dropna()
+                up_days = sum(returns > 0)
+                
+                # 10일 중 7일 이상 상승 확인
+                if up_days >= 7:
+                    # 최근 5일 평균 수익률 2% 이상 확인
+                    recent_5_returns = returns.iloc[-5:]
+                    avg_return = recent_5_returns.mean()
+                    
+                    if avg_return > 0.02:
+                        # 이동평균 정렬 확인
+                        ma_10 = df['close'].iloc[-10:].mean()
+                        ma_21 = df['close'].iloc[-21:].mean()
+                        ma_50 = df['close'].iloc[-50:].mean()
+                        
+                        if ma_10 > ma_21 > ma_50:
+                            # 거래량 확인
+                            recent_5_volume = df['volume'].iloc[-5:].mean()
+                            total_volume = df['volume'].mean()
+                            
+                            if recent_5_volume > total_volume * 1.3:
+                                # RSI 확인
+                                rsi = calculate_rsi(df['close'], 14)
+                                if 60 < rsi < 85:
+                                    track2_info = {
+                                        'current_price': current_price,
+                                        'ipo_price': ipo_price,
+                                        'up_days': up_days,
+                                        'avg_return': avg_return,
+                                        'ma_10': ma_10,
+                                        'ma_21': ma_21,
+                                        'ma_50': ma_50,
+                                        'recent_5_volume': recent_5_volume,
+                                        'total_volume': total_volume,
+                                        'current_rsi': rsi,
+                                        'pattern_formation_date': df.index[-1].strftime('%Y-%m-%d') if hasattr(df.index[-1], 'strftime') else str(df.index[-1])
+                                    }
+                                    return True, track2_info
+            
+            return False, {}
+            
+        except Exception as e:
+            self.logger.error(f"Track 2 패턴 분석 중 오류: {e}")
+            return False, {}

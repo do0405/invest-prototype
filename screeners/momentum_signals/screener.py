@@ -44,11 +44,11 @@ class StanWeinsteinStage2Screener:
         self.six_weeks_ago = self.today - timedelta(days=42)
         
         if skip_data:
-            self.rs_scores = {}
-            self.sector_data = {}
+            self.rs_scores = self._load_rs_scores()  # skip_data 모드에서도 RS 점수 로드
+            self._load_metadata()  # skip_data 모드에서도 메타데이터 로드
             self.strong_sectors = {}
-            self.market_indices = {}
-            logger.info("Skip data mode: 메타데이터 로드 건너뜀")
+            self.market_indices = self._load_market_indices()  # skip_data 모드에서도 시장 지수 로드
+            logger.info("Skip data mode: 기존 메타데이터 확인")
         else:
             self.rs_scores = self._load_rs_scores()
             self._load_metadata()
@@ -60,8 +60,9 @@ class StanWeinsteinStage2Screener:
         """RS 점수 로드"""
         if os.path.exists(US_WITH_RS_PATH):
             try:
-                rs_df = pd.read_csv(US_WITH_RS_PATH)
-                if 'symbol' in rs_df.columns and 'rs_score' in rs_df.columns:
+                from utils.screener_utils import read_csv_flexible
+                rs_df = read_csv_flexible(US_WITH_RS_PATH, required_columns=['symbol', 'rs_score'])
+                if rs_df is not None:
                     return dict(zip(rs_df['symbol'], rs_df['rs_score']))
             except Exception as e:
                 logger.warning(f"RS 점수 로드 실패: {e}")
@@ -74,8 +75,9 @@ class StanWeinsteinStage2Screener:
         
         if os.path.exists(STOCK_METADATA_PATH):
             try:
-                meta = pd.read_csv(STOCK_METADATA_PATH)
-                if {'symbol', 'sector'}.issubset(meta.columns):
+                from utils.screener_utils import read_csv_flexible
+                meta = read_csv_flexible(STOCK_METADATA_PATH, required_columns=['symbol', 'sector'])
+                if meta is not None:
                     self.sector_map = meta.set_index('symbol')['sector'].to_dict()
                     logger.info(f"섹터 정보 로드 완료: {len(self.sector_map)}개 종목")
             except Exception as e:
@@ -97,12 +99,15 @@ class StanWeinsteinStage2Screener:
             file_path = os.path.join(DATA_US_DIR, f"{symbol}.csv")
             if os.path.exists(file_path):
                 try:
-                    df = pd.read_csv(file_path)
-                    df.columns = [c.lower() for c in df.columns]
-                    df['date'] = pd.to_datetime(df['date'], utc=True)
-                    df = df.sort_values('date')
-                    indices[symbol] = df
-                    logger.info(f"{symbol} 지수 데이터 로드 성공: {len(df)}일")
+                    from utils.screener_utils import read_csv_flexible
+                    df = read_csv_flexible(file_path, required_columns=['date', 'close'])
+                    if df is not None:
+                        df['date'] = pd.to_datetime(df['date'], utc=True)
+                        df = df.sort_values('date')
+                        indices[symbol] = df
+                        logger.info(f"{symbol} 지수 데이터 로드 성공: {len(df)}일")
+                    else:
+                        logger.warning(f"{symbol} 지수 데이터 로드 실패")
                 except Exception as e:
                     logger.warning(f"{symbol} 지수 데이터 로드 실패: {e}")
             else:
@@ -470,7 +475,10 @@ class StanWeinsteinStage2Screener:
                 
                 # 데이터 로드
                 file_path = os.path.join(DATA_US_DIR, file)
-                df = pd.read_csv(file_path)
+                from utils.screener_utils import read_csv_flexible
+                df = read_csv_flexible(file_path, required_columns=['close', 'volume', 'date', 'high', 'low', 'open'])
+                if df is None:
+                    return None
                 
                 # 컬럼명 정규화
                 df.columns = [c.lower() for c in df.columns]
@@ -594,12 +602,13 @@ def run_stage2_breakout_screening(skip_data=False) -> pd.DataFrame:
         # DataFrame을 딕셔너리 리스트로 변환
         results_list = results_df.to_dict('records')
         
-        # 결과 저장 (타임스탬프 포함 파일명 사용)
+        # 결과 저장 (날짜만 포함한 파일명 사용)
         results_paths = save_screening_results(
             results=results_list,
             output_dir=MOMENTUM_SIGNALS_RESULTS_DIR,
             filename_prefix="stage2_breakouts",
-            include_timestamp=True
+            include_timestamp=True,
+            incremental_update=True
         )
         
         logger.info(f"결과 저장 완료: {results_paths['csv_path']}")

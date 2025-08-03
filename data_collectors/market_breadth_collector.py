@@ -19,6 +19,10 @@ import requests
 from io import StringIO
 from typing import Dict, Optional
 
+# 유틸리티 함수 import
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.screener_utils import read_csv_flexible
+
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -125,9 +129,8 @@ class MarketBreadthCollector:
         """Process a single file for high-low index calculation with incremental update support."""
         date_map: Dict[pd.Timestamp, Dict[str, int]] = {}
         try:
-            df = pd.read_csv(file_path)
-            df.columns = [c.lower() for c in df.columns]
-            if 'date' not in df.columns or 'high' not in df.columns or 'low' not in df.columns or 'close' not in df.columns:
+            df = read_csv_flexible(file_path, ['date', 'high', 'low', 'close'])
+            if df is None:
                 return date_map
             
             df['date'] = pd.to_datetime(df['date'], utc=True)
@@ -173,6 +176,27 @@ class MarketBreadthCollector:
         try:
             print("📊 High-Low Index 데이터 수집 중...")
             
+            # 기존 데이터 확인
+            hl_file = os.path.join(BREADTH_DATA_DIR, 'high_low_index.csv')
+            existing_data = None
+            last_date = None
+            
+            if os.path.exists(hl_file):
+                existing_data = read_csv_flexible(hl_file, ['date'])
+                if existing_data is not None:
+                    try:
+                        existing_data['date'] = pd.to_datetime(existing_data['date'], utc=True)
+                        last_date = existing_data['date'].max()
+                        print(f"✅ 기존 High-Low Index 데이터 확인 (최신: {last_date.strftime('%Y-%m-%d')})")
+                    except Exception as e:
+                        print(f"⚠️ 날짜 처리 오류: {e}, 전체 재수집 진행")
+                        existing_data = None
+                        last_date = None
+                else:
+                    print(f"⚠️ 기존 데이터 로드 실패, 전체 재수집 진행")
+                    existing_data = None
+                    last_date = None
+            
             # 전 종목 데이터를 활용하여 High-Low Index 계산
             csv_files = [
                 os.path.join(DATA_US_DIR, f)
@@ -185,6 +209,41 @@ class MarketBreadthCollector:
                 return False
 
             print(f"📈 {len(csv_files)}개 파일을 병렬 처리로 분석 중...")
+            
+            # 증분 업데이트 방식 개선: 누락된 데이터부터 처리
+            from utils.incremental_update_helper import incremental_helper
+            
+            if last_date is not None:
+                # 누락된 기간 계산 (거래일 기준으로 개선)
+                from utils.incremental_update_helper import incremental_helper
+                
+                # 현재 시간을 UTC로 설정
+                today = pd.Timestamp.now(tz='UTC')
+                
+                # 거래일 기준으로 누락된 기간 확인
+                last_date_dt = last_date.to_pydatetime().replace(tzinfo=None)
+                today_dt = today.to_pydatetime().replace(tzinfo=None)
+                
+                # 오늘이 거래일인지 확인
+                if incremental_helper.is_trading_day(today_dt):
+                    # 오늘이 거래일이면 오늘까지 데이터가 있어야 함
+                    target_date = today_dt.date()
+                else:
+                    # 오늘이 거래일이 아니면 이전 거래일까지 데이터가 있어야 함
+                    target_date = incremental_helper.get_previous_trading_day(today_dt).date()
+                
+                # 최신 데이터가 목표 날짜와 같거나 이후면 최신 상태
+                if last_date_dt.date() >= target_date:
+                    print(f"📈 최신 상태: {last_date.strftime('%Y-%m-%d')} (목표: {target_date})")
+                    return True
+                
+                # 누락된 일수 계산
+                missing_days = (target_date - last_date_dt.date()).days
+                update_days = min(missing_days + 2, days)  # 누락된 일수 + 2일 여유
+                print(f"📈 증분 업데이트: {missing_days}일 누락, {update_days}일 처리 중... (목표: {target_date})")
+            else:
+                update_days = days
+                print(f"📈 전체 업데이트: {len(csv_files)}개 파일 처리 중...")
             
             # 병렬 처리로 파일들 처리 (증분 업데이트 지원)
             from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -271,13 +330,18 @@ class MarketBreadthCollector:
             last_date = None
             
             if os.path.exists(ad_file):
-                try:
-                    existing_data = pd.read_csv(ad_file)
-                    existing_data['date'] = pd.to_datetime(existing_data['date'], utc=True)
-                    last_date = existing_data['date'].max()
-                    print(f"✅ 기존 Advance-Decline 데이터 확인 (최신: {last_date.strftime('%Y-%m-%d')})")
-                except Exception as e:
-                    print(f"⚠️ 기존 데이터 로드 오류: {e}, 전체 재수집 진행")
+                existing_data = read_csv_flexible(ad_file, ['date'])
+                if existing_data is not None:
+                    try:
+                        existing_data['date'] = pd.to_datetime(existing_data['date'], utc=True)
+                        last_date = existing_data['date'].max()
+                        print(f"✅ 기존 Advance-Decline 데이터 확인 (최신: {last_date.strftime('%Y-%m-%d')})")
+                    except Exception as e:
+                        print(f"⚠️ 날짜 처리 오류: {e}, 전체 재수집 진행")
+                        existing_data = None
+                        last_date = None
+                else:
+                    print(f"⚠️ 기존 데이터 로드 실패, 전체 재수집 진행")
                     existing_data = None
                     last_date = None
 
@@ -291,10 +355,35 @@ class MarketBreadthCollector:
                 print('❌ 종목 데이터를 찾을 수 없습니다.')
                 return False
 
-            # 증분 업데이트인지 전체 업데이트인지 결정
+            # 증분 업데이트 방식 개선: 누락된 데이터부터 처리
             if last_date is not None:
-                update_days = min(7, days)
-                print(f"📈 증분 업데이트: 최근 {update_days}일 데이터 처리 중...")
+                # 누락된 기간 계산 (거래일 기준으로 개선)
+                from utils.incremental_update_helper import incremental_helper
+                
+                # 현재 시간을 UTC로 설정
+                today = pd.Timestamp.now(tz='UTC')
+                
+                # 거래일 기준으로 누락된 기간 확인
+                last_date_dt = last_date.to_pydatetime().replace(tzinfo=None)
+                today_dt = today.to_pydatetime().replace(tzinfo=None)
+                
+                # 오늘이 거래일인지 확인
+                if incremental_helper.is_trading_day(today_dt):
+                    # 오늘이 거래일이면 오늘까지 데이터가 있어야 함
+                    target_date = today_dt.date()
+                else:
+                    # 오늘이 거래일이 아니면 이전 거래일까지 데이터가 있어야 함
+                    target_date = incremental_helper.get_previous_trading_day(today_dt).date()
+                
+                # 최신 데이터가 목표 날짜와 같거나 이후면 최신 상태
+                if last_date_dt.date() >= target_date:
+                    print(f"📈 최신 상태: {last_date.strftime('%Y-%m-%d')} (목표: {target_date})")
+                    return True
+                
+                # 누락된 일수 계산
+                missing_days = (target_date - last_date_dt.date()).days
+                update_days = min(missing_days + 2, days)  # 누락된 일수 + 2일 여유
+                print(f"📈 증분 업데이트: {missing_days}일 누락, {update_days}일 처리 중... (목표: {target_date})")
             else:
                 update_days = days
                 print(f"📈 전체 업데이트: {len(csv_files)}개 파일 처리 중...")
@@ -303,17 +392,18 @@ class MarketBreadthCollector:
 
             for file in csv_files:
                 try:
-                    df = pd.read_csv(file)
-                    df.columns = [c.lower() for c in df.columns]
-                    if 'date' not in df.columns or 'close' not in df.columns:
+                    df = read_csv_flexible(file, ['date', 'close'])
+                    if df is None:
                         continue
+                    
                     df['date'] = pd.to_datetime(df['date'], utc=True)
                     df = df.sort_values('date')
                     
                     # 증분 업데이트인 경우 필요한 데이터만 처리
                     if last_date is not None:
                         # 최신 날짜 이후 데이터만 처리하되, 이전 날짜 하나는 포함 (비교용)
-                        df_filtered = df[df['date'] > last_date - pd.Timedelta(days=1)]
+                        cutoff_date = last_date - pd.Timedelta(days=2)  # 2일 여유를 둠
+                        df_filtered = df[df['date'] > cutoff_date]
                         if len(df_filtered) < 2:  # 비교할 데이터가 없으면 스킵
                             continue
                         df = df_filtered
@@ -370,20 +460,25 @@ class MarketBreadthCollector:
                 if len(ad_df) > 0:
                     ad_df['date'] = pd.to_datetime(ad_df['date'])
             
-            # 데이터 검증
-            if ad_df.empty:
-                print("⚠️ Advance-Decline 데이터가 비어있습니다.")
-                # 빈 DataFrame이라도 기본 구조는 유지
-                ad_df = pd.DataFrame(columns=['date', 'advancing', 'declining', 'unchanged'])
+            # 데이터 검증 및 처리
+            if len(new_ad_data) == 0:
+                print("⚠️ 새로운 Advance-Decline 데이터가 없습니다.")
+                if existing_data is not None:
+                    print(f"✅ 기존 데이터 유지: {len(existing_data)}개 레코드")
+                    return True
+                else:
+                    # 빈 DataFrame이라도 기본 구조는 유지
+                    ad_df = pd.DataFrame(columns=['date', 'advancing', 'declining', 'unchanged'])
             else:
                 # 데이터 타입 확인 및 변환
-                for col in ['advancing', 'declining', 'unchanged']:
-                    if col in ad_df.columns:
-                        ad_df[col] = pd.to_numeric(ad_df[col], errors='coerce').fillna(0).astype(int)
+                if 'ad_df' in locals() and not ad_df.empty:
+                    for col in ['advancing', 'declining', 'unchanged']:
+                        if col in ad_df.columns:
+                            ad_df[col] = pd.to_numeric(ad_df[col], errors='coerce').fillna(0).astype(int)
             
             # 파일 저장
             ad_file = os.path.join(BREADTH_DATA_DIR, 'advance_decline.csv')
-            if len(ad_df) > 0:
+            if 'ad_df' in locals() and len(ad_df) > 0:
                 ad_df.to_csv(ad_file, index=False)
                 print(f"✅ Advance-Decline 데이터 저장 완료: {ad_file} (총 {len(ad_df)}개 레코드)")
             else:

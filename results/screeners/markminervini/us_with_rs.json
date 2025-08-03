@@ -39,6 +39,45 @@
     "cond8":true
   },
   {
+    "symbol":"FGEN",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.82,
+    "cond8":true
+  },
+  {
+    "symbol":"SNSE",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.81,
+    "cond8":true
+  },
+  {
+    "symbol":"INUV",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.78,
+    "cond8":true
+  },
+  {
     "symbol":"JFBR",
     "cond1":true,
     "cond2":true,
@@ -78,6 +117,19 @@
     "cond8":true
   },
   {
+    "symbol":"BOLT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.66,
+    "cond8":true
+  },
+  {
     "symbol":"FLYE",
     "cond1":true,
     "cond2":true,
@@ -88,6 +140,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":99.59,
+    "cond8":true
+  },
+  {
+    "symbol":"WBX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.52,
     "cond8":true
   },
   {
@@ -104,6 +169,19 @@
     "cond8":true
   },
   {
+    "symbol":"BREA",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.45,
+    "cond8":true
+  },
+  {
     "symbol":"RAPT",
     "cond1":true,
     "cond2":true,
@@ -117,6 +195,19 @@
     "cond8":true
   },
   {
+    "symbol":"QBTS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.36,
+    "cond8":true
+  },
+  {
     "symbol":"TGEN",
     "cond1":true,
     "cond2":true,
@@ -127,6 +218,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":99.26,
+    "cond8":true
+  },
+  {
+    "symbol":"SHPH",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":99.25,
     "cond8":true
   },
   {
@@ -247,6 +351,19 @@
     "cond8":true
   },
   {
+    "symbol":"AIMD",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":98.87,
+    "cond8":true
+  },
+  {
     "symbol":"SVT",
     "cond1":true,
     "cond2":true,
@@ -299,6 +416,19 @@
     "cond8":true
   },
   {
+    "symbol":"PRCH",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":98.77,
+    "cond8":true
+  },
+  {
     "symbol":"CDTX",
     "cond1":true,
     "cond2":true,
@@ -312,6 +442,19 @@
     "cond8":true
   },
   {
+    "symbol":"AMPX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":98.71,
+    "cond8":true
+  },
+  {
     "symbol":"RKLB",
     "cond1":true,
     "cond2":true,
@@ -322,6 +465,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":98.64,
+    "cond8":true
+  },
+  {
+    "symbol":"MNPR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":98.52,
+    "cond8":true
+  },
+  {
+    "symbol":"LEU",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":98.45,
     "cond8":true
   },
   {
@@ -455,6 +624,19 @@
     "cond8":true
   },
   {
+    "symbol":"FTEK",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":98.06,
+    "cond8":true
+  },
+  {
     "symbol":"JOBY",
     "cond1":true,
     "cond2":true,
@@ -507,6 +689,19 @@
     "cond8":true
   },
   {
+    "symbol":"BLBX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":97.92,
+    "cond8":true
+  },
+  {
     "symbol":"VRNA",
     "cond1":true,
     "cond2":true,
@@ -543,6 +738,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":97.87,
+    "cond8":true
+  },
+  {
+    "symbol":"PAYS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":97.85,
     "cond8":true
   },
   {
@@ -637,6 +845,19 @@
     "cond8":true
   },
   {
+    "symbol":"YSG",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":97.63,
+    "cond8":true
+  },
+  {
     "symbol":"HIMS",
     "cond1":true,
     "cond2":true,
@@ -647,6 +868,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":97.61,
+    "cond8":true
+  },
+  {
+    "symbol":"PRPO",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":97.6,
     "cond8":true
   },
   {
@@ -663,6 +897,19 @@
     "cond8":true
   },
   {
+    "symbol":"AZ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":97.48,
+    "cond8":true
+  },
+  {
     "symbol":"WLDN",
     "cond1":true,
     "cond2":true,
@@ -673,6 +920,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":97.4,
+    "cond8":true
+  },
+  {
+    "symbol":"OKYO",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":97.37,
     "cond8":true
   },
   {
@@ -725,6 +985,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":97.16,
+    "cond8":true
+  },
+  {
+    "symbol":"USAS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":97.15,
     "cond8":true
   },
   {
@@ -803,6 +1076,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":96.99,
+    "cond8":true
+  },
+  {
+    "symbol":"TPC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.98,
     "cond8":true
   },
   {
@@ -923,6 +1209,19 @@
     "cond8":true
   },
   {
+    "symbol":"EYE",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.83,
+    "cond8":true
+  },
+  {
     "symbol":"NET",
     "cond1":true,
     "cond2":true,
@@ -933,6 +1232,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":96.82,
+    "cond8":true
+  },
+  {
+    "symbol":"PL",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.77,
     "cond8":true
   },
   {
@@ -962,6 +1274,19 @@
     "cond8":true
   },
   {
+    "symbol":"PMEC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.73,
+    "cond8":true
+  },
+  {
     "symbol":"AGX",
     "cond1":true,
     "cond2":true,
@@ -972,19 +1297,6 @@
     "cond7":true,
     "met_count":8,
     "rs_score":96.72,
-    "cond8":true
-  },
-  {
-    "symbol":"WGS",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "rs_score":96.67,
     "cond8":true
   },
   {
@@ -1066,6 +1378,71 @@
     "cond8":true
   },
   {
+    "symbol":"AKBA",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.5,
+    "cond8":true
+  },
+  {
+    "symbol":"ESGL",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.49,
+    "cond8":true
+  },
+  {
+    "symbol":"STRT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.46,
+    "cond8":true
+  },
+  {
+    "symbol":"SBSW",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.42,
+    "cond8":true
+  },
+  {
+    "symbol":"PPIH",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.39,
+    "cond8":true
+  },
+  {
     "symbol":"SNES",
     "cond1":true,
     "cond2":true,
@@ -1076,6 +1453,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":96.38,
+    "cond8":true
+  },
+  {
+    "symbol":"CYD",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.31,
     "cond8":true
   },
   {
@@ -1131,6 +1521,32 @@
     "cond8":true
   },
   {
+    "symbol":"SGHC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.22,
+    "cond8":true
+  },
+  {
+    "symbol":"SNT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.2,
+    "cond8":true
+  },
+  {
     "symbol":"LIF",
     "cond1":true,
     "cond2":true,
@@ -1141,6 +1557,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":96.19,
+    "cond8":true
+  },
+  {
+    "symbol":"PARR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.15,
+    "cond8":true
+  },
+  {
+    "symbol":"CAR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.1,
     "cond8":true
   },
   {
@@ -1167,6 +1609,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":96.07,
+    "cond8":true
+  },
+  {
+    "symbol":"SSSS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.04,
+    "cond8":true
+  },
+  {
+    "symbol":"THTX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":96.0,
     "cond8":true
   },
   {
@@ -1248,6 +1716,19 @@
     "cond8":true
   },
   {
+    "symbol":"TSAT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.88,
+    "cond8":true
+  },
+  {
     "symbol":"SEI",
     "cond1":true,
     "cond2":true,
@@ -1323,6 +1804,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":95.79,
+    "cond8":true
+  },
+  {
+    "symbol":"EVEX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.74,
     "cond8":true
   },
   {
@@ -1417,6 +1911,19 @@
     "cond8":true
   },
   {
+    "symbol":"EPRX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.53,
+    "cond8":true
+  },
+  {
     "symbol":"RMNI",
     "cond1":true,
     "cond2":true,
@@ -1469,6 +1976,19 @@
     "cond8":true
   },
   {
+    "symbol":"MGNI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.41,
+    "cond8":true
+  },
+  {
     "symbol":"OLO",
     "cond1":true,
     "cond2":true,
@@ -1479,6 +1999,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":95.36,
+    "cond8":true
+  },
+  {
+    "symbol":"KORU",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.35,
     "cond8":true
   },
   {
@@ -1547,6 +2080,32 @@
     "cond8":true
   },
   {
+    "symbol":"SEDG",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.19,
+    "cond8":true
+  },
+  {
+    "symbol":"MGIC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.16,
+    "cond8":true
+  },
+  {
     "symbol":"KEN",
     "cond1":true,
     "cond2":true,
@@ -1560,6 +2119,19 @@
     "cond8":true
   },
   {
+    "symbol":"MDAI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.13,
+    "cond8":true
+  },
+  {
     "symbol":"FBL",
     "cond1":true,
     "cond2":true,
@@ -1570,6 +2142,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":95.1,
+    "cond8":true
+  },
+  {
+    "symbol":"AP",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":95.07,
     "cond8":true
   },
   {
@@ -1612,6 +2197,19 @@
     "cond8":true
   },
   {
+    "symbol":"LMB",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":94.95,
+    "cond8":true
+  },
+  {
     "symbol":"WILC",
     "cond1":true,
     "cond2":true,
@@ -1635,6 +2233,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":94.9,
+    "cond8":true
+  },
+  {
+    "symbol":"COE",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":94.89,
     "cond8":true
   },
   {
@@ -1690,6 +2301,19 @@
     "cond8":true
   },
   {
+    "symbol":"KFS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":94.75,
+    "cond8":true
+  },
+  {
     "symbol":"METU",
     "cond1":true,
     "cond2":true,
@@ -1729,7 +2353,7 @@
     "cond8":true
   },
   {
-    "symbol":"COEP",
+    "symbol":"CMCL",
     "cond1":true,
     "cond2":true,
     "cond3":true,
@@ -1738,7 +2362,7 @@
     "cond6":true,
     "cond7":true,
     "met_count":8,
-    "rs_score":94.68,
+    "rs_score":94.67,
     "cond8":true
   },
   {
@@ -1781,6 +2405,19 @@
     "cond8":true
   },
   {
+    "symbol":"SLSR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":94.57,
+    "cond8":true
+  },
+  {
     "symbol":"AFRM",
     "cond1":true,
     "cond2":true,
@@ -1791,6 +2428,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":94.55,
+    "cond8":true
+  },
+  {
+    "symbol":"CVAC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":94.54,
     "cond8":true
   },
   {
@@ -1830,19 +2480,6 @@
     "cond7":true,
     "met_count":8,
     "rs_score":94.46,
-    "cond8":true
-  },
-  {
-    "symbol":"AXIL",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "rs_score":94.41,
     "cond8":true
   },
   {
@@ -1908,6 +2545,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":94.22,
+    "cond8":true
+  },
+  {
+    "symbol":"ESP",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":94.19,
     "cond8":true
   },
   {
@@ -2015,6 +2665,19 @@
     "cond8":true
   },
   {
+    "symbol":"TMQ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.98,
+    "cond8":true
+  },
+  {
     "symbol":"RDUS",
     "cond1":true,
     "cond2":true,
@@ -2054,6 +2717,19 @@
     "cond8":true
   },
   {
+    "symbol":"OPOF",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.82,
+    "cond8":true
+  },
+  {
     "symbol":"NEXT",
     "cond1":true,
     "cond2":true,
@@ -2077,6 +2753,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":93.76,
+    "cond8":true
+  },
+  {
+    "symbol":"ENLT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.71,
+    "cond8":true
+  },
+  {
+    "symbol":"ARMN",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.62,
     "cond8":true
   },
   {
@@ -2106,6 +2808,19 @@
     "cond8":true
   },
   {
+    "symbol":"RCL",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.59,
+    "cond8":true
+  },
+  {
     "symbol":"RYTM",
     "cond1":true,
     "cond2":true,
@@ -2129,6 +2844,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":93.56,
+    "cond8":true
+  },
+  {
+    "symbol":"SAN",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.55,
     "cond8":true
   },
   {
@@ -2223,6 +2951,32 @@
     "cond8":true
   },
   {
+    "symbol":"DHX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.35,
+    "cond8":true
+  },
+  {
+    "symbol":"WF",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.32,
+    "cond8":true
+  },
+  {
     "symbol":"WEBL",
     "cond1":true,
     "cond2":true,
@@ -2285,6 +3039,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":93.19,
+    "cond8":true
+  },
+  {
+    "symbol":"HWM",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":93.17,
     "cond8":true
   },
   {
@@ -2457,6 +3224,19 @@
     "cond8":true
   },
   {
+    "symbol":"SIJ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.85,
+    "cond8":true
+  },
+  {
     "symbol":"RMBS",
     "cond1":true,
     "cond2":true,
@@ -2535,6 +3315,19 @@
     "cond8":true
   },
   {
+    "symbol":"ODC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.65,
+    "cond8":true
+  },
+  {
     "symbol":"ARKX",
     "cond1":true,
     "cond2":true,
@@ -2587,6 +3380,19 @@
     "cond8":true
   },
   {
+    "symbol":"APEI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.52,
+    "cond8":true
+  },
+  {
     "symbol":"INSM",
     "cond1":true,
     "cond2":true,
@@ -2613,6 +3419,32 @@
     "cond8":true
   },
   {
+    "symbol":"XERS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.44,
+    "cond8":true
+  },
+  {
+    "symbol":"PZG",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.43,
+    "cond8":true
+  },
+  {
     "symbol":"LQDA",
     "cond1":true,
     "cond2":true,
@@ -2623,6 +3455,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":92.41,
+    "cond8":true
+  },
+  {
+    "symbol":"BOSC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.37,
     "cond8":true
   },
   {
@@ -2662,6 +3507,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":92.25,
+    "cond8":true
+  },
+  {
+    "symbol":"ATAT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.22,
     "cond8":true
   },
   {
@@ -2756,6 +3614,45 @@
     "cond8":true
   },
   {
+    "symbol":"TGB",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.05,
+    "cond8":true
+  },
+  {
+    "symbol":"PBI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":92.01,
+    "cond8":true
+  },
+  {
+    "symbol":"BBW",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.99,
+    "cond8":true
+  },
+  {
     "symbol":"EBAY",
     "cond1":true,
     "cond2":true,
@@ -2766,6 +3663,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":91.98,
+    "cond8":true
+  },
+  {
+    "symbol":"BITX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.94,
     "cond8":true
   },
   {
@@ -2782,6 +3692,32 @@
     "cond8":true
   },
   {
+    "symbol":"PPTA",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.86,
+    "cond8":true
+  },
+  {
+    "symbol":"SII",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.84,
+    "cond8":true
+  },
+  {
     "symbol":"FNGG",
     "cond1":true,
     "cond2":true,
@@ -2792,6 +3728,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":91.83,
+    "cond8":true
+  },
+  {
+    "symbol":"ARLO",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.82,
+    "cond8":true
+  },
+  {
+    "symbol":"ZDGE",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.8,
     "cond8":true
   },
   {
@@ -2818,6 +3780,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":91.76,
+    "cond8":true
+  },
+  {
+    "symbol":"BLOK",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.75,
     "cond8":true
   },
   {
@@ -2860,6 +3835,19 @@
     "cond8":true
   },
   {
+    "symbol":"TCI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.65,
+    "cond8":true
+  },
+  {
     "symbol":"DLTR",
     "cond1":true,
     "cond2":true,
@@ -2896,6 +3884,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":91.55,
+    "cond8":true
+  },
+  {
+    "symbol":"CTRN",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.54,
+    "cond8":true
+  },
+  {
+    "symbol":"UFO",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.52,
     "cond8":true
   },
   {
@@ -2951,6 +3965,19 @@
     "cond8":true
   },
   {
+    "symbol":"PBPB",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.35,
+    "cond8":true
+  },
+  {
     "symbol":"MYRG",
     "cond1":true,
     "cond2":true,
@@ -2961,6 +3988,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":91.34,
+    "cond8":true
+  },
+  {
+    "symbol":"FLEX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.32,
+    "cond8":true
+  },
+  {
+    "symbol":"IBEX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.31,
     "cond8":true
   },
   {
@@ -3003,6 +4056,19 @@
     "cond8":true
   },
   {
+    "symbol":"SAND",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.24,
+    "cond8":true
+  },
+  {
     "symbol":"X",
     "cond1":true,
     "cond2":true,
@@ -3013,6 +4079,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":91.23,
+    "cond8":true
+  },
+  {
+    "symbol":"PRA",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":91.22,
     "cond8":true
   },
   {
@@ -3146,19 +4225,6 @@
     "cond8":true
   },
   {
-    "symbol":"SATS",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "rs_score":91.06,
-    "cond8":true
-  },
-  {
     "symbol":"BTCO",
     "cond1":true,
     "cond2":true,
@@ -3289,6 +4355,19 @@
     "cond8":true
   },
   {
+    "symbol":"CAKE",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.85,
+    "cond8":true
+  },
+  {
     "symbol":"CHAT",
     "cond1":true,
     "cond2":true,
@@ -3354,6 +4433,32 @@
     "cond8":true
   },
   {
+    "symbol":"IMMX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.7,
+    "cond8":true
+  },
+  {
+    "symbol":"OMAB",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.67,
+    "cond8":true
+  },
+  {
     "symbol":"BTI",
     "cond1":true,
     "cond2":true,
@@ -3364,6 +4469,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":90.66,
+    "cond8":true
+  },
+  {
+    "symbol":"GREK",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.64,
     "cond8":true
   },
   {
@@ -3390,6 +4508,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":90.54,
+    "cond8":true
+  },
+  {
+    "symbol":"BASE",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.51,
     "cond8":true
   },
   {
@@ -3432,6 +4563,32 @@
     "cond8":true
   },
   {
+    "symbol":"CCB",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.41,
+    "cond8":true
+  },
+  {
+    "symbol":"CELH",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.35,
+    "cond8":true
+  },
+  {
     "symbol":"ROKU",
     "cond1":true,
     "cond2":true,
@@ -3471,6 +4628,19 @@
     "cond8":true
   },
   {
+    "symbol":"DK",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.31,
+    "cond8":true
+  },
+  {
     "symbol":"SXT",
     "cond1":true,
     "cond2":true,
@@ -3507,6 +4677,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":90.23,
+    "cond8":true
+  },
+  {
+    "symbol":"XPP",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":90.22,
     "cond8":true
   },
   {
@@ -3559,6 +4742,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":90.0,
+    "cond8":true
+  },
+  {
+    "symbol":"KAR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.99,
+    "cond8":true
+  },
+  {
+    "symbol":"NTES",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.98,
     "cond8":true
   },
   {
@@ -3666,6 +4875,32 @@
     "cond8":true
   },
   {
+    "symbol":"MTW",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.75,
+    "cond8":true
+  },
+  {
+    "symbol":"NYC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.74,
+    "cond8":true
+  },
+  {
     "symbol":"AVPT",
     "cond1":true,
     "cond2":true,
@@ -3676,6 +4911,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":89.72,
+    "cond8":true
+  },
+  {
+    "symbol":"WOR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.7,
     "cond8":true
   },
   {
@@ -3754,6 +5002,45 @@
     "cond7":true,
     "met_count":8,
     "rs_score":89.53,
+    "cond8":true
+  },
+  {
+    "symbol":"PGEN",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.52,
+    "cond8":true
+  },
+  {
+    "symbol":"JCI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.51,
+    "cond8":true
+  },
+  {
+    "symbol":"SPTN",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.48,
     "cond8":true
   },
   {
@@ -3874,6 +5161,45 @@
     "cond8":true
   },
   {
+    "symbol":"PLTM",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.26,
+    "cond8":true
+  },
+  {
+    "symbol":"GFI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.25,
+    "cond8":true
+  },
+  {
+    "symbol":"PPLT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.23,
+    "cond8":true
+  },
+  {
     "symbol":"USFD",
     "cond1":true,
     "cond2":true,
@@ -3923,6 +5249,45 @@
     "cond7":true,
     "met_count":8,
     "rs_score":89.14,
+    "cond8":true
+  },
+  {
+    "symbol":"CAE",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.12,
+    "cond8":true
+  },
+  {
+    "symbol":"AAP",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.09,
+    "cond8":true
+  },
+  {
+    "symbol":"PENG",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.08,
     "cond8":true
   },
   {
@@ -3991,6 +5356,19 @@
     "cond8":true
   },
   {
+    "symbol":"JOYY",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":89.0,
+    "cond8":true
+  },
+  {
     "symbol":"ESPO",
     "cond1":true,
     "cond2":true,
@@ -4043,6 +5421,32 @@
     "cond8":true
   },
   {
+    "symbol":"GILT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.84,
+    "cond8":true
+  },
+  {
+    "symbol":"QTUM",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.82,
+    "cond8":true
+  },
+  {
     "symbol":"KF",
     "cond1":true,
     "cond2":true,
@@ -4066,6 +5470,45 @@
     "cond7":true,
     "met_count":8,
     "rs_score":88.78,
+    "cond8":true
+  },
+  {
+    "symbol":"NERD",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.74,
+    "cond8":true
+  },
+  {
+    "symbol":"SWAG",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.7,
+    "cond8":true
+  },
+  {
+    "symbol":"NVMI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.68,
     "cond8":true
   },
   {
@@ -4186,6 +5629,19 @@
     "cond8":true
   },
   {
+    "symbol":"BWAY",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.48,
+    "cond8":true
+  },
+  {
     "symbol":"MNMD",
     "cond1":true,
     "cond2":true,
@@ -4196,6 +5652,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":88.45,
+    "cond8":true
+  },
+  {
+    "symbol":"OND",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.43,
+    "cond8":true
+  },
+  {
+    "symbol":"BPAY",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.41,
     "cond8":true
   },
   {
@@ -4222,19 +5704,6 @@
     "cond7":true,
     "met_count":8,
     "rs_score":88.36,
-    "cond8":true
-  },
-  {
-    "symbol":"BYFC",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "rs_score":88.32,
     "cond8":true
   },
   {
@@ -4290,6 +5759,19 @@
     "cond8":true
   },
   {
+    "symbol":"CBRL",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.2,
+    "cond8":true
+  },
+  {
     "symbol":"ITA",
     "cond1":true,
     "cond2":true,
@@ -4313,6 +5795,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":88.16,
+    "cond8":true
+  },
+  {
+    "symbol":"ESQ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":88.14,
     "cond8":true
   },
   {
@@ -4407,7 +5902,7 @@
     "cond8":true
   },
   {
-    "symbol":"GTLS",
+    "symbol":"SLND",
     "cond1":true,
     "cond2":true,
     "cond3":true,
@@ -4416,7 +5911,20 @@
     "cond6":true,
     "cond7":true,
     "met_count":8,
-    "rs_score":88.01,
+    "rs_score":88.0,
+    "cond8":true
+  },
+  {
+    "symbol":"STN",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.97,
     "cond8":true
   },
   {
@@ -4485,6 +5993,19 @@
     "cond8":true
   },
   {
+    "symbol":"MAKX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.75,
+    "cond8":true
+  },
+  {
     "symbol":"NWG",
     "cond1":true,
     "cond2":true,
@@ -4534,6 +6055,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":87.7,
+    "cond8":true
+  },
+  {
+    "symbol":"BBUC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.69,
+    "cond8":true
+  },
+  {
+    "symbol":"KEMQ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.64,
     "cond8":true
   },
   {
@@ -4602,6 +6149,32 @@
     "cond8":true
   },
   {
+    "symbol":"BDL",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.46,
+    "cond8":true
+  },
+  {
+    "symbol":"IZRL",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.41,
+    "cond8":true
+  },
+  {
     "symbol":"FROG",
     "cond1":true,
     "cond2":true,
@@ -4654,6 +6227,32 @@
     "cond8":true
   },
   {
+    "symbol":"SGI",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.32,
+    "cond8":true
+  },
+  {
+    "symbol":"AEIS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.3,
+    "cond8":true
+  },
+  {
     "symbol":"TDS",
     "cond1":true,
     "cond2":true,
@@ -4664,6 +6263,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":87.27,
+    "cond8":true
+  },
+  {
+    "symbol":"CPNG",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.25,
     "cond8":true
   },
   {
@@ -4680,7 +6292,7 @@
     "cond8":true
   },
   {
-    "symbol":"TENX",
+    "symbol":"ZK",
     "cond1":true,
     "cond2":true,
     "cond3":true,
@@ -4689,7 +6301,33 @@
     "cond6":true,
     "cond7":true,
     "met_count":8,
-    "rs_score":87.21,
+    "rs_score":87.22,
+    "cond8":true
+  },
+  {
+    "symbol":"MOMO",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.14,
+    "cond8":true
+  },
+  {
+    "symbol":"BZ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.12,
     "cond8":true
   },
   {
@@ -4716,6 +6354,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":87.08,
+    "cond8":true
+  },
+  {
+    "symbol":"BA",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.05,
+    "cond8":true
+  },
+  {
+    "symbol":"PTGX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":87.03,
     "cond8":true
   },
   {
@@ -4810,6 +6474,19 @@
     "cond8":true
   },
   {
+    "symbol":"LDWY",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.79,
+    "cond8":true
+  },
+  {
     "symbol":"ONLN",
     "cond1":true,
     "cond2":true,
@@ -4820,6 +6497,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":86.75,
+    "cond8":true
+  },
+  {
+    "symbol":"EIS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.73,
     "cond8":true
   },
   {
@@ -4836,6 +6526,19 @@
     "cond8":true
   },
   {
+    "symbol":"FLKR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.71,
+    "cond8":true
+  },
+  {
     "symbol":"BAP",
     "cond1":true,
     "cond2":true,
@@ -4846,6 +6549,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":86.7,
+    "cond8":true
+  },
+  {
+    "symbol":"DBD",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.65,
     "cond8":true
   },
   {
@@ -4862,6 +6578,19 @@
     "cond8":true
   },
   {
+    "symbol":"PJT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.62,
+    "cond8":true
+  },
+  {
     "symbol":"NCSM",
     "cond1":true,
     "cond2":true,
@@ -4872,19 +6601,6 @@
     "cond7":true,
     "met_count":8,
     "rs_score":86.59,
-    "cond8":true
-  },
-  {
-    "symbol":"COMP",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "rs_score":86.56,
     "cond8":true
   },
   {
@@ -4966,6 +6682,19 @@
     "cond8":true
   },
   {
+    "symbol":"MQ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.44,
+    "cond8":true
+  },
+  {
     "symbol":"ALG",
     "cond1":true,
     "cond2":true,
@@ -5002,6 +6731,71 @@
     "cond7":true,
     "met_count":8,
     "rs_score":86.34,
+    "cond8":true
+  },
+  {
+    "symbol":"KLAC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.33,
+    "cond8":true
+  },
+  {
+    "symbol":"ARQT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.32,
+    "cond8":true
+  },
+  {
+    "symbol":"EWY",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.31,
+    "cond8":true
+  },
+  {
+    "symbol":"EPOL",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.3,
+    "cond8":true
+  },
+  {
+    "symbol":"HERO",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":86.25,
     "cond8":true
   },
   {
@@ -5080,19 +6874,6 @@
     "cond7":true,
     "met_count":8,
     "rs_score":86.02,
-    "cond8":true
-  },
-  {
-    "symbol":"ZG",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "rs_score":85.94,
     "cond8":true
   },
   {
@@ -5187,6 +6968,19 @@
     "cond8":true
   },
   {
+    "symbol":"EWO",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.75,
+    "cond8":true
+  },
+  {
     "symbol":"BN",
     "cond1":true,
     "cond2":true,
@@ -5213,7 +7007,7 @@
     "cond8":true
   },
   {
-    "symbol":"MSB",
+    "symbol":"LRCX",
     "cond1":true,
     "cond2":true,
     "cond3":true,
@@ -5222,7 +7016,7 @@
     "cond6":true,
     "cond7":true,
     "met_count":8,
-    "rs_score":85.7,
+    "rs_score":85.69,
     "cond8":true
   },
   {
@@ -5239,6 +7033,19 @@
     "cond8":true
   },
   {
+    "symbol":"AIR",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.67,
+    "cond8":true
+  },
+  {
     "symbol":"BNT",
     "cond1":true,
     "cond2":true,
@@ -5249,6 +7056,19 @@
     "cond7":true,
     "met_count":8,
     "rs_score":85.66,
+    "cond8":true
+  },
+  {
+    "symbol":"DIS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.62,
     "cond8":true
   },
   {
@@ -5369,6 +7189,45 @@
     "cond8":true
   },
   {
+    "symbol":"VIV",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.28,
+    "cond8":true
+  },
+  {
+    "symbol":"FET",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.25,
+    "cond8":true
+  },
+  {
+    "symbol":"CASY",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.21,
+    "cond8":true
+  },
+  {
     "symbol":"SFYF",
     "cond1":true,
     "cond2":true,
@@ -5379,6 +7238,32 @@
     "cond7":true,
     "met_count":8,
     "rs_score":85.2,
+    "cond8":true
+  },
+  {
+    "symbol":"MGTX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.19,
+    "cond8":true
+  },
+  {
+    "symbol":"HSBC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.18,
     "cond8":true
   },
   {
@@ -5395,6 +7280,19 @@
     "cond8":true
   },
   {
+    "symbol":"COF",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "rs_score":85.15,
+    "cond8":true
+  },
+  {
     "symbol":"TPTA",
     "cond1":true,
     "cond2":true,
@@ -5405,19 +7303,6 @@
     "cond7":true,
     "met_count":8,
     "rs_score":85.11,
-    "cond8":true
-  },
-  {
-    "symbol":"R",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "rs_score":85.1,
     "cond8":true
   },
   {

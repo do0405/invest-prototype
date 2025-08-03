@@ -151,7 +151,7 @@ def get_screener_description(screener_name):
 def get_volatility_skew_results():
     """변동성 스큐 스크리닝 결과 반환"""
     try:
-        # 가장 최근 파일 찾기
+        # 가장 최근 파일 찾기 (날짜 형식 파일명 지원)
         pattern = os.path.join(RESULTS_DIR, 'screeners', 'option_volatility', 'volatility_skew_screening_*.json')
         files = glob.glob(pattern)
         if files:
@@ -171,16 +171,50 @@ def get_volatility_skew_results():
 
 # --- New screener result endpoints ---
 
-def _load_latest_json(directory: str) -> tuple[Optional[pd.DataFrame], Optional[float]]:
-    pattern = os.path.join(directory, '*.json')
+def _load_latest_json(directory: str, filename_prefix: str = None) -> tuple[Optional[pd.DataFrame], Optional[float]]:
+    """안전한 최신 JSON 파일 로딩
+    
+    Args:
+        directory: 검색할 디렉토리
+        filename_prefix: 파일명 접두사 (None이면 모든 JSON 파일)
+    
+    Returns:
+        (DataFrame, modification_time) 또는 (None, None)
+    """
+    if filename_prefix:
+        # 정확한 접두사 매칭
+        pattern = os.path.join(directory, f'{filename_prefix}*.json')
+    else:
+        pattern = os.path.join(directory, '*.json')
+    
     files = glob.glob(pattern)
     if not files:
         return None, None
+    
+    # 파일명 검증 (접두사가 정확히 일치하는지 확인)
+    if filename_prefix:
+        validated_files = []
+        for file_path in files:
+            filename = os.path.basename(file_path)
+            # 접두사로 시작하고, 그 다음이 '_', '.', 또는 파일 끝인지 확인
+            if (filename.startswith(filename_prefix) and 
+                (len(filename) == len(filename_prefix) + 5 or  # .json
+                 filename[len(filename_prefix)] in ['_', '.'])):
+                validated_files.append(file_path)
+        files = validated_files
+    
+    if not files:
+        return None, None
+    
+    # 생성 시간 기준으로 최신 파일 선택
     latest = max(files, key=os.path.getctime)
+    
     try:
         df = pd.read_json(latest)
+        print(f"[API] 로드된 파일: {os.path.basename(latest)} (크기: {len(df)}행)")
         return df, os.path.getmtime(latest)
-    except Exception:
+    except Exception as e:
+        print(f"[API] JSON 파일 로드 실패: {latest}, 오류: {e}")
         return None, None
 
 
@@ -188,7 +222,7 @@ def _load_latest_json(directory: str) -> tuple[Optional[pd.DataFrame], Optional[
 def get_ipo_investment_results():
     """Return latest IPO investment screener results."""
     try:
-        df, mtime = _load_latest_json(IPO_INVESTMENT_RESULTS_DIR)
+        df, mtime = _load_latest_json(IPO_INVESTMENT_RESULTS_DIR, 'ipo_investment_results')
         if df is not None:
             return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
@@ -201,7 +235,11 @@ def get_ipo_investment_results():
 def get_leader_stock_results():
     """Return latest leader stock screener results."""
     try:
-        df, mtime = _load_latest_json(LEADER_STOCK_RESULTS_DIR)
+        # market_reversal_leaders 우선, 없으면 leader_stock_results
+        df, mtime = _load_latest_json(LEADER_STOCK_RESULTS_DIR, 'market_reversal_leaders')
+        if df is None:
+            df, mtime = _load_latest_json(LEADER_STOCK_RESULTS_DIR, 'leader_stock_results')
+        
         if df is not None:
             return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
@@ -214,7 +252,13 @@ def get_leader_stock_results():
 def get_momentum_signals_results():
     """Return latest momentum signals screener results."""
     try:
-        df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR)
+        # stage2_breakouts 우선, 없으면 momentum_signals_results
+        df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'stage2_breakouts')
+        if df is None:
+            df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'momentum_signals')
+        if df is None:
+            df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'momentum_signals_results')
+        
         if df is not None:
             # 데이터 매핑 및 변환
             data = df.to_dict('records')
@@ -242,7 +286,7 @@ def get_momentum_signals_results():
 def get_us_setup_results():
     """Return latest US Setup screener results."""
     try:
-        df, mtime = _load_latest_json(US_SETUP_RESULTS_DIR)
+        df, mtime = _load_latest_json(US_SETUP_RESULTS_DIR, 'us_setup_results')
         if df is not None:
             return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
@@ -255,7 +299,7 @@ def get_us_setup_results():
 def get_us_gainers_results():
     """Return latest US Gainers screener results."""
     try:
-        df, mtime = _load_latest_json(US_GAINER_RESULTS_DIR)
+        df, mtime = _load_latest_json(US_GAINER_RESULTS_DIR, 'us_gainers_results')
         if df is not None:
             return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})

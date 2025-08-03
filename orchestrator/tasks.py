@@ -28,7 +28,7 @@ from screeners.leader_stock.screener import run_leader_stock_screening
 from screeners.momentum_signals.screener import run_stage2_breakout_screening
 from screeners.ipo_investment.screener import run_ipo_investment_screening
 from screeners.markminervini.ticker_tracker import track_new_tickers
-from screeners.markminervini.image_pattern_detection import run_image_pattern_detection
+
 from utils.first_buy_tracker import update_first_buy_signals
 from config import (
     DATA_US_DIR,
@@ -340,9 +340,7 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         run_qullamaggie_strategy_task(skip_data=skip_data)
         print("✅ 12단계: 쿨라매기 전략 완료.")
 
-        print("\n⏳ 13단계: 이미지 패턴 감지 실행 중...")
-        run_image_pattern_detection_task(skip_data=skip_data)
-        print("✅ 13단계: 이미지 패턴 감지 완료.")
+        # 13단계 제거: 3단계 통합 스크리닝에서 이미 패턴 감지 수행됨
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:  # pragma: no cover - runtime log
@@ -647,27 +645,7 @@ def run_scheduler() -> None:
     except KeyboardInterrupt:
         print("\n⏹️ 스케줄러 종료")
 
-def run_image_pattern_detection_task():
-    """13단계: 이미지 패턴 감지 실행"""
-    try:
-        print("이미지 패턴 감지 시작...")
-        
-        # 모든 스크리너 결과에서 심볼 수집
-        from ranking.utils import load_all_screener_symbols
-        symbols = load_all_screener_symbols()
-        
-        if not symbols:
-            print("이미지 패턴 감지를 위한 심볼이 없습니다.")
-            return
-        
-        # 이미지 패턴 감지 실행
-        from screeners.markminervini.image_pattern_detection import run_image_pattern_detection
-        run_image_pattern_detection(symbols)
-        
-        print("이미지 패턴 감지 완료")
-    except Exception as e:
-        print(f"이미지 패턴 감지 중 오류 발생: {str(e)}")
-        raise
+# run_image_pattern_detection_task 함수 제거됨 - 3단계 통합 스크리닝에서 패턴 감지 수행
 
 def run_ranking_system_task(skip_data: bool = False):
     """

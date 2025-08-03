@@ -1,0 +1,2 @@
+ticker,sector,close,volume,volume_ratio,rsi_14,above_30w_sma,above_10w_sma,market_stage,date
+CAR,Industrials,171.86000061035156,3408100,2.713930784054532,87.01839381626752,True,True,stage1,2025-06-25

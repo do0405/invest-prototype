@@ -81,9 +81,13 @@ class IPOResultProcessor:
             base_df.to_json(base_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"IPO 베이스 패턴 결과 저장 완료: {base_output_file} ({len(base_df)}개 종목)")
         else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_base_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                'pattern_type', 'current_price', 'score', 'date'])
+            # 빈 데이터프레임에 완전한 칼럼명 추가 (코드와 일치)
+            empty_base_df = pd.DataFrame(columns=[
+                'ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
+                'pattern_type', 'current_price', 'score', 'date', 'screening_date',
+                'base_score', 'pattern_formation_date', 'base_depth', 'base_length',
+                'volume_dry_up', 'rs_rating', 'sector_strength'
+            ])
             empty_base_df.to_csv(base_output_file, index=False)
             empty_base_df.to_json(base_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"IPO 베이스 패턴 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {base_output_file}")
@@ -98,9 +102,13 @@ class IPOResultProcessor:
             breakout_df.to_json(breakout_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"IPO 브레이크아웃 결과 저장 완료: {breakout_output_file} ({len(breakout_df)}개 종목)")
         else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_breakout_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                    'pattern_type', 'current_price', 'score', 'date'])
+            # 빈 데이터프레임에 완전한 칼럼명 추가 (코드와 일치)
+            empty_breakout_df = pd.DataFrame(columns=[
+                'ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
+                'pattern_type', 'current_price', 'score', 'date', 'screening_date',
+                'breakout_score', 'pattern_formation_date', 'breakout_volume',
+                'price_strength', 'rs_rating', 'sector_strength'
+            ])
             empty_breakout_df.to_csv(breakout_output_file, index=False)
             empty_breakout_df.to_json(breakout_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"IPO 브레이크아웃 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {breakout_output_file}")
@@ -114,9 +122,13 @@ class IPOResultProcessor:
             track1_df.to_json(track1_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"Track1 결과 저장 완료: {track1_output_file} ({len(track1_df)}개 종목)")
         else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_track1_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                  'pattern_type', 'current_price', 'score', 'date'])
+            # 빈 데이터프레임에 완전한 칼럼명 추가 (코드와 일치)
+            empty_track1_df = pd.DataFrame(columns=[
+                'ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
+                'pattern_type', 'current_price', 'score', 'date', 'screening_date',
+                'track1_score', 'price_cond', 'rsi_cond', 'support_touch',
+                'volume_cond', 'environment_cond', 'fundamental_cond'
+            ])
             empty_track1_df.to_csv(track1_output_file, index=False)
             empty_track1_df.to_json(track1_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"Track1 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {track1_output_file}")
@@ -130,9 +142,13 @@ class IPOResultProcessor:
             track2_df.to_json(track2_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"Track2 결과 저장 완료: {track2_output_file} ({len(track2_df)}개 종목)")
         else:
-            # 빈 데이터프레임에 칼럼명 추가
-            empty_track2_df = pd.DataFrame(columns=['ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
-                                                  'pattern_type', 'current_price', 'score', 'date'])
+            # 빈 데이터프레임에 완전한 칼럼명 추가 (코드와 일치)
+            empty_track2_df = pd.DataFrame(columns=[
+                'ticker', 'company_name', 'ipo_date', 'ipo_price', 'days_since_ipo', 
+                'pattern_type', 'current_price', 'score', 'date', 'screening_date',
+                'track2_score', 'momentum_score', 'volume_surge', 'price_action',
+                'technical_strength', 'rs_rating', 'sector_strength'
+            ])
             empty_track2_df.to_csv(track2_output_file, index=False)
             empty_track2_df.to_json(track2_output_file.replace('.csv', '.json'), orient='records', indent=2, force_ascii=False)
             logger.info(f"Track2 조건을 만족하는 종목이 없습니다. 빈 파일 생성: {track2_output_file}")

@@ -1,0 +1,4925 @@
+[
+  {
+    "symbol": "ASPS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OUST",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VERV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.4,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OWLT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TPC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CRS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FGEN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.5,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ATRO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JBL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "STRT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ALMU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MSGM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RCL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AKBA",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PLTR",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "XYF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BBIO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ESLT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CUK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TTMI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EYE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CCL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ISSC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RDUS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ADPT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GOGO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MDAI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TME",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SLDP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CVNA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OLO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GOSS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LEDS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KEP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BPMC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GHM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AMZE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WWD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DASH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GH",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AAP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TGEN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.55,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RGLS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NEON",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NVMI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ASM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EXEL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BLBX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.65,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CTMX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BKSY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BA",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NPO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FTEK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OCFT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CAR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SXT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JFIN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TGI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CLS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WOR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WTS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MIRM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IIIN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TATT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DCO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IREN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PARR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TIGO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CMP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CALX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ALG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SIMO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KGC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UPST",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WW",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.4,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GLYC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.75,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SPRC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SNSE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.65,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ORLA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "STEM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.45,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "INUV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CFSB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PASG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GTES",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "INDP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KTOS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SLE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.4,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BOLT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TMCWW",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JFBR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.5,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KULR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TRUG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.55,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BREA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.55,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "INKT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LIXTW",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DBVT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ABVE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RAPT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TOI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AIMD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WPM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TMC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PRCH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ROMA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SVT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NAK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WRBY",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CNVS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARTL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VIGL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PSIX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OCG",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AMPX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SRFM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.45,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LEU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "XTKG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DVS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ALNT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RKLB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CDTX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CVAC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CTEV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.55,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GROY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SNPX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TAOX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BWFG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "YYGH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.65,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HOOD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "C",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HSAI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VRNA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "U",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PLYA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SOGP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "USAS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HWM",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.8,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IONQ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PRPO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FENC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "REVG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VVOS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SATX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DIST",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CRDO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OKYO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GRNQ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MATH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.55,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ALLT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RAYA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SGHC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RSI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ASTS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ITRN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PGY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TVRD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SOFI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ATYR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PPIH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VHC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AVAL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FULC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "THTX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PJT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PMEC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VIOT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CDE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TMQ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.75,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ROKU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SNES",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RBLX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BTCL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BTFX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CYD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ATHE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BITU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FARO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UUU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "THM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BLDE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ATAI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "URBN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PLBY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SNT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SBSW",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OSS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "COIN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MSTR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HTZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "INDV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GEV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WLDN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PVLA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LMB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ACHR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NXT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BITX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RMNI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SEI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SLSR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TCI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JOBY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "QD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EVEX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AHR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FPH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ESP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SRRK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BOSC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EPRX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SAH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KOPN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.5,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MGNI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AGX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FUTU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PAC",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "APYX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FSI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CPS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MBOT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SSSS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GORO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SKE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GHRS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.75,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IPX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CRPT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "POET",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "YMM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FIX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ESE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SRAD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MGIC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "APH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "XMTR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FORD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EFOI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KFS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TPR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ZG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RFIL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MGTX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LIF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TSAT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TRVI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ETNB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PZG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AWI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OPOF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.65,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CKPT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VST",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "APEI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IHS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ATI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BCS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VZLA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JNUG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RYTM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DHX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.5,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARKW",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PPTA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "XERS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IBIT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WRLD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ABCL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HODL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EZBC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BTCW",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FBTC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BITB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FIVE",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BRRR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BTCO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CLBR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DEFI",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NTGR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ELTX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.75,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SII",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NRIM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FLEX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AVXL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARKF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ICL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MAXI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NEXT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TOST",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FORTY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FINV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ENLT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AAMI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SIFY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JCI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ELVA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MPAA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SAN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GBTC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "YALA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MAG",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CCB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ODC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CBRL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VIRT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BLOK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NYC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ALGM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CSV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IMMX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BITQ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PSIL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HYMC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARMN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BASE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SYF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "STCE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SAND",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LFCR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PBPB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PGEN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.75,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NEU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OMAB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PBI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CCEC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WILC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SLM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARKK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ATAT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HEES",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EMX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WEBL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KEQU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KEN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DRS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MYRG",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CAKE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UFO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LITE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ROK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BWAY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SHLD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AVGO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ACMR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PRA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EURL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AIBU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SURG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VIK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TWI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.75,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RERE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NUKZ",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PRIM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "STN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PPLT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TCBX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PLTM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "STNE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.65,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SSBI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARKD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MCB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARKX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JOYY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "USFD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ESQ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HSBC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MOS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DBD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CTLP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FBIOP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GENI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.75,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PAAS",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SANM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DXPE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SNEX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FNGO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UNTY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DLTR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GE",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WBD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FSM",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GREK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARKA",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CHEF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BWEB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FBL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.2,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FNGG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ASA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DGP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SIL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ULS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MTZ",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CEG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ARKQ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SENEA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BELFB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GPI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VEON",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MOMO",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TDS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LRCX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SLND",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RRBI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AEIS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "METU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KAR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "COF",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BTRN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "X",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EMR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CBNK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SKLZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SENEB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WBS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OVBC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KALV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BTI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UAL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NTRS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NATH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CTOS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FET",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.65,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FGM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MNMD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.65,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SLVP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MGYR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GILT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CASY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BUZZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ENVA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CXW",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CAE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WNS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CNM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FHN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CCLDO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PERI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PUK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CUBI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MGRM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.6,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TGTX",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LAUR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NGVT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GEL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EIS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GDXJ",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LBRDA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UBER",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NUS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GSIB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CEE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GOAU",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "XAR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SHOP",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FAS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SGDJ",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NIC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IZRL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WHLRD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FTI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JBTM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HGV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GNTY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BETH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "QTUM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EPR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FSS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TBPH",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PLPC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BNGE",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SGI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "UPV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "THFF",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "DERM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SPRX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HAFC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BPAY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TSM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TRMB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AZZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "TMAT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ING",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "OND",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "HBCP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "WFC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EWO",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "AGMI",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.6,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "STT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "IAI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CHAT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BDL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GTX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ALV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SSYS",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CTBB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.2,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LUV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CHN",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.85,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "PLOW",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RING",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.8,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ITA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "METV",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FPX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ROKT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FEUZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "EPOL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ATLC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.7,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "RYAAY",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "MAKX",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FOSLL",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "GAMR",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ECVT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "FWONK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ALAI",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BETZ",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BKNG",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": false,
+    "cup_handle_confidence": 0.0,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BFC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.05,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "ISRA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CTDD",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.25,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SYBT",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.0,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "BK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "VNM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.95,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SRBK",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.1,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "KMDA",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 0.9,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "CM",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "SEIC",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.3,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "NTB",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.1,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "JPM",
+
+    "vcp_detected": true,
+    "vcp_confidence": 0.5,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  },
+  {
+    "symbol": "LOUP",
+
+    "vcp_detected": false,
+    "vcp_confidence": 0.4,
+    "cup_handle_detected": true,
+    "cup_handle_confidence": 1.15,
+    "detection_date": "2025-07-24"
+  }
+]

@@ -6,7 +6,6 @@ import numpy as np
 from typing import Dict, Optional
 
 from config import DATA_US_DIR, BREADTH_DATA_DIR, OPTION_DATA_DIR
-from data_collectors.market_breadth_collector import MarketBreadthCollector
 
 __all__ = [
     "load_index_data",
@@ -69,6 +68,7 @@ def load_index_data(ticker: str, days: int = 200) -> Optional[pd.DataFrame]:
         if ticker == 'VIX':
             file_path = os.path.join(OPTION_DATA_DIR, 'vix.csv')
             if not os.path.exists(file_path):
+                from data_collectors.market_breadth_collector import MarketBreadthCollector
                 collector = MarketBreadthCollector()
                 collector.collect_vix_data(days)
         else:
@@ -77,8 +77,11 @@ def load_index_data(ticker: str, days: int = 200) -> Optional[pd.DataFrame]:
             print(f"⚠️ {ticker} 데이터 파일을 찾을 수 없습니다.")
             return None
 
-        df = pd.read_csv(file_path)
-        df.columns = [c.lower() for c in df.columns]
+        from utils.screener_utils import read_csv_flexible
+        df = read_csv_flexible(file_path, required_columns=['date', 'close'])
+        if df is None:
+            print(f"⚠️ {ticker} 데이터 파일 읽기 실패.")
+            return None
         
         # VIX 데이터의 경우 컬럼명 매핑
         if ticker == 'VIX':
@@ -115,6 +118,7 @@ def calculate_high_low_index(index_data: Dict[str, pd.DataFrame]) -> float:
     file_path = os.path.join(BREADTH_DATA_DIR, "high_low.csv")
     try:
         if not os.path.exists(file_path):
+            from data_collectors.market_breadth_collector import MarketBreadthCollector
             collector = MarketBreadthCollector()
             collector.collect_high_low_index(days=200)
         if not os.path.exists(file_path):
@@ -149,6 +153,7 @@ def calculate_advance_decline_trend(index_data: Dict[str, pd.DataFrame]) -> floa
     file_path = os.path.join(BREADTH_DATA_DIR, "advance_decline.csv")
     try:
         if not os.path.exists(file_path):
+            from data_collectors.market_breadth_collector import MarketBreadthCollector
             collector = MarketBreadthCollector()
             collector.collect_advance_decline_data(days=200)
         if not os.path.exists(file_path):

@@ -25,6 +25,7 @@ from config import (
 # 유틸리티 함수 임포트
 from utils import ensure_dir, load_csvs_parallel
 from utils import calculate_rs_score, calculate_rs_score_enhanced
+from utils.screener_utils import read_csv_flexible
 
 # 데이터 수집 함수 임포트
 from data_collector import collect_data
@@ -207,9 +208,9 @@ def calculate_trend_template(df) -> pd.Series:
         print(f"❌ 조건 6 계산 오류: {e}")
         result['cond6'] = False
     
-    # 조건 7: 현재 주가가 20일 이동평균보다 높음
+    # 조건 7: 50일 이동평균이 150일 이동평균보다 높음 (현재가 > MA50 > MA150 > MA200 순서 확보)
     try:
-        result['cond7'] = latest['close'] > latest['ma20']
+        result['cond7'] = latest['ma50'] > latest['ma150']
     except Exception as e:
         print(f"❌ 조건 7 계산 오류: {e}")
         result['cond7'] = False
@@ -257,7 +258,9 @@ def run_us_screening():
                 symbol = extract_ticker_from_filename(file)
                 
                 # 개별 파일 로드
-                df = pd.read_csv(file_path)
+                df = read_csv_flexible(file_path, required_columns=['close', 'volume', 'date', 'high', 'low'])
+                if df is None:
+                    continue
                 
                 # 컬럼명 소문자로 변환
                 df.columns = [col.lower() for col in df.columns]
@@ -298,10 +301,9 @@ def run_us_screening():
                 try:
                     file_path = os.path.join(DATA_US_DIR, file)
                     symbol = os.path.splitext(file)[0]
-                    df = pd.read_csv(file_path)
-                    
-                    # 컬럼명 소문자로 변환
-                    df.columns = [col.lower() for col in df.columns]
+                    df = read_csv_flexible(file_path, required_columns=['close', 'date'])
+                    if df is None:
+                        continue
                     
                     if 'date' in df.columns and 'close' in df.columns:
                         # 날짜 변환 및 정렬

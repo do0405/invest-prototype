@@ -22,7 +22,11 @@ class DataNormalizer:
             print(f"📊 Advance-Decline 데이터 정규화 중: {file_path}")
             
             # 데이터 로드
-            df = pd.read_csv(file_path)
+            from utils.screener_utils import read_csv_flexible
+            df = read_csv_flexible(file_path, required_columns=['date'])
+            if df is None:
+                logger.error(f"파일 읽기 실패: {file_path}")
+                return False
             
             # 컬럼명 정규화
             df.columns = [col.lower().strip() for col in df.columns]
@@ -94,7 +98,11 @@ class DataNormalizer:
             print(f"📊 VIX 데이터 정규화 중: {file_path}")
             
             # 데이터 로드
-            df = pd.read_csv(file_path)
+            from utils.screener_utils import read_csv_flexible
+            df = read_csv_flexible(file_path, required_columns=['date'])
+            if df is None:
+                logger.error(f"VIX 파일 읽기 실패: {file_path}")
+                return False
             
             if df.empty:
                 print(f"⚠️ VIX 데이터 파일이 비어있습니다: {file_path}")

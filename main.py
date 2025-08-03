@@ -30,7 +30,6 @@ from orchestrator.tasks import (
     run_ipo_investment_screener,
     run_qullamaggie_strategy_task,
     run_market_regime_analysis,
-    run_image_pattern_detection_task,
     run_ranking_system_task,
     setup_scheduler,
     run_scheduler,
@@ -44,7 +43,7 @@ def main():
     parser.add_argument('--no-symbol-update', action='store_true', help='종목 리스트 업데이트 건너뛰기')
     parser.add_argument('--task', default='all',
                         choices=['all', 'screening', 'volatility-skew', 'setup', 'gainers', 'leader-stock',
-                                 'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime', 'image-pattern', 'ranking'],
+                                 'momentum', 'ipo', 'qullamaggie', 'portfolio', 'market-regime', 'ranking'],
                         help='실행할 작업 선택')
     parser.add_argument('--schedule', action='store_true', help='스케줄러 모드 실행')
     
@@ -100,10 +99,7 @@ def main():
         if task == 'market-regime':
             run_market_regime_analysis(skip_data=args.skip_data)
             return
-        if task == 'image-pattern':
-            print("\n🎯 이미지 패턴 감지 모드")
-            run_image_pattern_detection_task(skip_data=args.skip_data)
-            return
+        # image-pattern 작업 제거됨 - 3단계 통합 스크리닝에서 패턴 감지 수행
         if task == 'ranking':
             print("\n🎯 MCDA 기반 종목 랭킹 모드")
             run_ranking_system_task(skip_data=args.skip_data)
