@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_BASE_URL = '';
 
 export interface ApiResponse<T> {
   success: boolean;
@@ -10,6 +10,35 @@ export interface ApiResponse<T> {
 
 export interface ScreeningData {
   symbol: string;
+  // Common fields
+  rs_score?: number;
+  signal_date?: string;
+  met_count?: number;
+  price?: number;
+  change_pct?: number;
+  
+  // Pattern detection fields (both naming conventions supported)
+  vcp_detected?: boolean;
+  VCP_Pattern?: boolean;
+  cup_handle_detected?: boolean;
+  Cup_Handle_Pattern?: boolean;
+  vcp_confidence?: number;
+  cup_handle_confidence?: number;
+  vcp_confidence_level?: string;
+  cup_handle_confidence_level?: string;
+  
+  // Financial fields
+  fin_met_count?: number;
+  total_met_count?: number;
+  
+  // Technical fields
+  volume?: number;
+  market_cap?: number;
+  adr_percent?: number;
+  perf_1w_pct?: number;
+  perf_1m_pct?: number;
+  
+  // Flexible for additional fields
   [key: string]: string | number | boolean | null | undefined;
 }
 
@@ -49,23 +78,102 @@ export class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  private async request<T>(endpoint: string): Promise<ApiResponse<T>> {
-    try {
-      const response = await fetch(`${this.baseUrl}${endpoint}`);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  private async request<T>(endpoint: string, retryCount: number = 2): Promise<ApiResponse<T>> {
+    let lastError: Error | null = null;
+    const fullUrl = `${this.baseUrl}${endpoint}`;
+    console.log(`API Request: ${fullUrl}`);
+    console.log(`Base URL: ${this.baseUrl}`);
+    console.log(`Endpoint: ${endpoint}`);
+    
+    for (let attempt = 0; attempt <= retryCount; attempt++) {
+      try {
+        console.log(`Attempt ${attempt + 1} for ${fullUrl}`);
+        const response = await fetch(fullUrl);
+        
+        if (!response.ok) {
+          // 404 에러의 경우 재시도하지 않음
+          if (response.status === 404) {
+            return {
+              success: false,
+              message: `데이터를 찾을 수 없습니다. 스크리너가 실행되지 않았거나 결과 파일이 생성되지 않았을 수 있습니다.`
+            };
+          }
+          
+          // 서버 에러의 경우 재시도
+          if (response.status >= 500 && attempt < retryCount) {
+            console.warn(`API request failed (attempt ${attempt + 1}/${retryCount + 1}): ${response.status}`);
+            await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // 지수 백오프
+            continue;
+          }
+          
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // 데이터 유효성 검증
+        if (data && !data.success && data.message) {
+          console.warn(`API returned error: ${data.message}`);
+          return {
+            success: false,
+            message: this.getFriendlyErrorMessage(data.message)
+          };
+        }
+        
+        // 빈 데이터 검증
+        if (data && data.success && data.data && Array.isArray(data.data) && data.data.length === 0) {
+          return {
+            success: true,
+            data: data.data,
+            message: '현재 조건에 맞는 종목이 없습니다.',
+            total_count: 0,
+            last_updated: data.last_updated
+          };
+        }
+        
+        return data;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error('Unknown error occurred');
+        console.error(`API request error for ${fullUrl}:`, error);
+        
+        if (error instanceof Error) {
+          console.error(`Error type: ${error.constructor.name}`);
+          console.error(`Error message: ${error.message}`);
+          console.error(`Error stack:`, error.stack);
+        } else {
+          console.error(`Error type: ${typeof error}`);
+          console.error(`Error message: ${String(error)}`);
+          console.error(`Error stack: N/A`);
+        }
+        
+        if (attempt < retryCount) {
+          console.warn(`API request failed (attempt ${attempt + 1}/${retryCount + 1}):`, lastError.message);
+          await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // 지수 백오프
+        }
       }
-      
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('API request failed:', error);
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : 'Unknown error occurred'
-      };
     }
+    
+    console.error('API request failed after all retries:', lastError);
+    return {
+      success: false,
+      message: this.getFriendlyErrorMessage(lastError?.message || 'Unknown error occurred')
+    };
+  }
+  
+  private getFriendlyErrorMessage(errorMessage: string): string {
+    if (errorMessage.includes('not found') || errorMessage.includes('404')) {
+      return '요청한 데이터를 찾을 수 없습니다. 스크리너를 먼저 실행해주세요.';
+    }
+    if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
+      return '서버에 연결할 수 없습니다. 네트워크 연결을 확인해주세요.';
+    }
+    if (errorMessage.includes('timeout')) {
+      return '요청 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.';
+    }
+    if (errorMessage.includes('500') || errorMessage.includes('Internal Server Error')) {
+      return '서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+    }
+    return errorMessage;
   }
 
   // 기술적 스크리닝 결과 (백엔드 엔드포인트에 맞춤)

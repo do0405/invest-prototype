@@ -251,17 +251,18 @@ def run_pattern_detection_on_all_symbols(symbols: List[str],
                 vcp_result = detect_vcp(df)
                 cup_handle_result = detect_cup_and_handle(df)
                 
-                # 결과 저장
-                result = {
-                    'symbol': symbol,
-                    'vcp_detected': vcp_result['detected'],
-                    'vcp_confidence': vcp_result['confidence'],
-                    'cup_handle_detected': cup_handle_result['detected'],
-                    'cup_handle_confidence': cup_handle_result['confidence'],
-                    'analysis_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                }
-                
-                results.append(result)
+                # 결과 저장 (둘 다 false인 경우 제외)
+                if vcp_result['detected'] or cup_handle_result['detected']:
+                    result = {
+                        'symbol': symbol,
+                        'vcp_detected': vcp_result['detected'],
+                        'vcp_confidence': vcp_result['confidence'],
+                        'cup_handle_detected': cup_handle_result['detected'],
+                        'cup_handle_confidence': cup_handle_result['confidence'],
+                        'detection_date': datetime.now().strftime('%Y-%m-%d')
+                    }
+                    
+                    results.append(result)
                 total_processed += 1
                 
                 # 통계 업데이트

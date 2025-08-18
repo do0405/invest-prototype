@@ -1,117 +1,55 @@
 ﻿symbol,company_name,skew_index,expected_return,confidence_score,base_confidence,data_source,data_quality_grade,confidence_numeric,quality_description
-XYL,Xylem Inc.,-1.1230356445312506,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-WYNN,"Wynn Resorts, Limited",-6.176696044921876,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-WMB,"The Williams Companies, Inc.",-1.31834619140625,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-WDC,Western Digital Corporation,-1.0497941894531182,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-WBA,"Walgreens Boots Alliance, Inc.",-30.663755859375,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-VST,Vistra Corp.,-0.6103454589843738,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-VRSN,"VeriSign, Inc.",-6.018006225585948,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-ULTA,"Ulta Beauty, Inc.",-4.455521850585942,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-UBER,"Uber Technologies, Inc.",-1.8066225585937512,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-TT,Trane Technologies plc,-1.2390012817382778,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-TSCO,Tractor Supply Company,-1.0742080078124938,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-TPR,"Tapestry, Inc.",-0.6103454589843849,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-TKO,"TKO Group Holdings, Inc.",-2.026346923828121,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-TEL,TE Connectivity plc,-0.9521389160156324,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-STX,Seagate Technology Holdings plc,-0.7934490966796937,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-STE,STERIS plc,-1.3183461914062278,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-SO,The Southern Company,-0.3173796386718719,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-SNPS,"Synopsys, Inc.",-0.030517272949215357,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-SMCI,"Super Micro Computer, Inc.",-8.93598364257815,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-SBAC,SBA Communications Corporation,-33.82534533691406,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
-ROK,"Rockwell Automation, Inc.",-0.10986218261719305,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-RCL,Royal Caribbean Cruises Ltd.,-0.4882763671875068,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-PTC,PTC Inc.,-1.94089855957032,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-PODD,Insulet Corporation,-5.261177856445309,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-PLTR,Palantir Technologies Inc.,-6.07904077148439,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-PHM,"PulteGroup, Inc.",-0.3417934570312475,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-PAYC,"Paycom Software, Inc.",-1.4282083740234652,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-ON,ON Semiconductor Corporation,-2.7831752929687537,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-NXPI,NXP Semiconductors N.V.,-2.416968017578125,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-NVDA,NVIDIA Corporation,-1.2451047363281231,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-NUE,Nucor Corporation,-2.941865112304681,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-NTRS,Northern Trust Corporation,-3.613245117187508,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-NRG,"NRG Energy, Inc.",-1.2817254638671893,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-NOC,Northrop Grumman Corporation,-2.679416564941417,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-NEM,Newmont Corporation,-1.1230356445312506,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-NEE,"NextEra Energy, Inc.",-0.5859316406250037,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-MU,"Micron Technology, Inc.",-1.635725830078133,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-MPC,Marathon Petroleum Corporation,-5.200143310546873,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-MOS,The Mosaic Company,-2.832002929687505,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-MO,"Altria Group, Inc.",-11.962770996093749,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-MNST,Monster Beverage Corporation,-1.5868981933593818,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-MGM,MGM Resorts International,-5.761661132812501,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-META,"Meta Platforms, Inc.",-0.7415697326660087,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-MDLZ,"Mondelez International, Inc.",-3.07614111328125,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-MCK,McKesson Corporation,-0.9735010070800798,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-LRCX,Lam Research Corporation,-0.0244138183593756,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-LDOS,"Leidos Holdings, Inc.",-4.687453125000007,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-KVUE,Kenvue Inc.,-1.1718632812500074,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-KMB,Kimberly-Clark Corporation,-0.7080007324218762,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-KDP,Keurig Dr Pepper Inc.,-0.19531054687499938,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-JCI,Johnson Controls International plc,-1.2206909179687475,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-JBL,Jabil Inc.,-0.1220690917968725,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-J,Jacobs Solutions Inc.,-15.84456811523437,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-IVZ,Invesco Ltd.,-6.445248046874996,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-INTC,Intel Corporation,-2.1484160156249987,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-IDXX,"IDEXX Laboratories, Inc.",-0.4882763671874901,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-HSY,The Hershey Company,-0.3417934570312531,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-HCA,"HCA Healthcare, Inc.",-0.31127618408203217,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-GNRC,Generac Holdings Inc.,-0.6347592773437494,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-GM,General Motors Company,-0.6835869140625062,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-GL,Globe Life Inc.,-0.7690352783203069,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-GEV,GE Vernova Inc.,-2.502416381835937,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-GEN,Gen Digital Inc.,-0.2929658203124963,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-GE,GE Aerospace,-0.3723107299804629,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-FTNT,"Fortinet, Inc.",-0.2197243652343639,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-FSLR,"First Solar, Inc.",-1.3671738281250123,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-FOXA,Fox Corporation,-2.6366923828125053,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-FFIV,"F5, Inc.",-1.0497941894531182,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-FCX,Freeport-McMoRan Inc.,-1.2206909179687475,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-EXPE,"Expedia Group, Inc.",-0.5493109130859319,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-EVRG,"Evergy, Inc.",-15.576016113281243,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
-ES,Eversource Energy,-11.523322265625014,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
-EMR,Emerson Electric Co.,-4.479935668945317,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-EL,The Estée Lauder Companies Inc.,-0.3417934570312475,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-EIX,Edison International,-3.320279296875006,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-EBAY,eBay Inc.,-0.19531054687500493,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-EA,Electronic Arts Inc.,-4.809522216796874,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-DXCM,"DexCom, Inc.",-1.3183461914062278,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-DPZ,"Domino's Pizza, Inc.",-2.8747271118164,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-DLTR,"Dollar Tree, Inc.",-3.100554931640626,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-DLR,"Digital Realty Trust, Inc.",-0.4638625488281256,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-DHI,"D.R. Horton, Inc.",-0.3051727294921869,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-DGX,Quest Diagnostics Incorporated,-1.8310363769531213,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-DG,Dollar General Corporation,-0.9277250976562568,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-DELL,Dell Technologies Inc.,-4.9071774902343765,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-DDOG,"Datadog, Inc.",-3.0028996582031287,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-DASH,"DoorDash, Inc.",-0.1464829101562537,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-CVX,Chevron Corporation,-0.5371040039062497,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-CTVA,"Corteva, Inc.",-4.687453124999985,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-CRWD,"CrowdStrike Holdings, Inc.",-0.2258278198242203,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-CRL,"Charles River Laboratories International, Inc.",-0.415034912109391,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-COIN,"Coinbase Global, Inc.",-12.286254089355465,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-CMS,CMS Energy Corporation,-8.496008789062504,0.15,낮음,매우 높음,yfinance_fallback,C,70.0,품질 부족하지만 사용 가능한 데이터
-CMCSA,Comcast Corporation,-3.1737963867187524,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-CEG,Constellation Energy Corporation,-3.9428316650390816,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-CDNS,"Cadence Design Systems, Inc.",-1.1779667358398416,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-CCL,Carnival Corporation & plc,-0.6835869140625062,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-CCI,Crown Castle Inc.,-2.172829833984374,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-CBRE,"CBRE Group, Inc.",-2.0141400146484303,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-CBOE,"Cboe Global Markets, Inc.",-0.6225523681640532,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-CAT,Caterpillar Inc.,-1.94089855957032,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-CAH,"Cardinal Health, Inc.",-1.6723465576171936,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
-BSX,Boston Scientific Corporation,-0.4882763671874957,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-BG,Bunge Global SA,-6.2255236816406265,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-BA,The Boeing Company,-0.0610345458984362,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-AXON,"Axon Enterprise, Inc.",-2.526830200195307,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-APTV,Aptiv PLC,-7.47062841796875,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-APH,Amphenol Corporation,-3.47896911621094,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
-ANET,Arista Networks Inc,-0.03662072753906065,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-AMD,"Advanced Micro Devices, Inc.",-0.8422767333984282,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-AMAT,"Applied Materials, Inc.",-0.0488276367187456,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-AIG,"American International Group, Inc.",-9.49697534179688,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-AES,The AES Corporation,-9.960837890625008,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
-ADM,Archer-Daniels-Midland Company,-0.7324145507812574,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-ADI,"Analog Devices, Inc.",-0.6469661865234344,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
-ABNB,"Airbnb, Inc.",-3.1615894775390507,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+PSKY,Paramount Skydance Corporation,-19.140433593749997,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+DG,Dollar General Corporation,-10.717666259765613,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+HWM,Howmet Aerospace Inc.,-8.251870605468753,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+BEN,"Franklin Resources, Inc.",-7.519456054687495,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+SJM,The J. M. Smucker Company,-6.701593139648438,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+LVS,Las Vegas Sands Corp.,-6.445248046874996,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+SNPS,"Synopsys, Inc.",-6.298765136718753,0.15,높음,매우 높음,yfinance,B,90.0,양호한 품질 무료 데이터
+EIX,Edison International,-3.9062109374999987,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+VST,Vistra Corp.,-3.759728027343756,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+FSLR,"First Solar, Inc.",-3.3446931152343873,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+CFG,"Citizens Financial Group, Inc.",-2.7831752929687537,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+HCA,"HCA Healthcare, Inc.",-2.777071838378914,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+ULTA,"Ulta Beauty, Inc.",-2.7526580200195494,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+LYV,"Live Nation Entertainment, Inc.",-2.7343476562500024,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+AXON,"Axon Enterprise, Inc.",-2.1499418792724487,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+RMD,ResMed Inc.,-2.069071105957032,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+WRB,W. R. Berkley Corporation,-2.026346923828121,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+MPWR,"Monolithic Power Systems, Inc.",-2.0171917419433694,0.13,높음,높음,yfinance,B,90.0,양호한 품질 무료 데이터
+DELL,Dell Technologies Inc.,-1.9897261962890433,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+ED,"Consolidated Edison, Inc.",-1.8066225585937512,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+JBL,Jabil Inc.,-1.6540361938476633,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+APTV,Aptiv PLC,-1.6113120117187463,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+WDC,Western Digital Corporation,-1.6113120117187463,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+AES,The AES Corporation,-1.5624843750000061,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+AMD,"Advanced Micro Devices, Inc.",-1.5136567382812438,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+HUBB,Hubbell Incorporated,-1.4739842834472605,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+PEP,"PepsiCo, Inc.",-1.440415283203128,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+COR,"Cencora, Inc.",-1.4098980102539072,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+DHI,"D.R. Horton, Inc.",-1.3793807373046862,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+STT,State Street Corporation,-1.3427600097656311,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+NEM,Newmont Corporation,-1.3183461914062555,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+COIN,"Coinbase Global, Inc.",-1.300035827636714,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+IVZ,Invesco Ltd.,-1.2695185546875043,0.1,높음,중간,yfinance,B,90.0,양호한 품질 무료 데이터
+MTCH,"Match Group, Inc.",-0.8788974609375,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+TTWO,"Take-Two Interactive Software, Inc.",-0.8544836425781299,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CB,Chubb Limited,-0.8422767333984393,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+SYF,Synchrony Financial,-0.7568283691406219,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+LEN,Lennar Corporation,-0.7202076416015557,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+WEC,"WEC Energy Group, Inc.",-0.7080007324218707,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+JCI,Johnson Controls International plc,-0.6835869140625006,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+ANET,Arista Networks Inc,-0.6103454589843793,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+FCX,Freeport-McMoRan Inc.,-0.5859316406249981,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+ACGL,Arch Capital Group Ltd.,-0.5859316406249926,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+WAB,Westinghouse Air Brake Technologies Corporation,-0.573724731445302,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+RL,Ralph Lauren Corporation,-0.5401557312011751,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+GEV,GE Vernova Inc.,-0.4150349121093799,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+ORLY,"O'Reilly Automotive, Inc.",-0.36620727539062314,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+MU,"Micron Technology, Inc.",-0.2929658203124963,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CSGP,"CoStar Group, Inc.",-0.2685520019531207,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+NKE,"NIKE, Inc.",-0.19531054687500493,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+EXC,Exelon Corporation,-0.14648291015625092,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CI,The Cigna Group,-0.1464829101562426,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+NUE,Nucor Corporation,-0.12206909179687808,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터
+CRL,"Charles River Laboratories International, Inc.",-0.09765527343750247,0.08,높음,낮음,yfinance,B,90.0,양호한 품질 무료 데이터

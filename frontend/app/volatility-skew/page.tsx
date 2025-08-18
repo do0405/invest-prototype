@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
 import { apiClient, ScreeningData } from '@/lib/api';
+import AlgorithmDescription from '@/components/AlgorithmDescription';
 
 export default function VolatilitySkewPage() {
   const [data, setData] = useState<ScreeningData[]>([]);
@@ -59,6 +60,9 @@ export default function VolatilitySkewPage() {
         ← Back to Dashboard
       </Link>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Volatility Skew Screener</h1>
+      
+      <AlgorithmDescription algorithm="volatility-skew" />
+      
       {data.length > 0 ? (
         <DataTable data={data} columns={columns} />
       ) : (

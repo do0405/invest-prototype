@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
+import AlgorithmDescription from '@/components/AlgorithmDescription';
 import { apiClient, ScreeningData } from '@/lib/api';
 
 export default function PatternDetectionResultsPage() {
@@ -13,7 +14,27 @@ export default function PatternDetectionResultsPage() {
     const fetchData = async () => {
       const res = await apiClient.getMarkminerviniResults('pattern_detection_results');
       if (res.success && res.data) {
-        setData(res.data);
+        // cup&handle 또는 VCP 패턴이 감지되고 confidence가 임계값 이상인 항목만 필터링
+        const filteredData = res.data.filter((item: any) => {
+          // 패턴 감지 여부 확인 (두 가지 필드명 모두 지원)
+          const vcpDetected = item.vcp_detected === true || item.VCP_Pattern === true;
+          const cupHandleDetected = item.cup_handle_detected === true || item.Cup_Handle_Pattern === true;
+          
+          // confidence 값 검증 (숫자이고 유효한 값인지 확인)
+          const vcpConfidence = typeof item.vcp_confidence === 'number' ? item.vcp_confidence : 0;
+          const cupHandleConfidence = typeof item.cup_handle_confidence === 'number' ? item.cup_handle_confidence : 0;
+          
+          // main.py의 enhanced_pattern_analyzer.py에서 사용하는 DETECTION_THRESHOLD = 0.6 적용
+          const vcpConfidenceValid = vcpConfidence >= 0.6;
+          const cupHandleConfidenceValid = cupHandleConfidence >= 0.6;
+          
+          // 패턴이 감지되고 해당 confidence가 임계값 이상인 경우만 포함
+          const vcpValid = vcpDetected && vcpConfidenceValid;
+          const cupHandleValid = cupHandleDetected && cupHandleConfidenceValid;
+          
+          return vcpValid || cupHandleValid;
+        });
+        setData(filteredData);
         setError(null);
       } else {
         setError(res.message || 'Failed to fetch data');
@@ -63,6 +84,11 @@ export default function PatternDetectionResultsPage() {
             ← 전체 Mark Minervini 결과로 돌아가기
           </Link>
         </div>
+      </div>
+      
+      {/* Algorithm Description */}
+      <div className="mb-8">
+        <AlgorithmDescription algorithm="markminervini_pattern_detection" />
       </div>
       
       <DataTable 

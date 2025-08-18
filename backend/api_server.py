@@ -14,11 +14,26 @@ from datetime import datetime
 
 import sys
 import os
+import math
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from utils.path_utils import add_project_root
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 add_project_root()
+
+# NaN 값을 처리하는 헬퍼 함수
+def sanitize_json_data(data):
+    """JSON 직렬화를 위해 NaN, Infinity 값을 처리"""
+    if isinstance(data, dict):
+        return {k: sanitize_json_data(v) for k, v in data.items()}
+    elif isinstance(data, list):
+        return [sanitize_json_data(item) for item in data]
+    elif isinstance(data, float):
+        if math.isnan(data) or math.isinf(data):
+            return 0.0
+        return data
+    else:
+        return data
 
 from config import (
     RESULTS_DIR,
@@ -34,7 +49,9 @@ from config import (
 from typing import Optional
 
 app = Flask(__name__)
-CORS(app)  # CORS 허용
+CORS(app, origins=['http://localhost:3001', 'http://127.0.0.1:3001'], 
+     methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+     allow_headers=['Content-Type', 'Authorization'])  # CORS 허용
 
 @app.route('/api/screening-results', methods=['GET'])
 def get_screening_results():
@@ -44,6 +61,8 @@ def get_screening_results():
         json_file = os.path.join(MARKMINERVINI_RESULTS_DIR, 'us_with_rs.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
+            # NaN 값을 None으로 변환
+            df = df.where(pd.notnull(df), None)
             mtime = os.path.getmtime(json_file)
             return jsonify({
                 'success': True,
@@ -63,6 +82,8 @@ def get_financial_results():
         json_file = os.path.join(MARKMINERVINI_RESULTS_DIR, 'advanced_financial_results.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
+            # NaN 값을 None으로 변환
+            df = df.where(pd.notnull(df), None)
             mtime = os.path.getmtime(json_file)
             return jsonify({
                 'success': True,
@@ -82,6 +103,8 @@ def get_integrated_results():
         json_file = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_results.json')
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
+            # NaN 값을 None으로 변환
+            df = df.where(pd.notnull(df), None)
             mtime = os.path.getmtime(json_file)
             return jsonify({
                 'success': True,
@@ -96,7 +119,7 @@ def get_integrated_results():
 
 @app.route('/api/portfolio/<strategy_name>', methods=['GET'])
 def get_portfolio_by_strategy(strategy_name):
-    """전략별 포트폴리오 결과 반환"""
+    """전략별 포트폴리오 결과 반환 (실시간 가격 및 수익률 업데이트)"""
     try:
         # Check in buy directory first
         json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy', f'{strategy_name}_results.json')
@@ -106,11 +129,55 @@ def get_portfolio_by_strategy(strategy_name):
         
         if os.path.exists(json_file):
             df = pd.read_json(json_file)
+            # NaN 값을 None으로 변환
+            df = df.where(pd.notnull(df), None)
+            
+            # 실시간 가격 및 수익률 업데이트
+            updated_data = []
+            for _, row in df.iterrows():
+                item = row.to_dict()
+                symbol = item.get('symbol', item.get('종목명', ''))
+                
+                if symbol and symbol != 'N/A':
+                    try:
+                        import yfinance as yf
+                        ticker = yf.Ticker(symbol)
+                        hist = ticker.history(period='1d')
+                        
+                        if not hist.empty:
+                            current_price = float(hist['Close'].iloc[-1])
+                            
+                            # 진입가 업데이트 (시장가인 경우)
+                            entry_price = item.get('매수가', item.get('entry_price', 0))
+                            if entry_price == '시장가' or entry_price == 'N/A' or entry_price is None:
+                                item['매수가'] = round(current_price, 2)
+                                item['entry_price'] = round(current_price, 2)
+                                entry_price = current_price
+                            else:
+                                entry_price = float(entry_price) if entry_price != 0 else current_price
+                            
+                            # 수익률 계산
+                            if entry_price and entry_price > 0:
+                                profit_rate = ((current_price - entry_price) / entry_price) * 100
+                                item['수익률'] = round(profit_rate, 2)
+                                item['profit_rate'] = round(profit_rate, 2)
+                            
+                            # 현재가 업데이트
+                            item['현재가'] = round(current_price, 2)
+                            item['current_price'] = round(current_price, 2)
+                            
+                    except Exception as e:
+                        print(f"Error updating price for {symbol}: {e}")
+                        # 실패 시 기존 값 유지
+                        pass
+                
+                updated_data.append(item)
+            
             return jsonify({
                 'success': True,
                 'strategy': strategy_name,
-                'data': df.to_dict('records'),
-                'total_count': len(df)
+                'data': updated_data,
+                'total_count': len(updated_data)
             })
         else:
             return jsonify({'success': False, 'message': f'{strategy_name} data not found'}), 404
@@ -157,6 +224,8 @@ def get_volatility_skew_results():
         if files:
             latest_file = max(files, key=os.path.getctime)
             df = pd.read_json(latest_file)
+            # NaN 값을 None으로 변환
+            df = df.where(pd.notnull(df), None)
             mtime = os.path.getmtime(latest_file)
             return jsonify({
                 'success': True,
@@ -172,7 +241,7 @@ def get_volatility_skew_results():
 # --- New screener result endpoints ---
 
 def _load_latest_json(directory: str, filename_prefix: str = None) -> tuple[Optional[pd.DataFrame], Optional[float]]:
-    """안전한 최신 JSON 파일 로딩
+    """안전한 최신 JSON 파일 로딩 (개선된 파일 매칭 로직)
     
     Args:
         directory: 검색할 디렉토리
@@ -181,6 +250,40 @@ def _load_latest_json(directory: str, filename_prefix: str = None) -> tuple[Opti
     Returns:
         (DataFrame, modification_time) 또는 (None, None)
     """
+    def _extract_timestamp_from_filename(filename: str) -> Optional[datetime]:
+        """파일명에서 타임스탬프 추출 (_YYYYMMDD 또는 _YYYY-MM-DD 형식)"""
+        import re
+        # _YYYYMMDD 형식 매칭
+        match = re.search(r'_(\d{8})(?:\.json)?$', filename)
+        if match:
+            try:
+                return datetime.strptime(match.group(1), '%Y%m%d')
+            except ValueError:
+                pass
+        
+        # _YYYY-MM-DD 형식 매칭
+        match = re.search(r'_(\d{4}-\d{2}-\d{2})(?:\.json)?$', filename)
+        if match:
+            try:
+                return datetime.strptime(match.group(1), '%Y-%m-%d')
+            except ValueError:
+                pass
+        
+        return None
+    
+    def _get_file_priority(file_path: str, filename_prefix: str) -> tuple[int, datetime]:
+        """파일 우선순위 계산 (타임스탬프 > 파일 시스템 시간)"""
+        filename = os.path.basename(file_path)
+        
+        # 1. 파일명에서 타임스탬프 추출 시도
+        timestamp = _extract_timestamp_from_filename(filename)
+        if timestamp:
+            return (1, timestamp)  # 높은 우선순위
+        
+        # 2. 파일 시스템 수정 시간 사용
+        file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
+        return (0, file_mtime)  # 낮은 우선순위
+    
     if filename_prefix:
         # 정확한 접두사 매칭
         pattern = os.path.join(directory, f'{filename_prefix}*.json')
@@ -189,6 +292,7 @@ def _load_latest_json(directory: str, filename_prefix: str = None) -> tuple[Opti
     
     files = glob.glob(pattern)
     if not files:
+        print(f"[API] 파일을 찾을 수 없음: {pattern}")
         return None, None
     
     # 파일명 검증 (접두사가 정확히 일치하는지 확인)
@@ -204,13 +308,16 @@ def _load_latest_json(directory: str, filename_prefix: str = None) -> tuple[Opti
         files = validated_files
     
     if not files:
+        print(f"[API] 검증된 파일이 없음: {filename_prefix}")
         return None, None
     
-    # 생성 시간 기준으로 최신 파일 선택
-    latest = max(files, key=os.path.getctime)
+    # 우선순위 기준으로 최신 파일 선택 (타임스탬프 > 파일 시스템 시간)
+    latest = max(files, key=lambda f: _get_file_priority(f, filename_prefix or ''))
     
     try:
         df = pd.read_json(latest)
+        # NaN 값을 None으로 변환
+        df = df.where(pd.notnull(df), None)
         print(f"[API] 로드된 파일: {os.path.basename(latest)} (크기: {len(df)}행)")
         return df, os.path.getmtime(latest)
     except Exception as e:
@@ -252,10 +359,10 @@ def get_leader_stock_results():
 def get_momentum_signals_results():
     """Return latest momentum signals screener results."""
     try:
-        # stage2_breakouts 우선, 없으면 momentum_signals_results
-        df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'stage2_breakouts')
+        # momentum_signals 우선, 없으면 stage2_breakouts (하위 호환성)
+        df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'momentum_signals')
         if df is None:
-            df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'momentum_signals')
+            df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'stage2_breakouts')
         if df is None:
             df, mtime = _load_latest_json(MOMENTUM_SIGNALS_RESULTS_DIR, 'momentum_signals_results')
         
@@ -274,8 +381,19 @@ def get_momentum_signals_results():
                 # close를 price로도 매핑
                 if 'close' in item and 'price' not in item:
                     item['price'] = item['close']
+                
+                # Pattern detection field mappings for backward compatibility
+                if 'vcp_detected' in item and 'VCP_Pattern' not in item:
+                    item['VCP_Pattern'] = item['vcp_detected']
+                if 'cup_handle_detected' in item and 'Cup_Handle_Pattern' not in item:
+                    item['Cup_Handle_Pattern'] = item['cup_handle_detected']
+                if 'Symbol' in item and 'symbol' not in item:
+                    item['symbol'] = item['Symbol']
             
-            return jsonify({'success': True, 'data': data, 'total_count': len(data),
+            # NaN 값 처리
+            sanitized_data = sanitize_json_data(data)
+            
+            return jsonify({'success': True, 'data': sanitized_data, 'total_count': len(sanitized_data),
                             'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
         return jsonify({'success': False, 'message': 'Momentum signals data not found'}), 404
     except Exception as e:
@@ -361,7 +479,58 @@ def get_markminervini_results(screener_name):
                 try:
                     # CSV를 읽어서 JSON 형태로 변환
                     df = pd.read_csv(csv_file)
+                    # NaN 값을 None으로 변환하여 JSON 직렬화 문제 해결
+                    df = df.where(pd.notnull(df), None)
+                    
+                    # numpy 타입을 Python 기본 타입으로 변환
+                    for col in df.columns:
+                        if df[col].dtype == 'object':
+                            df[col] = df[col].astype(str).replace('nan', None)
+                        elif 'float' in str(df[col].dtype):
+                            df[col] = df[col].astype(float)
+                        elif 'int' in str(df[col].dtype):
+                            df[col] = df[col].astype(int)
+                    
                     data = df.to_dict('records')
+                    
+                    # 추가적으로 numpy 값과 NaN 문자열 정리
+                    import re
+                    import math
+                    import json as json_module
+                    for item in data:
+                        for key, value in item.items():
+                            if isinstance(value, str):
+                                # numpy 표현식, NaN 문자열, dimensional_scores 문제 해결
+                                if ('np.float64(' in value or 'NaN' in value or value == 'nan' or 
+                                    'dimensional_scores' in key):
+                                    try:
+                                        # dimensional_scores 필드의 특별 처리
+                                        if 'dimensional_scores' in key:
+                                            # numpy 표현식을 포함한 문자열을 딕셔너리로 변환
+                                            cleaned_value = re.sub(r'np\.float64\(([0-9]*\.?[0-9]+)\)', r'\1', value)
+                                            cleaned_value = cleaned_value.replace("'", '"')
+                                            try:
+                                                item[key] = json_module.loads(cleaned_value)
+                                            except:
+                                                item[key] = None
+                                        else:
+                                            # 일반적인 numpy 표현식에서 숫자 추출
+                                            match = re.search(r'([0-9]*\.?[0-9]+)', value)
+                                            if match:
+                                                num_val = float(match.group(1))
+                                                # NaN이나 무한대 값 체크
+                                                if math.isnan(num_val) or math.isinf(num_val):
+                                                    item[key] = None
+                                                else:
+                                                    item[key] = num_val
+                                            else:
+                                                item[key] = None
+                                    except:
+                                        item[key] = None
+                            elif isinstance(value, float):
+                                # float 값에서 NaN이나 무한대 체크
+                                if math.isnan(value) or math.isinf(value):
+                                    item[key] = None
                     
                     # Apply field mapping based on screener type
                     mapped_data = []
@@ -375,37 +544,69 @@ def get_markminervini_results(screener_name):
                             mapped_item['signal_date'] = mapped_item['processing_date']
                         if 'fin_met_count' in mapped_item and 'met_count' not in mapped_item:
                             mapped_item['met_count'] = mapped_item['fin_met_count']
+                        
+                        # Pattern detection field mappings for backward compatibility
+                        if 'vcp_detected' in mapped_item and 'VCP_Pattern' not in mapped_item:
+                            mapped_item['VCP_Pattern'] = mapped_item['vcp_detected']
+                        if 'cup_handle_detected' in mapped_item and 'Cup_Handle_Pattern' not in mapped_item:
+                            mapped_item['Cup_Handle_Pattern'] = mapped_item['cup_handle_detected']
+                        if 'Symbol' in mapped_item and 'symbol' not in mapped_item:
+                            mapped_item['symbol'] = mapped_item['Symbol']
                             
-                        # For integrated_results, add pattern detection summary
-                        if screener_name == 'integrated_results':
-                            # Add a summary field for pattern detection status
+                        # 스크리너별 특별 처리
+                        should_include = True
+                        
+                        if screener_name == 'image_pattern_results':
+                            # 이미지 패턴 결과: VCP 또는 Cup&Handle 패턴이 감지된 종목만 포함
+                            vcp_detected = mapped_item.get('vcp_detected', False)
+                            cup_handle_detected = mapped_item.get('cup_handle_detected', False)
+                            
+                            # Boolean 값으로 변환 (문자열 'true'/'false'도 처리)
+                            if isinstance(vcp_detected, str):
+                                vcp_detected = vcp_detected.lower() == 'true'
+                            if isinstance(cup_handle_detected, str):
+                                cup_handle_detected = cup_handle_detected.lower() == 'true'
+                                
+                            should_include = bool(vcp_detected) or bool(cup_handle_detected)
+                            
+                        elif screener_name == 'integrated_pattern_results':
+                            # 통합 패턴 결과: High confidence level을 가진 종목만 포함, 제한된 컬럼만 표시
+                            vcp_confidence_level = mapped_item.get('vcp_confidence_level', '')
+                            cup_handle_confidence_level = mapped_item.get('cup_handle_confidence_level', '')
+                            should_include = vcp_confidence_level == 'High' or cup_handle_confidence_level == 'High'
+                            
+                            if should_include:
+                                # 제한된 컬럼만 포함
+                                filtered_item = {
+                                    'symbol': mapped_item.get('symbol', ''),
+                                    'date': mapped_item.get('processing_date', ''),
+                                    'vcp_confidence': mapped_item.get('vcp_confidence', 0.0),
+                                    'vcp_confidence_level': vcp_confidence_level,
+                                    'cup_handle_confidence': mapped_item.get('cup_handle_confidence', 0.0),
+                                    'cup_handle_confidence_level': cup_handle_confidence_level
+                                }
+                                mapped_item = filtered_item
+                                
+                        elif screener_name == 'integrated_results':
+                            # 패턴 인식 전 결과 (기존 로직 유지)
                             if 'rs_score' in mapped_item:
                                 mapped_item['pattern_summary'] = f"RS: {mapped_item['rs_score']}"
                                 
                         # For pattern results, add pattern detection summary and dimensional scores
-                        elif screener_name in ['image_pattern_results', 'integrated_pattern_results']:
+                        if screener_name in ['image_pattern_results'] and should_include:
                             pattern_info = []
                             if mapped_item.get('vcp_detected'):
                                 vcp_conf = mapped_item.get('vcp_confidence', 0)
-                                vcp_level = mapped_item.get('vcp_confidence_level', 'None')
-                                pattern_info.append(f"VCP({vcp_conf:.2f}/{vcp_level})")
-                                
-                                # VCP 다차원 점수 추가
-                                if 'vcp_dimensional_scores' in mapped_item:
-                                    mapped_item['vcp_dimensional_scores'] = mapped_item['vcp_dimensional_scores']
+                                pattern_info.append(f"VCP({vcp_conf:.2f})")
                                 
                             if mapped_item.get('cup_handle_detected'):
                                 cup_conf = mapped_item.get('cup_handle_confidence', 0)
-                                cup_level = mapped_item.get('cup_handle_confidence_level', 'None')
-                                pattern_info.append(f"C&H({cup_conf:.2f}/{cup_level})")
-                                
-                                # Cup&Handle 다차원 점수 추가
-                                if 'cup_handle_dimensional_scores' in mapped_item:
-                                    mapped_item['cup_handle_dimensional_scores'] = mapped_item['cup_handle_dimensional_scores']
+                                pattern_info.append(f"C&H({cup_conf:.2f})")
                                     
                             mapped_item['pattern_summary'] = ', '.join(pattern_info) if pattern_info else 'No patterns'
                             
-                        mapped_data.append(mapped_item)
+                        if should_include:
+                            mapped_data.append(mapped_item)
                     
                     mtime = os.path.getmtime(csv_file)
                     return jsonify({
@@ -431,15 +632,31 @@ def get_markminervini_results(screener_name):
                     break
         
         if os.path.exists(json_file):
-            with open(json_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            mtime = os.path.getmtime(json_file)
-            return jsonify({
-                'success': True,
-                'data': data,
-                'total_count': len(data) if isinstance(data, list) else 0,
-                'last_updated': datetime.fromtimestamp(mtime).isoformat()
-            })
+            try:
+                with open(json_file, 'r', encoding='utf-8') as f:
+                    content = f.read().strip()
+                    if not content:  # 빈 파일 처리
+                        data = []
+                    else:
+                        data = json.loads(content)
+                
+                # Handle nested JSON structure for pattern_detection_results
+                if screener_name == 'pattern_detection_results' and isinstance(data, dict) and 'results' in data:
+                    data = data['results']  # Extract the results array from nested structure
+                
+                # NaN 값 처리
+                data = sanitize_json_data(data)
+                mtime = os.path.getmtime(json_file)
+                return jsonify({
+                    'success': True,
+                    'data': data,
+                    'total_count': len(data) if isinstance(data, list) else 0,
+                    'last_updated': datetime.fromtimestamp(mtime).isoformat()
+                })
+            except json.JSONDecodeError as e:
+                return jsonify({'success': False, 'error': f'Invalid JSON format in {screener_name}: {str(e)}'}), 500
+            except Exception as e:
+                return jsonify({'success': False, 'error': f'Error reading file {screener_name}: {str(e)}'}), 500
         else:
             return jsonify({'success': False, 'error': f'File not found: {screener_name}. Searched paths: {[os.path.join(MARKMINERVINI_RESULTS_DIR, f"{screener_name}.json"), os.path.join(RESULTS_DIR, f"{screener_name}.json")]}'}), 404
             
@@ -484,10 +701,12 @@ def get_qullamaggie_breakout_results():
 def get_qullamaggie_episode_pivot_results():
     """쿨라매기 에피소드 피벗 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_DIR, 'screeners', 'qullamaggie', 'episode_pivot_results.json')
-        if os.path.exists(json_file):
-            with open(json_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+        qullamaggie_dir = os.path.join(RESULTS_DIR, 'screeners', 'qullamaggie')
+        df, _ = _load_latest_json(qullamaggie_dir, 'episode_pivot_results')
+        
+        if df is not None:
+            # DataFrame을 JSON 직렬화 가능한 형태로 변환
+            data = sanitize_json_data(df.to_dict('records'))
             return jsonify({
                 'success': True,
                 'data': data,
@@ -502,10 +721,12 @@ def get_qullamaggie_episode_pivot_results():
 def get_qullamaggie_parabolic_short_results():
     """쿨라매기 파라볼릭 숏 셋업 결과 반환"""
     try:
-        json_file = os.path.join(RESULTS_DIR, 'screeners', 'qullamaggie', 'parabolic_short_results.json')
-        if os.path.exists(json_file):
-            with open(json_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+        qullamaggie_dir = os.path.join(RESULTS_DIR, 'screeners', 'qullamaggie')
+        df, _ = _load_latest_json(qullamaggie_dir, 'parabolic_short_results')
+        
+        if df is not None:
+            # DataFrame을 JSON 직렬화 가능한 형태로 변환
+            data = sanitize_json_data(df.to_dict('records'))
             return jsonify({
                 'success': True,
                 'data': data,
@@ -599,18 +820,60 @@ def get_recent_signals():
         
         for screener_name, screener_dir in screeners.items():
             try:
+                print(f"Processing screener: {screener_name}, dir: {screener_dir}")
                 # 해당 스크리너의 최신 결과 파일 찾기
                 if os.path.exists(screener_dir):
                     json_files = glob.glob(os.path.join(screener_dir, '*.json'))
                     if json_files:
-                        # 가장 최근 파일 선택
-                        latest_file = max(json_files, key=os.path.getmtime)
-                        file_mtime = datetime.fromtimestamp(os.path.getmtime(latest_file))
+                        # 개선된 파일 선택 로직: 타임스탬프 우선, 파일 시스템 시간 보조
+                        def _get_file_timestamp_priority(file_path: str) -> tuple[int, datetime]:
+                            """파일 우선순위 계산 (파일명 타임스탬프 > 파일 시스템 시간)"""
+                            filename = os.path.basename(file_path)
+                            
+                            # 파일명에서 타임스탬프 추출 시도
+                            import re
+                            # _YYYYMMDD 형식 매칭
+                            match = re.search(r'_(\d{8})(?:\.json)?$', filename)
+                            if match:
+                                try:
+                                    timestamp = datetime.strptime(match.group(1), '%Y%m%d')
+                                    return (1, timestamp)  # 높은 우선순위
+                                except ValueError:
+                                    pass
+                            
+                            # _YYYY-MM-DD 형식 매칭
+                            match = re.search(r'_(\d{4}-\d{2}-\d{2})(?:\.json)?$', filename)
+                            if match:
+                                try:
+                                    timestamp = datetime.strptime(match.group(1), '%Y-%m-%d')
+                                    return (1, timestamp)  # 높은 우선순위
+                                except ValueError:
+                                    pass
+                            
+                            # 파일 시스템 수정 시간 사용
+                            file_mtime = datetime.fromtimestamp(os.path.getmtime(file_path))
+                            return (0, file_mtime)  # 낮은 우선순위
+                        
+                        # 우선순위 기준으로 최신 파일 선택
+                        latest_file = max(json_files, key=_get_file_timestamp_priority)
+                        
+                        # 파일의 실제 타임스탬프 또는 파일 시스템 시간 가져오기
+                        priority, file_timestamp = _get_file_timestamp_priority(latest_file)
+                        file_mtime = file_timestamp
                         
                         # 최근 시그널인지 확인
                         if file_mtime >= cutoff_date:
-                            with open(latest_file, 'r', encoding='utf-8') as f:
-                                data = json.load(f)
+                            # 파일 크기 확인 (빈 파일 건너뛰기)
+                            if os.path.getsize(latest_file) == 0:
+                                print(f"Skipping empty file: {latest_file}")
+                                continue
+                            
+                            try:
+                                with open(latest_file, 'r', encoding='utf-8') as f:
+                                    data = json.load(f)
+                            except (json.JSONDecodeError, UnicodeDecodeError) as e:
+                                print(f"Error reading JSON file {latest_file}: {e}")
+                                continue
                             
                             # 데이터가 리스트인 경우
                             if isinstance(data, list) and data:
@@ -618,28 +881,94 @@ def get_recent_signals():
                                     # 심볼 정보 추출
                                     symbol = item.get('symbol', item.get('ticker', item.get('종목명', 'N/A')))
                                     
-                                    # 현재가 정보 추출
-                                    price = item.get('close', item.get('현재가', item.get('price', 'N/A')))
+                                    # 현재가 정보 추출 - 더 많은 필드명 확인
+                                    price = item.get('price', item.get('close', item.get('현재가', item.get('Close', item.get('current_price', 'N/A')))))
                                     
-                                    # 변화율 계산 (없으면 임시로 랜덤 값 생성)
-                                    change_pct = item.get('change_pct', item.get('변화율', None))
-                                    if change_pct is None and isinstance(price, (int, float)):
-                                        # 임시로 -5% ~ +5% 범위의 변화율 생성
-                                        import random
-                                        change_pct = round(random.uniform(-5.0, 5.0), 2)
-                                    elif change_pct is None:
-                                        change_pct = 'N/A'
+                                    # 변화율 추출 - 더 많은 필드명 확인
+                                    change_pct = item.get('change_pct', item.get('변화율', item.get('pct_change', item.get('Change%', item.get('change_percent', 'N/A')))))
                                     
-                                    # RS 점수 추출
-                                    rs_score = item.get('rs_score', item.get('RS점수', item.get('relative_strength', 'N/A')))
+                                    # RS 점수 추출 - 스크리너별 특별 처리
+                                    if screener_name == 'momentum_signals':
+                                        # 모멘텀 시그널의 경우 rs_score 필드 직접 확인
+                                        rs_score = item.get('rs_score', 'N/A')
+                                        if rs_score != 'N/A' and isinstance(rs_score, (int, float)):
+                                            rs_score = round(float(rs_score), 1)
+                                    else:
+                                        # 다른 스크리너들의 경우 기존 로직 사용
+                                        rs_score = item.get('rs_score', item.get('RS점수', item.get('relative_strength', item.get('RS_Score', item.get('rs_percentile', 'N/A')))))
+                                    
+                                    # 시그널 발생일 추출
+                                    signal_date = item.get('signal_date', item.get('date', item.get('detection_date', item.get('processing_date', file_mtime.strftime('%Y-%m-%d')))))
+                                    if signal_date and signal_date != 'N/A':
+                                        # 날짜 형식 정규화
+                                        try:
+                                            from datetime import datetime
+                                            if isinstance(signal_date, str):
+                                                # 다양한 날짜 형식 처리
+                                                if signal_date.startswith('1970') or signal_date == '1970-01-01':
+                                                    signal_date = file_mtime.strftime('%Y-%m-%d')
+                                                else:
+                                                    # 날짜 형식 검증
+                                                    datetime.strptime(signal_date, '%Y-%m-%d')
+                                            elif isinstance(signal_date, (int, float)):
+                                                # timestamp인 경우
+                                                if signal_date < 86400:  # 1970년 1월 2일 이전
+                                                    signal_date = file_mtime.strftime('%Y-%m-%d')
+                                                else:
+                                                    signal_date = datetime.fromtimestamp(signal_date).strftime('%Y-%m-%d')
+                                        except:
+                                            signal_date = file_mtime.strftime('%Y-%m-%d')
+                                    else:
+                                        signal_date = file_mtime.strftime('%Y-%m-%d')
+                                    
+                                    # 실시간 가격 정보 가져오기 (yfinance 사용)
+                                    if price == 'N/A' or change_pct == 'N/A':
+                                        try:
+                                            import yfinance as yf
+                                            ticker = yf.Ticker(symbol)
+                                            hist = ticker.history(period='2d')
+                                            if not hist.empty and len(hist) >= 2:
+                                                current_price = hist['Close'].iloc[-1]
+                                                prev_price = hist['Close'].iloc[-2]
+                                                if price == 'N/A':
+                                                    price = round(float(current_price), 2)
+                                                if change_pct == 'N/A':
+                                                    change_pct = round(((current_price - prev_price) / prev_price) * 100, 2)
+                                        except Exception:
+                                            pass
+                                    
+                                    # 스크리너별 특별 처리
+                                    if screener_name == 'markminervini':
+                                        # markminervini에서 추가 필드 확인
+                                        if price == 'N/A':
+                                            price = item.get('Current_Price', 'N/A')
+                                        if change_pct == 'N/A':
+                                            change_pct = 'N/A'  # markminervini에는 변화율 정보가 없음
+                                    elif screener_name in ['us_gainer', 'us_setup']:
+                                        # us_gainer, us_setup에서 성과 기반 RS 점수 계산
+                                        if rs_score == 'N/A':
+                                            # 1개월 성과를 기반으로 간단한 RS 점수 계산
+                                            perf_1m = item.get('perf_1m_pct', item.get('change_pct', 0))
+                                            if isinstance(perf_1m, (int, float)) and perf_1m > 0:
+                                                # 성과를 0-100 범위로 매핑 (간단한 방식)
+                                                rs_score = min(100, max(0, 50 + perf_1m * 2))
+                                                rs_score = round(rs_score, 1)
+                                            else:
+                                                rs_score = 'N/A'
                                     
                                     signal_info = {
                                         'screener': screener_name,
                                         'symbol': symbol,
-                                        'signal_date': file_mtime.strftime('%Y-%m-%d'),
-                                        'price': price,
-                                        'change_pct': change_pct,
-                                        'rs_score': rs_score
+                                        'signal_date': signal_date,
+                                        'price': price if price != 'N/A' else 'N/A',
+                                        'change_pct': change_pct if change_pct != 'N/A' else 'N/A',
+                                        'rs_score': rs_score if rs_score != 'N/A' else 'N/A',
+                                        'company_name': item.get('company_name', item.get('Company_Name', item.get('종목명', 'N/A'))),
+                                        # Pattern detection fields for compatibility
+                                        'vcp_detected': item.get('vcp_detected'),
+                                        'VCP_Pattern': item.get('vcp_detected', item.get('VCP_Pattern')),
+                                        'cup_handle_detected': item.get('cup_handle_detected'),
+                                        'Cup_Handle_Pattern': item.get('cup_handle_detected', item.get('Cup_Handle_Pattern'))
                                     }
                                     recent_signals.append(signal_info)
             except Exception as e:
@@ -649,10 +978,13 @@ def get_recent_signals():
         # 시그널 발생일 기준으로 정렬 (최신순)
         recent_signals.sort(key=lambda x: x['signal_date'], reverse=True)
         
+        # NaN 값 처리
+        sanitized_data = sanitize_json_data(recent_signals)
+        
         return jsonify({
             'success': True,
-            'data': recent_signals,
-            'total_count': len(recent_signals),
+            'data': sanitized_data,
+            'total_count': len(sanitized_data),
             'days_filter': days
         })
     except Exception as e:
@@ -660,9 +992,58 @@ def get_recent_signals():
 
 @app.route('/api/top-stocks', methods=['GET'])
 def get_top_stocks():
-    """매수 랭킹 상위 10개 종목 반환"""
+    """매수 랭킹 상위 10개 종목 반환 (markminervini 패턴 감지된 결과만 사용)"""
     try:
-        # 랭킹 결과 파일 경로
+        # TOPSIS 기반 랭킹 파일 우선 사용
+        ranking_file = os.path.join(RESULTS_DIR, 'ranking_results.csv')
+        
+        if not os.path.exists(ranking_file):
+            # 대안으로 ranking 디렉토리의 파일 확인
+            ranking_file = os.path.join(RESULTS_DIR, 'ranking', 'ranking_results.csv')
+        
+        if os.path.exists(ranking_file):
+            df = pd.read_csv(ranking_file)
+            # NaN 값을 None으로 변환
+            df = df.where(pd.notnull(df), None)
+            
+            # 상위 10개 선택
+            top_10 = df.head(10)
+            
+            # 결과 포맷팅 - 핵심 데이터만 포함
+            top_stocks = []
+            for _, row in top_10.iterrows():
+                # RS 점수는 이미 Mark Minervini 방식으로 0-100 범위로 계산됨
+                rs_score = row.get('relative_strength', 0)
+                if not isinstance(rs_score, (int, float)) or rs_score < 0:
+                    rs_score = 0
+                
+                stock_info = {
+                    'symbol': row.get('symbol', 'N/A'),
+                    'rank': int(row.get('rank', 0)),
+                    'topsis_score': float(row.get('score', 0)),
+                    'rs_score': round(float(rs_score), 1),
+                    'price_momentum_20d': float(row.get('price_momentum_20d', 0)),
+                    # Pattern detection fields for compatibility
+                    'vcp_detected': row.get('vcp_detected'),
+                    'VCP_Pattern': row.get('vcp_detected', row.get('VCP_Pattern')),
+                    'cup_handle_detected': row.get('cup_handle_detected'),
+                    'Cup_Handle_Pattern': row.get('cup_handle_detected', row.get('Cup_Handle_Pattern'))
+                }
+                top_stocks.append(stock_info)
+            
+            mtime = os.path.getmtime(ranking_file)
+            
+            # NaN 값 처리
+            sanitized_data = sanitize_json_data(top_stocks)
+            
+            return jsonify({
+                'success': True,
+                'data': sanitized_data,
+                'total_count': len(sanitized_data),
+                'last_updated': datetime.fromtimestamp(mtime).isoformat()
+            })
+        
+        # 패턴 감지 결과가 없으면 기존 랭킹 파일 사용 (fallback)
         ranking_file = os.path.join(RESULTS_DIR, 'ranking', 'ranking_results.csv')
         
         if not os.path.exists(ranking_file):
@@ -671,6 +1052,8 @@ def get_top_stocks():
         
         if os.path.exists(ranking_file):
             df = pd.read_csv(ranking_file)
+            # NaN 값을 None으로 변환
+            df = df.where(pd.notnull(df), None)
             
             # 상위 10개 선택
             top_10 = df.head(10)
@@ -688,16 +1071,24 @@ def get_top_stocks():
                     'rank': int(row.get('rank', 0)),
                     'topsis_score': float(row.get('score', row.get('topsis_score', 0))),
                     'rs_score': round(float(rs_score), 1),
-                    'price_momentum_20d': float(row.get('price_momentum_20d', 0))
+                    'price_momentum_20d': float(row.get('price_momentum_20d', 0)),
+                    # Pattern detection fields for compatibility
+                    'vcp_detected': row.get('vcp_detected'),
+                    'VCP_Pattern': row.get('vcp_detected', row.get('VCP_Pattern')),
+                    'cup_handle_detected': row.get('cup_handle_detected'),
+                    'Cup_Handle_Pattern': row.get('cup_handle_detected', row.get('Cup_Handle_Pattern'))
                 }
                 top_stocks.append(stock_info)
             
             mtime = os.path.getmtime(ranking_file)
             
+            # NaN 값 처리
+            sanitized_data = sanitize_json_data(top_stocks)
+            
             return jsonify({
                 'success': True,
-                'data': top_stocks,
-                'total_count': len(top_stocks),
+                'data': sanitized_data,
+                'total_count': len(sanitized_data),
                 'last_updated': datetime.fromtimestamp(mtime).isoformat()
             })
         else:
@@ -731,6 +1122,8 @@ def get_dashboard_summary():
             if os.path.exists(file_path):
                 try:
                     df = pd.read_json(file_path)
+                    # NaN 값을 None으로 변환
+                    df = df.where(pd.notnull(df), None)
                     total_signals += len(df)
                     active_screeners += 1
                     
@@ -762,6 +1155,8 @@ def get_dashboard_summary():
             if os.path.exists(ranking_file):
                 try:
                     df = pd.read_csv(ranking_file)
+                    # NaN 값을 None으로 변환
+                    df = df.where(pd.notnull(df), None)
                     if not df.empty:
                         # topsis_score 또는 score 컬럼 확인
                         score_column = None
@@ -808,6 +1203,8 @@ def get_dashboard_summary():
             if os.path.exists(file_path):
                 try:
                     df = pd.read_json(file_path)
+                    # NaN 값을 None으로 변환
+                    df = df.where(pd.notnull(df), None)
                     screeners_status[name] = {
                         'available': True,
                         'count': len(df),

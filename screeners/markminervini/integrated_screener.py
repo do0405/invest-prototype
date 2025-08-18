@@ -175,11 +175,11 @@ class IntegratedScreener:
                 'image_generated': False,
                 'vcp_detected': False,
                 'vcp_confidence': 0.0,
-                'vcp_confidence_level': 'None',
+                'vcp_confidence_level': 'Low',  # 0.0인 경우 "Low"로 변경
                 'vcp_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
                 'cup_handle_detected': False,
                 'cup_handle_confidence': 0.0,
-                'cup_handle_confidence_level': 'None',
+                'cup_handle_confidence_level': 'Low',  # 0.0인 경우 "Low"로 변경
                 'cup_handle_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
                 'processing_date': datetime.now().strftime('%Y-%m-%d'),
                 'error': str(e)
@@ -215,25 +215,17 @@ class IntegratedScreener:
             try:
                 logger.info(f"진행률: {i}/{total_symbols} ({i/total_symbols*100:.1f}%) - {symbol}")
                 result = self.process_symbol(symbol)
-                results.append(result)
+                
+                # 둘 다 false인 경우 저장하지 않음
+                if result['vcp_detected'] or result['cup_handle_detected']:
+                    results.append(result)
+                else:
+                    logger.debug(f"{symbol}: 패턴 미감지로 인해 결과에서 제외됨")
                 
             except Exception as e:
                 logger.error(f"{symbol} 처리 중 오류: {e}")
-                results.append({
-                    'symbol': symbol,
-                    'data_available': False,
-                    'image_generated': False,
-                    'vcp_detected': False,
-                    'vcp_confidence': 0.0,
-                    'vcp_confidence_level': 'None',
-                    'vcp_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
-                    'cup_handle_detected': False,
-                    'cup_handle_confidence': 0.0,
-                    'cup_handle_confidence_level': 'None',
-                    'cup_handle_dimensional_scores': {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0},
-                    'processing_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    'error': str(e)
-                })
+                # 오류가 발생한 경우에도 둘 다 false이므로 결과에 추가하지 않음
+                logger.debug(f"{symbol}: 처리 오류로 인해 결과에서 제외됨 - {e}")
         
         # 결과 DataFrame 생성
         results_df = pd.DataFrame(results)
@@ -294,10 +286,45 @@ class IntegratedScreener:
             final_df.to_csv(self.pattern_results_csv, index=False, encoding='utf-8-sig')
             logger.info(f"CSV 결과 저장: {self.pattern_results_csv}")
             
-            # JSON 저장
+            # JSON 저장 (dimensional_scores를 dict로 변환 및 NaN 처리)
             results_dict = final_df.to_dict('records')
+            for record in results_dict:
+                # NaN 값을 0으로 처리하고 confidence level 조정
+                import math
+                for key, value in record.items():
+                    if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+                        record[key] = 0.0
+                        # confidence가 0.0이 된 경우 해당 confidence_level을 "Low"로 설정
+                        if key in ['vcp_confidence', 'cup_handle_confidence'] and record[key] == 0.0:
+                            level_key = key.replace('confidence', 'confidence_level')
+                            if level_key in record:
+                                record[level_key] = 'Low'
+                    elif value == 'NaN' or str(value) == 'nan':
+                        record[key] = 0.0
+                        # confidence가 0.0이 된 경우 해당 confidence_level을 "Low"로 설정
+                        if key in ['vcp_confidence', 'cup_handle_confidence'] and record[key] == 0.0:
+                            level_key = key.replace('confidence', 'confidence_level')
+                            if level_key in record:
+                                record[level_key] = 'Low'
+                
+                # dimensional_scores가 문자열인 경우 dict로 변환
+                for key in ['vcp_dimensional_scores', 'cup_handle_dimensional_scores']:
+                    if key in record and isinstance(record[key], str):
+                        try:
+                            # numpy 타입이 포함된 문자열을 처리
+                            import re
+                            import ast
+                            score_str = record[key]
+                            # numpy 타입 제거 (예: np.float64(0.8) -> 0.8)
+                            score_str = re.sub(r'np\.\w+\(([^)]+)\)', r'\1', score_str)
+                            record[key] = ast.literal_eval(score_str)
+                        except (ValueError, SyntaxError) as e:
+                            # 변환 실패 시 기본값 설정
+                            logger.warning(f"dimensional_scores 파싱 실패 ({key}): {e}")
+                            record[key] = {'technical_quality': 0.0, 'volume_confirmation': 0.0, 'temporal_validity': 0.0, 'market_context': 0.0}
+            
             with open(self.pattern_results_json, 'w', encoding='utf-8') as f:
-                json.dump(results_dict, f, indent=2, ensure_ascii=False)
+                json.dump(results_dict, f, indent=2, ensure_ascii=False, default=str)
             logger.info(f"JSON 결과 저장: {self.pattern_results_json}")
             
         except Exception as e:

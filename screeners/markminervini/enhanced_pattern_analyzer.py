@@ -32,10 +32,10 @@ class DimensionalScores:
     
     def to_dict(self) -> Dict[str, float]:
         return {
-            'technical_quality': self.technical_quality,
-            'volume_confirmation': self.volume_confirmation,
-            'temporal_validity': self.temporal_validity,
-            'market_context': self.market_context
+            'technical_quality': float(self.technical_quality),
+            'volume_confirmation': float(self.volume_confirmation),
+            'temporal_validity': float(self.temporal_validity),
+            'market_context': float(self.market_context)
         }
 
 
@@ -56,10 +56,17 @@ class EnhancedPatternAnalyzer:
     
     def _normalize_score(self, score: float, max_score: float = 1.0) -> float:
         """점수를 0-1 범위로 정규화"""
-        if max_score <= 0:
+        if max_score <= 0 or np.isnan(max_score) or np.isinf(max_score):
+            return 0.0
+        
+        if np.isnan(score) or np.isinf(score):
             return 0.0
         
         normalized = score / max_score
+        
+        if np.isnan(normalized) or np.isinf(normalized):
+            return 0.0
+        
         return min(max(normalized, 0.0), 1.0)
     
     def _calculate_technical_quality_vcp(self, prices: np.ndarray, peaks: np.ndarray, 
@@ -220,10 +227,18 @@ class EnhancedPatternAnalyzer:
             )
             
             # 5. 가중 평균으로 최종 신뢰도 계산
-            final_confidence = sum(
-                score * self.DIMENSION_WEIGHTS[dimension] 
-                for dimension, score in dimensional_scores.to_dict().items()
-            )
+            final_confidence = 0.0
+            for dimension, score in dimensional_scores.to_dict().items():
+                if dimension in self.DIMENSION_WEIGHTS:
+                    weight = self.DIMENSION_WEIGHTS[dimension]
+                    if not (np.isnan(score) or np.isinf(score) or np.isnan(weight) or np.isinf(weight)):
+                        final_confidence += score * weight
+            
+            # NaN 체크
+            if np.isnan(final_confidence) or np.isinf(final_confidence):
+                final_confidence = 0.0
+            else:
+                final_confidence = max(0.0, min(1.0, final_confidence))  # 0-1 범위로 제한
             
             # 6. 패턴 감지 결정
             vcp_detected = final_confidence >= self.DETECTION_THRESHOLD
@@ -436,10 +451,18 @@ class EnhancedPatternAnalyzer:
             )
             
             # 6. 가중 평균으로 최종 신뢰도 계산
-            final_confidence = sum(
-                score * self.DIMENSION_WEIGHTS[dimension] 
-                for dimension, score in dimensional_scores.to_dict().items()
-            )
+            final_confidence = 0.0
+            for dimension, score in dimensional_scores.to_dict().items():
+                if dimension in self.DIMENSION_WEIGHTS:
+                    weight = self.DIMENSION_WEIGHTS[dimension]
+                    if not (np.isnan(score) or np.isinf(score) or np.isnan(weight) or np.isinf(weight)):
+                        final_confidence += score * weight
+            
+            # NaN 체크
+            if np.isnan(final_confidence) or np.isinf(final_confidence):
+                final_confidence = 0.0
+            else:
+                final_confidence = max(0.0, min(1.0, final_confidence))  # 0-1 범위로 제한
             
             # 7. 패턴 감지 결정
             cup_handle_detected = final_confidence >= self.DETECTION_THRESHOLD
@@ -513,11 +536,17 @@ class EnhancedPatternAnalyzer:
     
     def _get_confidence_level(self, confidence: float) -> str:
         """신뢰도 수준 분류"""
+        # NaN이나 무한대 값을 0으로 처리
+        if np.isnan(confidence) or np.isinf(confidence):
+            confidence = 0.0
+            
         if confidence >= self.HIGH_CONFIDENCE_THRESHOLD:
             return 'High'
         elif confidence >= self.DETECTION_THRESHOLD:
             return 'Medium'
         elif confidence >= 0.4:
             return 'Low'
+        elif confidence == 0.0:
+            return 'Low'  # 0.0인 경우 "low"로 변경
         else:
             return 'None'

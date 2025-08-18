@@ -25,7 +25,7 @@ from screeners.markminervini.screener import run_us_screening
 from screeners.us_setup.screener import screen_us_setup
 from screeners.us_gainer.screener import screen_us_gainers
 from screeners.leader_stock.screener import run_leader_stock_screening
-from screeners.momentum_signals.screener import run_stage2_breakout_screening
+from screeners.momentum_signals.screener import run_momentum_signals_screening
 from screeners.ipo_investment.screener import run_ipo_investment_screening
 from screeners.markminervini.ticker_tracker import track_new_tickers
 
@@ -419,7 +419,7 @@ def run_momentum_signals_screener(skip_data=False) -> None:
     """Run the Stan Weinstein Stage 2 breakout screener."""
     try:
         print("\n📊 Stan Weinstein Stage 2 Breakout 스크리너 시작...")
-        df = run_stage2_breakout_screening(skip_data=skip_data)
+        df = run_momentum_signals_screening(skip_data=skip_data)
         if not df.empty:
             print(f"✅ Stage 2 Breakout 결과 저장 완료: {len(df)}개 종목")
             update_first_buy_signals(df, MOMENTUM_SIGNALS_RESULTS_DIR)

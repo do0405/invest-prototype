@@ -2446,5 +2446,53 @@
   {
     "symbol":"XPRO",
     "first_signal_date":"2025-08-01"
+  },
+  {
+    "symbol":"AES",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"APP",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"CELC",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"DHI",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"FIX",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"FSS",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"GL",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"HESM",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"HIMS",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"MDXG",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"PX",
+    "first_signal_date":"2025-08-04"
+  },
+  {
+    "symbol":"TRS",
+    "first_signal_date":"2025-08-04"
   }
 ]

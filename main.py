@@ -11,6 +11,7 @@ import pandas as pd
 
 from portfolio.manager import create_portfolio_manager
 from utils.path_utils import add_project_root
+from utils.file_cleanup import cleanup_old_timestamped_files
 
 # 프로젝트 루트 디렉토리를 Python 경로에 추가
 add_project_root()
@@ -56,6 +57,20 @@ def main():
         print("\n📁 디렉토리 생성 중...")
         ensure_directories()
         print("✅ 디렉토리 생성 완료")
+        
+        # 한 달 이상 된 타임스탬프 파일 자동 정리
+        print("\n🧹 오래된 타임스탬프 파일 정리 중...")
+        from config import RESULTS_DIR
+        cleanup_result = cleanup_old_timestamped_files(
+            directory=RESULTS_DIR,
+            days_threshold=30,
+            extensions=['.csv', '.json'],
+            dry_run=False
+        )
+        if cleanup_result['deleted_count'] > 0:
+            print(f"✅ {cleanup_result['deleted_count']}개 오래된 파일 정리 완료")
+        else:
+            print("📂 정리할 오래된 파일 없음")
 
         if args.schedule:
             print("\n🕐 스케줄러 모드 시작")

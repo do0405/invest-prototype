@@ -117,15 +117,6 @@
     "eps_growth_qoq": 54.29547302792085
   },
   {
-    "symbol": "APPF",
-    "price": 267.3800048828125,
-    "change_pct": 3.1558612232038152,
-    "volume": 539800,
-    "relative_volume": 2.0638632757489055,
-    "market_cap": 11442484224,
-    "eps_growth_qoq": 14.648057865723482
-  },
-  {
     "symbol": "ARGX",
     "price": 670.3300170898438,
     "change_pct": 11.9287349419815,
@@ -360,15 +351,6 @@
     "eps_growth_qoq": 200
   },
   {
-    "symbol": "USAR",
-    "price": 12.710000038146973,
-    "change_pct": 13.99103563218176,
-    "volume": 6542500,
-    "relative_volume": 2.2662259875589936,
-    "market_cap": 1343096704,
-    "eps_growth_qoq": 207.84517582816687
-  },
-  {
     "symbol": "VSEC",
     "price": 156.5399932861328,
     "change_pct": 10.64461267555885,
@@ -394,5 +376,194 @@
     "relative_volume": 3.4126745626603125,
     "market_cap": 7536533504,
     "eps_growth_qoq": 15.825688073394495
+  },
+  {
+    "symbol": "BGC",
+    "price": 9.479999542236328,
+    "change_pct": 2.265362180179631,
+    "volume": 6317400,
+    "relative_volume": 2.1800684149138525,
+    "market_cap": 4511503360,
+    "eps_growth_qoq": 118.87870491608142
+  },
+  {
+    "symbol": "NVT",
+    "price": 89.87999725341797,
+    "change_pct": 14.613618148502926,
+    "volume": 6166300,
+    "relative_volume": 3.162027297951961,
+    "market_cap": 14797483008,
+    "eps_growth_qoq": 3271.028037383178
+  },
+  {
+    "symbol": "SXI",
+    "price": 181.16000366210935,
+    "change_pct": 9.96721963180136,
+    "volume": 300500,
+    "relative_volume": 2.729336966394187,
+    "market_cap": 2186891008,
+    "eps_growth_qoq": 2453.0921820303383
+  },
+  {
+    "symbol": "USAR",
+    "price": 13.9399995803833,
+    "change_pct": 9.677415724191096,
+    "volume": 10608900,
+    "relative_volume": 3.4762819914181655,
+    "market_cap": 1343096704,
+    "eps_growth_qoq": 207.84517582816687
+  },
+  {
+    "symbol": "ALGN",
+    "price": 136.52000427246094,
+    "change_pct": 5.821261983874493,
+    "volume": 7974600,
+    "relative_volume": 6.554212832636307,
+    "market_cap": 10324237312,
+    "eps_growth_qoq": 33.65654832135579
+  },
+  {
+    "symbol": "APPF",
+    "price": 319.1499938964844,
+    "change_pct": 19.36195230318798,
+    "volume": 1105200,
+    "relative_volume": 3.9999276162212047,
+    "market_cap": 9511621632,
+    "eps_growth_qoq": 14.648057865723482
+  },
+  {
+    "symbol": "ATEC",
+    "price": 13.770000457763672,
+    "change_pct": 30.15123399868791,
+    "volume": 12996400,
+    "relative_volume": 7.318342217884225,
+    "market_cap": 2323348736,
+    "eps_growth_qoq": 20.73516096094939
+  },
+  {
+    "symbol": "AVNT",
+    "price": 33.790000915527344,
+    "change_pct": 7.031996332477264,
+    "volume": 1835300,
+    "relative_volume": 2.6198174278597377,
+    "market_cap": 3245114368,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "AWK",
+    "price": 145.72000122070312,
+    "change_pct": 3.907583794130831,
+    "volume": 2693100,
+    "relative_volume": 2.1334038473832395,
+    "market_cap": 28078649344,
+    "eps_growth_qoq": 40.97560975609756
+  },
+  {
+    "symbol": "BFAM",
+    "price": 125.0999984741211,
+    "change_pct": 10.610079718741794,
+    "volume": 1620800,
+    "relative_volume": 2.972898530211537,
+    "market_cap": 6904248832,
+    "eps_growth_qoq": 43.95910536413572
+  },
+  {
+    "symbol": "BIO",
+    "price": 284.6000061035156,
+    "change_pct": 17.627613016418884,
+    "volume": 1106800,
+    "relative_volume": 3.053496469107327,
+    "market_cap": 7589157888,
+    "eps_growth_qoq": 396.5625
+  },
+  {
+    "symbol": "EGO",
+    "price": 21.0,
+    "change_pct": 2.4390243902439046,
+    "volume": 3707000,
+    "relative_volume": 2.0637860387778737,
+    "market_cap": 4642092032,
+    "eps_growth_qoq": 90.61490014088008
+  },
+  {
+    "symbol": "IRTC",
+    "price": 164.97000122070312,
+    "change_pct": 17.68441278368309,
+    "volume": 1883800,
+    "relative_volume": 3.8118299333263637,
+    "market_cap": 5159081984,
+    "eps_growth_qoq": 53.68729641693811
+  },
+  {
+    "symbol": "NVST",
+    "price": 20.82999992370605,
+    "change_pct": 10.269987277610571,
+    "volume": 6198400,
+    "relative_volume": 2.655966490990311,
+    "market_cap": 3429996288,
+    "eps_growth_qoq": 46.666666666666664
+  },
+  {
+    "symbol": "RDDT",
+    "price": 188.63999938964844,
+    "change_pct": 17.466843322381663,
+    "volume": 27235400,
+    "relative_volume": 3.3293916110587722,
+    "market_cap": 46133952512,
+    "eps_growth_qoq": 241.37548742258582
+  },
+  {
+    "symbol": "RKT",
+    "price": 16.540000915527344,
+    "change_pct": 11.983753574180112,
+    "volume": 55949700,
+    "relative_volume": 3.277177804689113,
+    "market_cap": 39111086080,
+    "eps_growth_qoq": 82.80843686795724
+  },
+  {
+    "symbol": "SHW",
+    "price": 343.4100036621094,
+    "change_pct": 3.7868709484982777,
+    "volume": 4073900,
+    "relative_volume": 2.4978598699529746,
+    "market_cap": 90856939520,
+    "eps_growth_qoq": 49.7717801151022
+  },
+  {
+    "symbol": "STNG",
+    "price": 47.04999923706055,
+    "change_pct": 4.069896460625766,
+    "volume": 2243300,
+    "relative_volume": 2.0845090490099207,
+    "market_cap": 2293692928,
+    "eps_growth_qoq": 26.27419992097985
+  },
+  {
+    "symbol": "SVV",
+    "price": 11.470000267028809,
+    "change_pct": 10.182520990912526,
+    "volume": 2019600,
+    "relative_volume": 2.5179209348805878,
+    "market_cap": 1757782784,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "TAK",
+    "price": 14.15999984741211,
+    "change_pct": 3.206993963700455,
+    "volume": 6279100,
+    "relative_volume": 2.0071924048205094,
+    "market_cap": 47373299712,
+    "eps_growth_qoq": 200
+  },
+  {
+    "symbol": "TILE",
+    "price": 24.61000061035156,
+    "change_pct": 19.35014359226621,
+    "volume": 1189000,
+    "relative_volume": 3.3427985043155557,
+    "market_cap": 1553583232,
+    "eps_growth_qoq": 150.43070296877403
   }
 ]

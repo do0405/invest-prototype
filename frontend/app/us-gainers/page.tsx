@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
 import { apiClient, ScreeningData } from '@/lib/api';
+import AlgorithmDescription from '@/components/AlgorithmDescription';
 
 export default function USGainersPage() {
   const [data, setData] = useState<ScreeningData[]>([]);
@@ -30,12 +31,11 @@ export default function USGainersPage() {
     fetchData();
   }, []);
 
-  const columns: DataTableColumn<ScreeningData>[] = data.length
-    ? Object.keys(data[0]).slice(0, 8).map(key => ({
-        key,
-        header: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      }))
-    : [];
+  const columns: DataTableColumn<ScreeningData>[] = [
+    { key: 'symbol', header: 'Symbol' },
+    { key: 'price', header: 'Price', align: 'right' },
+    { key: 'change_pct', header: 'Change %', align: 'right' }
+  ];
 
   if (loading) {
     return (
@@ -62,6 +62,7 @@ export default function USGainersPage() {
       <p className="text-gray-600 mb-6">
         미국 주식 중 상승세가 강한 종목들을 선별한 결과입니다.
       </p>
+      <AlgorithmDescription algorithm="us-gainers" />
       {data.length > 0 ? (
         <DataTable data={data} columns={columns} />
       ) : (

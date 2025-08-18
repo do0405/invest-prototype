@@ -7,6 +7,8 @@
 import os
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')  # GUI 없는 백엔드 사용 (tkinter 오류 방지)
 import matplotlib.pyplot as plt
 import mplfinance as mpf
 from typing import Optional

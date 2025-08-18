@@ -10,6 +10,11 @@ interface TopStock extends ScreeningData {
   topsis_score: number;
   rs_score: number;
   price_momentum_20d: number;
+  // Pattern detection fields for compatibility
+  vcp_detected?: boolean;
+  VCP_Pattern?: boolean;
+  cup_handle_detected?: boolean;
+  Cup_Handle_Pattern?: boolean;
 }
 
 export default function TopRecommendationsPage() {

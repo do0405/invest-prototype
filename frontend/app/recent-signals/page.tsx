@@ -11,6 +11,11 @@ interface RecentSignal extends ScreeningData {
   price: number | string;
   change_pct: number | string;
   rs_score: number | string;
+  // Pattern detection fields for compatibility
+  vcp_detected?: boolean;
+  VCP_Pattern?: boolean;
+  cup_handle_detected?: boolean;
+  Cup_Handle_Pattern?: boolean;
 }
 
 export default function RecentSignalsPage() {
@@ -164,9 +169,6 @@ export default function RecentSignalsPage() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     변화율
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    RS 점수
-                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -188,21 +190,21 @@ export default function RecentSignalsPage() {
                       {signal.signal_date}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {typeof signal.price === 'number' ? `$${signal.price.toFixed(2)}` : signal.price}
+                      {typeof signal.price === 'number' ? `$${signal.price.toFixed(2)}` : 
+                       signal.price === 'N/A' ? <span className="text-gray-400 italic">N/A</span> : signal.price}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className={`${
-                        typeof signal.change_pct === 'number' && signal.change_pct > 0 
-                          ? 'text-green-600' 
-                          : typeof signal.change_pct === 'number' && signal.change_pct < 0 
-                          ? 'text-red-600' 
-                          : 'text-gray-900'
-                      }`}>
-                        {typeof signal.change_pct === 'number' ? `${signal.change_pct.toFixed(2)}%` : signal.change_pct}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {typeof signal.rs_score === 'number' ? signal.rs_score.toFixed(2) : signal.rs_score}
+                      {typeof signal.change_pct === 'number' ? (
+                        <span className={`${
+                          signal.change_pct > 0 ? 'text-green-600' : signal.change_pct < 0 ? 'text-red-600' : 'text-gray-900'
+                        }`}>
+                          {signal.change_pct.toFixed(2)}%
+                        </span>
+                      ) : signal.change_pct === 'N/A' ? (
+                        <span className="text-gray-400 italic">N/A</span>
+                      ) : (
+                        signal.change_pct
+                      )}
                     </td>
                   </tr>
                 ))}

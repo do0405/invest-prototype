@@ -1,18 +1,5 @@
 [
   {
-    "symbol": "FLYE",
-    "setup_type": "Breakout",
-    "passed": true,
-    "current_price": 5.909999847412109,
-    "volume_ratio": 1.6648470153050814,
-    "adr": 11.643455515666563,
-    "vcp_pattern": false,
-    "breakout_level": 6.474960050582886,
-    "stop_loss": 5.550000190734863,
-    "risk_reward_ratio": 1.6416681898979313,
-    "score": 5
-  },
-  {
     "symbol": "RBLX",
     "setup_type": "Breakout",
     "passed": true,
@@ -23,6 +10,19 @@
     "breakout_level": 153.60179626464844,
     "stop_loss": 135.64999389648438,
     "risk_reward_ratio": 6.438786569409684,
+    "score": 5
+  },
+  {
+    "symbol": "FLYE",
+    "setup_type": "Breakout",
+    "passed": true,
+    "current_price": 5.980000019073486,
+    "volume_ratio": 1.6968485418626529,
+    "adr": 11.025612936057973,
+    "vcp_pattern": false,
+    "breakout_level": 6.474960050582886,
+    "stop_loss": 5.809999942779541,
+    "risk_reward_ratio": 3.5176454913664474,
     "score": 5
   }
 ]

@@ -1,0 +1,32 @@
+[
+  {
+    "symbol": "IKNA",
+    "setup_type": "Parabolic Short",
+    "passed": true,
+    "current_price": 17.15999984741211,
+    "short_term_rise": 1143.478254109114,
+    "consecutive_up_days": 3,
+    "volume_ratio": 5.572828466808568,
+    "rsi14": 88.20686466814001,
+    "ma20_deviation": 98.27834995470262,
+    "first_down_candle": false,
+    "stop_loss": 18.52199935913086,
+    "risk_reward_ratio": 1.1150099190820535,
+    "score": 5
+  },
+  {
+    "symbol": "FIG",
+    "setup_type": "Parabolic Short",
+    "passed": true,
+    "current_price": 122.0,
+    "short_term_rise": 419.7239292940348,
+    "consecutive_up_days": 0,
+    "volume_ratio": 10.193090250138791,
+    "rsi14": 99.85187339505487,
+    "ma20_deviation": 273.8495291487616,
+    "first_down_candle": false,
+    "stop_loss": 150.06599807739258,
+    "risk_reward_ratio": 0.6059703264551495,
+    "score": 4
+  }
+]

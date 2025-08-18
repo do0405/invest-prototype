@@ -37,7 +37,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const getScreenerName = (id: string) => {
     const names: { [key: string]: string } = {
       'advanced_financial_results': 'Advanced Financial Results',
-      'integrated_results': 'Integrated Results',
+      'integrated_results': '패턴 인식 전 결과',
       'new_tickers': 'New Tickers',
       'previous_us_with_rs': 'Previous US with RS',
       'us_with_rs': 'US with RS',

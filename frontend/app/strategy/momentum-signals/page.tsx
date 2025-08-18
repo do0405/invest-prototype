@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import SimpleDataTable from '@/components/SimpleDataTable';
 import TradingViewChart from '@/components/TradingViewChart';
+import AlgorithmDescription from '@/components/AlgorithmDescription';
 import { apiClient, ScreeningData } from '@/lib/api';
 
 export default function MomentumSignalsPage() {
@@ -25,7 +26,7 @@ export default function MomentumSignalsPage() {
     fetchData();
   }, []);
 
-  // 간단한 컬럼 구성: 종목명과 시그널 발생일만 표시
+  // 간단한 컬럼 구성: 종목명과 현재가만 표시
   const simpleColumns = [
     {
       key: 'symbol',
@@ -35,17 +36,12 @@ export default function MomentumSignalsPage() {
       )
     },
     {
-      key: 'signal_date',
-      header: '모멘텀 시그널 발생일',
+      key: 'close_price',
+      header: '현재가',
       render: (item: Record<string, unknown>) => {
-        const value = item.signal_date;
-        if (value) {
-          try {
-            const date = new Date(value as string);
-            return date.toLocaleDateString('ko-KR');
-          } catch {
-            return String(value);
-          }
+        const value = item.close_price || item.price;
+        if (value && typeof value === 'number') {
+          return `$${value.toFixed(2)}`;
         }
         return 'N/A';
       }
@@ -88,6 +84,9 @@ export default function MomentumSignalsPage() {
           </Link>
         </div>
         
+        {/* 알고리즘 설명 */}
+        <AlgorithmDescription algorithm="momentum-signals" />
+        
         {/* 스크리닝 조건 설명 */}
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200 p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center space-x-2">
@@ -119,7 +118,7 @@ export default function MomentumSignalsPage() {
               <ul className="space-y-2 text-sm text-gray-600">
                 <li className="flex items-start space-x-2">
                   <span className="text-green-500 mt-1">•</span>
-                  <span>현재가 > 30주 이동평균선</span>
+                  <span>현재가 {'>'} 30주 이동평균선</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-green-500 mt-1">•</span>
@@ -127,7 +126,7 @@ export default function MomentumSignalsPage() {
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-green-500 mt-1">•</span>
-                  <span>거래량 비율 > 2.0 (20주 평균 대비)</span>
+                  <span>거래량 비율 {'>'} 2.0 (20주 평균 대비)</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-green-500 mt-1">•</span>
@@ -146,7 +145,7 @@ export default function MomentumSignalsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-start space-x-2">
                 <span className="text-purple-500 mt-1">•</span>
-                <span className="text-sm text-gray-600">SPY > 150일 이동평균선</span>
+                <span className="text-sm text-gray-600">SPY {'>'} 150일 이동평균선</span>
               </div>
               <div className="flex items-start space-x-2">
                 <span className="text-purple-500 mt-1">•</span>

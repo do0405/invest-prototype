@@ -23,6 +23,7 @@ from config import (
 from utils.calc_utils import get_us_market_today
 from utils.io_utils import ensure_dir, extract_ticker_from_filename
 from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary, read_csv_flexible
+from utils.relative_strength import calculate_rs_score_enhanced
 
 
 # 결과 저장 디렉토리
@@ -238,17 +239,72 @@ class MarketReversalLeaderScreener:
             return False
     
     def _load_rs_scores(self) -> Dict[str, float]:
-        """RS 점수 로드"""
+        """Fred6724 알고리즘 기반 RS 점수 계산 및 로드"""
         rs_scores = {}
         
-        if os.path.exists(US_WITH_RS_PATH):
-            try:
-                rs_df = read_csv_flexible(US_WITH_RS_PATH, required_columns=['symbol', 'rs_score'])
-                if rs_df is not None:
-                    rs_scores = rs_df.set_index('symbol')['rs_score'].to_dict()
-                    logger.info(f"RS 점수 로드 완료: {len(rs_scores)}개 종목")
-            except Exception as e:
-                logger.warning(f"RS 점수 로드 실패: {e}")
+        try:
+            # 먼저 기존 파일에서 로드 시도
+            if os.path.exists(US_WITH_RS_PATH):
+                try:
+                    rs_df = read_csv_flexible(US_WITH_RS_PATH, required_columns=['symbol', 'rs_score'])
+                    if rs_df is not None:
+                        rs_scores = rs_df.set_index('symbol')['rs_score'].to_dict()
+                        logger.info(f"기존 RS 점수 로드 완료: {len(rs_scores)}개 종목")
+                        return rs_scores
+                except Exception as e:
+                    logger.warning(f"기존 RS 점수 로드 실패, Fred6724 알고리즘으로 계산: {e}")
+            
+            # Fred6724 알고리즘으로 RS 점수 계산
+            logger.info("Fred6724 알고리즘 기반 RS 점수 계산 시작...")
+            
+            # 모든 주식 데이터를 하나의 DataFrame으로 결합
+            all_data = []
+            stock_files = [f for f in os.listdir(DATA_US_DIR) if f.endswith('.csv') and f != 'SPY.csv']
+            
+            for file in stock_files[:50]:  # 메모리 제한으로 50개 종목만 처리
+                ticker = extract_ticker_from_filename(file)
+                if not ticker:
+                    continue
+                    
+                file_path = os.path.join(DATA_US_DIR, file)
+                try:
+                    df = read_csv_flexible(file_path, required_columns=['date', 'close'])
+                    if df is not None and len(df) >= 252:  # 최소 1년 데이터 필요
+                        df['symbol'] = ticker
+                        df['date'] = pd.to_datetime(df['date'])
+                        all_data.append(df[['date', 'symbol', 'close']])
+                except Exception as e:
+                    logger.debug(f"종목 {ticker} 데이터 로드 실패: {e}")
+                    continue
+            
+            if not all_data:
+                logger.warning("RS 계산을 위한 데이터가 없습니다.")
+                return rs_scores
+            
+            # SPY 데이터 추가 (벤치마크)
+            spy_path = os.path.join(DATA_US_DIR, 'SPY.csv')
+            if os.path.exists(spy_path):
+                spy_df = read_csv_flexible(spy_path, required_columns=['date', 'close'])
+                if spy_df is not None:
+                    spy_df['symbol'] = 'SPY'
+                    spy_df['date'] = pd.to_datetime(spy_df['date'])
+                    all_data.append(spy_df[['date', 'symbol', 'close']])
+            
+            # 데이터 결합 및 MultiIndex 설정
+            combined_df = pd.concat(all_data, ignore_index=True)
+            combined_df = combined_df.set_index(['date', 'symbol'])
+            
+            # Fred6724 알고리즘으로 RS 점수 계산
+            rs_series = calculate_rs_score_enhanced(combined_df, price_col='close', benchmark_symbol='SPY')
+            
+            if not rs_series.empty:
+                rs_scores = rs_series.to_dict()
+                logger.info(f"Fred6724 알고리즘 기반 RS 점수 계산 완료: {len(rs_scores)}개 종목")
+            else:
+                logger.warning("Fred6724 알고리즘 RS 점수 계산 결과가 비어있습니다.")
+                
+        except Exception as e:
+            logger.error(f"RS 점수 계산 실패: {e}")
         
         return rs_scores
     
@@ -742,6 +798,11 @@ def run_leader_stock_screening(skip_data=False):
     print(f"✅ Market Reversal Leader 스크리닝 완료: {len(results_list)}개 종목, 신규 {len(new_tickers)}개")
     
     return results_df
+
+
+if __name__ == "__main__":
+    # 테스트 실행
+    run_leader_stock_screening()
 
 
 

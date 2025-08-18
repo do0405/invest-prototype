@@ -164,6 +164,170 @@ class StockRankingSystem:
             self.logger.error(f"Error calculating technical indicators: {e}")
             
         return indicators
+    
+    def _detect_stock_split_distortion(self, df: pd.DataFrame, symbol: str) -> bool:
+        """액면병합으로 인한 가격 왜곡을 감지합니다.
+        
+        Args:
+            df: DataFrame with OHLCV data
+            symbol: Stock symbol for logging
+            
+        Returns:
+            True if stock split distortion is detected, False otherwise
+        """
+        try:
+            if len(df) < 60:  # 최소 60일 데이터 필요
+                return False
+                
+            # 최근 30일간의 데이터 분석
+            recent_data = df.tail(30).copy()
+            
+            # 1. 급격한 가격 변화 감지 (하루에 50% 이상 하락 또는 2배 이상 상승)
+            daily_returns = recent_data['close'].pct_change().dropna()
+            extreme_changes = daily_returns[(daily_returns < -0.5) | (daily_returns > 1.0)]
+            
+            if len(extreme_changes) > 0:
+                self.logger.debug(f"{symbol}: Extreme price change detected: {extreme_changes.max():.2%}")
+                
+                # 극단적 변화가 있는 날의 거래량 확인
+                extreme_dates = extreme_changes.index
+                for date_idx in extreme_dates:
+                    # 해당 날짜의 거래량이 평균의 3배 이상인지 확인
+                    avg_volume = recent_data['volume'].mean()
+                    day_volume = recent_data.loc[date_idx, 'volume']
+                    
+                    if day_volume > avg_volume * 3:
+                        return True
+            
+            # 2. 연속적인 가격 패턴 이상 감지
+            # 가격이 갑자기 1/2, 1/3, 1/4 등으로 떨어지는 패턴
+            price_ratios = recent_data['close'] / recent_data['close'].shift(1)
+            suspicious_ratios = price_ratios[
+                (price_ratios.between(0.45, 0.55)) |  # 약 1/2
+                (price_ratios.between(0.30, 0.37)) |  # 약 1/3
+                (price_ratios.between(0.23, 0.27)) |  # 약 1/4
+                (price_ratios.between(0.18, 0.22))    # 약 1/5
+            ]
+            
+            if len(suspicious_ratios) > 0:
+                self.logger.debug(f"{symbol}: Suspicious price ratio detected: {suspicious_ratios.iloc[0]:.3f}")
+                return True
+            
+            # 3. 가격 레벨의 급격한 변화 감지
+            # 최근 5일 평균 가격과 그 이전 25일 평균 가격 비교
+            if len(df) >= 30:
+                recent_5d_avg = recent_data['close'].tail(5).mean()
+                previous_25d_avg = df['close'].iloc[-30:-5].mean()
+                
+                price_level_ratio = recent_5d_avg / previous_25d_avg
+                
+                # 가격 레벨이 갑자기 1/2 이하로 떨어지거나 2배 이상 오른 경우
+                if price_level_ratio < 0.6 or price_level_ratio > 1.8:
+                    # 동시에 거래량도 급증했는지 확인
+                    recent_5d_vol = recent_data['volume'].tail(5).mean()
+                    previous_25d_vol = df['volume'].iloc[-30:-5].mean()
+                    volume_ratio = recent_5d_vol / previous_25d_vol if previous_25d_vol > 0 else 1
+                    
+                    if volume_ratio > 2.0:  # 거래량이 2배 이상 증가
+                        self.logger.debug(f"{symbol}: Price level change with volume surge: {price_level_ratio:.3f}, vol: {volume_ratio:.2f}")
+                        return True
+            
+            # 4. 기술적 지표의 급격한 변화 감지
+            # RSI가 갑자기 극값에서 중간값으로 이동하는 패턴
+            if len(recent_data) >= 14:
+                rsi_values = []
+                for i in range(len(recent_data) - 13):
+                    rsi = self._calculate_rsi(recent_data['close'].iloc[i:i+14], 14)
+                    rsi_values.append(rsi)
+                
+                if len(rsi_values) >= 10:
+                    rsi_series = pd.Series(rsi_values)
+                    rsi_change = abs(rsi_series.iloc[-1] - rsi_series.iloc[-10])
+                    
+                    # RSI가 10일 사이에 40 이상 변화한 경우 (극값에서 중간값으로)
+                    if rsi_change > 40:
+                        self.logger.debug(f"{symbol}: Extreme RSI change detected: {rsi_change:.1f}")
+                        return True
+            
+            return False
+        except Exception as e:
+            self.logger.error(f"Error detecting stock split distortion for {symbol}: {e}")
+            return False
+    
+    def _detect_split_with_auto_adjust(self, symbol: str) -> bool:
+        """auto_adjust 설정 차이를 이용한 액면병합 감지
+        
+        최근 60일간의 데이터에서 auto_adjust=False와 auto_adjust=True 설정 간
+        차이가 발생하는 경우 해당 티커를 액면병합으로 판단하여 제외합니다.
+        
+        Args:
+            symbol: Stock symbol
+            
+        Returns:
+            True if split detected (should exclude), False otherwise
+        """
+        try:
+            import yfinance as yf
+            from datetime import datetime, timedelta
+            
+            # 최근 60일 데이터 가져오기
+            end_date = datetime.now()
+            start_date = end_date - timedelta(days=60)
+            
+            # auto_adjust=False로 데이터 가져오기
+            ticker_obj = yf.Ticker(symbol)
+            data_no_adjust = ticker_obj.history(
+                start=start_date, 
+                end=end_date, 
+                auto_adjust=False,
+                actions=False
+            )
+            
+            # auto_adjust=True로 데이터 가져오기
+            data_adjust = ticker_obj.history(
+                start=start_date, 
+                end=end_date, 
+                auto_adjust=True,
+                actions=False
+            )
+            
+            if data_no_adjust.empty or data_adjust.empty:
+                return False
+                
+            if len(data_no_adjust) != len(data_adjust):
+                return False
+            
+            # 동일한 날짜 데이터만 비교
+            common_dates = data_no_adjust.index.intersection(data_adjust.index)
+            if len(common_dates) < 30:  # 최소 30일 데이터 필요
+                return False
+            
+            data_no_adjust_common = data_no_adjust.loc[common_dates]
+            data_adjust_common = data_adjust.loc[common_dates]
+            
+            # 종가 기준으로 차이 계산
+            price_diff_ratio = abs(data_no_adjust_common['Close'] - data_adjust_common['Close']) / data_adjust_common['Close']
+            
+            # 5% 이상 차이가 나는 날이 3일 이상 있으면 액면병합으로 판단
+            significant_diff_days = (price_diff_ratio > 0.05).sum()
+            
+            if significant_diff_days >= 3:
+                self.logger.info(f"{symbol}: Auto-adjust 차이 감지 - {significant_diff_days}일간 5% 이상 차이")
+                return True
+            
+            # 거래량 차이도 확인
+            volume_diff_ratio = abs(data_no_adjust_common['Volume'] - data_adjust_common['Volume']) / data_adjust_common['Volume']
+            significant_vol_diff_days = (volume_diff_ratio > 0.1).sum()  # 10% 이상 차이
+            
+            if significant_vol_diff_days >= 3:
+                self.logger.info(f"{symbol}: Auto-adjust 거래량 차이 감지 - {significant_vol_diff_days}일간 10% 이상 차이")
+                return True
+                
+            return False
+            
+        except Exception as e:
+            self.logger.warning(f"Auto-adjust 기반 액면병합 감지 실패 for {symbol}: {e}")
+            return False  # 에러 발생 시 보수적으로 포함
         
     # Fundamental indicators removed as requested
         
@@ -339,12 +503,20 @@ class StockRankingSystem:
         stock_data = {}
         valid_symbols = []
         
-        # 먼저 유효한 종목들을 식별
+        # 먼저 유효한 종목들을 식별 (액면병합 필터링 포함)
         for symbol in symbols:
             try:
                 df = self.load_stock_data(symbol)
                 if df is not None and len(df) >= min_data_points:
-                    valid_symbols.append(symbol)
+                    # 액면병합 감지 및 필터링 (auto_adjust 기반 + 기존 방법 병행)
+                    split_detected_traditional = self._detect_stock_split_distortion(df, symbol)
+                    split_detected_auto_adjust = self._detect_split_with_auto_adjust(symbol)
+                    
+                    if not split_detected_traditional and not split_detected_auto_adjust:
+                        valid_symbols.append(symbol)
+                    else:
+                        detection_method = "traditional" if split_detected_traditional else "auto_adjust"
+                        self.logger.info(f"Stock split distortion detected for {symbol} using {detection_method} method, excluding from ranking")
                 else:
                     self.logger.debug(f"Insufficient data for {symbol}")
             except Exception as e:

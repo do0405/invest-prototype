@@ -2,15 +2,15 @@
 import { useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
-import NumberInputFilter, { NumberFilter } from '@/components/NumberInputFilter';
+// NumberInputFilter 제거됨 - 슬라이더 기반 필터 제거
+import AlgorithmDescription from '@/components/AlgorithmDescription';
 import { apiClient, ScreeningData } from '@/lib/api';
 
 export default function QullamaggieBreakoutPage() {
   const [data, setData] = useState<ScreeningData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [numberFilters, setNumberFilters] = useState<NumberFilter[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
+  // 슬라이더 기반 필터 제거됨
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -18,7 +18,6 @@ export default function QullamaggieBreakoutPage() {
       const res = await apiClient.getQullamaggieBreakout();
       if (res.success && res.data) {
         setData(res.data);
-        initializeNumberFilters(res.data);
         setError(null);
       } else {
         setError(res.message || 'Failed to fetch data');
@@ -28,56 +27,10 @@ export default function QullamaggieBreakoutPage() {
     fetchData();
   }, []);
 
-  const initializeNumberFilters = (data: ScreeningData[]) => {
-    if (data.length === 0) return;
-    
-    const numericColumns = Object.keys(data[0] || {}).filter(key => {
-      if (key.toLowerCase().includes('symbol') || key.toLowerCase().includes('ticker')) return false;
-      
-      const values = data.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val));
-      return values.length > 0;
-    });
-
-    const filters: NumberFilter[] = numericColumns.map(key => {
-      const values = data.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val)) as number[];
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const step = (max - min) > 100 ? Math.ceil((max - min) / 100) : 0.01;
-      
-      return {
-        key,
-        min,
-        max,
-        value: [min, max],
-        step
-      };
-    });
-
-    setNumberFilters(filters);
-  };
-
-  const handleNumberFilterChange = (filterKey: string, newValue: [number, number]) => {
-    setNumberFilters(prev => 
-      prev.map(filter => 
-        filter.key === filterKey 
-          ? { ...filter, value: newValue }
-          : filter
-      )
-    );
-  };
+  // 슬라이더 기반 필터 초기화 제거됨
 
   const resetFilters = () => {
-    setNumberFilters(prev => 
-      prev.map(filter => ({
-        ...filter,
-        value: [filter.min, filter.max]
-      }))
-    );
     setSearchTerm('');
-  };
-
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
   };
 
   const filteredData = useMemo(() => {
@@ -85,21 +38,21 @@ export default function QullamaggieBreakoutPage() {
       const searchMatch = !searchTerm || 
         item.symbol?.toString().toLowerCase().includes(searchTerm.toLowerCase());
       
-      const numberMatch = numberFilters.every(filter => {
-        const value = item[filter.key];
-        if (typeof value !== 'number' || isNaN(value)) return true;
-        return value >= filter.value[0] && value <= filter.value[1];
-      });
-      
-      return searchMatch && numberMatch;
+      return searchMatch;
     });
-  }, [data, searchTerm, numberFilters]);
+  }, [data, searchTerm]);
 
   const columns: DataTableColumn<ScreeningData>[] = data.length
-    ? Object.keys(data[0]).slice(0, 8).map(key => ({
-        key,
-        header: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      }))
+    ? [
+        {
+          key: 'symbol',
+          header: 'Symbol'
+        },
+        {
+          key: 'current_price',
+          header: 'Current Price'
+        }
+      ]
     : [];
 
   if (loading) {
@@ -136,6 +89,11 @@ export default function QullamaggieBreakoutPage() {
           </Link>
         </div>
       </div>
+      
+      {/* Algorithm Description */}
+      <div className="mb-8">
+        <AlgorithmDescription algorithm="qullamaggie_breakout" />
+      </div>
 
       {/* 검색 기능 */}
       <div className="mb-6">
@@ -155,14 +113,7 @@ export default function QullamaggieBreakoutPage() {
         </div>
       </div>
 
-      {/* 숫자 입력 필터 컴포넌트 */}
-      <NumberInputFilter
-        filters={numberFilters}
-        onFilterChange={handleNumberFilterChange}
-        onResetFilters={resetFilters}
-        showFilters={showFilters}
-        onToggleFilters={toggleFilters}
-      />
+
       
       <DataTable 
         data={filteredData} 

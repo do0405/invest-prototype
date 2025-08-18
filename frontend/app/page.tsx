@@ -43,22 +43,28 @@ export default function HomePage() {
     const fetchData = async () => {
       try {
         setLoading(true);
+        console.log('Starting API calls...');
         
         // 기존 요약 데이터 가져오기
+        console.log('Calling apiClient.getSummary()...');
         const summaryResponse = await apiClient.getSummary();
+        console.log('getSummary response:', summaryResponse);
         if (summaryResponse.success && summaryResponse.data) {
           setSummary(summaryResponse.data);
         }
         
         // 새로운 대시보드 요약 데이터 가져오기
-        const dashboardResponse = await fetch('http://localhost:5000/api/dashboard-summary');
+        console.log('Calling dashboard-summary API...');
+        const dashboardResponse = await fetch('/api/dashboard-summary');
         const dashboardResult: DashboardSummary = await dashboardResponse.json();
+        console.log('dashboard-summary response:', dashboardResult);
         
         if (dashboardResult.success && dashboardResult.data) {
           setDashboardSummary(dashboardResult);
         }
         
         setError(null);
+        console.log('All API calls completed successfully');
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Network error occurred');

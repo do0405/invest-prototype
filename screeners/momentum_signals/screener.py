@@ -250,7 +250,16 @@ class StanWeinsteinStage2Screener:
         return merged
     
     def _check_higher_highs_lows(self, df: pd.DataFrame, weeks: int = 6) -> bool:
-        """Higher highs와 Higher lows 패턴 확인 (비활성화)"""
+        """
+        Higher highs/Higher lows 패턴 확인
+        
+        패턴 형성 조건:
+        - Higher Highs: 각 고점이 이전 고점보다 높아야 함
+        - Higher Lows: 각 저점이 이전 저점보다 높아야 함
+        - 이는 상승 추세의 건전한 패턴을 나타냄
+        
+        현재 비활성화됨 - 항상 True 반환
+        """
         # Higher highs/Higher lows 패턴 확인 로직 주석 처리 - 항상 통과
         # if len(df) < weeks:
         #     return True  # 데이터 부족시 통과
@@ -276,7 +285,21 @@ class StanWeinsteinStage2Screener:
         return True  # 항상 통과
     
     def _identify_entry_type(self, df: pd.DataFrame, resistance_level: float) -> str:
-        """A형/B형 매수 포인트 구분 (비활성화)"""
+        """
+        A형/B형 매수 포인트 구분 (비활성화)
+        
+        A형 매수점:
+        - 저항선을 처음 돌파하는 시점
+        - 일반적으로 더 안전하지만 수익률이 상대적으로 낮음
+        - 돌파 후 즉시 매수하는 전략
+        
+        B형 매수점:
+        - 저항선 돌파 후 재테스트(pullback) 후 다시 상승하는 시점
+        - 더 높은 수익률을 기대할 수 있지만 위험도 높음
+        - 재테스트 후 반등 확인 후 매수하는 전략
+        
+        현재 비활성화됨 - 항상 'A형' 반환
+        """
         # A/B형 구분 로직 주석 처리 - 기본값 반환
         # if len(df) < 6:
         #     return 'A형'  # 기본값
@@ -310,7 +333,7 @@ class StanWeinsteinStage2Screener:
         
         return 'A형'  # 기본값 반환
     
-    def _detect_stage2_breakout(self, df: pd.DataFrame, symbol: str) -> Dict:
+    def _detect_momentum_signal(self, df: pd.DataFrame, symbol: str) -> Dict:
         """Stage 2 breakout 패턴 감지 및 실제 패턴 형성 시점 추적"""
         if len(df) < 40:  # 최소 40주 데이터 필요
             return {'detected': False, 'reason': 'insufficient_data'}
@@ -361,8 +384,9 @@ class StanWeinsteinStage2Screener:
         # 최신 데이터로 추가 검증
         recent = df.iloc[-1]
         
-        # 6. Higher highs/Higher lows 패턴 확인 (전체 데이터 기준)
-        healthy_pattern = self._check_higher_highs_lows(df, weeks=6)
+        # 6. Higher highs/Higher lows 패턴 확인 (비활성화)
+        # healthy_pattern = self._check_higher_highs_lows(df, weeks=6)
+        healthy_pattern = True  # 항상 통과
         
         # 7. 지속성 확인 (삭제됨 - 사용자 요청)
         sustained_breakout = True  # 항상 통과
@@ -376,7 +400,7 @@ class StanWeinsteinStage2Screener:
             breakout_occurred = True
             resistance_level = breakout_week_data['high']
         
-        # 9. A형/B형 매수 포인트 구분
+        # 9. A형/B형 매수 포인트 구분 (비활성화)
         entry_type = self._identify_entry_type(df, resistance_level)
         
         # 모든 조건 종합
@@ -441,7 +465,7 @@ class StanWeinsteinStage2Screener:
         
         return True  # 항상 통과
     
-    def screen_stage2_breakouts(self) -> pd.DataFrame:
+    def screen_momentum_signals(self) -> pd.DataFrame:
         """Stage 2 breakout 스크리닝 실행"""
         logger.info("Stan Weinstein Stage 2 Breakout 스크리닝 시작...")
         
@@ -506,7 +530,7 @@ class StanWeinsteinStage2Screener:
                     return None
                 
                 # Stage 2 breakout 감지
-                breakout_result = self._detect_stage2_breakout(weekly_df, ticker)
+                breakout_result = self._detect_momentum_signal(weekly_df, ticker)
                 
                 if breakout_result['detected']:
                     sector = self.sector_map.get(ticker, 'Unknown')
@@ -593,10 +617,10 @@ class StanWeinsteinStage2Screener:
         return results_df
 
 
-def run_stage2_breakout_screening(skip_data=False) -> pd.DataFrame:
-    """Stage 2 breakout 스크리닝 실행 함수"""
+def run_momentum_signals_screening(skip_data=False) -> pd.DataFrame:
+    """Momentum signals 스크리닝 실행 함수"""
     screener = StanWeinsteinStage2Screener(skip_data=skip_data)
-    results_df = screener.screen_stage2_breakouts()
+    results_df = screener.screen_momentum_signals()
     
     if not results_df.empty:
         # DataFrame을 딕셔너리 리스트로 변환
@@ -606,7 +630,7 @@ def run_stage2_breakout_screening(skip_data=False) -> pd.DataFrame:
         results_paths = save_screening_results(
             results=results_list,
             output_dir=MOMENTUM_SIGNALS_RESULTS_DIR,
-            filename_prefix="stage2_breakouts",
+            filename_prefix="momentum_signals",
             include_timestamp=True,
             incremental_update=True
         )
@@ -614,7 +638,7 @@ def run_stage2_breakout_screening(skip_data=False) -> pd.DataFrame:
         logger.info(f"결과 저장 완료: {results_paths['csv_path']}")
         
         # 새로운 티커 추적
-        tracker_file = os.path.join(MOMENTUM_SIGNALS_RESULTS_DIR, "new_stage2_tickers.csv")
+        tracker_file = os.path.join(MOMENTUM_SIGNALS_RESULTS_DIR, "new_momentum_tickers.csv")
         new_tickers = track_new_tickers(
             current_results=results_list,
             tracker_file=tracker_file,
@@ -624,20 +648,20 @@ def run_stage2_breakout_screening(skip_data=False) -> pd.DataFrame:
         
         # 요약 정보 생성
         summary = create_screener_summary(
-            screener_name="Stage 2 Breakout",
+            screener_name="Momentum Signals",
             total_candidates=len(results_list),
             new_tickers=len(new_tickers),
             results_paths=results_paths
         )
         
-        print(f"✅ Stage 2 브레이크아웃 스크리닝 완료: {len(results_list)}개 종목, 신규 {len(new_tickers)}개")
+        print(f"✅ 모멘텀 시그널 스크리닝 완료: {len(results_list)}개 종목, 신규 {len(new_tickers)}개")
     
     return results_df
 
 
 if __name__ == "__main__":
     # 테스트 실행
-    results = run_stage2_breakout_screening()
+    results = run_momentum_signals_screening()
     print(f"\n스크리닝 완료: {len(results)}개 종목 발견")
 
 

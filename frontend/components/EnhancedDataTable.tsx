@@ -53,11 +53,45 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
     }
   };
 
-  const formatNumber = (value: unknown): string => {
-    if (value === null || value === undefined) return 'N/A';
+  const formatNumber = (value: unknown): React.ReactNode => {
+    if (value === null || value === undefined || value === 'N/A') {
+      return <span className="text-gray-400 italic">N/A</span>;
+    }
     const num = Number(value);
-    if (isNaN(num)) return String(value);
-    return num.toFixed(2);
+    if (isNaN(num)) return <span>{String(value)}</span>;
+    return <span>{num.toFixed(2)}</span>;
+  };
+
+  const formatDimensionalScore = (score: unknown): string => {
+    if (score == null || typeof score !== 'number' || isNaN(score)) {
+      return 'N/A';
+    }
+    return `${(score * 100).toFixed(0)}%`;
+  };
+
+  const renderDimensionalScores = (scores: unknown, type: 'vcp' | 'cup_handle'): React.ReactNode => {
+    if (!scores || typeof scores !== 'object' || scores === null) {
+      return null;
+    }
+    
+    const scoreObj = scores as Record<string, unknown>;
+    
+    return (
+      <div className="grid grid-cols-2 gap-1 text-xs">
+        <div className="text-gray-600">
+          기술적: <span className="font-medium">{formatDimensionalScore(scoreObj.technical_quality)}</span>
+        </div>
+        <div className="text-gray-600">
+          거래량: <span className="font-medium">{formatDimensionalScore(scoreObj.volume_confirmation)}</span>
+        </div>
+        <div className="text-gray-600">
+          시간적: <span className="font-medium">{formatDimensionalScore(scoreObj.temporal_validity)}</span>
+        </div>
+        <div className="text-gray-600">
+          시장: <span className="font-medium">{formatDimensionalScore(scoreObj.market_context)}</span>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -119,14 +153,7 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                 다차원 평가
               </th>
             )}
-            {showChart && (
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <div className="flex items-center gap-1">
-                  <ChartBarIcon className="h-4 w-4" />
-                  차트
-                </div>
-              </th>
-            )}
+            {/* 차트 컬럼 제거 - 행 클릭으로 통일 */}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -159,7 +186,7 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                         {formatNumber(item.rs_score)}
                       </span>
                     ) : (
-                       <span className="text-gray-400 text-sm">N/A</span>
+                       <span className="text-gray-400 italic text-sm">N/A</span>
                      )}
                   </div>
                 </td>
@@ -182,7 +209,7 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                       {String(item.met_count || item.fin_met_count)}/8
                     </span>
                   ) : (
-                    <span className="text-gray-400 text-sm">N/A</span>
+                    <span className="text-gray-400 italic text-sm">N/A</span>
                   )}
                 </td>
               )}
@@ -197,7 +224,7 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                       ✗ 미감지
                     </span>
                   ) : (
-                    <span className="text-gray-400 text-sm">N/A</span>
+                    <span className="text-gray-400 italic text-sm">N/A</span>
                   )}
                 </td>
               )}
@@ -262,7 +289,7 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                         ? 'bg-yellow-100 text-yellow-800'
                         : 'bg-gray-100 text-gray-800'
                     }`}>
-                      {item.vcp_confidence_level || item.cup_handle_confidence_level || 'None'}
+                      {String(item.vcp_confidence_level || item.cup_handle_confidence_level || 'N/A')}
                     </span>
                   ) : (
                     <span className="text-gray-400 text-sm">N/A</span>
@@ -274,22 +301,8 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                   <div className="space-y-1">
                     {(item.vcp_dimensional_scores || item.cup_handle_dimensional_scores) ? (
                       <div className="text-xs space-y-1">
-                        {item.vcp_dimensional_scores && (
-                          <div className="grid grid-cols-2 gap-1 text-xs">
-                            <div className="text-gray-600">기술적: <span className="font-medium">{(item.vcp_dimensional_scores.technical_quality * 100).toFixed(0)}%</span></div>
-                            <div className="text-gray-600">거래량: <span className="font-medium">{(item.vcp_dimensional_scores.volume_confirmation * 100).toFixed(0)}%</span></div>
-                            <div className="text-gray-600">시간적: <span className="font-medium">{(item.vcp_dimensional_scores.temporal_validity * 100).toFixed(0)}%</span></div>
-                            <div className="text-gray-600">시장: <span className="font-medium">{(item.vcp_dimensional_scores.market_context * 100).toFixed(0)}%</span></div>
-                          </div>
-                        )}
-                        {item.cup_handle_dimensional_scores && (
-                          <div className="grid grid-cols-2 gap-1 text-xs">
-                            <div className="text-gray-600">기술적: <span className="font-medium">{(item.cup_handle_dimensional_scores.technical_quality * 100).toFixed(0)}%</span></div>
-                            <div className="text-gray-600">거래량: <span className="font-medium">{(item.cup_handle_dimensional_scores.volume_confirmation * 100).toFixed(0)}%</span></div>
-                            <div className="text-gray-600">시간적: <span className="font-medium">{(item.cup_handle_dimensional_scores.temporal_validity * 100).toFixed(0)}%</span></div>
-                            <div className="text-gray-600">시장: <span className="font-medium">{(item.cup_handle_dimensional_scores.market_context * 100).toFixed(0)}%</span></div>
-                          </div>
-                        )}
+                        {renderDimensionalScores(item.vcp_dimensional_scores, 'vcp')}
+                        {renderDimensionalScores(item.cup_handle_dimensional_scores, 'cup_handle')}
                       </div>
                     ) : (
                       <span className="text-gray-400 text-sm">N/A</span>
@@ -297,21 +310,7 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
                   </div>
                 </td>
               )}
-              {showChart && (
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (item.symbol) {
-                        onRowClick?.(String(item.symbol));
-                      }
-                    }}
-                    className="text-purple-600 hover:text-purple-900 transition-colors duration-200"
-                  >
-                    <ChartBarIcon className="h-5 w-5" />
-                  </button>
-                </td>
-              )}
+              {/* 차트 버튼 제거 - 행 클릭으로 통일 */}
             </tr>
           ))}
         </tbody>
@@ -321,9 +320,9 @@ const EnhancedDataTable: React.FC<EnhancedDataTableProps> = ({
         <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
           <p className="text-sm text-gray-700">
             총 <span className="font-medium">{data.length}</span>개 종목 표시
-            {onRowClick && showChart && (
+            {onRowClick && (
               <span className="text-gray-500 ml-2">
-                • 행을 클릭하거나 차트 아이콘을 클릭하여 TradingView 차트를 확인하세요
+                • 행을 클릭하여 TradingView 차트를 확인하세요
               </span>
             )}
           </p>

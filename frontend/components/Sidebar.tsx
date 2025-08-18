@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 import { FaTimes, FaHome, FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import { useState } from 'react';
 
-const MotionLink = motion(Link);
+const MotionLink = motion.create(Link);
 
 // Strategy 인터페이스 정의 추가
 interface Strategy {
@@ -39,9 +39,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
   ];
 
   const markminerviniItems = [
-    { id: 'image_pattern_results', name: '이미지 패턴 분석', icon: '🖼️' },
+    { id: 'pattern_detection_results', name: '이미지 패턴 분석', icon: '🖼️' },
     { id: 'integrated_pattern_results', name: '통합 패턴 분석', icon: '🔗' },
-    { id: 'integrated_results', name: '최종 통합 결과', icon: '🎯' },
+    { id: 'integrated_results', name: '패턴 인식 전 결과', icon: '🎯' },
   ];
 
   const qullamaggieItems = [
@@ -362,28 +362,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
           )}
         </div>
 
-        {/* 기타 도구들 */}
-        <div className="border-t pt-4">
-          <h3 className="px-4 text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">🛠️ Additional Tools</h3>
-          <MotionLink
-            href="/embedded-screener"
-            className="block py-2.5 px-4 rounded-md mb-2"
-            whileHover={{ backgroundColor: 'rgba(129, 140, 248, 0.1)', color: '#4f46e5', x: 4 }}
-            whileTap={{ backgroundColor: 'rgba(129, 140, 248, 0.2)', x: 2 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-          >
-            🖥️ 임베디드 스크리너
-          </MotionLink>
-          <MotionLink
-            href="/screening/technical"
-            className="block py-2.5 px-4 rounded-md"
-            whileHover={{ backgroundColor: 'rgba(129, 140, 248, 0.1)', color: '#4f46e5', x: 4 }}
-            whileTap={{ backgroundColor: 'rgba(129, 140, 248, 0.2)', x: 2 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-          >
-            ⚙️ Technical Screening
-          </MotionLink>
-        </div>
+
       </nav>
     </motion.div>
   );

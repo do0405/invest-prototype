@@ -97,20 +97,28 @@ export default function StrategyPage({ params }: StrategyPageProps) {
     { key: '종목명', header: '종목명' },
     { key: '매수일', header: '매수일' },
     {
-      key: '시장 진입가',
+      key: '매수가',
       header: '시장 진입가',
       align: 'right',
       render: (item) =>
-        item['시장 진입가']
-          ? `$${
-              typeof item['시장 진입가'] === 'number'
-                ? item['시장 진입가'].toFixed(2)
-                : item['시장 진입가']
+        item['매수가']
+          ? `${
+              typeof item['매수가'] === 'number'
+                ? item['매수가'].toFixed(2)
+                : item['매수가']
             }`
           : 'N/A',
     },
     { key: '비중(%)', header: '비중(%)', align: 'right' },
-    { key: '수익률(%)', header: '수익률(%)', align: 'right' },
+    {
+      key: '수익률',
+      header: '수익률(%)',
+      align: 'right',
+      render: (item) =>
+        typeof item['수익률'] === 'number'
+          ? `${item['수익률'].toFixed(2)}%`
+          : item['수익률'] || 'N/A',
+    },
     { key: '차익실현', header: '차익실현' },
     {
       key: '손절매',

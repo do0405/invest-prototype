@@ -1,0 +1,3 @@
+﻿symbol,setup_type,passed,current_price,gap_percent,volume_ratio,ma50_relation,earnings_surprise,eps_surprise_pct,revenue_surprise_pct,yoy_eps_growth,yoy_revenue_growth,stop_loss,risk_reward_ratio,score
+FIG,Episode Pivot,True,122.0,16.727279068587663,10.193090250138791,Above,False,,,,,124.62999725341795,0.0,3
+PHLT,Episode Pivot,True,7.639999866485596,111.26760847155622,16.333655795322517,Above,False,,,,,3.569999933242798,0.18771498751348592,3

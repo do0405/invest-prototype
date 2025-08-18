@@ -5,7 +5,8 @@ import SimpleDataTable from '@/components/SimpleDataTable';
 import EnhancedDataTable from '@/components/EnhancedDataTable';
 import TradingViewChart from '@/components/TradingViewChart';
 import ScreeningSummary from '@/components/ScreeningSummary';
-import NumberInputFilter, { NumberFilter } from '@/components/NumberInputFilter';
+import AlgorithmDescription from '@/components/AlgorithmDescription';
+// NumberInputFilter 제거됨 - 슬라이더 기반 필터 제거
 import { MagnifyingGlassIcon, ChartBarIcon, CalendarIcon, TrophyIcon } from '@heroicons/react/24/outline';
 
 interface ScreenerResult {
@@ -13,6 +14,13 @@ interface ScreenerResult {
   rs_score?: number;
   signal_date?: string;
   met_count?: number;
+  // Pattern detection fields (both naming conventions)
+  vcp_detected?: boolean;
+  VCP_Pattern?: boolean;
+  cup_handle_detected?: boolean;
+  Cup_Handle_Pattern?: boolean;
+  vcp_confidence?: number;
+  cup_handle_confidence?: number;
   [key: string]: string | number | boolean | null | undefined;
 }
 
@@ -34,8 +42,7 @@ export default function AllMarkminerviniPage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
   const [expandedScreeners, setExpandedScreeners] = useState<Set<string>>(new Set());
-  const [numberFilters, setNumberFilters] = useState<NumberFilter[]>([]);
-  const [showFilters, setShowFilters] = useState(false);
+  // 슬라이더 기반 필터 제거됨
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('rs_score');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -46,7 +53,7 @@ export default function AllMarkminerviniPage() {
   const screeners = useMemo(() => [
     { id: 'image_pattern_results', name: '1단계: 이미지 패턴 분석', icon: '🖼️', description: 'VCP, Cup & Handle 패턴 이미지 분석 결과' },
     { id: 'integrated_pattern_results', name: '2단계: 통합 패턴 분석', icon: '🔗', description: '수학적 알고리즘 기반 패턴 검증 결과' },
-    { id: 'integrated_results', name: '3단계: 최종 통합 결과', icon: '🎯', description: '기술적+재무적+패턴 조건을 모두 만족하는 최종 결과' },
+    { id: 'integrated_results', name: '3단계: 패턴 인식 전 결과', icon: '🎯', description: '기술적+재무적 조건을 만족하는 패턴 인식 전 결과' },
   ], []);
 
   useEffect(() => {
@@ -81,7 +88,7 @@ export default function AllMarkminerviniPage() {
         
         setScreenersData(results);
         console.log('Screeners data after fetch:', results); // ADDED LOG
-        initializeNumberFilters(results);
+        // 슬라이더 기반 필터 초기화 제거됨
         setError(null);
       } catch (err) {
         console.error('Error fetching screeners:', err);
@@ -94,39 +101,7 @@ export default function AllMarkminerviniPage() {
     fetchAllScreeners();
   }, [screeners]);
 
-  const initializeNumberFilters = (screenersData: ScreenerData[]) => {
-    if (screenersData.length === 0) return;
-    
-    // 모든 스크리너 데이터를 합쳐서 공통 숫자 컬럼 찾기
-    const allData = screenersData.flatMap(screener => screener.data);
-    if (allData.length === 0) return;
-    
-    const numericColumns = Object.keys(allData[0] || {}).filter(key => {
-      // Symbol/ticker 컬럼 제외
-      if (key.toLowerCase().includes('symbol') || key.toLowerCase().includes('ticker')) return false;
-      
-      // 숫자 컬럼만 선택
-      const values = allData.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val));
-      return values.length > 0;
-    });
-
-    const filters: NumberFilter[] = numericColumns.map(key => {
-      const values = allData.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val)) as number[];
-      const min = Math.min(...values);
-      const max = Math.max(...values);
-      const step = (max - min) > 100 ? Math.ceil((max - min) / 100) : 0.01;
-      
-      return {
-        key,
-        min,
-        max,
-        value: [min, max],
-        step
-      };
-    });
-
-    setNumberFilters(filters);
-  };
+  // 슬라이더 기반 필터 초기화 제거됨
 
   const toggleScreenerExpansion = (screenerId: string) => {
     setExpandedScreeners(prev => {
@@ -140,20 +115,26 @@ export default function AllMarkminerviniPage() {
     });
   };
 
-  const getFilteredAndSortedData = (data: ScreenerResult[]) => {
+  const getFilteredAndSortedData = (data: ScreenerResult[], screenerType?: string) => {
     let filteredData = data.filter(item => {
       // 검색어 필터링
       const searchMatch = !searchTerm || 
         item.symbol?.toString().toLowerCase().includes(searchTerm.toLowerCase());
       
-      // 숫자 입력 필터링
-      const numberMatch = numberFilters.every(filter => {
-        const value = item[filter.key];
-        if (typeof value !== 'number' || isNaN(value)) return true;
-        return value >= filter.value[0] && value <= filter.value[1];
-      });
+      // 스크리너별 특별 필터링
+      if (screenerType === 'image_pattern_results') {
+        // 이미지 패턴 분석: VCP 또는 Cup&Handle이 감지된 것만
+        const hasVcpPattern = item.vcp_detected === true || item.VCP_Pattern === true;
+        const hasCupHandlePattern = item.cup_handle_detected === true || item.Cup_Handle_Pattern === true;
+        return searchMatch && (hasVcpPattern || hasCupHandlePattern);
+      } else if (screenerType === 'integrated_pattern_results') {
+        // 통합 패턴 분석: confidence level이 High인 것만
+        const hasHighVcpConfidence = item.vcp_confidence_level === 'High';
+        const hasHighCupHandleConfidence = item.cup_handle_confidence_level === 'High';
+        return searchMatch && (hasHighVcpConfidence || hasHighCupHandleConfidence);
+      }
       
-      return searchMatch && numberMatch;
+      return searchMatch;
     });
 
     // 정렬
@@ -181,28 +162,8 @@ export default function AllMarkminerviniPage() {
 
 
 
-  const handleNumberFilterChange = (filterKey: string, newValue: [number, number]) => {
-    setNumberFilters(prev => 
-      prev.map(filter => 
-        filter.key === filterKey 
-          ? { ...filter, value: newValue }
-          : filter
-      )
-    );
-  };
-
   const resetFilters = () => {
-    setNumberFilters(prev => 
-      prev.map(filter => ({
-        ...filter,
-        value: [filter.min, filter.max]
-      }))
-    );
     setSearchTerm('');
-  };
-
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
   };
 
   if (loading) {
@@ -246,6 +207,11 @@ export default function AllMarkminerviniPage() {
         <p className="text-xl text-gray-600 mb-8">
           Mark Minervini의 투자 전략을 기반으로 한 고도화된 패턴 분석 결과입니다. 기술적 조건 → 재무 조건 → 패턴 적용 순서로 진행된 3단계 스크리닝 결과를 확인하실 수 있습니다.
         </p>
+        
+        {/* Algorithm Description */}
+        <div className="mb-8">
+          <AlgorithmDescription algorithm="markminervini_comprehensive" />
+        </div>
         
         {/* Screening Summary */}
         <div className="mb-8">
@@ -473,20 +439,13 @@ export default function AllMarkminerviniPage() {
         </div>
       </div>
 
-      {/* 숫자 입력 필터 컴포넌트 */}
-      <NumberInputFilter
-        filters={numberFilters}
-        onFilterChange={handleNumberFilterChange}
-        onResetFilters={resetFilters}
-        showFilters={showFilters}
-        onToggleFilters={toggleFilters}
-      />
+      {/* 슬라이더 기반 필터 제거됨 */}
       
       {/* 스크리너 결과 */}
       {activeTab === 'all' && (
         <div className="space-y-6">
           {screenersData.map((screenerData) => {
-            const filteredData = getFilteredAndSortedData(screenerData.data);
+            const filteredData = getFilteredAndSortedData(screenerData.data, screenerData.type);
             const isExpanded = expandedScreeners.has(screenerData.type);
             const screener = screeners.find(s => s.id === screenerData.type);
             
@@ -542,7 +501,7 @@ export default function AllMarkminerviniPage() {
                     const filteredData = getFilteredAndSortedData(screenerData.data);
                     console.log(`Filtered data for ${screenerData.name}:`, filteredData); // ADDED LOG
                     
-                    // 데이터에 따른 동적 컬럼 구성
+                    // 스크리너별 컬럼 구성
                     const availableColumns = filteredData.length > 0 ? Object.keys(filteredData[0]) : [];
                     const simpleColumns = [
                       {
@@ -586,29 +545,55 @@ export default function AllMarkminerviniPage() {
                        });
                      }
                      
-                     // VCP 패턴 컬럼 추가
-                     if (availableColumns.includes('vcp_detected')) {
-                       simpleColumns.push({
-                         key: 'vcp_detected',
-                         header: 'VCP',
-                         render: (item: Record<string, unknown>) => {
-                           const value = item.vcp_detected;
-                           return <span>{value === true ? '✓' : value === false ? '✗' : 'N/A'}</span>;
-                         }
-                       });
+                     // 스크리너별 특화 컬럼 추가
+                     if (screenerData.type === 'integrated_pattern_results') {
+                       // 통합 패턴 분석: confidence 값과 level만 표시
+                       if (availableColumns.includes('vcp_confidence')) {
+                         simpleColumns.push({
+                           key: 'vcp_confidence',
+                           header: 'VCP 신뢰도',
+                           render: (item: Record<string, unknown>) => {
+                             const confidence = item.vcp_confidence;
+                             const level = item.vcp_confidence_level;
+                             return <span>{confidence ? `${Number(confidence).toFixed(3)} (${level})` : 'N/A'}</span>;
+                           }
+                         });
+                       }
+                       if (availableColumns.includes('cup_handle_confidence')) {
+                         simpleColumns.push({
+                           key: 'cup_handle_confidence',
+                           header: 'C&H 신뢰도',
+                           render: (item: Record<string, unknown>) => {
+                             const confidence = item.cup_handle_confidence;
+                             const level = item.cup_handle_confidence_level;
+                             return <span>{confidence ? `${Number(confidence).toFixed(3)} (${level})` : 'N/A'}</span>;
+                           }
+                         });
+                       }
+                     } else {
+                       // 다른 스크리너: 기존 VCP/C&H 패턴 컬럼
+                       if (availableColumns.includes('vcp_detected')) {
+                         simpleColumns.push({
+                           key: 'vcp_detected',
+                           header: 'VCP',
+                           render: (item: Record<string, unknown>) => {
+                             const value = item.vcp_detected;
+                             return <span>{value === true ? '✓' : value === false ? '✗' : 'N/A'}</span>;
+                           }
+                         });
+                       }
+                       
+                       if (availableColumns.includes('cup_handle_detected')) {
+                         simpleColumns.push({
+                           key: 'cup_handle_detected',
+                           header: 'C&H',
+                           render: (item: Record<string, unknown>) => {
+                             const value = item.cup_handle_detected;
+                             return <span>{value === true ? '✓' : value === false ? '✗' : 'N/A'}</span>;
+                           }
+                         });
+                       }
                      }
-                     
-                     // Cup & Handle 패턴 컬럼 추가
-                     if (availableColumns.includes('cup_handle_detected')) {
-                       simpleColumns.push({
-                         key: 'cup_handle_detected',
-                         header: 'C&H',
-                         render: (item: Record<string, unknown>) => {
-                           const value = item.cup_handle_detected;
-                           return <span>{value === true ? '✓' : value === false ? '✗' : 'N/A'}</span>;
-                         }
-                       });
-                    }
                     return filteredData.length > 0 ? (
                       <>
                         {screenerData.lastUpdated && (

@@ -61,7 +61,7 @@ export default function SimpleDataTable({ data, columns, title, description, onR
                   <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {(column.render 
                       ? column.render(item)
-                      : item[column.key] || 'N/A'
+                      : item[column.key] || <span className="text-gray-400 italic">N/A</span>
                     ) as React.ReactNode}
                   </td>
                 ))}

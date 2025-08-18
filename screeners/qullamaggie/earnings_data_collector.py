@@ -67,22 +67,32 @@ class EarningsDataCollector:
         try:
             ticker = yf.Ticker(symbol)
             
-            # 분기별 실적 데이터 가져오기
-            quarterly_earnings = ticker.quarterly_earnings
-            quarterly_revenue = ticker.quarterly_revenue
+            # 분기별 재무제표 데이터 가져오기 (최신 API 사용)
+            quarterly_income = ticker.quarterly_income_stmt
             
-            if quarterly_earnings is None or quarterly_earnings.empty:
+            if quarterly_income is None or quarterly_income.empty:
                 return None
             
+            # Net Income과 Total Revenue 추출
+            if "Net Income" not in quarterly_income.index or "Total Revenue" not in quarterly_income.index:
+                return None
+                
             # 최근 4분기 데이터만 사용
-            recent_earnings = quarterly_earnings.head(4)
-            recent_revenue = quarterly_revenue.head(4) if quarterly_revenue is not None else None
+            net_income_data = quarterly_income.loc["Net Income"].head(4)
+            revenue_data = quarterly_income.loc["Total Revenue"].head(4)
+            
+            # 주식 수로 나누어 EPS 계산 (간단한 추정)
+            shares_outstanding = ticker.info.get('sharesOutstanding', 1)
+            if shares_outstanding and shares_outstanding > 0:
+                eps_data = net_income_data / shares_outstanding
+            else:
+                eps_data = net_income_data  # 주식 수 정보가 없으면 순이익 그대로 사용
             
             # 데이터 결합
             earnings_data = pd.DataFrame({
-                'date': recent_earnings.index,
-                'eps_actual': recent_earnings.values.flatten(),
-                'revenue_actual': recent_revenue.values.flatten() if recent_revenue is not None else [0] * len(recent_earnings)
+                'date': net_income_data.index,
+                'eps_actual': eps_data.values,
+                'revenue_actual': revenue_data.values
             })
             
             # ⚠️ yfinance 한계: 컨센서스 데이터 미제공으로 추정치 사용

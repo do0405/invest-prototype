@@ -65,14 +65,7 @@ function TradingViewModal({ symbol, isOpen, onClose }: TradingViewModalProps) {
               </button>
             </div>
             <div className="w-full h-96 sm:h-[500px]">
-              <iframe
-                src={`https://www.tradingview.com/widgetembed/?frameElementId=tradingview_chart&symbol=NASDAQ:${symbol}&interval=D&hidesidetoolbar=1&hidetoptoolbar=1&symboledit=1&saveimage=1&toolbarbg=F1F3F6&studies=[]&hideideas=1&theme=Light&style=1&timezone=Etc%2FUTC&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&locale=en&utm_source=localhost&utm_medium=widget&utm_campaign=chart&utm_term=${symbol}`}
-                className="w-full h-full border-0 rounded-lg"
-                allowTransparency={true}
-                scrolling="no"
-                allowFullScreen={true}
-                frameBorder="0"
-              ></iframe>
+              <TradingViewChart symbol={symbol} height="100%" />
             </div>
           </div>
         </div>
@@ -82,9 +75,9 @@ function TradingViewModal({ symbol, isOpen, onClose }: TradingViewModalProps) {
 }
 
 // 셀 값 포맷팅 함수
-function formatCellValue(value: string | number | boolean | null | undefined): string {
-  if (value === null || value === undefined || value === '') {
-    return 'N/A';
+function formatCellValue(value: string | number | boolean | null | undefined): React.ReactNode {
+  if (value === null || value === undefined || value === '' || value === 'N/A') {
+    return <span className="text-gray-400 italic">N/A</span>;
   }
   
   if (typeof value === 'number') {
@@ -354,9 +347,7 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
                     </div>
                   </th>
                 ))}
-                <th className="px-6 py-4 text-xs font-semibold text-gray-700 uppercase tracking-wider border-b-2 border-gray-200 text-center">
-                  Chart
-                </th>
+
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -376,18 +367,7 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
                       </div>
                     </td>
                   ))}
-                  <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRowClick(item);
-                      }}
-                      className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    >
-                      <ChartBarIcon className="h-4 w-4 mr-1" />
-                      Chart
-                    </button>
-                  </td>
+
                 </tr>
               ))}
             </tbody>
@@ -412,18 +392,7 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
                       </span>
                     </div>
                   ))}
-                  <div className="pt-2 border-t border-gray-200">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRowClick(item);
-                      }}
-                      className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 transition-colors"
-                    >
-                      <ChartBarIcon className="h-4 w-4 mr-2" />
-                      View Chart
-                    </button>
-                  </div>
+
                 </div>
               </div>
             ))}

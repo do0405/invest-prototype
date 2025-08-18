@@ -102,12 +102,25 @@ def load_all_screener_symbols(limit: Optional[int] = None) -> List[str]:
 
     ``strategy2``와 ``strategy6`` 결과는 제외하고, 그 외의 모든 스크리닝 및
     포트폴리오 매수 결과에 등장하는 종목을 모아 반환한다.
+    
+    마크미너비니의 기술적 조건 1-8만 적용한 파일(us_with_rs.csv)은 제외한다.
     """
 
     symbols: Set[str] = set()
 
     screener_dir = Path(SCREENER_RESULTS_DIR)
-    symbols.update(_collect_symbols_from_csv(screener_dir, ["**/*.csv"]))
+    # 모든 CSV 파일을 수집하되, us_with_rs.csv는 제외
+    all_csv_files = list(screener_dir.glob("**/*.csv"))
+    filtered_csv_files = []
+    
+    for csv_file in all_csv_files:
+        # us_with_rs.csv 파일은 제외 (기술적 조건 1-8만 적용한 파일)
+        if csv_file.name == "us_with_rs.csv":
+            logging.info(f"TOPSIS 대상에서 제외: {csv_file} (기술적 조건 1-8만 적용)")
+            continue
+        filtered_csv_files.append(str(csv_file.relative_to(screener_dir)))
+    
+    symbols.update(_collect_symbols_from_csv(screener_dir, filtered_csv_files))
 
     leader_dir = Path(LEADER_STOCK_RESULTS_DIR)
     symbols.update(_collect_symbols_from_csv(leader_dir, ["*.csv"]))

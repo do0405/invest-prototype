@@ -466,5 +466,41 @@
   {
     "symbol":"TCI",
     "first_signal_date":null
+  },
+  {
+    "symbol":"TLSA",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"GHLD",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"ATEC",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"RMBS",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"HDSN",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"UTES",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"IRMD",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"BWFG",
+    "first_signal_date":null
+  },
+  {
+    "symbol":"FDTS",
+    "first_signal_date":null
   }
 ]

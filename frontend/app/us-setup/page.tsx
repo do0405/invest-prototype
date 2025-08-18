@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
 import { apiClient, ScreeningData } from '@/lib/api';
+import AlgorithmDescription from '@/components/AlgorithmDescription';
 
 export default function USSetupPage() {
   const [data, setData] = useState<ScreeningData[]>([]);
@@ -30,12 +31,10 @@ export default function USSetupPage() {
     fetchData();
   }, []);
 
-  const columns: DataTableColumn<ScreeningData>[] = data.length
-    ? Object.keys(data[0]).slice(0, 8).map(key => ({
-        key,
-        header: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-      }))
-    : [];
+  const columns: DataTableColumn<ScreeningData>[] = [
+    { key: 'symbol', header: 'Symbol' },
+    { key: 'price', header: 'Price', align: 'right' }
+  ];
 
   if (loading) {
     return (
@@ -62,6 +61,7 @@ export default function USSetupPage() {
       <p className="text-gray-600 mb-6">
         미국 주식 중 기술적 셋업 조건을 만족하는 종목들을 선별한 결과입니다.
       </p>
+      <AlgorithmDescription algorithm="us-setup" />
       {data.length > 0 ? (
         <DataTable data={data} columns={columns} />
       ) : (

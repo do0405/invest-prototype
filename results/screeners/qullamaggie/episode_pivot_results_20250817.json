@@ -1,0 +1,36 @@
+[
+  {
+    "symbol": "FIG",
+    "setup_type": "Episode Pivot",
+    "passed": true,
+    "current_price": 122.0,
+    "gap_percent": 16.727279068587663,
+    "volume_ratio": 10.193090250138791,
+    "ma50_relation": "Above",
+    "earnings_surprise": false,
+    "eps_surprise_pct": null,
+    "revenue_surprise_pct": null,
+    "yoy_eps_growth": null,
+    "yoy_revenue_growth": null,
+    "stop_loss": 124.62999725341795,
+    "risk_reward_ratio": 0,
+    "score": 3
+  },
+  {
+    "symbol": "PHLT",
+    "setup_type": "Episode Pivot",
+    "passed": true,
+    "current_price": 7.639999866485596,
+    "gap_percent": 111.26760847155622,
+    "volume_ratio": 16.333655795322517,
+    "ma50_relation": "Above",
+    "earnings_surprise": false,
+    "eps_surprise_pct": null,
+    "revenue_surprise_pct": null,
+    "yoy_eps_growth": null,
+    "yoy_revenue_growth": null,
+    "stop_loss": 3.569999933242798,
+    "risk_reward_ratio": 0.18771498751348592,
+    "score": 3
+  }
+]
