@@ -1,21 +1,75 @@
 @import "tailwindcss";
 
 :root {
+  /* Notion-inspired color palette */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #37352f;
+  --muted: #f7f6f3;
+  --muted-foreground: #787774;
+  --border: #e9e9e7;
+  --accent: #2383e2;
+  --accent-hover: #1a73d1;
+  --success: #0f7b0f;
+  --warning: #d9730d;
+  --destructive: #e03e3e;
+  --card: #ffffff;
+  --card-hover: #f8f8f7;
 }
-
-
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #191919;
+    --foreground: #e9e9e7;
+    --muted: #2f2f2f;
+    --muted-foreground: #9b9a97;
+    --border: #373737;
+    --accent: #5ba2f5;
+    --accent-hover: #4a91e4;
+    --success: #4ade80;
+    --warning: #fbbf24;
+    --destructive: #f87171;
+    --card: #1f1f1f;
+    --card-hover: #2a2a2a;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, 'Apple Color Emoji', Arial, sans-serif, 'Segoe UI Emoji', 'Segoe UI Symbol';
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Notion-style scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 4px;
+  opacity: 0.3;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.6;
+}
+
+/* Focus styles */
+*:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Selection styles */
+::selection {
+  background: var(--accent);
+  color: white;
 }

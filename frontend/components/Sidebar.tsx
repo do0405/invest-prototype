@@ -92,42 +92,42 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
       initial={{ x: '-100%' }}
       animate={{ x: isOpen ? '0%' : '-100%' }}
       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-      className="fixed inset-y-0 left-0 bg-white text-gray-800 w-64 space-y-6 py-7 px-2 z-30 flex flex-col shadow-lg"
+      className="fixed inset-y-0 left-0 bg-card border-r border-border text-foreground w-64 space-y-6 py-7 px-2 z-30 flex flex-col shadow-lg"
     >
       <div className="flex items-center justify-between px-4 flex-shrink-0">
-        <h2 className="flex-grow text-2xl font-semibold text-center">Strategies</h2>
+        <h2 className="flex-grow text-xl font-semibold text-center text-foreground">Strategies</h2>
         <MotionLink
           href="/"
-          className="text-gray-800 p-2 rounded-md"
-          whileHover={{ scale: 1.05, backgroundColor: 'rgba(129, 140, 248, 0.1)' }}
-          whileTap={{ scale: 0.95, backgroundColor: 'rgba(129, 140, 248, 0.2)' }}
+          className="text-muted-foreground p-2 rounded-notion hover:bg-muted"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           transition={{ type: 'spring', stiffness: 400, damping: 17 }}
         >
-          <FaHome size={24} />
+          <FaHome size={20} />
         </MotionLink>
-        <button onClick={onClose} className="md:hidden text-gray-800 hover:text-gray-600 ml-2">
-          <FaTimes size={24} />
+        <button onClick={onClose} className="md:hidden text-muted-foreground hover:text-foreground ml-2">
+          <FaTimes size={20} />
         </button>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-2">
         {/* 핵심 기능 섹션 */}
-        <div className="mb-6 border-b pb-4">
-          <h3 className="px-4 text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">핵심 기능</h3>
+        <div className="mb-6 border-b border-border pb-4">
+          <h3 className="px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">핵심 기능</h3>
           <MotionLink
             href="/recent-signals"
-            className="block py-2.5 px-4 rounded-md mb-2"
-            whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', x: 4 }}
-            whileTap={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', x: 2 }}
+            className="block py-2 px-4 rounded-notion mb-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+            whileHover={{ x: 2 }}
+            whileTap={{ x: 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             🔥 최근 시그널
           </MotionLink>
           <MotionLink
             href="/top-recommendations"
-            className="block py-2.5 px-4 rounded-md"
-            whileHover={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#16a34a', x: 4 }}
-            whileTap={{ backgroundColor: 'rgba(34, 197, 94, 0.2)', x: 2 }}
+            className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+            whileHover={{ x: 2 }}
+            whileTap={{ x: 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             ⭐ Top 10 매수 랭킹
@@ -137,13 +137,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
         <div className="mb-4">
           <motion.button
             onClick={() => setIsStrategyAlphaOpen(!isStrategyAlphaOpen)}
-            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md"
-            whileHover={{ backgroundColor: 'rgba(129, 140, 248, 0.1)', color: '#4f46e5' }}
-            whileTap={{ backgroundColor: 'rgba(129, 140, 248, 0.2)' }}
+            className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            whileHover={{}}
+            whileTap={{}}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
-            <span className="font-semibold">💼 Portfolio Strategies</span>
-            {isStrategyAlphaOpen ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />}
+            <span>💼 Portfolio Strategies</span>
+            {isStrategyAlphaOpen ? <FaChevronDown size={14} /> : <FaChevronRight size={14} />}
           </motion.button>
           
           {isStrategyAlphaOpen && (
@@ -156,9 +156,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
               >
                 <MotionLink
                   href="/strategy/all"
-                  className="block py-2 px-4 rounded-md text-sm"
-                  whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#2563eb', borderLeftColor: '#60a5fa' }}
-                  whileTap={{ backgroundColor: 'rgba(59, 130, 246, 0.2)' }}
+                  className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                  whileHover={{ x: 2 }}
+                  whileTap={{ x: 1 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                 >
                   📊 All Strategies Overview
@@ -167,11 +167,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                   <MotionLink
                     key={item.id}
                     href={`/strategy/${item.id}`}
-                    className={`block py-2 px-4 rounded-md text-sm ${
-                      item.type === 'buy' ? 'border-l-2 border-green-200' : 'border-l-2 border-red-200'
-                    }`}
-                    whileHover={{ backgroundColor: item.type === 'buy' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: item.type === 'buy' ? '#16a34a' : '#dc2626', borderLeftColor: item.type === 'buy' ? '#4ade80' : '#f87171' }}
-                    whileTap={{ backgroundColor: item.type === 'buy' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)' }}
+                    className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                    whileHover={{ x: 2 }}
+                    whileTap={{ x: 1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
                     {item.type === 'buy' ? '📈' : '📉'} {item.name}
@@ -186,13 +184,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
         <div className="mb-4">
           <motion.button
             onClick={() => setIsScreenersOpen(!isScreenersOpen)}
-            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md"
-            whileHover={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#7e22ce' }}
-            whileTap={{ backgroundColor: 'rgba(168, 85, 247, 0.2)' }}
+            className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            whileHover={{}}
+            whileTap={{}}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
-            <span className="font-semibold">🔍 Stock Screeners</span>
-            {isScreenersOpen ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />}
+            <span>🔍 Stock Screeners</span>
+            {isScreenersOpen ? <FaChevronDown size={14} /> : <FaChevronRight size={14} />}
           </motion.button>
           
           {isScreenersOpen && (
@@ -207,12 +205,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                 <div className="mb-3">
                   <motion.button
                     onClick={() => setIsMarkMinerviniOpen(!isMarkMinerviniOpen)}
-                    className="w-full flex items-center justify-between py-2 px-4 rounded-md text-sm"
-                    whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#2563eb' }}
-                    whileTap={{ backgroundColor: 'rgba(59, 130, 246, 0.2)' }}
+                    className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                    whileHover={{}}
+                    whileTap={{}}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
-                    <span className="font-medium">📊 Mark Minervini</span>
+                    <span>📊 Mark Minervini</span>
                     {isMarkMinerviniOpen ? <FaChevronDown size={12} /> : <FaChevronRight size={12} />}
                   </motion.button>
                   
@@ -222,9 +220,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                         <MotionLink
                           key={item.id}
                           href={`/markminervini/${item.id}`}
-                          className="block py-1.5 px-3 rounded-md text-xs"
-                          whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#2563eb' }}
-                          whileTap={{ backgroundColor: 'rgba(59, 130, 246, 0.2)' }}
+                          className="block py-1.5 px-3 rounded-notion text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                          whileHover={{ x: 2 }}
+                          whileTap={{ x: 1 }}
                           transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                         >
                           {item.icon} {item.name}
@@ -238,12 +236,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                 <div className="mb-3">
                   <motion.button
                     onClick={() => setIsQullamaggieOpen(!isQullamaggieOpen)}
-                    className="w-full flex items-center justify-between py-2 px-4 rounded-md text-sm"
-                    whileHover={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#16a34a' }}
-                    whileTap={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}
+                    className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                    whileHover={{}}
+                    whileTap={{}}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
-                    <span className="font-medium">🎯 Qullamaggie</span>
+                    <span>🎯 Qullamaggie</span>
                     {isQullamaggieOpen ? <FaChevronDown size={12} /> : <FaChevronRight size={12} />}
                   </motion.button>
                   
@@ -253,9 +251,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                         <MotionLink
                           key={item.id}
                           href={`/qullamaggie/${item.id}`}
-                          className="block py-1.5 px-3 rounded-md text-xs"
-                          whileHover={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#16a34a' }}
-                          whileTap={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}
+                          className="block py-1.5 px-3 rounded-notion text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                          whileHover={{ x: 2 }}
+                          whileTap={{ x: 1 }}
                           transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                         >
                           {item.icon} {item.name}
@@ -270,9 +268,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                   <MotionLink
                     key={screener.id}
                     href={screener.href}
-                    className="block py-2 px-4 rounded-md text-sm"
-                    whileHover={{ backgroundColor: 'rgba(168, 85, 247, 0.1)', color: '#7e22ce' }}
-                    whileTap={{ backgroundColor: 'rgba(168, 85, 247, 0.2)' }}
+                    className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                    whileHover={{ x: 2 }}
+                    whileTap={{ x: 1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
                     {screener.icon} {screener.name}
@@ -287,13 +285,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
         <div className="mb-4">
           <motion.button
             onClick={() => setIsAnalysisOpen(!isAnalysisOpen)}
-            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md"
-            whileHover={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#16a34a' }}
-            whileTap={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}
+            className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            whileHover={{}}
+            whileTap={{}}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
-            <span className="font-semibold">📊 Analysis Tools</span>
-            {isAnalysisOpen ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />}
+            <span>📊 Analysis Tools</span>
+            {isAnalysisOpen ? <FaChevronDown size={14} /> : <FaChevronRight size={14} />}
           </motion.button>
 
           {isAnalysisOpen && (
@@ -308,9 +306,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                   <MotionLink
                     key={item.id}
                     href={item.href}
-                    className="block py-2 px-4 rounded-md text-sm"
-                    whileHover={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: '#16a34a', borderLeftColor: '#4ade80' }}
-                    whileTap={{ backgroundColor: 'rgba(34, 197, 94, 0.2)' }}
+                    className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+                    whileHover={{ x: 2 }}
+                    whileTap={{ x: 1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
                     {item.icon} {item.name}
@@ -325,13 +323,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
         <div className="mb-4">
           <motion.button
             onClick={() => setIsResourcesOpen(!isResourcesOpen)}
-            className="w-full flex items-center justify-between py-2.5 px-4 rounded-md"
-            whileHover={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', color: '#a16207' }}
-            whileTap={{ backgroundColor: 'rgba(234, 179, 8, 0.2)' }}
+            className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+            whileHover={{}}
+            whileTap={{}}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
-            <span className="font-semibold">🔗 Reference Sites</span>
-            {isResourcesOpen ? <FaChevronDown size={16} /> : <FaChevronRight size={16} />}
+            <span>🔗 Reference Sites</span>
+            {isResourcesOpen ? <FaChevronDown size={14} /> : <FaChevronRight size={14} />}
           </motion.button>
 
           {isResourcesOpen && (
@@ -348,9 +346,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                     href={item.href}
                     target={item.external ? '_blank' : undefined}
                     rel={item.external ? 'noopener noreferrer' : undefined}
-                    className="block py-2 px-4 rounded-md text-sm flex items-center justify-between"
-                    whileHover={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', color: '#a16207', borderLeftColor: '#facc15' }}
-                    whileTap={{ backgroundColor: 'rgba(234, 179, 8, 0.2)' }}
+                    className="block py-2 px-4 rounded-notion text-sm flex items-center justify-between text-muted-foreground hover:bg-muted hover:text-foreground"
+                    whileHover={{ x: 2 }}
+                    whileTap={{ x: 1 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
                     <span>{item.icon} {item.name}</span>

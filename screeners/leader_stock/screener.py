@@ -168,7 +168,7 @@ class MarketReversalLeaderScreener:
                 
             spy_df = pd.read_csv(spy_path)
             spy_df.columns = [c.lower() for c in spy_df.columns]
-            spy_df['date'] = pd.to_datetime(spy_df['date'])
+            spy_df['date'] = pd.to_datetime(spy_df['date'], utc=True, errors='coerce').dt.tz_localize(None)
             spy_df = spy_df.sort_values('date')
             
             if len(spy_df) < 30:
@@ -271,7 +271,7 @@ class MarketReversalLeaderScreener:
                     df = read_csv_flexible(file_path, required_columns=['date', 'close'])
                     if df is not None and len(df) >= 252:  # 최소 1년 데이터 필요
                         df['symbol'] = ticker
-                        df['date'] = pd.to_datetime(df['date'])
+                        df['date'] = pd.to_datetime(df['date'], utc=True, errors='coerce').dt.tz_localize(None)
                         all_data.append(df[['date', 'symbol', 'close']])
                 except Exception as e:
                     logger.debug(f"종목 {ticker} 데이터 로드 실패: {e}")
@@ -287,7 +287,7 @@ class MarketReversalLeaderScreener:
                 spy_df = read_csv_flexible(spy_path, required_columns=['date', 'close'])
                 if spy_df is not None:
                     spy_df['symbol'] = 'SPY'
-                    spy_df['date'] = pd.to_datetime(spy_df['date'])
+                    spy_df['date'] = pd.to_datetime(spy_df['date'], utc=True, errors='coerce').dt.tz_localize(None)
                     all_data.append(spy_df[['date', 'symbol', 'close']])
             
             # 데이터 결합 및 MultiIndex 설정
@@ -315,7 +315,7 @@ class MarketReversalLeaderScreener:
             if os.path.exists(spy_path):
                 self.spx_df = read_csv_flexible(spy_path, required_columns=['date', 'close'])
                 if self.spx_df is not None:
-                    self.spx_df['date'] = pd.to_datetime(self.spx_df['date'])
+                    self.spx_df['date'] = pd.to_datetime(self.spx_df['date'], utc=True, errors='coerce').dt.tz_localize(None)
                     self.spx_df = self.spx_df.sort_values('date')
                     logger.info(f"SPX 데이터 로드 완료: {len(self.spx_df)}일")
                 else:
@@ -343,9 +343,9 @@ class MarketReversalLeaderScreener:
                 logger.warning("날짜 컬럼 없음")
                 return pd.Series(dtype=float)
             
-            # 날짜 형식 통일
-            stock_clean['date'] = pd.to_datetime(stock_clean['date'])
-            spx_clean['date'] = pd.to_datetime(spx_clean['date'])
+            # 날짜 형식 통일 (timezone 오류 방지)
+            stock_clean['date'] = pd.to_datetime(stock_clean['date'], utc=True, errors='coerce').dt.tz_localize(None)
+            spx_clean['date'] = pd.to_datetime(spx_clean['date'], utc=True, errors='coerce').dt.tz_localize(None)
             
             # 중복 날짜 제거 (최신 데이터 유지)
             stock_clean = stock_clean.drop_duplicates(subset=['date'], keep='last')
@@ -618,7 +618,7 @@ class MarketReversalLeaderScreener:
                 if stock_df.empty or len(stock_df) < 252:
                     return None
                 
-                stock_df['date'] = pd.to_datetime(stock_df['date'])
+                stock_df['date'] = pd.to_datetime(stock_df['date'], utc=True, errors='coerce').dt.tz_localize(None)
                 stock_df = stock_df.sort_values('date')
                 
                 # RS Line 계산

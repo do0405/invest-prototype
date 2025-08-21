@@ -11,9 +11,7 @@ from .mcda_calculator import CriteriaType
 
 class InvestmentStrategy(Enum):
     """Investment strategy enumeration."""
-    GROWTH = "growth"
-    VALUE = "value"
-    MOMENTUM = "momentum"
+    GROWTH_MOMENTUM = "growth_momentum"
     QUALITY = "quality"
     BALANCED = "balanced"
     TECHNICAL = "technical"
@@ -137,30 +135,14 @@ class CriteriaWeights:
             Dictionary mapping investment strategies to criteria weights
         """
         return {
-            InvestmentStrategy.GROWTH: {
-                # Focus on technical growth metrics
-                'price_momentum_60d': 0.30,
-                'relative_strength': 0.25,
-                'price_momentum_20d': 0.25,
-                'volume_ratio': 0.20
-            },
-            
-            InvestmentStrategy.VALUE: {
-                # Focus on technical value metrics
-                'dividend_yield': 0.40,
-                'volatility_20d': 0.30,  # Lower volatility preferred
-                'sharpe_ratio': 0.30
-            },
-            
-            InvestmentStrategy.MOMENTUM: {
-                # Focus on price and volume momentum
-                'price_momentum_20d': 0.25,
-                'price_momentum_60d': 0.20,
-                'relative_strength': 0.20,
-                'volume_ratio': 0.15,
-                'rsi_14': 0.08,
-                'macd_signal': 0.07,
-                'bollinger_position': 0.05
+            InvestmentStrategy.GROWTH_MOMENTUM: {
+                # Combined growth and momentum strategy
+                'price_momentum_60d': 0.28,  # Strong long-term momentum
+                'relative_strength': 0.25,   # Market outperformance
+                'price_momentum_20d': 0.22,  # Short-term momentum
+                'volume_ratio': 0.15,        # Volume confirmation
+                'rsi_14': 0.05,              # Technical momentum
+                'macd_signal': 0.05          # Trend confirmation
             },
             
             InvestmentStrategy.QUALITY: {

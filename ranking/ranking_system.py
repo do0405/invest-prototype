@@ -62,8 +62,62 @@ class StockRankingSystem:
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         
-        # Cache for calculated indicators
+        # Enhanced cache for calculated indicators with TTL
         self._indicator_cache = {}
+        self._cache_timestamps = {}
+        self._cache_ttl = 3600  # 1 hour TTL in seconds
+        
+        # Batch processing cache
+        self._batch_cache = {}
+        self._technical_indicators_cache = {}
+        
+    def _is_cache_valid(self, cache_key: str) -> bool:
+        """Check if cache entry is still valid based on TTL.
+        
+        Args:
+            cache_key: Cache key to check
+            
+        Returns:
+            True if cache is valid, False otherwise
+        """
+        if cache_key not in self._cache_timestamps:
+            return False
+            
+        import time
+        current_time = time.time()
+        cache_time = self._cache_timestamps[cache_key]
+        
+        return (current_time - cache_time) < self._cache_ttl
+        
+    def _set_cache(self, cache_key: str, value: any) -> None:
+        """Set cache entry with timestamp.
+        
+        Args:
+            cache_key: Cache key
+            value: Value to cache
+        """
+        import time
+        self._indicator_cache[cache_key] = value
+        self._cache_timestamps[cache_key] = time.time()
+        
+    def _get_cache(self, cache_key: str) -> any:
+        """Get cache entry if valid.
+        
+        Args:
+            cache_key: Cache key
+            
+        Returns:
+            Cached value or None if invalid/missing
+        """
+        if self._is_cache_valid(cache_key):
+            return self._indicator_cache.get(cache_key)
+        else:
+            # Clean up expired cache
+            if cache_key in self._indicator_cache:
+                del self._indicator_cache[cache_key]
+            if cache_key in self._cache_timestamps:
+                del self._cache_timestamps[cache_key]
+            return None
         
     def load_stock_data(self, symbol: str, days: int = 330) -> Optional[pd.DataFrame]:
         """Load stock data for a given symbol.
@@ -164,6 +218,72 @@ class StockRankingSystem:
             self.logger.error(f"Error calculating technical indicators: {e}")
             
         return indicators
+        
+    def calculate_batch_indicators(self, symbols: List[str]) -> Dict[str, Dict[str, float]]:
+        """Calculate indicators for multiple stocks in batch for better performance.
+        
+        Args:
+            symbols: List of stock symbols
+            
+        Returns:
+            Dictionary mapping symbols to their indicator dictionaries
+        """
+        results = {}
+        batch_size = 50  # Process in batches to manage memory
+        
+        for i in range(0, len(symbols), batch_size):
+            batch_symbols = symbols[i:i + batch_size]
+            self.logger.info(f"Processing batch {i//batch_size + 1}/{(len(symbols)-1)//batch_size + 1}")
+            
+            # Pre-load data for the entire batch
+            batch_data = {}
+            for symbol in batch_symbols:
+                try:
+                    df = self.load_stock_data(symbol)
+                    if df is not None and len(df) >= 20:
+                        batch_data[symbol] = df
+                except Exception as e:
+                    self.logger.warning(f"Failed to load data for {symbol}: {e}")
+                    continue
+            
+            # Calculate indicators for the batch
+            for symbol, df in batch_data.items():
+                try:
+                    indicators = {}
+                    
+                    # Use cached results if available
+                    cache_key = f"{symbol}_{datetime.now().strftime('%Y-%m-%d')}"
+                    cached_result = self._get_cache(cache_key)
+                    if cached_result is not None:
+                        results[symbol] = cached_result
+                        continue
+                    
+                    # Calculate technical indicators
+                    tech_cache_key = f"tech_{symbol}_{len(df)}"
+                    technical = self._get_cache(tech_cache_key)
+                    if technical is None:
+                        technical = self.calculate_technical_indicators(df)
+                        self._set_cache(tech_cache_key, technical)
+                    
+                    # Calculate market indicators
+                    market_cache_key = f"market_{symbol}_{len(df)}"
+                    market = self._get_cache(market_cache_key)
+                    if market is None:
+                        market = self.calculate_market_indicators(symbol, df)
+                        self._set_cache(market_cache_key, market)
+                    
+                    indicators.update(technical)
+                    indicators.update(market)
+                    
+                    # Cache and store results
+                    self._set_cache(cache_key, indicators)
+                    results[symbol] = indicators
+                    
+                except Exception as e:
+                    self.logger.error(f"Error calculating indicators for {symbol}: {e}")
+                    results[symbol] = {}
+                    
+        return results
     
     def _detect_stock_split_distortion(self, df: pd.DataFrame, symbol: str) -> bool:
         """액면병합으로 인한 가격 왜곡을 감지합니다.
@@ -375,10 +495,21 @@ class StockRankingSystem:
             
         return indicators
     
-    def calculate_batch_rs_scores(self, symbols: List[str]) -> Dict[str, float]:
-        """Mark Minervini 방식으로 배치 RS 점수 계산"""
+    def calculate_batch_rs_scores(self, symbols: List[str] = None) -> Dict[str, float]:
+        """Mark Minervini 방식으로 배치 RS 점수 계산 - 전체 주식 대상으로 확장"""
         try:
             from utils.relative_strength import calculate_rs_score
+            import os
+            
+            # symbols가 None이면 전체 data/us 디렉토리의 모든 주식 사용
+            if symbols is None:
+                 all_symbols = []
+                 for file in os.listdir(self.data_directory):
+                     if file.endswith('.csv'):
+                         symbol = file.replace('.csv', '')
+                         all_symbols.append(symbol)
+                 symbols = all_symbols
+                 self.logger.info(f"전체 주식 대상 RS 점수 계산: {len(symbols)}개 종목")
             
             # 모든 종목 데이터를 결합
             combined_data_list = []
@@ -396,33 +527,40 @@ class StockRankingSystem:
                 spy_df['date'] = pd.to_datetime(spy_df['date'])
             combined_data_list.append(spy_df[['date', 'symbol', 'close']])
             
-            # 각 종목 데이터 추가
+            # 각 종목 데이터 추가 (청크 단위로 처리)
             valid_symbols = []
-            for symbol in symbols:
-                try:
-                    df = self.load_stock_data(symbol)
-                    if df is not None and len(df) >= 252:
-                        stock_df = df.copy()
-                        stock_df['symbol'] = symbol
-                        if 'date' in stock_df.columns:
-                            stock_df['date'] = pd.to_datetime(stock_df['date'])
-                        combined_data_list.append(stock_df[['date', 'symbol', 'close']])
-                        valid_symbols.append(symbol)
-                except Exception as e:
-                    self.logger.warning(f"종목 {symbol} 데이터 로드 실패: {e}")
-                    continue
+            chunk_size = 100  # 메모리 효율성을 위한 청크 크기
+            
+            for i in range(0, len(symbols), chunk_size):
+                chunk_symbols = symbols[i:i + chunk_size]
+                self.logger.info(f"RS 점수 계산 진행: {i//chunk_size + 1}/{(len(symbols)-1)//chunk_size + 1} 청크")
+                
+                for symbol in chunk_symbols:
+                    try:
+                        df = self.load_stock_data(symbol)
+                        if df is not None and len(df) >= 252:
+                            stock_df = df.copy()
+                            stock_df['symbol'] = symbol
+                            if 'date' in stock_df.columns:
+                                stock_df['date'] = pd.to_datetime(stock_df['date'])
+                            combined_data_list.append(stock_df[['date', 'symbol', 'close']])
+                            valid_symbols.append(symbol)
+                    except Exception as e:
+                        self.logger.warning(f"종목 {symbol} 데이터 로드 실패: {e}")
+                        continue
             
             if not combined_data_list:
                 return {symbol: 50 for symbol in symbols}
             
             # 데이터 결합
+            self.logger.info(f"전체 데이터 결합 중: {len(combined_data_list)}개 종목")
             combined_df = pd.concat(combined_data_list, ignore_index=True)
             combined_df = combined_df.set_index(['date', 'symbol'])
             
             # RS 점수 계산 (고도화된 버전 사용)
-            print("📊 고도화된 RS 점수 계산 중...")
+            self.logger.info("📊 전체 주식 대상 고도화된 RS 점수 계산 중...")
             rs_scores = calculate_rs_score(combined_df, price_col='close', use_enhanced=True)
-            print(f"✅ RS 점수 계산 완료: {len(rs_scores)}개 종목")
+            self.logger.info(f"✅ RS 점수 계산 완료: {len(rs_scores)}개 종목")
             
             # 결과 딕셔너리 생성
             result = {}
@@ -437,9 +575,31 @@ class StockRankingSystem:
         except Exception as e:
             self.logger.error(f"배치 RS 점수 계산 오류: {e}")
             return {symbol: 50 for symbol in symbols}
+    
+    def calculate_rs_scores(self, symbols: List[str] = None) -> Dict[str, float]:
+        """RS 점수 계산 - 전체 주식 대상으로 확장 가능"""
+        # symbols가 None이면 전체 주식 대상으로 배치 계산 사용
+        if symbols is None:
+            return self.calculate_batch_rs_scores()
+        
+        rs_scores = {}
+        
+        for symbol in symbols:
+            try:
+                rs_score = self.calculate_rs_score(symbol)
+                rs_scores[symbol] = rs_score
+            except Exception as e:
+                self.logger.warning(f"RS 점수 계산 실패 {symbol}: {e}")
+                rs_scores[symbol] = 50  # 기본값
+        
+        return rs_scores
+    
+    def calculate_all_stocks_rs_scores(self) -> Dict[str, float]:
+        """전체 주식 대상 RS 점수 계산"""
+        return self.calculate_batch_rs_scores()
         
     def calculate_all_indicators(self, symbol: str) -> Dict[str, float]:
-        """Calculate all indicators for a stock.
+        """Calculate all indicators for a stock with enhanced caching.
         
         Args:
             symbol: Stock symbol
@@ -447,10 +607,11 @@ class StockRankingSystem:
         Returns:
             Dictionary of all indicator values
         """
-        # Check cache first
+        # Check enhanced cache first
         cache_key = f"{symbol}_{datetime.now().strftime('%Y-%m-%d')}"
-        if cache_key in self._indicator_cache:
-            return self._indicator_cache[cache_key]
+        cached_result = self._get_cache(cache_key)
+        if cached_result is not None:
+            return cached_result
             
         indicators = {}
         
@@ -460,19 +621,31 @@ class StockRankingSystem:
             self.logger.warning(f"Insufficient data for {symbol}")
             return indicators
             
-        # Calculate all types of indicators
-        technical = self.calculate_technical_indicators(df)
-        market = self.calculate_market_indicators(symbol, df)
+        # Calculate all types of indicators with batch optimization
+        try:
+            # Check if technical indicators are already cached
+            tech_cache_key = f"tech_{symbol}_{len(df)}"
+            technical = self._get_cache(tech_cache_key)
+            if technical is None:
+                technical = self.calculate_technical_indicators(df)
+                self._set_cache(tech_cache_key, technical)
+            
+            # Check if market indicators are already cached
+            market_cache_key = f"market_{symbol}_{len(df)}"
+            market = self._get_cache(market_cache_key)
+            if market is None:
+                market = self.calculate_market_indicators(symbol, df)
+                self._set_cache(market_cache_key, market)
+            
+            indicators.update(technical)
+            indicators.update(market)
+            
+        except Exception as e:
+            self.logger.error(f"Error calculating indicators for {symbol}: {e}")
+            return indicators
         
-        indicators.update(technical)
-        indicators.update(market)
-        
-        # Add some sentiment indicators (placeholder)
-        # 애널리스트 평점, 내부자 소유권, 기관 소유권 데이터 제거됨
-        # 실제 데이터 소스 연결 시 구현 예정
-        
-        # Cache the results
-        self._indicator_cache[cache_key] = indicators
+        # Cache the final results with enhanced caching
+        self._set_cache(cache_key, indicators)
         
         return indicators
         
@@ -721,15 +894,29 @@ class StockRankingSystem:
             
     # Helper methods for technical indicators
     def _calculate_rsi(self, prices: pd.Series, period: int = 14) -> float:
-        """Calculate RSI indicator."""
+        """Calculate RSI indicator using optimized vectorized operations."""
         try:
-            delta = prices.diff()
-            gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-            rs = gain / loss
+            if len(prices) < period + 1:
+                return 50.0
+                
+            # Vectorized delta calculation
+            delta = prices.diff().dropna()
+            
+            # Separate gains and losses using vectorized operations
+            gains = delta.where(delta > 0, 0)
+            losses = -delta.where(delta < 0, 0)
+            
+            # Use exponential weighted mean for better performance
+            alpha = 1.0 / period
+            avg_gain = gains.ewm(alpha=alpha, adjust=False).mean()
+            avg_loss = losses.ewm(alpha=alpha, adjust=False).mean()
+            
+            # Avoid division by zero
+            rs = avg_gain / avg_loss.replace(0, np.inf)
             rsi = 100 - (100 / (1 + rs))
-            return rsi.iloc[-1] if not pd.isna(rsi.iloc[-1]) else 50.0
-        except:
+            
+            return float(rsi.iloc[-1]) if not pd.isna(rsi.iloc[-1]) else 50.0
+        except Exception:
             return 50.0
             
     def _calculate_macd(self, prices: pd.Series, fast: int = 12, slow: int = 26, signal: int = 9) -> Tuple[float, float, float]:
@@ -748,17 +935,35 @@ class StockRankingSystem:
             return 0.0, 0.0, 0.0
             
     def _calculate_atr(self, df: pd.DataFrame, period: int = 14) -> float:
-        """Calculate Average True Range."""
+        """Calculate Average True Range using optimized vectorized operations."""
         try:
-            high_low = df['high'] - df['low']
-            high_close = np.abs(df['high'] - df['close'].shift())
-            low_close = np.abs(df['low'] - df['close'].shift())
+            if len(df) < period + 1:
+                return 0.0
+                
+            # Vectorized true range calculation
+            high = df['high'].values
+            low = df['low'].values
+            close = df['close'].values
             
-            true_range = pd.concat([high_low, high_close, low_close], axis=1).max(axis=1)
-            atr = true_range.rolling(window=period).mean()
+            # Calculate all three components using vectorized operations
+            high_low = high - low
+            high_close = np.abs(high[1:] - close[:-1])
+            low_close = np.abs(low[1:] - close[:-1])
             
-            return atr.iloc[-1] if not pd.isna(atr.iloc[-1]) else 0.0
-        except:
+            # Pad the first element for high_close and low_close
+            high_close = np.concatenate([[high_low[0]], high_close])
+            low_close = np.concatenate([[high_low[0]], low_close])
+            
+            # Vectorized maximum calculation
+            true_range = np.maximum(high_low, np.maximum(high_close, low_close))
+            
+            # Use exponential weighted mean for better performance
+            alpha = 1.0 / period
+            tr_series = pd.Series(true_range)
+            atr = tr_series.ewm(alpha=alpha, adjust=False).mean()
+            
+            return float(atr.iloc[-1]) if not pd.isna(atr.iloc[-1]) else 0.0
+        except Exception:
             return 0.0
             
     def _calculate_bollinger_bands(self, prices: pd.Series, period: int = 20, std_dev: int = 2) -> Tuple[float, float, float]:

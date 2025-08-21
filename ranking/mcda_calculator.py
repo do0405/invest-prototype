@@ -87,6 +87,8 @@ class MCDACalculator:
     def normalize_matrix(self, method: NormalizationMethod = NormalizationMethod.VECTOR) -> pd.DataFrame:
         """Normalize the decision matrix.
         
+        Performance optimized version using vectorized operations.
+        
         Args:
             method: Normalization method to use
             
@@ -99,45 +101,55 @@ class MCDACalculator:
         matrix = self.decision_matrix.copy()
         normalized = matrix.copy()
         
-        for column in matrix.columns:
-            col_data = matrix[column].values
+        # Get all column data as numpy array for vectorized operations
+        matrix_values = matrix.values
+        
+        if method == NormalizationMethod.MIN_MAX:
+            min_vals = matrix_values.min(axis=0)
+            max_vals = matrix_values.max(axis=0)
+            ranges = max_vals - min_vals
             
-            if method == NormalizationMethod.MIN_MAX:
-                min_val, max_val = col_data.min(), col_data.max()
-                if max_val - min_val != 0:
-                    if self.criteria_types[column] == CriteriaType.BENEFIT:
-                        normalized[column] = (col_data - min_val) / (max_val - min_val)
-                    else:  # COST
-                        normalized[column] = (max_val - col_data) / (max_val - min_val)
-                else:
-                    normalized[column] = 0.5  # All values are the same
+            # Handle zero ranges
+            zero_range_mask = ranges == 0
+            ranges = np.where(zero_range_mask, 1, ranges)  # Avoid division by zero
+            
+            # Create benefit mask for vectorized operations
+            benefit_mask = np.array([self.criteria_types[col] == CriteriaType.BENEFIT for col in matrix.columns])
+            
+            # Vectorized normalization
+            normalized_values = np.where(benefit_mask,
+                                       (matrix_values - min_vals) / ranges,
+                                       (max_vals - matrix_values) / ranges)
+            
+            # Handle zero ranges
+            normalized_values[:, zero_range_mask] = 0.5
+            normalized.iloc[:, :] = normalized_values
                     
-            elif method == NormalizationMethod.VECTOR:
-                norm = np.sqrt(np.sum(col_data ** 2))
-                if norm != 0:
-                    normalized[column] = col_data / norm
-                else:
-                    normalized[column] = 0
+        elif method == NormalizationMethod.VECTOR:
+            # Vectorized vector normalization
+            norms = np.sqrt(np.sum(matrix_values ** 2, axis=0))
+            norms = np.where(norms == 0, 1, norms)  # Avoid division by zero
+            normalized.iloc[:, :] = matrix_values / norms
                     
-            elif method == NormalizationMethod.SUM:
-                sum_val = np.sum(col_data)
-                if sum_val != 0:
-                    normalized[column] = col_data / sum_val
-                else:
-                    normalized[column] = 1 / len(col_data)
+        elif method == NormalizationMethod.SUM:
+            # Vectorized sum normalization
+            sums = np.sum(matrix_values, axis=0)
+            sums = np.where(sums == 0, len(matrix_values), sums)  # Avoid division by zero
+            normalized.iloc[:, :] = matrix_values / sums
                     
-            elif method == NormalizationMethod.MAX:
-                max_val = col_data.max()
-                if max_val != 0:
-                    normalized[column] = col_data / max_val
-                else:
-                    normalized[column] = 1
+        elif method == NormalizationMethod.MAX:
+            # Vectorized max normalization
+            max_vals = matrix_values.max(axis=0)
+            max_vals = np.where(max_vals == 0, 1, max_vals)  # Avoid division by zero
+            normalized.iloc[:, :] = matrix_values / max_vals
                     
         self.normalized_matrix = normalized
         return normalized
         
     def calculate_topsis(self, normalization: NormalizationMethod = NormalizationMethod.VECTOR) -> pd.DataFrame:
         """Calculate TOPSIS (Technique for Order Preference by Similarity to Ideal Solution).
+        
+        Performance optimized version using vectorized operations.
         
         Args:
             normalization: Normalization method to use
@@ -148,63 +160,47 @@ class MCDACalculator:
         # Normalize matrix
         normalized = self.normalize_matrix(normalization)
         
-        # Apply weights
-        weighted = normalized.copy()
-        for column in weighted.columns:
-            weighted[column] *= self.criteria_weights[column]
-            
-        # Determine ideal and negative-ideal solutions
-        ideal_solution = {}
-        negative_ideal_solution = {}
+        # Apply weights using vectorized operations
+        weights_array = np.array([self.criteria_weights[col] for col in normalized.columns])
+        weighted = normalized * weights_array
         
-        for column in weighted.columns:
-            if self.criteria_types[column] == CriteriaType.BENEFIT:
-                ideal_solution[column] = weighted[column].max()
-                negative_ideal_solution[column] = weighted[column].min()
-            else:  # COST
-                ideal_solution[column] = weighted[column].min()
-                negative_ideal_solution[column] = weighted[column].max()
-                
-        # Calculate distances
-        distances_to_ideal = []
-        distances_to_negative_ideal = []
+        # Determine ideal and negative-ideal solutions using vectorized operations
+        benefit_mask = np.array([self.criteria_types[col] == CriteriaType.BENEFIT for col in weighted.columns])
+        cost_mask = ~benefit_mask
         
-        for idx in weighted.index:
-            # Distance to ideal solution
-            d_ideal = np.sqrt(sum([
-                (weighted.loc[idx, col] - ideal_solution[col]) ** 2
-                for col in weighted.columns
-            ]))
-            distances_to_ideal.append(d_ideal)
-            
-            # Distance to negative-ideal solution
-            d_negative = np.sqrt(sum([
-                (weighted.loc[idx, col] - negative_ideal_solution[col]) ** 2
-                for col in weighted.columns
-            ]))
-            distances_to_negative_ideal.append(d_negative)
-            
-        # Calculate relative closeness
-        closeness = []
-        for i in range(len(distances_to_ideal)):
-            if distances_to_ideal[i] + distances_to_negative_ideal[i] != 0:
-                c = distances_to_negative_ideal[i] / (distances_to_ideal[i] + distances_to_negative_ideal[i])
-            else:
-                c = 0.5
-            closeness.append(c)
-            
+        # Vectorized ideal solution calculation
+        ideal_solution = np.where(benefit_mask, weighted.max(axis=0), weighted.min(axis=0))
+        negative_ideal_solution = np.where(benefit_mask, weighted.min(axis=0), weighted.max(axis=0))
+        
+        # Calculate distances using vectorized operations
+        weighted_values = weighted.values
+        
+        # Distance to ideal solution (vectorized)
+        diff_ideal = weighted_values - ideal_solution
+        distances_to_ideal = np.sqrt(np.sum(diff_ideal ** 2, axis=1))
+        
+        # Distance to negative-ideal solution (vectorized)
+        diff_negative = weighted_values - negative_ideal_solution
+        distances_to_negative_ideal = np.sqrt(np.sum(diff_negative ** 2, axis=1))
+        
+        # Calculate relative closeness (vectorized)
+        total_distances = distances_to_ideal + distances_to_negative_ideal
+        # Avoid division by zero
+        closeness = np.where(total_distances != 0, 
+                           distances_to_negative_ideal / total_distances, 
+                           0.5)
+        
         # Create results DataFrame
         results = pd.DataFrame({
-            'alternative': weighted.index,
             'topsis_score': closeness,
             'distance_to_ideal': distances_to_ideal,
             'distance_to_negative_ideal': distances_to_negative_ideal
-        })
+        }, index=weighted.index)
         
         # Add ranking (higher score = better rank)
         results['topsis_rank'] = results['topsis_score'].rank(ascending=False, method='min')
         
-        return results.set_index('alternative')
+        return results
         
     def calculate_vikor(self, 
                        normalization: NormalizationMethod = NormalizationMethod.MIN_MAX,

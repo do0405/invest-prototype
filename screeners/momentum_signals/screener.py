@@ -102,7 +102,7 @@ class StanWeinsteinStage2Screener:
                     from utils.screener_utils import read_csv_flexible
                     df = read_csv_flexible(file_path, required_columns=['date', 'close'])
                     if df is not None:
-                        df['date'] = pd.to_datetime(df['date'], utc=True)
+                        df['date'] = pd.to_datetime(df['date'], utc=True, errors='coerce').dt.tz_localize(None)
                         df = df.sort_values('date')
                         indices[symbol] = df
                         logger.info(f"{symbol} 지수 데이터 로드 성공: {len(df)}일")
@@ -159,7 +159,7 @@ class StanWeinsteinStage2Screener:
             return df
         
         df = df.copy()
-        df['date'] = pd.to_datetime(df['date'], utc=True)
+        df['date'] = pd.to_datetime(df['date'], utc=True, errors='coerce').dt.tz_localize(None)
         df.set_index('date', inplace=True)
         
         # 주간 데이터로 리샘플링
@@ -228,8 +228,8 @@ class StanWeinsteinStage2Screener:
         
         # 날짜 기준으로 병합
         df_copy = df.copy()
-        df_copy['date'] = pd.to_datetime(df_copy['date'])
-        spy_weekly['date'] = pd.to_datetime(spy_weekly['date'])
+        df_copy['date'] = pd.to_datetime(df_copy['date'], utc=True, errors='coerce').dt.tz_localize(None)
+        spy_weekly['date'] = pd.to_datetime(spy_weekly['date'], utc=True, errors='coerce').dt.tz_localize(None)
         
         merged = pd.merge_asof(
             df_copy.sort_values('date'),

@@ -5,17 +5,9 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import logging
+from utils.calc_utils import calculate_rsi
 
 logger = logging.getLogger(__name__)
-
-def calculate_rsi(prices, period=14):
-    """RSI 계산 함수"""
-    delta = prices.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-    rs = gain / loss
-    rsi = 100 - (100 / (1 + rs))
-    return rsi.iloc[-1]
 
 class IPOTrackAnalyzer:
     """IPO Track 분석기 클래스"""
@@ -47,8 +39,10 @@ class IPOTrackAnalyzer:
             volume_check = current_volume > avg_5_volume * 1.8
             
             # RSI 반전 확인
-            rsi = calculate_rsi(df['close'], 14)
-            prev_rsi = calculate_rsi(df['close'].iloc[:-1], 14)
+            df_with_rsi = calculate_rsi(df, 14)
+            rsi = df_with_rsi['rsi_14'].iloc[-1]
+            prev_df_with_rsi = calculate_rsi(df.iloc[:-1], 14)
+            prev_rsi = prev_df_with_rsi['rsi_14'].iloc[-1]
             rsi_check = prev_rsi <= 30 and rsi >= 35
             
             track1_pattern = decline_check and volume_check and rsi_check
@@ -113,7 +107,8 @@ class IPOTrackAnalyzer:
                             
                             if recent_5_volume > total_volume * 1.3:
                                 # RSI 확인
-                                rsi = calculate_rsi(df['close'], 14)
+                                df_with_rsi = calculate_rsi(df, 14)
+                                rsi = df_with_rsi['rsi_14'].iloc[-1]
                                 if 60 < rsi < 85:
                                     track2_info = {
                                         'current_price': current_price,

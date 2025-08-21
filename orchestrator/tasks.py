@@ -166,15 +166,20 @@ def execute_strategies(strategy_list: Optional[List[str]] = None,
 
 def check_strategy_file_status() -> List[str]:
     """Return strategies requiring screening based on existing result files."""
-    strategy_files = {
-        "strategy1": os.path.join(PORTFOLIO_BUY_DIR, "strategy1_results.csv"),
-        "strategy2": os.path.join(PORTFOLIO_SELL_DIR, "strategy2_results.csv"),
-        "strategy3": os.path.join(PORTFOLIO_BUY_DIR, "strategy3_results.csv"),
-        "strategy4": os.path.join(PORTFOLIO_BUY_DIR, "strategy4_results.csv"),
-        "strategy5": os.path.join(PORTFOLIO_BUY_DIR, "strategy5_results.csv"),
-        "strategy6": os.path.join(PORTFOLIO_SELL_DIR, "strategy6_results.csv"),
-        "volatility_skew": os.path.join(PORTFOLIO_BUY_DIR, "volatility_skew_results.csv"),
-    }
+    # 동적으로 전략 파일들을 찾기
+    strategy_files = {}
+    
+    # Buy 전략들 (strategy1, 3, 4, 5 등)
+    for file_path in os.listdir(PORTFOLIO_BUY_DIR) if os.path.exists(PORTFOLIO_BUY_DIR) else []:
+        if file_path.endswith('_results.csv'):
+            strategy_name = file_path.replace('_results.csv', '')
+            strategy_files[strategy_name] = os.path.join(PORTFOLIO_BUY_DIR, file_path)
+    
+    # Sell 전략들 (strategy2, 6 등)
+    for file_path in os.listdir(PORTFOLIO_SELL_DIR) if os.path.exists(PORTFOLIO_SELL_DIR) else []:
+        if file_path.endswith('_results.csv'):
+            strategy_name = file_path.replace('_results.csv', '')
+            strategy_files[strategy_name] = os.path.join(PORTFOLIO_SELL_DIR, file_path)
     strategies_need_screening: List[str] = []
 
     print("\n🔍 전략 결과 파일 상태 확인 중...")

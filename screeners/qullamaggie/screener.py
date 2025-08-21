@@ -4,7 +4,6 @@
 import os
 import sys
 import pandas as pd
-import json
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from utils.path_utils import add_project_root

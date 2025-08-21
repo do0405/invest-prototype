@@ -5,17 +5,9 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import logging
+from utils.calc_utils import calculate_rsi
 
 logger = logging.getLogger(__name__)
-
-def calculate_rsi(prices, period=14):
-    """RSI 계산 함수"""
-    delta = prices.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
-    rs = gain / loss
-    rsi = 100 - (100 / (1 + rs))
-    return rsi.iloc[-1]
 
 class IPOPatternAnalyzer:
     """IPO 패턴 분석기 클래스"""
@@ -102,7 +94,8 @@ class IPOPatternAnalyzer:
             close_check = current_price > breakout_level * 0.975
             
             # RSI 확인
-            rsi = calculate_rsi(df['close'], 14)
+            df_with_rsi = calculate_rsi(df, 14)
+            rsi = df_with_rsi['rsi_14'].iloc[-1]
             rsi_check = 50 < rsi < 85
             
             breakout_pattern = breakout_check and volume_check and close_check and rsi_check

@@ -490,5 +490,61 @@
   {
     "symbol":"XYL",
     "first_signal_date":"2025-08-03"
+  },
+  {
+    "symbol":"ARRY",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"DAY",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"DUOL",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"FSLR",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"GDRX",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"IQ",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"MDGL",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"NICE",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"RUN",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"SHCO",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"WB",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"WULF",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"YEXT",
+    "first_signal_date":"2025-08-20"
+  },
+  {
+    "symbol":"ZK",
+    "first_signal_date":"2025-08-20"
   }
 ]

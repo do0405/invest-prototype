@@ -48,20 +48,20 @@ function TradingViewModal({ symbol, isOpen, onClose }: TradingViewModalProps) {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onClick={onClose}></div>
+        <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={onClose}></div>
         
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
-          <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+        <div className="inline-block align-bottom bg-card rounded-notion text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-6xl sm:w-full">
+          <div className="bg-card px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg leading-6 font-medium text-gray-900 flex items-center gap-2">
-                <ChartBarIcon className="h-6 w-6 text-blue-600" />
+              <h3 className="text-lg leading-6 font-medium text-foreground flex items-center gap-2">
+                <ChartBarIcon className="h-6 w-6 text-accent" />
                 {symbol} - TradingView Chart
               </h3>
               <button
                 onClick={onClose}
-                className="bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors"
+                className="bg-muted hover:bg-border rounded-notion p-2 transition-colors"
               >
-                <XMarkIcon className="h-5 w-5 text-gray-600" />
+                <XMarkIcon className="h-5 w-5 text-muted-foreground" />
               </button>
             </div>
             <div className="w-full h-96 sm:h-[500px]">
@@ -77,7 +77,7 @@ function TradingViewModal({ symbol, isOpen, onClose }: TradingViewModalProps) {
 // 셀 값 포맷팅 함수
 function formatCellValue(value: string | number | boolean | null | undefined): React.ReactNode {
   if (value === null || value === undefined || value === '' || value === 'N/A') {
-    return <span className="text-gray-400 italic">N/A</span>;
+    return <span className="text-muted-foreground italic">N/A</span>;
   }
   
   if (typeof value === 'number') {
@@ -103,7 +103,7 @@ function DataTable<T extends Record<string, string | number | boolean | null | u
   className = '',
   headerRowClassName = '',
   responsive = true,
-  cardClassName = 'bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-3 hover:shadow-md transition-shadow',
+  cardClassName = 'bg-card rounded-notion shadow-notion border border-border p-4 mb-3 hover:shadow-notion-hover transition-shadow',
   onRowClick,
   striped = true,
   hoverable = true,

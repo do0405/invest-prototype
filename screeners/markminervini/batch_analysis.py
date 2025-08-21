@@ -244,7 +244,7 @@ def run_pattern_detection_on_all_symbols(symbols: List[str],
                     continue
                 
                 # 날짜 컬럼 처리
-                df['date'] = pd.to_datetime(df['date'])
+                df['date'] = pd.to_datetime(df['date'], utc=True, errors='coerce').dt.tz_localize(None)
                 df = df.sort_values('date')
                 
                 # 패턴 감지 수행

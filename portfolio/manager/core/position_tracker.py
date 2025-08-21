@@ -177,7 +177,7 @@ class PositionTracker:
         try:
             updated_count = 0
             for idx, position in self.positions.iterrows():
-                current_price = self.get_current_price(position['symbol'])
+                current_price = PriceCalculator.get_current_price(position['symbol'])
                 
                 if current_price is not None:
                     # 현재가 업데이트
@@ -212,9 +212,7 @@ class PositionTracker:
             print(f"❌ 포지션 업데이트 실패: {e}")
             return False
     
-    def get_current_price(self, symbol: str) -> Optional[float]:
-        """현재가 가져오기"""
-        return PriceCalculator.get_current_price(symbol)
+    # get_current_price 메서드 제거 - PriceCalculator.get_current_price를 직접 사용
     
     
     def save_positions(self):
