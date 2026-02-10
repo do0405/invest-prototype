@@ -8,7 +8,6 @@
 - **기술적 스크리닝**: Mark Minervini 기법 기반 상대강도(RS) 점수 계산
 - **재무제표 스크리닝**: EPS, 매출, 영업이익률 등 9개 재무 지표 분석
 - **통합 스크리닝**: 기술적 분석과 재무 분석을 결합한 종합 평가
-- **변동성 스큐 스크리닝**: 옵션 데이터 기반 변동성 스큐 역전 전략
 
 ### 2. 포트폴리오 관리
 - **6가지 투자 전략**: 트렌드 하이 모멘텀, 밸류 모멘텀, 그로스 모멘텀 등
@@ -32,9 +31,8 @@ invest_prototype/
 ├── screeners/                  # 스크리너 모듈
 │   ├── markminervini/
 │   ├── qullamaggie/
-│   ├── us_gainer/
-│   ├── us_setup/
-│   └── option_volatility/
+│   ├── leader_stock/
+│   └── momentum_signals/
 ├── portfolio/
 │   ├── long_short/             # 전략 스크립트
 │   └── manager/                # 포트폴리오 관리 로직
@@ -204,7 +202,6 @@ py data_collectors/stock_metadata_collector.py
 - results/screeners/markminervini/us_with_rs.csv/.json : 기술적 스크리닝 결과
 - results/screeners/markminervini/advanced_financial_results.csv/.json : 재무 스크리닝 결과
 - results/screeners/markminervini/integrated_results.csv/.json : 통합 스크리닝 결과
-- results/option/volatility_skew_screening_YYYYMMDD.csv/.json : 옵션 변동성 스크리닝 결과
 - results/momentum_signals/momentum_signals_YYYYMMDD.csv : 상승 모멘텀 시그널 결과
 - results/portfolio/buy/strategyX_results.csv/.json : 전략별 매수 신호
 - results/portfolio/sell/strategyX_results.csv/.json : 전략별 매도 신호

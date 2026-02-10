@@ -17,13 +17,6 @@ from .calc_utils import (
     calculate_historical_volatility,
     check_sp500_condition,
 )
-from .market_regime_indicator import (
-    analyze_market_regime,
-    calculate_market_score,
-    get_market_regime,
-    get_regime_description,
-    get_investment_strategy,
-)
 from .relative_strength import (
     calculate_rs_score_enhanced,
     calculate_rs_score,
@@ -55,12 +48,6 @@ __all__ = [
     'calculate_adx',
     'calculate_historical_volatility',
     'check_sp500_condition',
-    # 시장 국면 판단 지표
-    'analyze_market_regime',
-    'calculate_market_score',
-    'get_market_regime',
-    'get_regime_description',
-    'get_investment_strategy',
     'calculate_rs_score_enhanced',
     'calculate_rs_score',
     'fetch_market_cap',

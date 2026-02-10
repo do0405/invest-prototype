@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, use } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import DataTable, { DataTableColumn } from '@/components/DataTable';
 import ScreeningCriteria from '@/components/ScreeningCriteria';
+
 interface ScreenerPageProps {
   params: Promise<{
     screenerId: string;
@@ -24,15 +25,19 @@ interface SliderFilter {
 }
 
 export default function ScreenerPage({ params }: ScreenerPageProps) {
-  const resolvedParams = use(params);
-  const [data, setData] = useState<ScreenerResult[]>([]);
-  const [filteredData, setFilteredData] = useState<ScreenerResult[]>([]);
+  const [resolvedParams, setResolvedParams] = useState(null as { screenerId: string } | null);
+  const [data, setData] = useState([] as ScreenerResult[]);
+  const [filteredData, setFilteredData] = useState([] as ScreenerResult[]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
-  const [sliderFilters, setSliderFilters] = useState<SliderFilter[]>([]);
+  const [error, setError] = useState(null as string | null);
+  const [sortConfig, setSortConfig] = useState(null as { key: string; direction: 'asc' | 'desc' } | null);
+  const [sliderFilters, setSliderFilters] = useState([] as SliderFilter[]);
   const [showFilters, setShowFilters] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState(null as string | null);
+
+  useEffect(() => {
+    params.then(setResolvedParams);
+  }, [params]);
 
   const getScreenerName = (id: string) => {
     const names: { [key: string]: string } = {
@@ -41,14 +46,14 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       'new_tickers': 'New Tickers',
       'previous_us_with_rs': 'Previous US with RS',
       'us_with_rs': 'US with RS',
-      'us_setup_results': 'US Setup Results',
-      'us_gainers_results': 'US Gainers Results',
       'pattern_detection_results': 'Pattern Detection Results'
     };
     return names[id] || id;
   };
 
   useEffect(() => {
+    if (!resolvedParams) return;
+
     const fetchScreenerData = async () => {
       try {
         setLoading(true);
@@ -75,7 +80,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       }
     };
     fetchScreenerData();
-  }, [resolvedParams.screenerId]);
+  }, [resolvedParams]);
 
   const initializeSliderFilters = (dataArray: ScreenerResult[]) => {
     if (dataArray.length === 0) return;
@@ -85,12 +90,12 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       if (key.toLowerCase().includes('symbol') || key.toLowerCase().includes('ticker')) return false;
       
       // 숫자 컬럼만 선택
-      const values = dataArray.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val));
+      const values = dataArray.map((item: ScreenerResult) => item[key]).filter((val) => typeof val === 'number' && !isNaN(val));
       return values.length > 0;
     });
 
     const filters: SliderFilter[] = numericColumns.map(key => {
-      const values = dataArray.map(item => item[key]).filter(val => typeof val === 'number' && !isNaN(val)) as number[];
+      const values = dataArray.map((item: ScreenerResult) => item[key]).filter((val) => typeof val === 'number' && !isNaN(val)) as number[];
       const min = Math.min(...values);
       const max = Math.max(...values);
       const step = (max - min) > 100 ? Math.ceil((max - min) / 100) : 0.01;
@@ -109,9 +114,9 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
 
   // 데이터 필터링 및 정렬
   useEffect(() => {
-    const filtered = data.filter(item => {
+    const filtered = data.filter((item: ScreenerResult) => {
       // 슬라이더 필터링
-      return sliderFilters.every(filter => {
+      return sliderFilters.every((filter: SliderFilter) => {
         const value = item[filter.key];
         if (typeof value !== 'number' || isNaN(value)) return true;
         return value >= filter.value[0] && value <= filter.value[1];
@@ -120,7 +125,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
 
     // 정렬
     if (sortConfig) {
-      filtered.sort((a, b) => {
+      filtered.sort((a: ScreenerResult, b: ScreenerResult) => {
         const aValue = a[sortConfig.key];
         const bValue = b[sortConfig.key];
         
@@ -155,7 +160,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
       .filter(key => key !== symbolKey)
       .filter(key => {
         // True 값을 가진 컬럼들을 필터링해서 제외
-        const allTrue = data.every(item => item[key] === true || item[key] === 'True');
+        const allTrue = data.every((item: ScreenerResult) => item[key] === true || item[key] === 'True');
         return !allTrue;
       });
     
@@ -165,18 +170,19 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
 
 
   const handleSliderChange = (filterKey: string, newValue: [number, number]) => {
-    setSliderFilters(prev => 
-      prev.map(filter => 
+    const sortedValue = [Math.min(newValue[0], newValue[1]), Math.max(newValue[0], newValue[1])] as [number, number];
+    setSliderFilters((prev: SliderFilter[]) => 
+      prev.map((filter: SliderFilter) => 
         filter.key === filterKey 
-          ? { ...filter, value: newValue }
+          ? { ...filter, value: sortedValue }
           : filter
       )
     );
   };
 
   const resetFilters = () => {
-    setSliderFilters(prev => 
-      prev.map(filter => ({
+    setSliderFilters((prev: SliderFilter[]) => 
+      prev.map((filter: SliderFilter) => ({
         ...filter,
         value: [filter.min, filter.max]
       }))
@@ -184,7 +190,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
     setSortConfig(null);
   };
 
-  if (loading) {
+  if (loading || !resolvedParams) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="text-lg">Loading screener data...</div>
@@ -203,10 +209,10 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
   const headers = getTableHeaders();
   const columns: DataTableColumn<ScreenerResult>[] = headers.map((header) => ({
     key: header,
-    header: header.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    header: header.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()),
     sortable: typeof data[0]?.[header] === 'number',
-    align: typeof data[0]?.[header] === 'number' ? 'right' : 'left',
-    render: (item) => {
+    align: (typeof data[0]?.[header] === 'number' ? 'right' : 'left') as 'left' | 'right' | 'center',
+    render: (item: ScreenerResult) => {
       const value = item[header];
       if (header.toLowerCase().includes('symbol') || header.toLowerCase().includes('ticker')) {
         return (
@@ -301,10 +307,10 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sliderFilters.map((filter) => (
+            {sliderFilters.map((filter: SliderFilter) => (
               <div key={filter.key} className="space-y-3">
                 <label className="block text-sm font-medium text-gray-700">
-                  {filter.key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  {filter.key.replace(/_/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}
                 </label>
                 <div className="px-3 py-2 bg-white rounded-lg border border-gray-200 shadow-sm">
                   <div className="flex justify-between text-xs text-gray-500 mb-2">
@@ -378,7 +384,7 @@ export default function ScreenerPage({ params }: ScreenerPageProps) {
         </div>
       )}
       
-      <style jsx>{`
+      <style>{`
         .slider-thumb::-webkit-slider-thumb {
           appearance: none;
           height: 20px;

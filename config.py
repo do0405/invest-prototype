@@ -8,23 +8,15 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, 'data')  # 데이터 디렉토리
 RESULTS_DIR = os.path.join(BASE_DIR, 'results')  # 결과 디렉토리
 SCREENER_RESULTS_DIR = os.path.join(RESULTS_DIR, 'screeners')
-PORTFOLIO_RESULTS_DIR = os.path.join(RESULTS_DIR, 'portfolio')
-PORTFOLIO_BUY_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy')
-PORTFOLIO_SELL_DIR = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell')
 OPTION_RESULTS_DIR = os.path.join(RESULTS_DIR, 'option')
+
 
 MARKMINERVINI_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'markminervini')
 QULLAMAGGIE_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'qullamaggie')
-US_GAINER_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'us_gainer')
-US_SETUP_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'us_setup')
-OPTION_VOLATILITY_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, 'option_volatility')
 LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, 'leader_stock')
 MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, 'momentum_signals')
-IPO_INVESTMENT_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ipo_investment')
 RANKING_RESULTS_DIR = os.path.join(RESULTS_DIR, 'ranking')
 DATA_US_DIR = os.path.join(DATA_DIR, 'us')  # 미국 주식 데이터 디렉토리
-# IPO 데이터 디렉토리
-IPO_DATA_DIR = os.path.join(DATA_DIR, 'ipo')
 # 시장 폭(Breadth) 지표 및 옵션 데이터 디렉토리
 BREADTH_DATA_DIR = os.path.join(DATA_DIR, 'breadth')
 OPTION_DATA_DIR = os.path.join(DATA_DIR, 'options')
@@ -32,18 +24,13 @@ BACKUP_DIR = os.path.join(BASE_DIR, 'backup')  # 백업 디렉토리
 SCREENERS_DIR = os.path.join(BASE_DIR, 'screeners')
 MARKMINERVINI_DIR = os.path.join(SCREENERS_DIR, 'markminervini')
 QULLAMAGGIE_DIR = os.path.join(SCREENERS_DIR, 'qullamaggie')
-US_GAINER_DIR = os.path.join(SCREENERS_DIR, 'us_gainer')
-US_SETUP_DIR = os.path.join(SCREENERS_DIR, 'us_setup')
 LEADER_STOCK_DIR = os.path.join(SCREENERS_DIR, 'leader_stock')
 MOMENTUM_SIGNALS_DIR = os.path.join(SCREENERS_DIR, 'momentum_signals')
-IPO_INVESTMENT_DIR = os.path.join(SCREENERS_DIR, 'ipo_investment')
 
 # 파일 경로 설정
 US_WITH_RS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'us_with_rs.csv')
 ADVANCED_FINANCIAL_RESULTS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'advanced_financial_results.csv')
 INTEGRATED_RESULTS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, 'integrated_results.csv')
-US_SETUP_RESULTS_PATH = os.path.join(US_SETUP_RESULTS_DIR, 'us_setup_results.csv')
-US_GAINERS_RESULTS_PATH = os.path.join(US_GAINER_RESULTS_DIR, 'us_gainers_results.csv')
 
 # 주식 메타데이터 (섹터, P/E, 매출 성장률 등)
 STOCK_METADATA_PATH = os.path.join(DATA_DIR, 'stock_metadata.csv')
@@ -61,43 +48,6 @@ ADVANCED_FINANCIAL_CRITERIA = {
     'max_debt_to_equity': 150         # 부채비율 ≤ 150%
 }
 
-# 변동성 스큐 역전 전략 기준 (Xing et al. 2010 논문 기반)
-VOLATILITY_SKEW_CRITERIA = {
-    # 기본 조건
-    'min_market_cap': 1_000_000_000,  # 최소 시가총액 $1B (논문 평균 $10.22B)
-    'min_monthly_turnover': 0.1,      # 월 거래회전율 10% 이상
-    'min_avg_daily_volume': 500_000,  # 일평균 거래량 50만주 이상
-    
-    # 옵션 데이터 조건
-    'min_days_to_expiration': 10,     # 최소 만기일 10일
-    'max_days_to_expiration': 60,     # 최대 만기일 60일
-    'min_option_volume': 1,           # 최소 옵션 거래량
-    'min_open_interest': 1,           # 최소 미결제약정
-    
-    # 머니니스 범위 (논문 기준)
-    'atm_call_moneyness_min': 0.95,   # ATM 콜옵션 하한
-    'atm_call_moneyness_max': 1.05,   # ATM 콜옵션 상한
-    'otm_put_moneyness_min': 0.80,    # OTM 풋옵션 하한
-    'otm_put_moneyness_max': 0.95,    # OTM 풋옵션 상한
-    
-    # 스큐 지수 기준 (논문 Table 1 기준)
-    'low_skew_threshold': 2.4,        # 25 percentile (낮은 스큐)
-    'median_skew_threshold': 4.76,    # 50 percentile (중간 스큐)
-    'high_skew_threshold': 8.43,      # 75 percentile (높은 스큐)
-    
-    # 상승 후보 선별 기준
-    'bullish_skew_percentile': 0.2,   # 하위 20% (lowest quintile)
-    'min_past_6m_return': 0.0,        # 과거 6개월 수익률 양수
-}
-
-# 예상 수익률 매핑 (논문 Table 3 기반)
-SKEW_EXPECTED_RETURNS = {
-    'low_skew': 0.13,      # 13% (스큐 < 2.4%)
-    'medium_skew': 0.08,   # 8% (2.4% ≤ 스큐 < 4.76%)
-    'high_skew': 0.05,     # 5% (4.76% ≤ 스큐 < 8.43%)
-    'very_high_skew': 0.02 # 2% (스큐 ≥ 8.43%)
-}
-
 # API 설정
 YAHOO_FINANCE_MAX_RETRIES = 3  # Yahoo Finance API 최대 재시도 횟수
 YAHOO_FINANCE_DELAY = 1        # Yahoo Finance API 재시도 간 지연 시간(초)
@@ -107,37 +57,6 @@ OPTION_DATA_SOURCES = [
     "yfinance",
     "exclusion",
 ]
-
-
-# 변동성 스큐 역전 전략 관련 설정 (새 디렉토리 구조)
-VOLATILITY_SKEW_RESULTS_PATH = os.path.join(OPTION_RESULTS_DIR, 'volatility_skew_results.csv')  # 변동성 스큐 스크리닝 결과
-VOLATILITY_SKEW_DETAILED_PATH = os.path.join(OPTION_RESULTS_DIR, 'volatility_skew_detailed.csv')  # 상세 분석 결과
-VOLATILITY_SKEW_PERFORMANCE_PATH = os.path.join(OPTION_RESULTS_DIR, 'volatility_skew_performance.csv')  # 성과 분석 결과
-VOLATILITY_SKEW_LOG_PATH = os.path.join(OPTION_RESULTS_DIR, 'screening_log.txt')  # 스크리닝 로그
-
-# 시장 국면 판단 지표 관련 설정
-MARKET_REGIME_DIR = os.path.join(RESULTS_DIR, 'market_regime')  # 시장 국면 분석 결과 디렉토리
-MARKET_REGIME_LATEST_PATH = os.path.join(MARKET_REGIME_DIR, 'latest_market_regime.json')  # 최신 시장 국면 분석 결과
-
-# 시장 국면 판단 지표 기준
-MARKET_REGIME_CRITERIA = {
-    # 점수 범위
-    'aggressive_bull_range': (80, 100),  # 공격적 상승장
-    'bull_range': (60, 79),              # 상승장
-    'correction_range': (40, 59),        # 조정장
-    'risk_management_range': (20, 39),   # 위험 관리장
-    'bear_range': (0, 19),               # 완전한 약세장
-    
-    # 기술적 지표 기준
-    'vix_thresholds': [15, 20, 25, 35],  # VIX 임계값
-    'put_call_ratio_thresholds': [0.7, 0.9, 1.2, 1.5],  # Put/Call Ratio 임계값
-    'high_low_index_thresholds': [30, 50, 70, 90],  # High-Low Index 임계값
-    'advance_decline_thresholds': [-50, -20, 20, 50],  # Advance-Decline 추세 임계값
-    'biotech_return_thresholds': [-15, 0, 3, 10],  # 바이오텍 지수 월간 수익률 임계값
-    'ma200_distance_pct': 5,        # 200일 이동평균 대비 이격도(%) 기준
-    'correction_min_days': 5,       # 조정 지속 최소 기간 (거래일 기준)
-    'bear_trend_min_days': 40,      # 약세장 판단용 하락 지속 기간
-}
 
 # 주도주 투자 전략 기준
 LEADER_STOCK_CRITERIA = {
@@ -174,22 +93,4 @@ MOMENTUM_SIGNALS_CRITERIA = {
     'volume_surge': 1.5,      # 거래량 급증 기준 (20일 평균 대비)
     'price_momentum': 5,      # 5일간 상승률 기준 (%)
     'ma_distance': 8,         # 20일 이동평균선 대비 이격도 기준 (%)
-}
-
-# IPO 투자 전략 기준
-IPO_INVESTMENT_CRITERIA = {
-    # IPO 기간 기준
-    'min_days': 30,           # 최소 상장 일수
-    'max_days': 365,          # 최대 상장 일수 (1년)
-    
-    # 베이스 패턴 기준
-    'base_min_score': 3,      # 최소 베이스 패턴 점수
-    'base_price_range': 15,   # 베이스 형성 중 가격 변동 범위 (%)
-    'price_to_high_ratio': 0.7, # IPO 이후 고점 대비 현재가 비율
-    
-    # 브레이크아웃 기준
-    'breakout_min_score': 3,  # 최소 브레이크아웃 점수
-    'volume_surge': 2.0,      # 거래량 급증 기준 (20일 평균 대비)
-    'daily_gain': 2,          # 당일 상승률 기준 (%)
-    'rsi_threshold': 50,      # RSI 기준
 }

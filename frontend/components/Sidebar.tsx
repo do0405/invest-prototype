@@ -1,7 +1,5 @@
 'use client';
 
-import React from 'react';
-
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FaTimes, FaHome, FaChevronDown, FaChevronRight } from 'react-icons/fa';
@@ -9,19 +7,12 @@ import { useState } from 'react';
 
 const MotionLink = motion.create(Link);
 
-// Strategy 인터페이스 정의 추가
-interface Strategy {
-  id: string;
-  name: string;
-}
-
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  strategies: Strategy[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
+const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const [isStrategyAlphaOpen, setIsStrategyAlphaOpen] = useState(false);
   const [isScreenersOpen, setIsScreenersOpen] = useState(false);
   const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
@@ -29,14 +20,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
   const [isMarkMinerviniOpen, setIsMarkMinerviniOpen] = useState(false);
   const [isQullamaggieOpen, setIsQullamaggieOpen] = useState(false);
 
-  const strategyAlphaItems = [
-    { id: 'strategy1', name: 'Strategy 1 (Buy)', type: 'buy' },
-    { id: 'strategy2', name: 'Strategy 2 (Sell)', type: 'sell' },
-    { id: 'strategy3', name: 'Strategy 3 (Buy)', type: 'buy' },
-    { id: 'strategy4', name: 'Strategy 4 (Buy)', type: 'buy' },
-    { id: 'strategy5', name: 'Strategy 5 (Buy)', type: 'buy' },
-    { id: 'strategy6', name: 'Strategy 6 (Sell)', type: 'sell' },
-  ];
+  const strategyAlphaItems: never[] = [];
 
   const markminerviniItems = [
     { id: 'pattern_detection_results', name: '이미지 패턴 분석', icon: '🖼️' },
@@ -70,16 +54,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
       { id: 'buy-signals', name: 'Buy Signals', icon: '🟢' },
       { id: 'sell-signals', name: 'Sell Signals', icon: '🔴' },
     ]},
-    { id: 'us-setup', name: 'US Setup', icon: '⚙️', href: '/us-setup' },
-    { id: 'us-gainers', name: 'US Gainers', icon: '📈', href: '/us-gainers' },
-    { id: 'volatility-skew', name: 'Volatility Skew', icon: '⚡', href: '/volatility-skew' },
     { id: 'momentum', name: 'Momentum Signals', icon: '📈', href: '/strategy/momentum-signals' },
     { id: 'leader-stock', name: 'Leader Stock', icon: '👑', href: '/strategy/leader-stock' },
-    { id: 'ipo-investment', name: 'IPO Investment', icon: '🆕', href: '/strategy/ipo-investment' },
-  ];
-
-  const analysisItems = [
-    { id: 'market-regime', name: 'Market Regime', icon: '🌊', href: '/strategy/market-regime' },
   ];
 
   const resourceItems = [
@@ -116,69 +92,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
           <h3 className="px-4 text-xs font-medium text-muted-foreground uppercase tracking-wider mb-3">핵심 기능</h3>
           <MotionLink
             href="/recent-signals"
-            className="block py-2 px-4 rounded-notion mb-1 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
             whileHover={{ x: 2 }}
             whileTap={{ x: 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           >
             🔥 최근 시그널
           </MotionLink>
-          <MotionLink
-            href="/top-recommendations"
-            className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-            whileHover={{ x: 2 }}
-            whileTap={{ x: 1 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-          >
-            ⭐ Top 10 매수 랭킹
-          </MotionLink>
         </div>
-        {/* Strategy Alpha 섹션 */}
-        <div className="mb-4">
-          <motion.button
-            onClick={() => setIsStrategyAlphaOpen(!isStrategyAlphaOpen)}
-            className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
-            whileHover={{}}
-            whileTap={{}}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-          >
-            <span>💼 Portfolio Strategies</span>
-            {isStrategyAlphaOpen ? <FaChevronDown size={14} /> : <FaChevronRight size={14} />}
-          </motion.button>
-          
-          {isStrategyAlphaOpen && (
-            <div className="ml-4 mt-2 space-y-1">
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                <MotionLink
-                  href="/strategy/all"
-                  className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                  whileHover={{ x: 2 }}
-                  whileTap={{ x: 1 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                >
-                  📊 All Strategies Overview
-                </MotionLink>
-                {strategyAlphaItems.map((item) => (
-                  <MotionLink
-                    key={item.id}
-                    href={`/strategy/${item.id}`}
-                    className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                    whileHover={{ x: 2 }}
-                    whileTap={{ x: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                  >
-                    {item.type === 'buy' ? '📈' : '📉'} {item.name}
-                  </MotionLink>
-                ))} 
-              </motion.div>
-            </div>
-          )}
-        </div>
+        {/* Legacy Strategy 섹션 제거됨 */}
 
         {/* 스크리너 섹션 */}
         <div className="mb-4">
@@ -263,8 +185,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                   )}
                 </div>
 
-                {/* 기타 스크리너들 */}
-                {screenerItems.filter(item => !item.items).map((screener) => (
+                {/* 기타 스크리너들 (US Setup, US Gainers 제거) */}
+                {screenerItems.filter(item => !item.items && !['us-setup', 'us-gainers'].includes(item.id)).map((screener) => (
                   <MotionLink
                     key={screener.id}
                     href={screener.href}
@@ -274,44 +196,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, strategies }) => {
                     transition={{ type: 'spring', stiffness: 400, damping: 17 }}
                   >
                     {screener.icon} {screener.name}
-                  </MotionLink>
-                ))}
-              </motion.div>
-            </div>
-          )}
-        </div>
-
-        {/* 분석 도구 섹션 */}
-        <div className="mb-4">
-          <motion.button
-            onClick={() => setIsAnalysisOpen(!isAnalysisOpen)}
-            className="w-full flex items-center justify-between py-2 px-4 rounded-notion text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
-            whileHover={{}}
-            whileTap={{}}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-          >
-            <span>📊 Analysis Tools</span>
-            {isAnalysisOpen ? <FaChevronDown size={14} /> : <FaChevronRight size={14} />}
-          </motion.button>
-
-          {isAnalysisOpen && (
-            <div className="ml-4 mt-2 space-y-1">
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-              >
-                {analysisItems.map((item) => (
-                  <MotionLink
-                    key={item.id}
-                    href={item.href}
-                    className="block py-2 px-4 rounded-notion text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                    whileHover={{ x: 2 }}
-                    whileTap={{ x: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-                  >
-                    {item.icon} {item.name}
                   </MotionLink>
                 ))}
               </motion.div>

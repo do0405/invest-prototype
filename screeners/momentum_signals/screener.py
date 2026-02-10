@@ -452,18 +452,15 @@ class StanWeinsteinStage2Screener:
         return True
     
     def _check_minimal_resistance(self, df: pd.DataFrame) -> bool:
-        """최소한의 상단 저항 확인 (비활성화)"""
-        # 저항선 확인 로직 주석 처리 - 항상 통과
-        # if len(df) < 52:  # 1년 데이터가 없으면 통과
-        #     return True
-        # 
-        # recent_price = df.iloc[-1]['close']
-        # year_high = df.iloc[-52:]['high'].max()
-        # 
-        # # 현재 가격이 52주 최고가의 95% 이상이면 저항이 적다고 판단
-        # return recent_price >= year_high * 0.95
-        
-        return True  # 항상 통과
+        """최소한의 상단 저항 확인"""
+        if len(df) < 52:  # 1년 데이터가 없으면 통과
+            return True
+
+        recent_price = df.iloc[-1]['close']
+        year_high = df.iloc[-52:]['high'].max()
+
+        # 현재 가격이 52주 최고가의 95% 이상이면 저항이 적다고 판단
+        return recent_price >= year_high * 0.95
     
     def screen_momentum_signals(self) -> pd.DataFrame:
         """Stage 2 breakout 스크리닝 실행"""

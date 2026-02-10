@@ -155,9 +155,13 @@ def calculate_margin_metrics(income_quarterly: pd.DataFrame, income_annual: pd.D
         # 분기별 영업이익률 개선
         if ('Operating Income' in income_quarterly.index and 'Total Revenue' in income_quarterly.index and
             len(income_quarterly) >= 2):
-            recent_op_margin = income_quarterly.loc['Operating Income'].iloc[0] / income_quarterly.loc['Total Revenue'].iloc[0]
-            prev_op_margin = income_quarterly.loc['Operating Income'].iloc[1] / income_quarterly.loc['Total Revenue'].iloc[1]
-            metrics['quarterly_op_margin_improved'] = recent_op_margin > prev_op_margin
+            recent_revenue = income_quarterly.loc['Total Revenue'].iloc[0]
+            prev_revenue = income_quarterly.loc['Total Revenue'].iloc[1]
+            
+            if recent_revenue != 0 and prev_revenue != 0:
+                recent_op_margin = income_quarterly.loc['Operating Income'].iloc[0] / recent_revenue
+                prev_op_margin = income_quarterly.loc['Operating Income'].iloc[1] / prev_revenue
+                metrics['quarterly_op_margin_improved'] = recent_op_margin > prev_op_margin
             
             # 3분기 연속 마진 가속화
             if len(income_quarterly) >= 4:
@@ -177,9 +181,13 @@ def calculate_margin_metrics(income_quarterly: pd.DataFrame, income_annual: pd.D
         # 연간 영업이익률 개선
         if ('Operating Income' in income_annual.index and 'Total Revenue' in income_annual.index and
             len(income_annual) >= 2):
-            recent_op_margin = income_annual.loc['Operating Income'].iloc[0] / income_annual.loc['Total Revenue'].iloc[0]
-            prev_op_margin = income_annual.loc['Operating Income'].iloc[1] / income_annual.loc['Total Revenue'].iloc[1]
-            metrics['annual_op_margin_improved'] = recent_op_margin > prev_op_margin
+            recent_annual_revenue = income_annual.loc['Total Revenue'].iloc[0]
+            prev_annual_revenue = income_annual.loc['Total Revenue'].iloc[1]
+            
+            if recent_annual_revenue != 0 and prev_annual_revenue != 0:
+                recent_op_margin = income_annual.loc['Operating Income'].iloc[0] / recent_annual_revenue
+                prev_op_margin = income_annual.loc['Operating Income'].iloc[1] / prev_annual_revenue
+                metrics['annual_op_margin_improved'] = recent_op_margin > prev_op_margin
         
         # 순이익 성장률
         if ('Net Income' in income_quarterly.index and len(income_quarterly) >= 2):

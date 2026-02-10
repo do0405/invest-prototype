@@ -59,26 +59,9 @@ class MarketReversalLeaderScreener:
         logger.info(f"시장 상태: {self.market_state}, FGI: {self.fgi_value}, FTD 확인: {self.ftd_confirmed}")
     
     def _fetch_fear_greed_index(self) -> int:
-        """CNN Fear & Greed Index 조회 (개선된 버전)"""
+        """CNN Fear & Greed Index 조회 (VIX 기반 계산)"""
         try:
-            # 1. 실제 CNN FGI API 시도
-            try:
-                # Alternative Data API (예: Alpha Vantage, Quandl 등)
-                # 실제 구현 시 API 키 필요
-                response = requests.get(
-                    "https://api.alternative.me/fng/",
-                    timeout=5
-                )
-                if response.status_code == 200:
-                    data = response.json()
-                    if 'data' in data and len(data['data']) > 0:
-                        fgi_value = int(data['data'][0]['value'])
-                        logger.info(f"실제 FGI API 조회 성공: {fgi_value}")
-                        return fgi_value
-            except Exception as api_error:
-                logger.warning(f"FGI API 조회 실패, VIX 기반 계산으로 전환: {api_error}")
-            
-            # 2. VIX 기반 개선된 FGI 계산
+            # VIX 기반 FGI 계산
             vix_path = os.path.join(DATA_US_DIR, 'VIX.csv')
             if os.path.exists(vix_path):
                 vix_df = pd.read_csv(vix_path)
@@ -113,10 +96,13 @@ class MarketReversalLeaderScreener:
                     # 추가 시장 지표 반영 (Put/Call Ratio, High/Low Index 등)
                     fgi = self._adjust_fgi_with_market_indicators(fgi, latest_vix)
                     
-                    logger.info(f"개선된 VIX 기반 FGI 계산: VIX={latest_vix:.2f}, FGI={fgi}")
+                    logger.info(f"VIX 기반 FGI 계산 완료: VIX={latest_vix:.2f}, FGI={fgi}")
                     return fgi
+            else:
+                logger.warning(f"VIX 데이터 파일이 없습니다: {vix_path}")
+
         except Exception as e:
-            logger.warning(f"FGI 조회 실패, 기본값 사용: {e}")
+            logger.warning(f"FGI 계산 실패, 기본값 사용: {e}")
         
         return 50  # 기본값 (중립)
     
@@ -694,8 +680,8 @@ class MarketReversalLeaderScreener:
             for future in as_completed(future_to_file):
                 completed_count += 1
                 
-                # 진행률 출력
-                if completed_count % 100 == 0:
+                # 진행률 출력 (로그 과다 방지: 500개 단위)
+                if completed_count % 500 == 0:
                     logger.info(f"진행률: {completed_count}/{len(stock_files)} ({completed_count/len(stock_files)*100:.1f}%)")
                 
                 try:

@@ -42,16 +42,6 @@ export interface ScreeningData {
   [key: string]: string | number | boolean | null | undefined;
 }
 
-export interface PortfolioItem {
-  종목명?: string;
-  symbol?: string;
-  비중?: number;
-  weight?: number;
-  매수가?: number;
-  entry_price?: number;
-  [key: string]: string | number | boolean | null | undefined;
-}
-
 export interface SummaryData {
   technical_screening?: {
     count: number;
@@ -81,13 +71,9 @@ export class ApiClient {
   private async request<T>(endpoint: string, retryCount: number = 2): Promise<ApiResponse<T>> {
     let lastError: Error | null = null;
     const fullUrl = `${this.baseUrl}${endpoint}`;
-    console.log(`API Request: ${fullUrl}`);
-    console.log(`Base URL: ${this.baseUrl}`);
-    console.log(`Endpoint: ${endpoint}`);
-    
+
     for (let attempt = 0; attempt <= retryCount; attempt++) {
       try {
-        console.log(`Attempt ${attempt + 1} for ${fullUrl}`);
         const response = await fetch(fullUrl);
         
         if (!response.ok) {
@@ -196,25 +182,8 @@ export class ApiClient {
     return this.request<ScreeningData[]>('/api/integrated-results');
   }
 
-  // 전략별 포트폴리오
-  async getPortfolioByStrategy(strategyName: string) {
-    return this.request<PortfolioItem[]>(`/api/portfolio/${strategyName}`);
-  }
-
-  async getStrategyDescription(strategyName: string) {
-    return this.request<string>(`/api/strategy-description/${strategyName}`);
-  }
-
   async getScreenerDescription(name: string) {
     return this.request<string>(`/api/screener-description/${name}`);
-  }
-
-  async getVolatilitySkewResults() {
-    return this.request<ScreeningData[]>('/api/volatility-skew');
-  }
-
-  async getIPOInvestmentResults() {
-    return this.request<ScreeningData[]>('/api/ipo-investment');
   }
 
   async getLeaderStockResults() {
@@ -223,14 +192,6 @@ export class ApiClient {
 
   async getMomentumSignalsResults() {
     return this.request<ScreeningData[]>('/api/momentum-signals');
-  }
-
-  async getUSSetupResults() {
-    return this.request<ScreeningData[]>('/api/us-setup');
-  }
-
-  async getUSGainersResults() {
-    return this.request<ScreeningData[]>('/api/us-gainers');
   }
 
   // Qullamaggie screener endpoints
@@ -253,19 +214,10 @@ export class ApiClient {
   async getQullamaggieSellSignals() {
     return this.request<ScreeningData[]>('/api/qullamaggie/sell-signals');
   }
-
-  async getMarketRegime() {
-    return this.request<Record<string, unknown>>('/api/market-regime');
-  }
-
+ 
   // Recent signals endpoint
   async getRecentSignals(days: number = 5) {
     return this.request<ScreeningData[]>(`/api/recent-signals?days=${days}`);
-  }
-
-  // Top stocks endpoint
-  async getTopStocks() {
-    return this.request<ScreeningData[]>('/api/top-stocks');
   }
 
   // Dashboard summary endpoint
@@ -288,7 +240,7 @@ export class ApiClient {
       ]);
 
       const summaryData: SummaryData = {
-        strategies: {} // 실제 전략 데이터는 별도로 구현 필요
+        strategies: {}
       };
 
       if (technical.success && technical.data) {
@@ -311,6 +263,9 @@ export class ApiClient {
           top_5: integrated.data.slice(0, 5)
         };
       }
+
+      // Legacy Portfolio Strategies 1~6은 더 이상 사용하지 않으므로
+      // 대시보드 요약에서도 제외한다.
 
       return {
         success: true,

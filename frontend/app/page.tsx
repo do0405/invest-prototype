@@ -12,16 +12,6 @@ interface DashboardSummary {
       screeners_active: number;
       last_updated: string;
     };
-    top_stocks: {
-      available: boolean;
-      top_score: number;
-      last_updated: string;
-    };
-    market_regime: {
-      current_regime: string;
-      confidence: number;
-      last_updated: string;
-    };
     screeners_status: {
       [key: string]: {
         available: boolean;
@@ -34,37 +24,28 @@ interface DashboardSummary {
 }
 
 export default function HomePage() {
-  const [summary, setSummary] = useState<SummaryData | null>(null);
-  const [dashboardSummary, setDashboardSummary] = useState<DashboardSummary | null>(null);
+  const [summary, setSummary] = useState(null as SummaryData | null);
+  const [dashboardSummary, setDashboardSummary] = useState(null as DashboardSummary | null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null as string | null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log('Starting API calls...');
-        
-        // 기존 요약 데이터 가져오기
-        console.log('Calling apiClient.getSummary()...');
         const summaryResponse = await apiClient.getSummary();
-        console.log('getSummary response:', summaryResponse);
         if (summaryResponse.success && summaryResponse.data) {
           setSummary(summaryResponse.data);
         }
         
-        // 새로운 대시보드 요약 데이터 가져오기
-        console.log('Calling dashboard-summary API...');
         const dashboardResponse = await fetch('/api/dashboard-summary');
         const dashboardResult: DashboardSummary = await dashboardResponse.json();
-        console.log('dashboard-summary response:', dashboardResult);
         
         if (dashboardResult.success && dashboardResult.data) {
           setDashboardSummary(dashboardResult);
         }
         
         setError(null);
-        console.log('All API calls completed successfully');
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Network error occurred');
@@ -106,8 +87,7 @@ export default function HomePage() {
       <h1 className="text-3xl font-semibold text-foreground mb-8">Investment Dashboard</h1>
       
       {/* 핵심 기능 섹션 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        {/* 최근 시그널 */}
+      <div className="mb-8">
         <Link href="/recent-signals" className="block">
           <div className="bg-card border border-border p-6 rounded-notion shadow-notion hover:shadow-notion-hover transition-shadow cursor-pointer">
             <h2 className="text-2xl font-semibold mb-2 text-foreground">🔥 최근 시그널</h2>
@@ -128,57 +108,9 @@ export default function HomePage() {
             <p className="text-sm mt-3 text-muted-foreground">→ 클릭하여 상세 보기</p>
           </div>
         </Link>
-        
-        {/* Top 10 매수 랭킹 */}
-        <Link href="/top-recommendations" className="block">
-          <div className="bg-card border border-border p-6 rounded-notion shadow-notion hover:shadow-notion-hover transition-shadow cursor-pointer">
-            <h2 className="text-2xl font-semibold mb-2 text-foreground">⭐ Top 10 매수 랭킹</h2>
-            {dashboardSummary?.data?.top_stocks?.available ? (
-              <div>
-                <p className="text-lg text-foreground">TOPSIS 기반 종합 평가</p>
-                <p className="text-sm text-muted-foreground">최고 점수: {dashboardSummary.data.top_stocks.top_score.toFixed(4)}</p>
-                <p className="text-xs text-muted-foreground mt-2">
-                  마지막 업데이트: {new Date(dashboardSummary.data.top_stocks.last_updated).toLocaleString('ko-KR')}
-                </p>
-              </div>
-            ) : (
-              <div>
-                <p className="text-lg text-foreground">랭킹 데이터 준비 중...</p>
-                <p className="text-sm text-muted-foreground">TOPSIS 분석 결과를 로딩하고 있습니다</p>
-              </div>
-            )}
-            <p className="text-sm mt-3 text-muted-foreground">→ 클릭하여 상세 보기</p>
-          </div>
-        </Link>
       </div>
       
-      {/* 시장 현황 */}
-      {dashboardSummary?.data?.market_regime && (
-        <div className="mb-8">
-          <div className="bg-card border border-border p-6 rounded-notion shadow-notion">
-            <h2 className="text-xl font-semibold mb-4 text-foreground">📊 시장 현황</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-semibold text-accent">
-                  {dashboardSummary.data.market_regime.current_regime === 'Unknown' ? '분석 중' : dashboardSummary.data.market_regime.current_regime}
-                </div>
-                <div className="text-sm text-muted-foreground">현재 시장 체제</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-semibold text-accent">
-                  {dashboardSummary.data.market_regime.confidence > 0 ? (dashboardSummary.data.market_regime.confidence * 100).toFixed(1) + '%' : '계산 중'}
-                </div>
-                <div className="text-sm text-muted-foreground">신뢰도</div>
-              </div>
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground">
-                  업데이트: {new Date(dashboardSummary.data.market_regime.last_updated).toLocaleDateString('ko-KR')}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 시장 국면 모니터링 섹션 제거됨 */}
       
       {/* 시스템 개선 사항 알림 */}
       <div className="mb-8">
@@ -279,16 +211,19 @@ export default function HomePage() {
         <div className="mt-8">
           <h2 className="text-2xl font-semibold text-foreground mb-6">전략별 현황</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(summary.strategies).map(([strategy, data]) => (
-              <Link key={strategy} href={`/strategy/${strategy}`} className="block">
-                <div className="bg-card border border-border p-6 rounded-notion shadow-notion hover:shadow-notion-hover transition-shadow cursor-pointer">
-                  <h2 className="text-xl font-semibold mb-2 text-warning">{strategy}</h2>
-                  <p className="text-foreground">포지션: {data.active_positions}개</p>
-                  <p className="text-foreground">총 종목: {data.count}개</p>
-                  <p className="text-sm text-muted-foreground mt-2">클릭하여 포트폴리오 보기</p>
-                </div>
-              </Link>
-            ))}
+            {Object.entries(summary.strategies).map(([strategy, data]) => {
+              const strategyData = data as { count: number; active_positions: number };
+              return (
+                <Link key={strategy} href={`/strategy/${strategy}`} className="block">
+                  <div className="bg-card border border-border p-6 rounded-notion shadow-notion hover:shadow-notion-hover transition-shadow cursor-pointer">
+                    <h2 className="text-xl font-semibold mb-2 text-warning">{strategy}</h2>
+                    <p className="text-foreground">포지션: {strategyData.active_positions}개</p>
+                    <p className="text-foreground">총 종목: {strategyData.count}개</p>
+                    <p className="text-sm text-muted-foreground mt-2">클릭하여 포트폴리오 보기</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       )}

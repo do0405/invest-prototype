@@ -29,36 +29,6 @@ from config import (
 # 위키피디아 기반 S&P500, NASDAQ 100 데이터 수집 함수 제거됨
 # 기존 데이터 소스에서 종목 목록을 가져오는 방식으로 변경
 
-def get_ipo_symbols() -> List[str]:
-    """최근 IPO 종목에서 심볼 추출"""
-    try:
-        print("🏢 최근 IPO 종목 확인 중...")
-        from screeners.ipo_investment.ipo_data_collector import RealIPODataCollector
-        
-        collector = RealIPODataCollector()
-        result = collector.collect_all_ipo_data()
-        
-        symbols = []
-        # 최근 IPO에서 심볼 추출
-        for ipo in result.get('recent_ipos', []):
-            symbol = ipo.get('symbol', ipo.get('ticker', ''))
-            if symbol and symbol.strip() and symbol.strip().upper() != 'N/A':
-                symbols.append(symbol.strip())
-        
-        # 예정된 IPO에서 심볼 추출
-        for ipo in result.get('upcoming_ipos', []):
-            symbol = ipo.get('symbol', ipo.get('ticker', ''))
-            if symbol and symbol.strip() and symbol.strip().upper() != 'N/A':
-                symbols.append(symbol.strip())
-        
-        # 중복 제거
-        symbols = list(set(symbols))
-        print(f"✅ IPO 종목 {len(symbols)}개 수집 완료")
-        return symbols
-    except Exception as e:
-        print(f"⚠️ IPO 종목 가져오기 실패: {e}")
-        return []
-
 def update_symbol_list() -> Set[str]:
     """새로운 종목 리스트 업데이트"""
     print("\n🔄 종목 리스트 업데이트 시작...")
@@ -74,10 +44,6 @@ def update_symbol_list() -> Set[str]:
     
     # 새로운 종목 수집
     new_symbols = set()
-    
-    # IPO 종목 추가 (위키피디아 기반 S&P500, NASDAQ 100 수집 제거됨)
-    ipo_symbols = get_ipo_symbols()
-    new_symbols.update(ipo_symbols)
     
     # 기존에 없는 새로운 종목만 필터링
     truly_new_symbols = new_symbols - existing_symbols

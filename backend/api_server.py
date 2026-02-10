@@ -37,14 +37,9 @@ def sanitize_json_data(data):
 
 from config import (
     RESULTS_DIR,
-    PORTFOLIO_RESULTS_DIR,
-    MARKMINERVINI_RESULTS_DIR,
-    IPO_INVESTMENT_RESULTS_DIR,
-    LEADER_STOCK_RESULTS_DIR,
     MOMENTUM_SIGNALS_RESULTS_DIR,
-    US_SETUP_RESULTS_DIR,
-    US_GAINER_RESULTS_DIR,
-    MARKET_REGIME_DIR,
+    MARKMINERVINI_RESULTS_DIR,
+    LEADER_STOCK_RESULTS_DIR,
 )
 from typing import Optional
 
@@ -117,87 +112,7 @@ def get_integrated_results():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-@app.route('/api/portfolio/<strategy_name>', methods=['GET'])
-def get_portfolio_by_strategy(strategy_name):
-    """전략별 포트폴리오 결과 반환 (실시간 가격 및 수익률 업데이트)"""
-    try:
-        # Check in buy directory first
-        json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'buy', f'{strategy_name}_results.json')
-        if not os.path.exists(json_file):
-            # Check in sell directory
-            json_file = os.path.join(PORTFOLIO_RESULTS_DIR, 'sell', f'{strategy_name}_results.json')
-        
-        if os.path.exists(json_file):
-            df = pd.read_json(json_file)
-            # NaN 값을 None으로 변환
-            df = df.where(pd.notnull(df), None)
-            
-            # 실시간 가격 및 수익률 업데이트
-            updated_data = []
-            for _, row in df.iterrows():
-                item = row.to_dict()
-                symbol = item.get('symbol', item.get('종목명', ''))
-                
-                if symbol and symbol != 'N/A':
-                    try:
-                        import yfinance as yf
-                        ticker = yf.Ticker(symbol)
-                        hist = ticker.history(period='1d')
-                        
-                        if not hist.empty:
-                            current_price = float(hist['Close'].iloc[-1])
-                            
-                            # 진입가 업데이트 (시장가인 경우)
-                            entry_price = item.get('매수가', item.get('entry_price', 0))
-                            if entry_price == '시장가' or entry_price == 'N/A' or entry_price is None:
-                                item['매수가'] = round(current_price, 2)
-                                item['entry_price'] = round(current_price, 2)
-                                entry_price = current_price
-                            else:
-                                entry_price = float(entry_price) if entry_price != 0 else current_price
-                            
-                            # 수익률 계산
-                            if entry_price and entry_price > 0:
-                                profit_rate = ((current_price - entry_price) / entry_price) * 100
-                                item['수익률'] = round(profit_rate, 2)
-                                item['profit_rate'] = round(profit_rate, 2)
-                            
-                            # 현재가 업데이트
-                            item['현재가'] = round(current_price, 2)
-                            item['current_price'] = round(current_price, 2)
-                            
-                    except Exception as e:
-                        print(f"Error updating price for {symbol}: {e}")
-                        # 실패 시 기존 값 유지
-                        pass
-                
-                updated_data.append(item)
-            
-            return jsonify({
-                'success': True,
-                'strategy': strategy_name,
-                'data': updated_data,
-                'total_count': len(updated_data)
-            })
-        else:
-            return jsonify({'success': False, 'message': f'{strategy_name} data not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
 
-@app.route('/api/strategy-description/<strategy_name>', methods=['GET'])
-def get_strategy_description(strategy_name):
-    """전략 설명 텍스트 반환"""
-    try:
-        # 프로젝트 루트 디렉토리 기준으로 절대경로 설정
-        project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-        md_path = os.path.join(project_root, 'portfolio', 'long_short', 'strategy', f'{strategy_name}.md')
-        if os.path.exists(md_path):
-            with open(md_path, 'r', encoding='utf-8') as f:
-                text = f.read()
-            return jsonify({'success': True, 'data': text})
-        return jsonify({'success': False, 'message': 'Description not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/screener-description/<screener_name>', methods=['GET'])
 def get_screener_description(screener_name):
@@ -213,32 +128,6 @@ def get_screener_description(screener_name):
         return jsonify({'success': False, 'message': 'Description not found'}), 404
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
-
-@app.route('/api/volatility-skew', methods=['GET'])
-def get_volatility_skew_results():
-    """변동성 스큐 스크리닝 결과 반환"""
-    try:
-        # 가장 최근 파일 찾기 (날짜 형식 파일명 지원)
-        pattern = os.path.join(RESULTS_DIR, 'screeners', 'option_volatility', 'volatility_skew_screening_*.json')
-        files = glob.glob(pattern)
-        if files:
-            latest_file = max(files, key=os.path.getctime)
-            df = pd.read_json(latest_file)
-            # NaN 값을 None으로 변환
-            df = df.where(pd.notnull(df), None)
-            mtime = os.path.getmtime(latest_file)
-            return jsonify({
-                'success': True,
-                'data': df.to_dict('records'),
-                'total_count': len(df),
-                'last_updated': datetime.fromtimestamp(mtime).isoformat()
-            })
-        else:
-            return jsonify({'success': False, 'message': 'Volatility skew data not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
-# --- New screener result endpoints ---
 
 def _load_latest_json(directory: str, filename_prefix: str = None) -> tuple[Optional[pd.DataFrame], Optional[float]]:
     """안전한 최신 JSON 파일 로딩 (개선된 파일 매칭 로직)
@@ -325,19 +214,6 @@ def _load_latest_json(directory: str, filename_prefix: str = None) -> tuple[Opti
         return None, None
 
 
-@app.route('/api/ipo-investment', methods=['GET'])
-def get_ipo_investment_results():
-    """Return latest IPO investment screener results."""
-    try:
-        df, mtime = _load_latest_json(IPO_INVESTMENT_RESULTS_DIR, 'ipo_investment_results')
-        if df is not None:
-            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
-                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
-        return jsonify({'success': False, 'message': 'IPO data not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
-
 @app.route('/api/leader-stock', methods=['GET'])
 def get_leader_stock_results():
     """Return latest leader stock screener results."""
@@ -400,45 +276,6 @@ def get_momentum_signals_results():
         return jsonify({'success': False, 'message': str(e)}), 500
 
 
-@app.route('/api/us-setup', methods=['GET'])
-def get_us_setup_results():
-    """Return latest US Setup screener results."""
-    try:
-        df, mtime = _load_latest_json(US_SETUP_RESULTS_DIR, 'us_setup_results')
-        if df is not None:
-            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
-                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
-        return jsonify({'success': False, 'message': 'US Setup data not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
-
-@app.route('/api/us-gainers', methods=['GET'])
-def get_us_gainers_results():
-    """Return latest US Gainers screener results."""
-    try:
-        df, mtime = _load_latest_json(US_GAINER_RESULTS_DIR, 'us_gainers_results')
-        if df is not None:
-            return jsonify({'success': True, 'data': df.to_dict('records'), 'total_count': len(df),
-                            'last_updated': datetime.fromtimestamp(mtime).isoformat() if mtime else None})
-        return jsonify({'success': False, 'message': 'US Gainers data not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
-
-@app.route('/api/market-regime', methods=['GET'])
-def get_market_regime_latest():
-    """Return latest market regime analysis result."""
-    try:
-        latest_file = os.path.join(MARKET_REGIME_DIR, 'latest_market_regime.json')
-        if os.path.exists(latest_file):
-            with open(latest_file, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            return jsonify({'success': True, 'data': data})
-        return jsonify({'success': False, 'message': 'Market regime data not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
 @app.route('/api/run-screening', methods=['POST'])
 def run_screening():
     """스크리닝 실행 (기존 main.py 호출)"""
@@ -448,7 +285,8 @@ def run_screening():
         mode = data.get('mode', 'integrated')  # rs-only, financial-only, integrated 등
         
         # main.py 실행
-        cmd = ['python', 'main.py', f'--{mode}']
+        python_cmd = sys.executable if sys.executable else 'python'
+        cmd = [python_cmd, 'main.py', f'--{mode}']
         result = subprocess.run(cmd, capture_output=True, text=True)
         
         return jsonify({
@@ -556,20 +394,7 @@ def get_markminervini_results(screener_name):
                         # 스크리너별 특별 처리
                         should_include = True
                         
-                        if screener_name == 'image_pattern_results':
-                            # 이미지 패턴 결과: VCP 또는 Cup&Handle 패턴이 감지된 종목만 포함
-                            vcp_detected = mapped_item.get('vcp_detected', False)
-                            cup_handle_detected = mapped_item.get('cup_handle_detected', False)
-                            
-                            # Boolean 값으로 변환 (문자열 'true'/'false'도 처리)
-                            if isinstance(vcp_detected, str):
-                                vcp_detected = vcp_detected.lower() == 'true'
-                            if isinstance(cup_handle_detected, str):
-                                cup_handle_detected = cup_handle_detected.lower() == 'true'
-                                
-                            should_include = bool(vcp_detected) or bool(cup_handle_detected)
-                            
-                        elif screener_name == 'integrated_pattern_results':
+                        if screener_name == 'integrated_pattern_results':
                             # 통합 패턴 결과: High confidence level을 가진 종목만 포함, 제한된 컬럼만 표시
                             vcp_confidence_level = mapped_item.get('vcp_confidence_level', '')
                             cup_handle_confidence_level = mapped_item.get('cup_handle_confidence_level', '')
@@ -593,18 +418,6 @@ def get_markminervini_results(screener_name):
                                 mapped_item['pattern_summary'] = f"RS: {mapped_item['rs_score']}"
                                 
                         # For pattern results, add pattern detection summary and dimensional scores
-                        if screener_name in ['image_pattern_results'] and should_include:
-                            pattern_info = []
-                            if mapped_item.get('vcp_detected'):
-                                vcp_conf = mapped_item.get('vcp_confidence', 0)
-                                pattern_info.append(f"VCP({vcp_conf:.2f})")
-                                
-                            if mapped_item.get('cup_handle_detected'):
-                                cup_conf = mapped_item.get('cup_handle_confidence', 0)
-                                pattern_info.append(f"C&H({cup_conf:.2f})")
-                                    
-                            mapped_item['pattern_summary'] = ', '.join(pattern_info) if pattern_info else 'No patterns'
-                            
                         if should_include:
                             mapped_data.append(mapped_item)
                     
@@ -812,10 +625,7 @@ def get_recent_signals():
         screeners = {
             'momentum_signals': MOMENTUM_SIGNALS_RESULTS_DIR,
             'leader_stock': LEADER_STOCK_RESULTS_DIR,
-            'us_gainer': os.path.join(RESULTS_DIR, 'screeners', 'us_gainer'),
-            'us_setup': os.path.join(RESULTS_DIR, 'screeners', 'us_setup'),
             'markminervini': MARKMINERVINI_RESULTS_DIR,
-            'volatility_skew': os.path.join(RESULTS_DIR, 'screeners', 'option_volatility')
         }
         
         for screener_name, screener_dir in screeners.items():
@@ -990,112 +800,6 @@ def get_recent_signals():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-@app.route('/api/top-stocks', methods=['GET'])
-def get_top_stocks():
-    """매수 랭킹 상위 10개 종목 반환 (markminervini 패턴 감지된 결과만 사용)"""
-    try:
-        # TOPSIS 기반 랭킹 파일 우선 사용
-        ranking_file = os.path.join(RESULTS_DIR, 'ranking_results.csv')
-        
-        if not os.path.exists(ranking_file):
-            # 대안으로 ranking 디렉토리의 파일 확인
-            ranking_file = os.path.join(RESULTS_DIR, 'ranking', 'ranking_results.csv')
-        
-        if os.path.exists(ranking_file):
-            df = pd.read_csv(ranking_file)
-            # NaN 값을 None으로 변환
-            df = df.where(pd.notnull(df), None)
-            
-            # 상위 10개 선택
-            top_10 = df.head(10)
-            
-            # 결과 포맷팅 - 핵심 데이터만 포함
-            top_stocks = []
-            for _, row in top_10.iterrows():
-                # RS 점수는 이미 Mark Minervini 방식으로 0-100 범위로 계산됨
-                rs_score = row.get('relative_strength', 0)
-                if not isinstance(rs_score, (int, float)) or rs_score < 0:
-                    rs_score = 0
-                
-                stock_info = {
-                    'symbol': row.get('symbol', 'N/A'),
-                    'rank': int(row.get('rank', 0)),
-                    'topsis_score': float(row.get('score', 0)),
-                    'rs_score': round(float(rs_score), 1),
-                    'price_momentum_20d': float(row.get('price_momentum_20d', 0)),
-                    # Pattern detection fields for compatibility
-                    'vcp_detected': row.get('vcp_detected'),
-                    'VCP_Pattern': row.get('vcp_detected', row.get('VCP_Pattern')),
-                    'cup_handle_detected': row.get('cup_handle_detected'),
-                    'Cup_Handle_Pattern': row.get('cup_handle_detected', row.get('Cup_Handle_Pattern'))
-                }
-                top_stocks.append(stock_info)
-            
-            mtime = os.path.getmtime(ranking_file)
-            
-            # NaN 값 처리
-            sanitized_data = sanitize_json_data(top_stocks)
-            
-            return jsonify({
-                'success': True,
-                'data': sanitized_data,
-                'total_count': len(sanitized_data),
-                'last_updated': datetime.fromtimestamp(mtime).isoformat()
-            })
-        
-        # 패턴 감지 결과가 없으면 기존 랭킹 파일 사용 (fallback)
-        ranking_file = os.path.join(RESULTS_DIR, 'ranking', 'ranking_results.csv')
-        
-        if not os.path.exists(ranking_file):
-            # 대안으로 루트 디렉토리의 ranking_results.csv 확인
-            ranking_file = os.path.join(RESULTS_DIR, 'ranking_results.csv')
-        
-        if os.path.exists(ranking_file):
-            df = pd.read_csv(ranking_file)
-            # NaN 값을 None으로 변환
-            df = df.where(pd.notnull(df), None)
-            
-            # 상위 10개 선택
-            top_10 = df.head(10)
-            
-            # 결과 포맷팅 - 핵심 데이터만 포함
-            top_stocks = []
-            for _, row in top_10.iterrows():
-                # RS 점수는 이미 Mark Minervini 방식으로 0-100 범위로 계산됨
-                rs_score = row.get('relative_strength', 0)
-                if not isinstance(rs_score, (int, float)) or rs_score < 0:
-                    rs_score = 0
-                
-                stock_info = {
-                    'symbol': row.get('symbol', 'N/A'),
-                    'rank': int(row.get('rank', 0)),
-                    'topsis_score': float(row.get('score', row.get('topsis_score', 0))),
-                    'rs_score': round(float(rs_score), 1),
-                    'price_momentum_20d': float(row.get('price_momentum_20d', 0)),
-                    # Pattern detection fields for compatibility
-                    'vcp_detected': row.get('vcp_detected'),
-                    'VCP_Pattern': row.get('vcp_detected', row.get('VCP_Pattern')),
-                    'cup_handle_detected': row.get('cup_handle_detected'),
-                    'Cup_Handle_Pattern': row.get('cup_handle_detected', row.get('Cup_Handle_Pattern'))
-                }
-                top_stocks.append(stock_info)
-            
-            mtime = os.path.getmtime(ranking_file)
-            
-            # NaN 값 처리
-            sanitized_data = sanitize_json_data(top_stocks)
-            
-            return jsonify({
-                'success': True,
-                'data': sanitized_data,
-                'total_count': len(sanitized_data),
-                'last_updated': datetime.fromtimestamp(mtime).isoformat()
-            })
-        else:
-            return jsonify({'success': False, 'message': 'Ranking data not found'}), 404
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
-
 @app.route('/api/dashboard-summary', methods=['GET'])
 def get_dashboard_summary():
     """대시보드 요약 정보 반환"""
@@ -1138,64 +842,6 @@ def get_dashboard_summary():
         if latest_update:
             recent_signals_data['last_updated'] = latest_update.isoformat()
         
-        # Top stocks 정보
-        top_stocks_data = {
-            'available': False,
-            'top_score': 0.0,
-            'last_updated': datetime.now().isoformat()
-        }
-        
-        # 랭킹 파일 확인
-        ranking_files = [
-            os.path.join(RESULTS_DIR, 'ranking', 'ranking_results.csv'),
-            os.path.join(RESULTS_DIR, 'ranking_results.csv')
-        ]
-        
-        for ranking_file in ranking_files:
-            if os.path.exists(ranking_file):
-                try:
-                    df = pd.read_csv(ranking_file)
-                    # NaN 값을 None으로 변환
-                    df = df.where(pd.notnull(df), None)
-                    if not df.empty:
-                        # topsis_score 또는 score 컬럼 확인
-                        score_column = None
-                        if 'topsis_score' in df.columns:
-                            score_column = 'topsis_score'
-                        elif 'score' in df.columns:
-                            score_column = 'score'
-                        
-                        if score_column:
-                            top_stocks_data['available'] = True
-                            top_stocks_data['top_score'] = float(df[score_column].max())
-                            top_stocks_data['last_updated'] = datetime.fromtimestamp(os.path.getmtime(ranking_file)).isoformat()
-                            break
-                except Exception:
-                    pass
-        
-        # 마켓 레짐 정보
-        market_regime_data = {
-            'current_regime': 'Unknown',
-            'confidence': 0.0,
-            'last_updated': datetime.now().isoformat()
-        }
-        
-        market_regime_file = os.path.join(MARKET_REGIME_DIR, 'latest_market_regime.json')
-        if os.path.exists(market_regime_file):
-            try:
-                with open(market_regime_file, 'r', encoding='utf-8') as f:
-                    regime_data = json.load(f)
-                    market_regime_data['current_regime'] = regime_data.get('regime', 'Unknown')
-                    # confidence 필드가 없으면 score를 100으로 나누어 사용
-                    confidence = regime_data.get('confidence')
-                    if confidence is None:
-                        score = regime_data.get('score', 0)
-                        confidence = score / 100.0 if score > 0 else 0.0
-                    market_regime_data['confidence'] = float(confidence)
-                    market_regime_data['last_updated'] = datetime.fromtimestamp(os.path.getmtime(market_regime_file)).isoformat()
-            except Exception:
-                pass
-        
         # 스크리너 상태 정보
         screeners_status = {}
         
@@ -1228,8 +874,6 @@ def get_dashboard_summary():
             'success': True,
             'data': {
                 'recent_signals': recent_signals_data,
-                'top_stocks': top_stocks_data,
-                'market_regime': market_regime_data,
                 'screeners_status': screeners_status
             }
         })

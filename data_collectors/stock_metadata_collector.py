@@ -255,8 +255,25 @@ def merge_metadata(cached_df: Optional[pd.DataFrame], new_df: pd.DataFrame) -> p
     new_symbols = set(new_df['symbol'].tolist())
     filtered_cached = cached_df[~cached_df['symbol'].isin(new_symbols)]
     
-    # Combine dataframes
-    combined_df = pd.concat([filtered_cached, new_df], ignore_index=True)
+    # Combine dataframes (Handle empty dataframes to avoid FutureWarning)
+    dfs_to_concat = []
+    
+    if not filtered_cached.empty:
+        # Drop all-NA columns to avoid FutureWarning about concatenation with empty/all-NA entries
+        cleaned_cached = filtered_cached.dropna(axis=1, how='all')
+        if not cleaned_cached.empty:
+            dfs_to_concat.append(cleaned_cached)
+            
+    if not new_df.empty:
+        cleaned_new = new_df.dropna(axis=1, how='all')
+        if not cleaned_new.empty:
+            dfs_to_concat.append(cleaned_new)
+        
+    if dfs_to_concat:
+        combined_df = pd.concat(dfs_to_concat, ignore_index=True)
+    else:
+        combined_df = pd.DataFrame()
+        
     logger.info(f"메타데이터 병합 완료: {len(combined_df)}개 종목")
     return combined_df
 

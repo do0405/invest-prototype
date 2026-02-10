@@ -7,22 +7,13 @@ import { apiClient, ScreeningData } from '@/lib/api';
 
 interface RecentSignal extends ScreeningData {
   screener: string;
-  signal_date: string;
-  price: number | string;
-  change_pct: number | string;
-  rs_score: number | string;
-  // Pattern detection fields for compatibility
-  vcp_detected?: boolean;
-  VCP_Pattern?: boolean;
-  cup_handle_detected?: boolean;
-  Cup_Handle_Pattern?: boolean;
 }
 
 export default function RecentSignalsPage() {
-  const [signals, setSignals] = useState<RecentSignal[]>([]);
+  const [signals, setSignals] = useState([] as RecentSignal[]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
+  const [error, setError] = useState(null as string | null);
+  const [selectedSymbol, setSelectedSymbol] = useState(null as string | null);
   const [daysFilter, setDaysFilter] = useState(5);
 
   const fetchRecentSignals = async (days: number = 5) => {
@@ -52,10 +43,7 @@ export default function RecentSignalsPage() {
     const names: { [key: string]: string } = {
       'momentum_signals': '모멘텀 시그널',
       'leader_stock': '리더 주식',
-      'us_gainer': 'US 상승주',
-      'us_setup': 'US 셋업',
-      'markminervini': 'Mark Minervini',
-      'volatility_skew': '변동성 스큐'
+      'markminervini': 'Mark Minervini'
     };
     return names[screener] || screener;
   };
@@ -64,10 +52,7 @@ export default function RecentSignalsPage() {
     const colors: { [key: string]: string } = {
       'momentum_signals': 'bg-blue-100 text-blue-800',
       'leader_stock': 'bg-green-100 text-green-800',
-      'us_gainer': 'bg-purple-100 text-purple-800',
-      'us_setup': 'bg-yellow-100 text-yellow-800',
-      'markminervini': 'bg-red-100 text-red-800',
-      'volatility_skew': 'bg-indigo-100 text-indigo-800'
+      'markminervini': 'bg-red-100 text-red-800'
     };
     return colors[screener] || 'bg-gray-100 text-gray-800';
   };
@@ -111,7 +96,7 @@ export default function RecentSignalsPage() {
           <label className="text-sm font-medium text-gray-700">필터:</label>
           <select 
             value={daysFilter} 
-            onChange={(e) => setDaysFilter(Number(e.target.value))}
+            onChange={(e: any) => setDaysFilter(Number(e.target.value))}
             className="border border-gray-300 rounded px-3 py-1 text-sm"
           >
             <option value={1}>1일 이내</option>
@@ -172,7 +157,7 @@ export default function RecentSignalsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {signals.map((signal, index) => (
+                {signals.map((signal: RecentSignal, index: number) => (
                   <tr 
                     key={index} 
                     className="hover:bg-gray-50 cursor-pointer"
@@ -190,21 +175,40 @@ export default function RecentSignalsPage() {
                       {signal.signal_date}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {typeof signal.price === 'number' ? `$${signal.price.toFixed(2)}` : 
-                       signal.price === 'N/A' ? <span className="text-gray-400 italic">N/A</span> : signal.price}
+                      {(() => {
+                        const priceValue = signal.price as any;
+                        if (typeof priceValue === 'number') {
+                          return `$${priceValue.toFixed(2)}`;
+                        }
+                        if (priceValue === 'N/A') {
+                          return <span className="text-gray-400 italic">N/A</span>;
+                        }
+                        return priceValue;
+                      })()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {typeof signal.change_pct === 'number' ? (
-                        <span className={`${
-                          signal.change_pct > 0 ? 'text-green-600' : signal.change_pct < 0 ? 'text-red-600' : 'text-gray-900'
-                        }`}>
-                          {signal.change_pct.toFixed(2)}%
-                        </span>
-                      ) : signal.change_pct === 'N/A' ? (
-                        <span className="text-gray-400 italic">N/A</span>
-                      ) : (
-                        signal.change_pct
-                      )}
+                      {(() => {
+                        const changeValue = signal.change_pct as any;
+                        if (typeof changeValue === 'number') {
+                          return (
+                            <span
+                              className={`${
+                                changeValue > 0
+                                  ? 'text-green-600'
+                                  : changeValue < 0
+                                  ? 'text-red-600'
+                                  : 'text-gray-900'
+                              }`}
+                            >
+                              {changeValue.toFixed(2)}%
+                            </span>
+                          );
+                        }
+                        if (changeValue === 'N/A') {
+                          return <span className="text-gray-400 italic">N/A</span>;
+                        }
+                        return changeValue;
+                      })()}
                     </td>
                   </tr>
                 ))}

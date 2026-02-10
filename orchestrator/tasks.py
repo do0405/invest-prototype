@@ -11,22 +11,14 @@ import importlib.util
 from datetime import datetime
 from typing import List, Optional
 
-from portfolio.manager import create_portfolio_manager
-
 from data_collector import collect_data
 from utils import ensure_dir, create_required_dirs
-from data_collectors.market_breadth_collector import MarketBreadthCollector
 from data_collectors.stock_metadata_collector import main as collect_stock_metadata_main
-from utils.market_regime_indicator import analyze_market_regime
-from screeners.markminervini.filter_stock import run_integrated_screening
+from screeners.markminervini.integrated_screener import IntegratedScreener
 from screeners.markminervini.advanced_financial import run_advanced_financial_screening
-from screeners.markminervini.pattern_detection import run_pattern_detection_on_financial_results
 from screeners.markminervini.screener import run_us_screening
-from screeners.us_setup.screener import screen_us_setup
-from screeners.us_gainer.screener import screen_us_gainers
 from screeners.leader_stock.screener import run_leader_stock_screening
 from screeners.momentum_signals.screener import run_momentum_signals_screening
-from screeners.ipo_investment.screener import run_ipo_investment_screening
 from screeners.markminervini.ticker_tracker import track_new_tickers
 
 from utils.first_buy_tracker import update_first_buy_signals
@@ -34,176 +26,38 @@ from config import (
     DATA_US_DIR,
     RESULTS_DIR,
     SCREENER_RESULTS_DIR,
-    PORTFOLIO_BUY_DIR,
-    PORTFOLIO_SELL_DIR,
-    OPTION_VOLATILITY_RESULTS_DIR,
     OPTION_RESULTS_DIR,
     ADVANCED_FINANCIAL_RESULTS_PATH,
-    MARKET_REGIME_DIR,
-    IPO_DATA_DIR,
     MARKMINERVINI_RESULTS_DIR,
-    US_SETUP_RESULTS_DIR,
-    US_GAINER_RESULTS_DIR,
     LEADER_STOCK_RESULTS_DIR,
     MOMENTUM_SIGNALS_RESULTS_DIR,
-    IPO_INVESTMENT_RESULTS_DIR,
     RANKING_RESULTS_DIR,
 )
 
-# Portfolio manager utilities
-try:
-    from portfolio.manager.core.portfolio_manager import PortfolioManager
-    from portfolio.manager.core.strategy_config import StrategyConfig
-except Exception:
-    PortfolioManager = None
-    StrategyConfig = None
-
 __all__ = [
-    "execute_strategies",
-    "check_strategy_file_status",
     "ensure_directories",
-    "run_pattern_analysis",
     "collect_data_main",
     "run_all_screening_processes",
-    "run_volatility_skew_portfolio",
-    "run_setup_screener",
-    "run_gainers_screener",
     "run_leader_stock_screener",
     "run_momentum_signals_screener",
-    "run_ipo_investment_screener",
-    "run_market_breadth_collection",
-    "run_ipo_data_collection",
     "run_stock_metadata_collection",
     "run_qullamaggie_strategy_task",
-    "run_market_regime_analysis",
-    "load_strategy_module",
-    "run_after_market_close",
     "run_keep_alive",
     "setup_scheduler",
     "run_scheduler",
 ]
 
 
-def execute_strategies(strategy_list: Optional[List[str]] = None,
-                       monitoring_only: bool = False,
-                       screening_mode: bool = False) -> bool:
-    """Run portfolio strategies dynamically loaded from modules."""
-    if strategy_list is None:
-        if StrategyConfig is not None:
-            strategy_list = StrategyConfig.get_all_strategies()
-        else:
-            strategy_list = [f"strategy{i}" for i in range(1, 7)]
-
+def run_stock_metadata_collection() -> None:
+    """Run stock metadata collection task."""
+    print("\n📋 주식 메타데이터 수집 시작...")
     try:
-        action_type = "모니터링" if monitoring_only else "스크리닝" if screening_mode else "실행"
-        print(f"\n📊 전략 {action_type} 시작: {strategy_list}")
-        print(f"🔍 총 {len(strategy_list)}개 전략을 처리합니다.")
-
-        strategy_modules = {}
-        print("\n📦 전략 모듈 로딩 시작...")
-        for i, strategy_name in enumerate(strategy_list, 1):
-            print(f"  [{i}/{len(strategy_list)}] {strategy_name} 모듈 로딩 중...")
-            module = load_strategy_module(strategy_name)
-            if module:
-                strategy_modules[strategy_name] = module
-                print(f"  ✅ {strategy_name} 모듈 로딩 성공")
-            else:
-                print(f"  ❌ {strategy_name} 모듈 로딩 실패")
-
-        print(f"\n📊 로딩된 모듈: {len(strategy_modules)}/{len(strategy_list)}개")
-
-        success_count = 0
-        for i, (strategy_name, module) in enumerate(strategy_modules.items(), 1):
-            try:
-                print(f"\n🔄 [{i}/{len(strategy_modules)}] {strategy_name} {action_type} 시작...")
-                print(f"⏰ 현재 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-                if monitoring_only:
-                    if hasattr(module, "monitor_positions"):
-                        print(f"  📊 {strategy_name}: monitor_positions() 실행 중...")
-                        module.monitor_positions()
-                    elif hasattr(module, "update_positions"):
-                        print(f"  📊 {strategy_name}: update_positions() 실행 중...")
-                        module.update_positions()
-                    elif hasattr(module, "track_existing_positions"):
-                        print(f"  📊 {strategy_name}: track_existing_positions() 실행 중...")
-                        module.track_existing_positions()
-                    else:
-                        print(f"⚠️ {strategy_name}: 모니터링 함수를 찾을 수 없습니다. 스킵합니다.")
-                        continue
-                else:
-                    if hasattr(module, "run_strategy"):
-                        print(f"  🚀 {strategy_name}: run_strategy() 실행 중...")
-                        module.run_strategy()
-                    elif hasattr(module, f"run_{strategy_name}_screening"):
-                        print(f"  🚀 {strategy_name}: run_{strategy_name}_screening() 실행 중...")
-                        getattr(module, f"run_{strategy_name}_screening")()
-                    elif hasattr(module, "main"):
-                        print(f"  🚀 {strategy_name}: main() 실행 중...")
-                        module.main()
-                    else:
-                        print(f"⚠️ {strategy_name}: 실행 함수를 찾을 수 없습니다.")
-                        continue
-
-                print(f"✅ {strategy_name} {action_type} 완료")
-                success_count += 1
-                print(f"📈 진행률: {success_count}/{len(strategy_modules)} ({success_count/len(strategy_modules)*100:.1f}%)")
-            except Exception as e:  # pragma: no cover - runtime log
-                print(f"❌ {strategy_name} {action_type} 중 오류: {e}")
-                print(f"🔍 오류 발생 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
-                if "name 'os' is not defined" not in str(e):
-                    print(traceback.format_exc())
-
-        print(f"\n✅ 전략 {action_type} 완료: {success_count}/{len(strategy_list)}개 성공")
-        print(f"📊 성공률: {success_count/len(strategy_list)*100:.1f}%")
-        return success_count > 0
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ 전략 {action_type} 중 오류 발생: {e}")
-        print(f"🔍 오류 발생 시간: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(traceback.format_exc())
-        return False
-
-
-def check_strategy_file_status() -> List[str]:
-    """Return strategies requiring screening based on existing result files."""
-    # 동적으로 전략 파일들을 찾기
-    strategy_files = {}
-    
-    # Buy 전략들 (strategy1, 3, 4, 5 등)
-    for file_path in os.listdir(PORTFOLIO_BUY_DIR) if os.path.exists(PORTFOLIO_BUY_DIR) else []:
-        if file_path.endswith('_results.csv'):
-            strategy_name = file_path.replace('_results.csv', '')
-            strategy_files[strategy_name] = os.path.join(PORTFOLIO_BUY_DIR, file_path)
-    
-    # Sell 전략들 (strategy2, 6 등)
-    for file_path in os.listdir(PORTFOLIO_SELL_DIR) if os.path.exists(PORTFOLIO_SELL_DIR) else []:
-        if file_path.endswith('_results.csv'):
-            strategy_name = file_path.replace('_results.csv', '')
-            strategy_files[strategy_name] = os.path.join(PORTFOLIO_SELL_DIR, file_path)
-    strategies_need_screening: List[str] = []
-
-    print("\n🔍 전략 결과 파일 상태 확인 중...")
-    for strategy_name, file_path in strategy_files.items():
-        if not os.path.exists(file_path):
-            strategies_need_screening.append(strategy_name)
-            print(f"❌ {strategy_name}: 파일 없음")
-        else:
-            try:
-                df = pd.read_csv(file_path)
-                
-                # 컬럼명을 소문자로 변환 (결과 파일이므로 선택적)
-                if 'Close' in df.columns or 'Volume' in df.columns:
-                    df.columns = [c.lower() for c in df.columns]
-                
-                if len(df) < 10:
-                    strategies_need_screening.append(strategy_name)
-                    print(f"⚠️ {strategy_name}: 종목 수 부족 ({len(df)}개)")
-                else:
-                    print(f"✅ {strategy_name}: 충분한 종목 수 ({len(df)}개)")
-            except Exception:
-                strategies_need_screening.append(strategy_name)
-                print(f"❌ {strategy_name}: 파일 읽기 오류")
-    return strategies_need_screening
+        collect_stock_metadata_main()
+        print("✅ 주식 메타데이터 수집 완료")
+    except Exception as e:
+        print(f"❌ 주식 메타데이터 수집 중 오류: {e}")
+        # 메타데이터 수집 실패는 치명적이지 않으므로 로그만 남기고 계속 진행할 수도 있음
+        # 하지만 여기서는 예외를 던지지 않고 넘어감
 
 
 def ensure_directories() -> None:
@@ -214,30 +68,13 @@ def ensure_directories() -> None:
     # 추가 디렉터리 목록
     additional = [
         SCREENER_RESULTS_DIR,
-        PORTFOLIO_BUY_DIR,
-        PORTFOLIO_SELL_DIR,
-        OPTION_VOLATILITY_RESULTS_DIR,
         OPTION_RESULTS_DIR,
-        MARKET_REGIME_DIR,
-        IPO_DATA_DIR,
         os.path.join(RESULTS_DIR, "leader_stock"),
         os.path.join(RESULTS_DIR, "momentum_signals"),
-        os.path.join(RESULTS_DIR, "ipo_investment"),
     ]
 
     for directory in additional:
         ensure_dir(directory)
-
-
-def run_pattern_analysis() -> None:
-    """Run pattern detection on previously screened tickers."""
-    try:
-        print("\n📊 패턴 감지 시작...")
-        run_pattern_detection_on_financial_results()
-        print("✅ 패턴 감지 완료")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ 패턴 분석 중 오류 발생: {e}")
-        print(traceback.format_exc())
 
 
 def collect_data_main(update_symbols: bool = True, skip_ohlcv: bool = False) -> None:
@@ -264,17 +101,9 @@ def collect_data_main(update_symbols: bool = True, skip_ohlcv: bool = False) -> 
         else:
             print("\n⏭️ 2단계: OHLCV 데이터 수집 건너뛰기")
         
-        # 3. 시장 폭 데이터 수집
-        print("\n📊 3단계: 시장 폭 데이터 수집")
-        run_market_breadth_collection()
-        
-        # 4. 시장 국면 분석
-        print("\n🔍 4단계: 시장 국면 분석")
-        run_market_regime_analysis()
-        
-        # 5. IPO 데이터 수집 (SEC Edgar)
-        print("\n🏢 5단계: IPO 데이터 수집")
-        run_ipo_data_collection()
+        # 3. 시장 폭 데이터 수집 (제거됨)
+        # print("\n📊 3단계: 시장 폭 데이터 수집")
+        # run_market_breadth_collection()
         
         print("✅ 모든 데이터 수집 완료")
     except Exception as e:  # pragma: no cover - runtime log
@@ -305,103 +134,33 @@ def run_all_screening_processes(skip_data: bool = False) -> None:
         run_advanced_financial_screening(skip_data=skip_data)
         print("✅ 2단계: 고급 재무 스크리닝 완료.")
 
-        print("\n⏳ 3단계: 통합 스크리닝 실행 중...")
-        run_integrated_screening()
-        print("✅ 3단계: 통합 스크리닝 완료.")
+        print("\n⏳ 3단계: 통합 스크리닝 및 패턴 분석 실행 중...")
+        screener = IntegratedScreener()
+        screener.run_integrated_screening()
+        print("✅ 3단계: 통합 스크리닝 및 패턴 분석 완료.")
 
         print("\n⏳ 4단계: 새로운 티커 추적 실행 중...")
         track_new_tickers(ADVANCED_FINANCIAL_RESULTS_PATH)
         print("✅ 4단계: 새로운 티커 추적 완료.")
 
-        print("\n⏳ 5단계: 패턴 분석 실행 중...")
-        run_pattern_analysis()
-        print("✅ 5단계: 패턴 분석 완료.")
+        # 5. 패턴 분석 (IntegratedScreener에 통합됨)
+        print("\n✅ 5단계: 완료 (패턴 분석은 마크 미너비니 통합 스크리너에서 수행됨)")
 
-        print("\n⏳ 6단계: 변동성 스큐 스크리닝 실행 중...")
-        run_volatility_skew_portfolio()
-        print("✅ 6단계: 변동성 스큐 스크리닝 완료.")
-
-        print("\n⏳ 7단계: US Setup 스크리닝 실행 중...")
-        run_setup_screener()
-        print("✅ 7단계: US Setup 스크리닝 완료.")
-
-        print("\n⏳ 8단계: US Gainers 스크리닝 실행 중...")
-        run_gainers_screener()
-        print("✅ 8단계: US Gainers 스크리닝 완료.")
-
-        print("\n⏳ 9단계: 주도주 투자 전략 스크리닝 실행 중...")
+        print("\n⏳ 6단계: 주도주 투자 전략 스크리닝 실행 중...")
         run_leader_stock_screener(skip_data=skip_data)
-        print("✅ 9단계: 주도주 투자 전략 스크리닝 완료.")
+        print("✅ 6단계: 주도주 투자 전략 스크리닝 완료.")
 
-        print("\n⏳ 10단계: 상승 모멘텀 신호 스크리닝 실행 중...")
+        print("\n⏳ 7단계: 상승 모멘텀 신호 스크리닝 실행 중...")
         run_momentum_signals_screener(skip_data=skip_data)
-        print("✅ 10단계: 상승 모멘텀 신호 스크리닝 완료.")
+        print("✅ 7단계: 상승 모멘텀 신호 스크리닝 완료.")
 
-        print("\n⏳ 11단계: IPO 투자 전략 스크리닝 실행 중...")
-        run_ipo_investment_screener(skip_data=skip_data)
-        print("✅ 11단계: IPO 투자 전략 스크리닝 완료.")
-
-        print("\n⏳ 12단계: 쿨라매기 전략 실행 중...")
+        print("\n⏳ 8단계: 쿨라매기 전략 실행 중...")
         run_qullamaggie_strategy_task(skip_data=skip_data)
-        print("✅ 12단계: 쿨라매기 전략 완료.")
-
-        # 13단계 제거: 3단계 통합 스크리닝에서 이미 패턴 감지 수행됨
+        print("✅ 8단계: 쿨라매기 전략 완료.")
 
         print("\n✅ 모든 스크리닝 프로세스 완료.")
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 스크리닝 프로세스 중 오류 발생: {e}")
-        print(traceback.format_exc())
-
-
-def run_volatility_skew_portfolio() -> None:
-    """Run the volatility skew portfolio strategy."""
-    try:
-        from portfolio.manager.strategies import VolatilitySkewPortfolioStrategy
-    except Exception as e:  # pragma: no cover - optional dependency
-        print(f"⚠️ VolatilitySkewPortfolioStrategy 로드 실패: {e}")
-        return
-
-    try:
-        print("\n📊 변동성 스큐 포트폴리오 생성 시작...")
-        strategy = VolatilitySkewPortfolioStrategy()
-        signals, filepath = strategy.run_screening_and_portfolio_creation()
-        if signals:
-            print(f"✅ 변동성 스큐 포트폴리오 신호 생성: {len(signals)}개")
-            print(f"📁 결과 파일: {filepath}")
-        else:
-            print("⚠️ 조건을 만족하는 종목이 없습니다.")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ 변동성 스큐 포트폴리오 생성 중 오류 발생: {e}")
-        print(traceback.format_exc())
-
-
-def run_setup_screener() -> None:
-    """Run the US Setup screener."""
-    try:
-        print("\n📊 US Setup Screener 시작...")
-        df = screen_us_setup()
-        if not df.empty:
-            print(f"✅ US Setup 결과 저장 완료: {len(df)}개 종목")
-            update_first_buy_signals(df, US_SETUP_RESULTS_DIR)
-        else:
-            print("⚠️ 조건을 만족하는 종목이 없습니다.")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ US Setup Screener 실행 중 오류 발생: {e}")
-        print(traceback.format_exc())
-
-
-def run_gainers_screener() -> None:
-    """Run the US Gainers screener."""
-    try:
-        print("\n📊 US Gainers Screener 시작...")
-        df = screen_us_gainers()
-        if not df.empty:
-            print(f"✅ US Gainers 결과 저장 완료: {len(df)}개 종목")
-            update_first_buy_signals(df, US_GAINER_RESULTS_DIR)
-        else:
-            print("⚠️ 조건을 만족하는 종목이 없습니다.")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ US Gainers Screener 실행 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
@@ -435,76 +194,15 @@ def run_momentum_signals_screener(skip_data=False) -> None:
         print(traceback.format_exc())
 
 
-def run_market_breadth_collection(days: int = 252) -> None:
-    """Collect market breadth indicators."""
-    try:
-        print("\n📊 시장 폭 데이터 수집 시작...")
-        collector = MarketBreadthCollector()
-        collector.collect_all_data(days)
-        print("✅ 시장 폭 데이터 수집 완료")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ 시장 폭 데이터 수집 실패: {e}")
-        print(traceback.format_exc())
-
-
-def run_ipo_data_collection(days: int = 365) -> None:
-    """Collect and save IPO related data."""
-    try:
-        from screeners.ipo_investment.ipo_data_collector import RealIPODataCollector
-        print("\n📊 IPO 데이터 수집 시작...")
-        collector = RealIPODataCollector()
-        result = collector.collect_all_ipo_data()
-        if result.get('files'):
-            recent_count = len(result.get('recent_ipos', []))
-            print(f"✅ IPO 데이터 저장 완료: {recent_count}개")
-        else:
-            print("⚠️ IPO 데이터 저장 실패 또는 데이터 없음")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ IPO 데이터 수집 중 오류 발생: {e}")
-        print(traceback.format_exc())
-
-
-def run_stock_metadata_collection() -> None:
+# run_market_breadth_collection 함수 제거됨
     """Collect and save stock metadata using StockMetadataUpdater."""
     try:
-        from utils.data.stock_metadata_updater import StockMetadataUpdater
-        
         print("\n📊 주식 메타데이터 수집 시작...")
-        updater = StockMetadataUpdater()
-        
-        # 기존 메타데이터 로드
-        existing_data = updater.load_current_metadata()
-        print(f"📋 기존 메타데이터: {len(existing_data)}개 종목")
-        
-        # 새로운 메타데이터 수집 (증분 업데이트)
-        updated_data = updater.update_metadata(incremental=True, max_age_days=7)
-        
-        if updated_data is not None and updated_data.get('status') == 'success':
-            updated_count = updated_data.get('updated_count', 0)
-            total_count = updated_data.get('total_count', 0)
-            print(f"✅ 주식 메타데이터 업데이트 완료: {updated_count}개 종목 업데이트 (전체 {total_count}개)")
-        else:
-            print("⚠️ 메타데이터 업데이트 실패")
-            if updated_data and 'error' in updated_data:
-                print(f"오류: {updated_data['error']}")
+        collect_stock_metadata_main()
+        print("✅ 주식 메타데이터 업데이트 완료")
             
     except Exception as e:  # pragma: no cover - runtime log
         print(f"❌ 주식 메타데이터 수집 실패: {e}")
-        print(traceback.format_exc())
-
-
-def run_ipo_investment_screener(skip_data=False) -> None:
-    """Run the IPO investment screener."""
-    try:
-        print("\n📊 IPO 투자 전략 스크리너 시작...")
-        df = run_ipo_investment_screening(skip_data=skip_data)
-        if not df.empty:
-            print(f"✅ IPO 투자 전략 결과 저장 완료: {len(df)}개 종목")
-            update_first_buy_signals(df, IPO_INVESTMENT_RESULTS_DIR)
-        else:
-            print("⚠️ 조건을 만족하는 종목이 없습니다.")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ IPO 투자 전략 스크리너 실행 중 오류 발생: {e}")
         print(traceback.format_exc())
 
 
@@ -525,72 +223,6 @@ def run_qullamaggie_strategy_task(setups: Optional[list[str]] | None = None, ski
         print(traceback.format_exc())
 
 
-def run_market_regime_analysis(skip_data=False):
-    """Perform market regime analysis and print summary."""
-    import time
-    unique_id = int(time.time() * 1000) % 10000
-    try:
-        print(f"\n📊 시장 국면 분석 시작... [ID: {unique_id}]")
-        result = analyze_market_regime(save_result=True, skip_data=skip_data)
-
-        print(f"\n📈 시장 국면 분석 결과:")
-        print(f"  🔍 시장 점수: {result['score']}/100")
-        print(f"  🔍 시장 국면: {result['regime_name']}")
-        print(f"  🔍 설명: {result['description']}")
-        print(f"  🔍 투자 전략: {result['strategy']}")
-
-        print("\n📊 세부 점수:")
-        if 'details' in result and 'scores' in result['details']:
-            scores = result['details']['scores']
-            base_score = scores.get('base_score', 0)
-            tech_score = scores.get('tech_score', 0)
-            print(f"  📌 지수 기본 점수: {base_score}/60")
-            print(f"  📌 기술적 지표 점수: {tech_score}/40")
-        else:
-            print("  ⚠️ 세부 점수 정보를 찾을 수 없습니다.")
-        if 'file_path' in result:
-            print(f"\n💾 결과 저장 경로: {result['file_path']}")
-
-        print("\n✅ 시장 국면 분석 완료")
-        return result
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ 시장 국면 분석 중 오류 발생: {e}")
-        print(traceback.format_exc())
-        return None
-
-
-def load_strategy_module(strategy_name: str):
-    """Dynamically load a portfolio strategy module."""
-    try:
-        strategy_path = os.path.join("portfolio", "long_short", f"{strategy_name}.py")
-        if not os.path.exists(strategy_path):
-            print(f"⚠️ {strategy_name}: 파일이 존재하지 않습니다 - {strategy_path}")
-            return None
-        spec = importlib.util.spec_from_file_location(strategy_name, strategy_path)
-        if spec is None:
-            print(f"⚠️ {strategy_name}: 모듈 스펙을 생성할 수 없습니다")
-            return None
-        module = importlib.util.module_from_spec(spec)
-        module.os = os
-        spec.loader.exec_module(module)  # type: ignore
-        print(f"✅ {strategy_name} 모듈 로드 성공")
-        return module
-    except Exception as e:  # pragma: no cover - runtime log
-        if "name 'os' is not defined" in str(e):
-            print(f"⚠️ {strategy_name}: os 모듈 오류 - 스킵합니다")
-        else:
-            print(f"⚠️ {strategy_name} 모듈 로드 실패: {e}")
-        return None
-
-
-def run_after_market_close() -> None:
-    """Update portfolio after market close."""
-    try:
-        print(f"\n🕐 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 시작")
-        create_portfolio_manager()
-        print(f"✅ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 자동 포트폴리오 업데이트 완료")
-    except Exception as e:  # pragma: no cover - runtime log
-        print(f"❌ 자동 포트폴리오 업데이트 실패: {e}")
 
 
 def run_keep_alive() -> None:
@@ -650,61 +282,4 @@ def run_scheduler() -> None:
     except KeyboardInterrupt:
         print("\n⏹️ 스케줄러 종료")
 
-# run_image_pattern_detection_task 함수 제거됨 - 3단계 통합 스크리닝에서 패턴 감지 수행
-
-def run_ranking_system_task(skip_data: bool = False):
-    """
-    MCDA 기반 종목 랭킹 시스템 실행
-    
-    Args:
-        skip_data: 데이터 수집 건너뛰기
-    """
-    try:
-        print("\n📊 MCDA 기반 종목 랭킹 시스템 시작")
-        
-        # 랭킹 시스템 모듈 임포트
-        from ranking.ranking_system import StockRankingSystem
-        from ranking.criteria_weights import InvestmentStrategy
-        from ranking.mcda_calculator import MCDAMethod
-        from ranking.utils import load_all_screener_symbols, get_market_regime_strategy
-        
-        # 모든 스크리너 결과를 활용해 종목 코드를 로드
-        symbols = load_all_screener_symbols()
-        
-        if not symbols:
-            print("⚠️ 스크리너 결과에서 종목을 찾을 수 없습니다.")
-            return
-        
-        print(f"📈 {len(symbols)}개 종목에 대해 랭킹 분석 시작")
-        
-        # 시장 상황에 맞는 전략 선택
-        strategy = get_market_regime_strategy(InvestmentStrategy.BALANCED)
-        
-        # 랭킹 시스템 초기화 및 실행
-        ranking_system = StockRankingSystem(data_directory=DATA_US_DIR)
-        rankings = ranking_system.rank_stocks(
-            symbols=symbols,
-            strategy=strategy,
-            method=MCDAMethod.TOPSIS,
-        )
-        
-        if not rankings.empty:
-            # 상위 10개 종목 출력
-            top10 = rankings[['rank', 'symbol', 'score']].head(10)
-            print("\n🏆 상위 10개 종목:")
-            print(top10.to_string(index=False))
-            
-            # 결과 저장 - ranking 디렉토리에 저장
-            from utils.io_utils import ensure_dir
-            ensure_dir(RANKING_RESULTS_DIR)
-            output_path = os.path.join(RANKING_RESULTS_DIR, 'ranking_results.csv')
-            rankings.to_csv(output_path, index=False)
-            print(f"\n💾 랭킹 결과가 저장되었습니다: {output_path}")
-            
-            print(f"✅ 랭킹 시스템 완료: {len(rankings)}개 종목 분석")
-        else:
-            print("⚠️ 랭킹 결과가 생성되지 않았습니다.")
-            
-    except Exception as e:
-        print(f"❌ 랭킹 시스템 실행 중 오류: {e}")
-        print(traceback.format_exc())
+        # run_image_pattern_detection_task 함수 제거됨 - 3단계 통합 스크리닝에서 패턴 감지 수행
