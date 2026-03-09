@@ -64,6 +64,7 @@ pids
 # Coverage directory used by tools like istanbul
 coverage/
 *.lcov
+.pytest_cache/
 
 # Dependency directories
 jspm_packages/
@@ -97,6 +98,14 @@ Thumbs.db
 data/cache/
 results/temp/
 *.tmp
+data/_test/
+data/_test_provider_*/
+data/_test_runtime_*/
+results/_test_runtime_*/
+
+.pytest_tmp/
+artifacts_*/
+provider_*/
 
 # Jupyter Notebook
 .ipynb_checkpoints
@@ -107,3 +116,5 @@ ipython_config.py
 
 # pyenv
 .python-version
+
+

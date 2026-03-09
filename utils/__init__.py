@@ -31,6 +31,13 @@ from .technical_indicators import (
 )
 from .first_buy_tracker import update_first_buy_signals
 from .path_utils import add_project_root
+from .external_data_cache import (
+    ensure_parent_dir,
+    is_file_fresh,
+    load_csv,
+    load_csv_if_fresh,
+    write_csv_atomic,
+)
 
 __all__ = [
     'ensure_dir',
@@ -56,5 +63,9 @@ __all__ = [
     'calculate_stochastic',
     'update_first_buy_signals',
     'add_project_root',
+    'ensure_parent_dir',
+    'is_file_fresh',
+    'load_csv',
+    'load_csv_if_fresh',
+    'write_csv_atomic',
 ]
-

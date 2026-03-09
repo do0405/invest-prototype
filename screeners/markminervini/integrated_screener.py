@@ -35,6 +35,7 @@ if 'MARKMINERVINI_RESULTS_DIR' not in globals():
     os.makedirs(MARKMINERVINI_RESULTS_DIR, exist_ok=True)
 
 from utils.screener_utils import read_csv_flexible
+from utils.external_data_cache import write_csv_atomic
 from .enhanced_pattern_analyzer import EnhancedPatternAnalyzer
 # 표준화된 형태로 변경 - 기본 저장 기능만 사용
 
@@ -60,6 +61,64 @@ class IntegratedScreener:
     def ensure_directories(self):
         """필요한 디렉토리 생성"""
         os.makedirs(self.results_dir, exist_ok=True)
+
+    @staticmethod
+    def _normalize_ohlcv_frame(frame: pd.DataFrame, symbol: str) -> pd.DataFrame:
+        """Normalize OHLCV payload to repository CSV shape before caching."""
+        if frame is None or frame.empty:
+            return pd.DataFrame()
+
+        normalized = frame.copy()
+        if isinstance(normalized.columns, pd.MultiIndex):
+            normalized.columns = [col[0] if isinstance(col, tuple) else col for col in normalized.columns]
+
+        if "Date" not in normalized.columns and "date" not in normalized.columns and isinstance(normalized.index, pd.DatetimeIndex):
+            normalized = normalized.reset_index()
+
+        normalized = normalized.rename(
+            columns={
+                "Date": "date",
+                "Datetime": "date",
+                "index": "date",
+                "open": "Open",
+                "high": "High",
+                "low": "Low",
+                "close": "Close",
+                "adj close": "Adj Close",
+                "adj_close": "Adj Close",
+                "volume": "Volume",
+            }
+        )
+
+        if "date" not in normalized.columns:
+            return pd.DataFrame()
+
+        normalized["date"] = pd.to_datetime(normalized["date"], errors="coerce", utc=True)
+        normalized = normalized.dropna(subset=["date"])
+        if normalized.empty:
+            return normalized
+
+        for column in ["Open", "High", "Low", "Close", "Adj Close", "Volume"]:
+            if column in normalized.columns:
+                normalized[column] = pd.to_numeric(normalized[column], errors="coerce")
+
+        keep_columns = ["date"]
+        for column in ["Open", "High", "Low", "Close", "Adj Close", "Volume"]:
+            if column in normalized.columns:
+                keep_columns.append(column)
+        normalized["symbol"] = symbol
+        keep_columns.append("symbol")
+
+        normalized = normalized[keep_columns]
+        normalized = normalized.sort_values("date").drop_duplicates(subset=["date"], keep="last")
+        return normalized
+
+    def _persist_ohlcv_cache(self, symbol: str, frame: pd.DataFrame, csv_path: str) -> None:
+        """Persist fetched OHLCV into local CSV cache for subsequent runs."""
+        normalized = self._normalize_ohlcv_frame(frame, symbol=symbol)
+        if normalized.empty:
+            return
+        write_csv_atomic(normalized, csv_path, index=False)
 
     def merge_technical_and_financial(self) -> pd.DataFrame:
         """기술적 스크리닝과 재무제표 스크리닝 결과를 통합"""
@@ -230,10 +289,17 @@ class IntegratedScreener:
             try:
                 end_date = datetime.now()
                 start_date = end_date - timedelta(days=days + 100) # MA 계산을 위한 여유 기간
-                df = yf.download(symbol, start=start_date, end=end_date, progress=False)
+                df = yf.download(
+                    symbol,
+                    start=start_date,
+                    end=end_date,
+                    progress=False,
+                    auto_adjust=False,
+                )
                 
                 if df.empty:
                     return None
+                self._persist_ohlcv_cache(symbol=symbol, frame=df, csv_path=csv_path)
             except Exception as e:
                 logger.error(f"❌ {symbol}: 데이터 다운로드 실패: {e}")
                 return None

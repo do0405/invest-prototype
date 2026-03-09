@@ -18,41 +18,105 @@ from utils import (
 )
 
 from config import (
-    DATA_DIR, DATA_US_DIR, RESULTS_DIR
+    DATA_DIR, DATA_US_DIR, RESULTS_DIR, STOCK_METADATA_PATH
 )
 
 # 주식 심볼 수집 (NASDAQ API 제거됨 - 타임아웃 문제로 인해)
-# 대신 Yahoo Finance나 다른 안정적인 소스를 사용하는 것을 권장
+# 대신 로컬 심볼 소스(csv) + 기존 데이터 디렉터리를 합쳐 전체 유니버스를 구성한다.
 
-# 크라켄 관련 함수 제거됨
+US_ALWAYS_INCLUDE_SYMBOLS = {
+    "SPY",
+    "QQQ",
+    "DIA",
+    "IWM",
+    "^GSPC",
+    "^IXIC",
+    "^DJI",
+    "^RUT",
+    "^VIX",
+    "^VVIX",
+    "^SKEW",
+}
 
-# 위키피디아 기반 S&P500, NASDAQ 100 데이터 수집 함수 제거됨
-# 기존 데이터 소스에서 종목 목록을 가져오는 방식으로 변경
+
+def _list_symbols_from_existing_us_csv() -> Set[str]:
+    symbols: Set[str] = set()
+    if not os.path.isdir(DATA_US_DIR):
+        return symbols
+
+    for name in os.listdir(DATA_US_DIR):
+        if not name.endswith(".csv"):
+            continue
+        symbol = os.path.splitext(name)[0].strip()
+        if symbol:
+            symbols.add(symbol)
+    return symbols
+
+
+def _read_symbols_from_csv(path: str) -> Set[str]:
+    symbols: Set[str] = set()
+    if not os.path.exists(path):
+        return symbols
+
+    try:
+        frame = pd.read_csv(path)
+        if frame is None or frame.empty:
+            return symbols
+    except Exception as e:
+        print(f"⚠️ CSV 종목 로드 실패 ({path}): {e}")
+        return symbols
+
+    candidate_columns = ("symbol", "ticker", "Symbol", "Ticker")
+    selected = None
+    for column in candidate_columns:
+        if column in frame.columns:
+            selected = frame[column]
+            break
+
+    if selected is None and len(frame.columns) > 0:
+        selected = frame.iloc[:, 0]
+
+    if selected is None:
+        return symbols
+
+    for raw in selected.tolist():
+        if raw is None or (isinstance(raw, float) and pd.isna(raw)):
+            continue
+        symbol = str(raw).strip()
+        if symbol:
+            symbols.add(symbol)
+
+    return symbols
+
+
+def _load_us_symbol_universe() -> Set[str]:
+    discovered: Set[str] = set()
+    discovered.update(_list_symbols_from_existing_us_csv())
+    discovered.update(_read_symbols_from_csv(os.path.join(DATA_DIR, "nasdaq_symbols.csv")))
+    discovered.update(_read_symbols_from_csv(STOCK_METADATA_PATH))
+    discovered.update(US_ALWAYS_INCLUDE_SYMBOLS)
+
+    # clean_tickers removes malformed tokens while keeping ETFs/inverse symbols.
+    return set(clean_tickers(list(discovered)))
+
 
 def update_symbol_list() -> Set[str]:
     """새로운 종목 리스트 업데이트"""
     print("\n🔄 종목 리스트 업데이트 시작...")
-    
-    # 기존 종목 목록
-    try:
-        from data_collectors.stock_metadata_collector import get_symbols
-        existing_symbols = set(get_symbols())
-        print(f"📊 기존 종목 수: {len(existing_symbols)}개")
-    except Exception as e:
-        print(f"⚠️ 기존 종목 로드 실패: {e}")
-        existing_symbols = set()
-    
-    # 새로운 종목 수집
-    new_symbols = set()
-    
+
+    existing_symbols = _list_symbols_from_existing_us_csv()
+    print(f"📊 기존 종목 수: {len(existing_symbols)}개")
+
+    new_symbols = _load_us_symbol_universe()
+
     # 기존에 없는 새로운 종목만 필터링
     truly_new_symbols = new_symbols - existing_symbols
-    
+
     if truly_new_symbols:
         print(f"🆕 새로 발견된 종목: {len(truly_new_symbols)}개")
-        
+
         # 새로운 종목들의 빈 CSV 파일 생성 (다음 수집 시 포함되도록)
-        for symbol in truly_new_symbols:
+        for symbol in sorted(truly_new_symbols):
             try:
                 safe_symbol = safe_filename(symbol)
                 csv_path = os.path.join(DATA_US_DIR, f"{safe_symbol}.csv")
@@ -65,7 +129,7 @@ def update_symbol_list() -> Set[str]:
                 print(f"⚠️ {symbol} 파일 생성 실패: {e}")
     else:
         print("✅ 새로운 종목이 없습니다.")
-    
+
     # 전체 종목 목록 반환
     all_symbols = existing_symbols.union(new_symbols)
     print(f"📈 총 종목 수: {len(all_symbols)}개")
@@ -361,13 +425,10 @@ def collect_data(max_us_chunks=None, start_chunk=0, update_symbols=True):
         except Exception as e:
             print(f"⚠️ 종목 리스트 업데이트 실패: {e}")
             print("📊 기존 CSV 파일 기반으로 진행합니다.")
-            # 기존 방식으로 폴백
-            from data_collectors.stock_metadata_collector import get_symbols
-            us_tickers = get_symbols()
+            us_tickers = sorted(_list_symbols_from_existing_us_csv())
     else:
         print("\n📊 기존 CSV 파일들을 기반으로 종목 목록 생성")
-        from data_collectors.stock_metadata_collector import get_symbols
-        us_tickers = get_symbols()
+        us_tickers = sorted(_list_symbols_from_existing_us_csv())
     
     if not us_tickers:
         print("⚠️ 종목을 찾을 수 없습니다. 데이터 수집을 중단합니다.")
