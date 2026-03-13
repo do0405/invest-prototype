@@ -5,16 +5,26 @@
 import os
 import csv
 import time
+import threading
+import logging
+import re
 import requests
 import pandas as pd
 import yfinance as yf
+import yfinance.shared as yf_shared
+from yfinance.exceptions import YFPricesMissingError, YFRateLimitError, YFTickerMissingError, YFTzMissingError
 from datetime import datetime, timedelta
 from pytz import timezone
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Set
 
+from data_collectors.symbol_universe import load_us_symbol_universe
+from utils.console_runtime import bootstrap_windows_utf8
+from utils.ohlcv_progress import format_us_style_chunk_start, format_us_style_chunk_summary
+from utils.yfinance_runtime import bootstrap_yfinance_cache
 from utils import (
-    ensure_dir, get_us_market_today, clean_tickers, safe_filename
+    ensure_dir, get_us_market_today, safe_filename
 )
 
 from config import (
@@ -37,6 +47,51 @@ US_ALWAYS_INCLUDE_SYMBOLS = {
     "^VVIX",
     "^SKEW",
 }
+
+US_OHLCV_CHUNK_SIZE = 5
+US_OHLCV_CHUNK_PAUSE_SECONDS = 6.0
+US_OHLCV_MAX_WORKERS = 2
+US_OHLCV_REQUEST_DELAY_SECONDS = 0.75
+US_OHLCV_MAX_RETRIES = 2
+US_OHLCV_EMPTY_RETRY_DELAY_SECONDS = 3.0
+US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS = 30.0
+
+_us_rate_limit_lock = threading.Lock()
+_us_rate_limit_cooldown_until = 0.0
+_yfinance_logger_configured = False
+
+
+class RateLimitError(RuntimeError):
+    """Raised when the upstream provider throttles the request."""
+
+
+class DelistedSymbolError(RuntimeError):
+    """Raised when the upstream provider indicates the symbol is unavailable."""
+
+    def __init__(self, error_msg: str):
+        self.raw_error_msg = str(error_msg)
+        self.reason = _normalize_us_delisted_reason(self.raw_error_msg)
+        self.classification = _classify_us_unavailable_reason(self.reason)
+        super().__init__(self.reason)
+
+    @property
+    def is_soft(self) -> bool:
+        return self.classification == "soft"
+
+
+def _configure_yfinance_logger() -> None:
+    global _yfinance_logger_configured
+
+    if _yfinance_logger_configured:
+        return
+
+    yf.config.debug.hide_exceptions = False
+    logger = logging.getLogger("yfinance")
+    if not logger.handlers:
+        logger.addHandler(logging.NullHandler())
+    logger.propagate = False
+    logger.setLevel(logging.CRITICAL)
+    _yfinance_logger_configured = True
 
 
 def _list_symbols_from_existing_us_csv() -> Set[str]:
@@ -90,14 +145,117 @@ def _read_symbols_from_csv(path: str) -> Set[str]:
 
 
 def _load_us_symbol_universe() -> Set[str]:
-    discovered: Set[str] = set()
-    discovered.update(_list_symbols_from_existing_us_csv())
-    discovered.update(_read_symbols_from_csv(os.path.join(DATA_DIR, "nasdaq_symbols.csv")))
-    discovered.update(_read_symbols_from_csv(STOCK_METADATA_PATH))
-    discovered.update(US_ALWAYS_INCLUDE_SYMBOLS)
+    return set(
+        load_us_symbol_universe(
+            data_dir=DATA_DIR,
+            us_data_dir=DATA_US_DIR,
+            stock_metadata_path=STOCK_METADATA_PATH,
+        )
+    )
 
-    # clean_tickers removes malformed tokens while keeping ETFs/inverse symbols.
-    return set(clean_tickers(list(discovered)))
+
+def _is_us_rate_limit_error(error_msg: str) -> bool:
+    normalized = error_msg.lower()
+    return (
+        "rate limit" in normalized
+        or "429" in normalized
+        or "too many requests" in normalized
+        or "try after a while" in normalized
+    )
+
+
+def _is_us_delisted_error(error_msg: str) -> bool:
+    normalized = error_msg.lower()
+    delisted_keywords = [
+        "delisted",
+        "no timezone found",
+        "possibly delisted",
+        "not found",
+        "invalid ticker",
+        "symbol may be delisted",
+        "404",
+    ]
+    return any(keyword in normalized for keyword in delisted_keywords)
+
+
+def _normalize_us_delisted_reason(error_msg: str) -> str:
+    raw = str(error_msg).strip()
+    normalized = raw.lower()
+
+    if "no timezone found" in normalized:
+        return "possibly delisted; no timezone found"
+
+    if "quote not found for symbol" in normalized:
+        return "quote not found"
+
+    if "no price data found" in normalized:
+        return "possibly delisted; no price data found"
+
+    if "symbol may be delisted" in normalized:
+        return "possibly delisted; symbol may be delisted"
+
+    if "invalid ticker" in normalized:
+        return "invalid ticker"
+
+    if "not found" in normalized or "404" in normalized:
+        return "not found"
+
+    compact = re.sub(r"\s+", " ", raw)
+    compact = re.sub(r"^\$[A-Z0-9.\-^]+:\s*", "", compact, flags=re.IGNORECASE)
+    return compact[:120] if compact else "possibly delisted"
+
+
+def _classify_us_unavailable_reason(reason: str) -> str:
+    normalized = str(reason).lower().strip()
+
+    if normalized.startswith("possibly delisted;"):
+        return "soft"
+
+    return "hard"
+
+
+def _format_us_chunk_summary(chunk_num: int, total_chunks: int, statuses: list[str]) -> str:
+    counter = Counter(statuses)
+    return (
+        f"✅ 청크 {chunk_num}/{total_chunks} 완료: "
+        f"처리 {len(statuses)}개 | "
+        f"저장 {counter['saved']} | "
+        f"최신 {counter['latest']} | "
+        f"유지 {counter['kept_existing']} | "
+        f"soft {counter['soft_unavailable']} | "
+        f"상폐 {counter['delisted']} | "
+        f"제한 {counter['rate_limited']} | "
+        f"실패 {counter['failed']}"
+    )
+
+
+def _format_us_chunk_summary(chunk_num: int, total_chunks: int, statuses: list[str]) -> str:
+    return format_us_style_chunk_summary(chunk_num, total_chunks, statuses)
+
+
+def _extend_us_rate_limit_cooldown(seconds: float) -> None:
+    global _us_rate_limit_cooldown_until
+
+    if seconds <= 0:
+        return
+
+    with _us_rate_limit_lock:
+        target = time.monotonic() + seconds
+        if target > _us_rate_limit_cooldown_until:
+            _us_rate_limit_cooldown_until = target
+
+
+def _wait_for_us_rate_limit_cooldown() -> None:
+    with _us_rate_limit_lock:
+        remaining = _us_rate_limit_cooldown_until - time.monotonic()
+
+    if remaining > 0:
+        print(f"[US] cooldown applied: {remaining:.1f}s")
+        time.sleep(remaining)
+
+
+def _pop_yfinance_error(ticker: str) -> str | None:
+    return yf_shared._ERRORS.pop(str(ticker).upper(), None)
 
 
 def update_symbol_list() -> Set[str]:
@@ -148,36 +306,45 @@ def fetch_us_single(ticker, start, end):
         DataFrame: 주가 데이터 또는 None(오류 발생 시)
     """
     try:
+        bootstrap_windows_utf8()
+        bootstrap_yfinance_cache()
+        _configure_yfinance_logger()
+
         # 요청 전 짧은 대기 추가 (API 제한 방지)
-        time.sleep(0.5)
+        _wait_for_us_rate_limit_cooldown()
+        time.sleep(US_OHLCV_REQUEST_DELAY_SECONDS)
         
         # 타임아웃 설정 추가
         print(f"[US] 📊 데이터 요청 중: {ticker} ({start} ~ {end})")
         ticker_obj = yf.Ticker(ticker)
-        
-        # income_stmt에서 Net Income 가져오기
-        try:
-            income_stmt = ticker_obj.income_stmt
-            if income_stmt is not None and not income_stmt.empty:
-                net_income = income_stmt.loc['Net Income'] if 'Net Income' in income_stmt.index else None
-                if net_income is not None:
-                    print(f"[US] ✅ Net Income 데이터 수신 성공: {ticker}")
-        except Exception as e:
-            print(f"[US] ⚠️ Net Income 데이터 수집 실패: {ticker} - {str(e)}")
+        _pop_yfinance_error(ticker)
         
         # 주가 데이터 가져오기
         df = ticker_obj.history(start=start, end=end, interval="1d",
                                auto_adjust=False, actions=False, timeout=10)
+
+        yf_error = _pop_yfinance_error(ticker)
+        if yf_error:
+            normalized = yf_error.lower()
+            if _is_us_rate_limit_error(normalized):
+                raise RateLimitError(yf_error)
+            if _is_us_delisted_error(normalized):
+                raise DelistedSymbolError(yf_error)
+            print(f"[US] ⚠️ yfinance 오류 응답: {ticker} - {yf_error}")
+            return None
         
         if df.empty:
             print(f"[US] ❌ 빈 데이터 반환됨: {ticker}")
-            # 빈 데이터도 상장 폐지 종목으로 처리 (데이터가 없는 경우)
             return pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
             
         print(f"[US] ✅ 데이터 수신 성공: {ticker} ({len(df)} 행)")
         df = df.rename_axis("date").reset_index()
         df["symbol"] = ticker
         return df
+    except YFRateLimitError as e:
+        raise RateLimitError(str(e)) from e
+    except (YFTzMissingError, YFPricesMissingError, YFTickerMissingError) as e:
+        raise DelistedSymbolError(str(e)) from e
     except requests.exceptions.ReadTimeout:
         print(f"[US] ⏱️ 타임아웃 발생: {ticker} - API 응답 지연 (재시도 필요)")
         return None
@@ -185,22 +352,26 @@ def fetch_us_single(ticker, start, end):
         print(f"[US] 🌐 연결 오류: {ticker} - 네트워크 문제 발생 (재시도 필요)")
         return None
     except Exception as e:
-        error_msg = str(e).lower()
-        # 상장 폐지 종목 감지 및 처리 (감지 조건 확장)
-        delisted_keywords = ["delisted", "no timezone found", "possibly delisted", "not found", 
-                            "invalid ticker", "symbol may be delisted", "404"]
-        if any(keyword in error_msg for keyword in delisted_keywords):
-            print(f"[US] 🚫 상장 폐지 종목 감지됨: {ticker}")
-            # 빈 파일 생성하여 다음에 다시 시도하지 않도록 함
-            return pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
-        elif "rate limit" in error_msg or "429" in error_msg:
-            print(f"[US] 🚫 API 제한 도달: {ticker} - 잠시 후 다시 시도하세요")
-        else:
-            print(f"[US] ❌ 오류 발생 ({ticker}): {error_msg[:100]}")
+        error_msg = str(e)
+        normalized = error_msg.lower()
+        if _is_us_delisted_error(normalized):
+            raise DelistedSymbolError(error_msg) from e
+        if _is_us_rate_limit_error(normalized):
+            raise RateLimitError(error_msg) from e
+
+        print(f"[US] ❌ 오류 발생 ({ticker}): {normalized[:100]}")
         return None
 
 # 미국 주식 데이터 수집 및 저장 (병렬 처리 버전)
-def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5, pause=5.0, start_chunk=0, max_chunks=None, max_workers=3):
+def fetch_and_save_us_ohlcv_chunked(
+    tickers,
+    save_dir=DATA_US_DIR,
+    chunk_size=US_OHLCV_CHUNK_SIZE,
+    pause=US_OHLCV_CHUNK_PAUSE_SECONDS,
+    start_chunk=0,
+    max_chunks=None,
+    max_workers=US_OHLCV_MAX_WORKERS,
+):
     ensure_dir(save_dir)
     today = get_us_market_today()
     
@@ -260,64 +431,95 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
 
         if start_date >= today:
             print(f"[US] ⏩ 최신 상태: {ticker} (마지막 데이터: {last_date})")
-            return False
+            return "latest"
 
         print(f"[DEBUG] {ticker}: 수집 시작일 {start_date}, 종료일 {today}")
 
         df_new = None
-        for j in range(5):  # 재시도 횟수 증가
+        saw_rate_limit = False
+        for j in range(US_OHLCV_MAX_RETRIES):  # 재시도 횟수 감소
             try:
                 df_new = fetch_us_single(ticker, start=start_date, end=today)
-                
-                # 상장 폐지 종목 처리 (빈 DataFrame이 반환된 경우)
+
                 if df_new is not None and df_new.empty:
-                    # 기존 데이터가 있으면 상장폐지로 처리하지 않음
                     if existing is not None and len(existing) > 0:
                         print(f"[US] ⏩ 새 데이터 없음, 기존 데이터 유지: {ticker}")
-                        return False
-                    else:
-                        print(f"[US] 🚫 상장 폐지 종목 감지됨: {ticker}")
-                        # 빈 DataFrame에 컬럼이 있으면 그대로 저장, 없으면 기본 컬럼 추가
-                        if len(df_new.columns) == 0:
-                            df_new = pd.DataFrame(columns=['date', 'symbol', 'open', 'high', 'low', 'close', 'volume'])
-                        df_new.to_csv(path, index=False)
-                        return True
-                elif df_new is not None and not df_new.empty:
-                    # 정상 데이터 획득
-                    break
-                    
-                print(f"[US] ⚠️ {ticker} 빈 데이터 반환, 재시도 {j+1}/5")
-            except Exception as e:
-                error_msg = str(e).lower()
-                # 상장 폐지 관련 오류인지 확인
-                delisted_keywords = ["delisted", "no timezone", "possibly delisted", "not found", "invalid ticker", "404"]
-                if any(keyword in error_msg for keyword in delisted_keywords):
-                    print(f"[US] 🚫 상장 폐지 종목 감지됨: {ticker}")
-                    # 빈 파일 생성
-                    empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
-                    empty_df.to_csv(path, index=False)
-                    return True
-                    
-                wait = 2 ** j + 2  # 대기 시간 증가
-                print(f"[US] ⚠️ {ticker} 재시도 {j+1}/5 → {wait}s 대기: {error_msg[:100]}")
-                time.sleep(wait)
-            
-            # 마지막 시도가 아니면 추가 대기
-            if j < 4:  # 마지막 시도 전까지
-                time.sleep(1)  # API 요청 사이에 추가 대기
+                        return "kept_existing"
+                    if j < US_OHLCV_MAX_RETRIES - 1:
+                        wait = US_OHLCV_EMPTY_RETRY_DELAY_SECONDS * (j + 1)
+                        print(
+                            f"[US] ⚠️ {ticker} 빈 데이터 반환, 재시도 {j+1}/{US_OHLCV_MAX_RETRIES} "
+                            f"({wait:.0f}s 대기)"
+                        )
+                        time.sleep(wait)
+                        continue
 
-        if df_new is None or df_new.empty:
-            print(f"[US] ❌ 빈 데이터: {ticker}")
-            # 기존 데이터가 있으면 상장폐지로 처리하지 않음
-            if existing is not None and len(existing) > 0:
-                print(f"[US] ⏩ 새 데이터 없음, 기존 데이터 유지: {ticker}")
-                return False
-            else:
-                # 여러 번 시도해도 데이터가 없으면 상장 폐지로 간주
+                    df_new = None
+                    break
+
+                if df_new is not None and not df_new.empty:
+                    break
+
+                if j < US_OHLCV_MAX_RETRIES - 1:
+                    wait = US_OHLCV_EMPTY_RETRY_DELAY_SECONDS * (j + 1)
+                    print(
+                        f"[US] ⚠️ {ticker} 빈 데이터 반환, 재시도 {j+1}/{US_OHLCV_MAX_RETRIES} "
+                        f"({wait:.0f}s 대기)"
+                    )
+                    time.sleep(wait)
+            except RateLimitError:
+                saw_rate_limit = True
+                wait = US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS * (j + 1)
+                _extend_us_rate_limit_cooldown(wait)
+                print(
+                    f"[US] 🚫 API 제한 응답: {ticker} | 재시도 {j+1}/{US_OHLCV_MAX_RETRIES} "
+                    f"(cooldown {wait:.0f}s)"
+                )
+                continue
+            except DelistedSymbolError as e:
+                if e.is_soft:
+                    print(f"[US] ⚠️ Yahoo soft signal: {ticker} - {e.reason}")
+                    if existing is not None and len(existing) > 0:
+                        print(f"[US] ⏩ Yahoo soft signal, 기존 데이터 유지: {ticker}")
+                        return "kept_existing"
+
+                    print(f"[US] ⚠️ 미확정 심볼 응답, 다음 실행에서 재시도: {ticker}")
+                    return "soft_unavailable"
+
+                if existing is not None and len(existing) > 0:
+                    print(f"[US] 🚫 공급자 미지원/비활성 심볼: {ticker} - {e.reason}")
+                    print(f"[US] 🚫 비활성 심볼로 마킹: {ticker}")
+                else:
+                    print(f"[US] 🚫 공급자 미지원/비활성 심볼: {ticker} - {e.reason}")
+
                 empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
                 empty_df.to_csv(path, index=False)
-                print(f"[US] 🚫 데이터 없음 - 상장 폐지로 처리: {ticker}")
-                return True
+                return "delisted"
+            except Exception as e:
+                error_msg = str(e).lower()
+                wait = 2 ** j + 2
+                print(
+                    f"[US] ⚠️ {ticker} 재시도 {j+1}/{US_OHLCV_MAX_RETRIES} "
+                    f"→ {wait}s 대기: {error_msg[:100]}"
+                )
+                if j < US_OHLCV_MAX_RETRIES - 1:
+                    time.sleep(wait)
+
+        if df_new is None or df_new.empty:
+            if saw_rate_limit:
+                if existing is not None and len(existing) > 0:
+                    print(f"[US] 🚫 API 제한으로 수집 보류, 기존 데이터 유지: {ticker}")
+                else:
+                    print(f"[US] 🚫 API 제한으로 수집 보류, 다음 실행에서 재시도: {ticker}")
+                return "rate_limited"
+
+            print(f"[US] ❌ 빈 데이터: {ticker}")
+            if existing is not None and len(existing) > 0:
+                print(f"[US] ⏩ 새 데이터 없음, 기존 데이터 유지: {ticker}")
+                return "kept_existing"
+
+            print(f"[US] ⚠️ 신규 데이터 수집 실패, 다음 실행에서 재시도: {ticker}")
+            return "failed"
 
         if existing is not None:
             before_len = len(existing)
@@ -357,7 +559,7 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                 print(f"[US] ✅ 저장됨: {ticker} ({after_len} rows, +{after_len - before_len})")
             else:
                 print(f"[US] 🔄 데이터 업데이트됨: {ticker} ({after_len} rows)")
-            return True
+            return "saved"
         else:
             # 신규 데이터도 330 영업일 제한 적용
             if len(df_new) > 330:
@@ -369,7 +571,7 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
                 
             df_new.to_csv(path, index=False)
             print(f"[US] ✅ 신규 저장: {ticker} ({len(df_new)} rows)")
-            return True
+            return "saved"
     
     # 청크별 처리 시작
     for i in range(start_chunk * chunk_size, len(tickers), chunk_size):
@@ -392,24 +594,27 @@ def fetch_and_save_us_ohlcv_chunked(tickers, save_dir=DATA_US_DIR, chunk_size=5,
             f.write(str(chunk_num))
         
         # 청크 내 티커 병렬 처리
-        success_count = 0
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # 병렬로 티커 처리 실행
             results = list(executor.map(process_ticker, chunk))
-            success_count = sum(1 for result in results if result)
         
         # 청크 완료 후 상태 출력 및 대기
-        print(f"✅ 청크 {chunk_num + 1}/{total_chunks} 완료: {success_count}/{len(chunk)} 성공")
+        print(_format_us_chunk_summary(chunk_num + 1, total_chunks, results))
         
         # API 제한 방지를 위한 대기
         if chunk_num + 1 < total_chunks:  # 마지막 청크가 아니면 대기
-            print(f"⏳ {pause}초 대기 중...")
-            time.sleep(pause)
+            chunk_pause = pause
+            if "rate_limited" in results:
+                chunk_pause = max(chunk_pause, US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS)
+            print(f"⏳ {chunk_pause}초 대기 중...")
+            time.sleep(chunk_pause)
 
 # 크라켄 관련 함수 제거됨
 
 # 메인 데이터 수집 함수
 def collect_data(max_us_chunks=None, start_chunk=0, update_symbols=True):
+    bootstrap_windows_utf8()
+
     # 필요한 디렉토리 생성
     for directory in [DATA_DIR, DATA_US_DIR, RESULTS_DIR]:
         ensure_dir(directory)
@@ -424,10 +629,10 @@ def collect_data(max_us_chunks=None, start_chunk=0, update_symbols=True):
             us_tickers = list(all_symbols)
         except Exception as e:
             print(f"⚠️ 종목 리스트 업데이트 실패: {e}")
-            print("📊 기존 CSV 파일 기반으로 진행합니다.")
+            print("📊 기존 CSV 파일 기준으로 계속 진행합니다.")
             us_tickers = sorted(_list_symbols_from_existing_us_csv())
     else:
-        print("\n📊 기존 CSV 파일들을 기반으로 종목 목록 생성")
+        print("\n📊 기존 CSV 파일 기준으로 종목 목록 생성")
         us_tickers = sorted(_list_symbols_from_existing_us_csv())
     
     if not us_tickers:
@@ -441,11 +646,11 @@ def collect_data(max_us_chunks=None, start_chunk=0, update_symbols=True):
         fetch_and_save_us_ohlcv_chunked(
             tickers=us_tickers,
             save_dir=DATA_US_DIR,
-            chunk_size=10,
-            pause=2.0,
+            chunk_size=US_OHLCV_CHUNK_SIZE,
+            pause=US_OHLCV_CHUNK_PAUSE_SECONDS,
             start_chunk=start_chunk,
             max_chunks=max_us_chunks,
-            max_workers=5
+            max_workers=US_OHLCV_MAX_WORKERS
         )
         
     except Exception as e:
@@ -455,6 +660,9 @@ def collect_data(max_us_chunks=None, start_chunk=0, update_symbols=True):
 # 명령행 인터페이스
 if __name__ == "__main__":
     import argparse
+
+    bootstrap_windows_utf8()
+    bootstrap_yfinance_cache()
     
     parser = argparse.ArgumentParser(description="Mark Minervini 스크리너 - 데이터 수집")
     parser.add_argument("--max-us-chunks", type=int, help="최대 미국 주식 청크 수 제한")

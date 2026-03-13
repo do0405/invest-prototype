@@ -1,16 +1,19 @@
+from __future__ import annotations
+
 import json
+import inspect
 import logging
-import os
 import time
-from typing import Any, Dict
+from typing import Any
 
 import pandas as pd
 import yfinance as yf
 from yahooquery import Ticker
 
-from config import DATA_DIR, YAHOO_FINANCE_DELAY, YAHOO_FINANCE_MAX_RETRIES
+from config import YAHOO_FINANCE_DELAY, YAHOO_FINANCE_MAX_RETRIES
 from utils.external_data_cache import load_csv_if_fresh, write_csv_atomic
 from utils.io_utils import safe_filename
+from utils.market_runtime import get_financial_cache_dir, iter_provider_symbols, market_key
 from .financial_calculators import (
     calculate_eps_metrics,
     calculate_financial_ratios,
@@ -27,24 +30,32 @@ __all__ = [
 
 
 logger = logging.getLogger(__name__)
-_FINANCIAL_CACHE_DIR = os.path.join(DATA_DIR, "external", "financials", "us")
-_FINANCIAL_CACHE_MAX_AGE_SECONDS = 24 * 60 * 60
+_FINANCIAL_CACHE_DIR = get_financial_cache_dir("us")
 
 
-def _cache_path(symbol: str) -> str:
+def _cache_dir_for_market(market: str) -> str:
+    normalized_market = market_key(market)
+    if normalized_market == "us":
+        return _FINANCIAL_CACHE_DIR
+    return get_financial_cache_dir(normalized_market)
+
+
+def _cache_path(symbol: str, market: str) -> str:
+    cache_dir = _cache_dir_for_market(market)
     safe_symbol = safe_filename(str(symbol or "").strip().upper())
-    return os.path.join(_FINANCIAL_CACHE_DIR, f"{safe_symbol}.csv")
+    return f"{cache_dir}/{safe_symbol}.csv"
 
 
-def _base_financial_payload(symbol: str) -> Dict[str, Any]:
+def _base_financial_payload(symbol: str) -> dict[str, Any]:
     return {
         "symbol": str(symbol or "").strip().upper(),
+        "provider_symbol": None,
         "error_details": [],
         "has_error": False,
     }
 
 
-def _append_error(payload: Dict[str, Any], message: str) -> None:
+def _append_error(payload: dict[str, Any], message: str) -> None:
     details = payload.get("error_details")
     if not isinstance(details, list):
         details = []
@@ -69,8 +80,8 @@ def _deserialize_error_details(value: Any) -> list[str]:
     return [text]
 
 
-def _load_cached_hybrid_payload(symbol: str, max_age_seconds: int) -> Dict[str, Any] | None:
-    cache_file = _cache_path(symbol)
+def _load_cached_hybrid_payload(symbol: str, market: str, max_age_seconds: int) -> dict[str, Any] | None:
+    cache_file = _cache_path(symbol, market)
     cached = load_csv_if_fresh(cache_file, max_age_seconds=max_age_seconds)
     if cached is None or cached.empty:
         return None
@@ -82,16 +93,16 @@ def _load_cached_hybrid_payload(symbol: str, max_age_seconds: int) -> Dict[str, 
     return row
 
 
-def _save_cached_hybrid_payload(symbol: str, payload: Dict[str, Any]) -> None:
+def _save_cached_hybrid_payload(symbol: str, market: str, payload: dict[str, Any]) -> None:
     serializable = dict(payload)
     serializable["symbol"] = str(symbol or "").strip().upper()
     serializable["error_details"] = json.dumps(_deserialize_error_details(serializable.get("error_details")))
     serializable["cached_at"] = pd.Timestamp.now("UTC").isoformat()
-    write_csv_atomic(pd.DataFrame([serializable]), _cache_path(symbol), index=False)
+    write_csv_atomic(pd.DataFrame([serializable]), _cache_path(symbol, market), index=False)
 
 
-def _has_financial_metrics(payload: Dict[str, Any]) -> bool:
-    reserved = {"symbol", "error_details", "has_error", "cached_at"}
+def _has_financial_metrics(payload: dict[str, Any]) -> bool:
+    reserved = {"symbol", "provider_symbol", "error_details", "has_error", "cached_at"}
     for key, value in payload.items():
         if key in reserved:
             continue
@@ -103,8 +114,8 @@ def _has_financial_metrics(payload: Dict[str, Any]) -> bool:
     return False
 
 
-def _collect_yfinance_metrics(symbol: str, payload: Dict[str, Any], delay: float) -> None:
-    ticker = yf.Ticker(symbol)
+def _collect_yfinance_metrics(provider_symbol: str, payload: dict[str, Any], delay: float) -> bool:
+    ticker = yf.Ticker(provider_symbol)
     if delay > 0:
         time.sleep(delay)
 
@@ -120,23 +131,27 @@ def _collect_yfinance_metrics(symbol: str, payload: Dict[str, Any], delay: float
         or income_annual.empty
         or balance_annual.empty
     ):
-        _append_error(payload, "yfinance_missing_financial_statements")
-        return
+        return False
 
+    payload["provider_symbol"] = provider_symbol
     eps_metrics = calculate_eps_metrics(income_quarterly, income_annual)
     revenue_metrics = calculate_revenue_metrics(income_quarterly, income_annual)
     margin_metrics = calculate_margin_metrics(income_quarterly, income_annual)
     ratio_metrics = calculate_financial_ratios(income_annual, balance_annual)
     payload.update(merge_financial_metrics(eps_metrics, revenue_metrics, margin_metrics, ratio_metrics))
+    return True
 
 
-def _collect_yahooquery_metrics(symbol: str, payload: Dict[str, Any]) -> None:
-    ticker = Ticker(symbol)
+def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any]) -> bool:
+    ticker = Ticker(provider_symbol)
     income_stmt_q = ticker.income_statement(frequency="quarterly")
     income_stmt_a = ticker.income_statement(frequency="annual")
     balance_sheet = ticker.balance_sheet(frequency="annual")
+    updated = False
 
     if isinstance(income_stmt_q, pd.DataFrame) and not income_stmt_q.empty:
+        payload["provider_symbol"] = provider_symbol
+        updated = True
         if "TotalRevenue" in income_stmt_q.columns:
             revenue_data = income_stmt_q["TotalRevenue"].dropna()
             if len(revenue_data) >= 2:
@@ -159,6 +174,8 @@ def _collect_yahooquery_metrics(symbol: str, payload: Dict[str, Any]) -> None:
                         payload["quarterly_net_income_growth"] = ((recent_ni - prev_ni) / abs(prev_ni)) * 100
 
     if isinstance(balance_sheet, pd.DataFrame) and not balance_sheet.empty:
+        payload["provider_symbol"] = provider_symbol
+        updated = True
         if (
             "StockholdersEquity" in balance_sheet.columns
             and isinstance(income_stmt_a, pd.DataFrame)
@@ -178,47 +195,60 @@ def _collect_yahooquery_metrics(symbol: str, payload: Dict[str, Any]) -> None:
             if len(debt) > 0 and len(equity) > 0 and equity.iloc[0] != 0:
                 payload["debt_to_equity"] = debt.iloc[0] / equity.iloc[0]
 
+    return updated
+
 
 def _collect_symbol_metrics(
     symbol: str,
-    *,
     mode: str,
     max_retries: int,
     delay: float,
-) -> Dict[str, Any]:
+    market: str = "us",
+) -> dict[str, Any]:
     symbol_key = str(symbol or "").strip().upper()
     retries = max(1, int(max_retries))
-
+    provider_symbols = iter_provider_symbols(symbol_key, market)
     last_payload = _base_financial_payload(symbol_key)
+
     for attempt in range(retries):
         payload = _base_financial_payload(symbol_key)
 
-        if mode in {"yfinance", "hybrid"}:
-            try:
-                _collect_yfinance_metrics(symbol_key, payload, delay=delay)
-            except Exception as exc:
-                _append_error(payload, f"yfinance_fetch_failed:{str(exc)[:80]}")
+        for provider_symbol in provider_symbols:
+            provider_payload = dict(payload)
 
-        if mode in {"yahooquery", "hybrid"}:
-            try:
-                _collect_yahooquery_metrics(symbol_key, payload)
-            except Exception as exc:
-                _append_error(payload, f"yahooquery_fetch_failed:{str(exc)[:80]}")
+            if mode in {"yfinance", "hybrid"}:
+                try:
+                    if _collect_yfinance_metrics(provider_symbol, provider_payload, delay=delay):
+                        provider_payload["has_error"] = bool(provider_payload.get("error_details"))
+                        return provider_payload
+                except Exception as exc:
+                    _append_error(provider_payload, f"yfinance_fetch_failed:{provider_symbol}:{str(exc)[:80]}")
 
-        payload["has_error"] = bool(payload.get("error_details"))
-        if _has_financial_metrics(payload):
-            return payload
+            if mode in {"yahooquery", "hybrid"}:
+                try:
+                    if _collect_yahooquery_metrics(provider_symbol, provider_payload):
+                        provider_payload["has_error"] = bool(provider_payload.get("error_details"))
+                        return provider_payload
+                except Exception as exc:
+                    _append_error(provider_payload, f"yahooquery_fetch_failed:{provider_symbol}:{str(exc)[:80]}")
 
-        last_payload = payload
+            last_payload = provider_payload
+
+        if _has_financial_metrics(last_payload):
+            last_payload["has_error"] = bool(last_payload.get("error_details"))
+            return last_payload
+
         if attempt < (retries - 1) and delay > 0:
             time.sleep(delay)
 
+    last_payload["has_error"] = bool(last_payload.get("error_details"))
     return last_payload
 
 
 def _collect_financial_data(
     symbols,
     *,
+    market: str,
     mode: str,
     max_retries: int,
     delay: float,
@@ -226,46 +256,63 @@ def _collect_financial_data(
     cache_max_age_hours: int,
 ) -> pd.DataFrame:
     total = len(symbols)
-    rows: list[Dict[str, Any]] = []
+    rows: list[dict[str, Any]] = []
     cache_max_age_seconds = max(0, int(cache_max_age_hours) * 3600)
+    normalized_market = market_key(market)
 
     for index, symbol in enumerate(symbols):
         symbol_key = str(symbol or "").strip().upper()
         if not symbol_key:
             continue
-        print(f"processing {index + 1}/{total} - {symbol_key}")
+        print(f"processing {index + 1}/{total} - {normalized_market}:{symbol_key}")
 
         cached_payload = None
         if use_cache and mode == "hybrid":
-            cached_payload = _load_cached_hybrid_payload(symbol_key, max_age_seconds=cache_max_age_seconds)
+            cached_payload = _load_cached_hybrid_payload(symbol_key, normalized_market, max_age_seconds=cache_max_age_seconds)
 
         if cached_payload is not None:
             rows.append(cached_payload)
             continue
 
-        payload = _collect_symbol_metrics(
-            symbol_key,
-            mode=mode,
-            max_retries=max_retries,
-            delay=delay,
-        )
+        collect_params = inspect.signature(_collect_symbol_metrics).parameters
+        if "market" in collect_params:
+            payload = _collect_symbol_metrics(
+                symbol_key,
+                mode=mode,
+                max_retries=max_retries,
+                delay=delay,
+                market=normalized_market,
+            )
+        else:
+            payload = _collect_symbol_metrics(
+                symbol_key,
+                mode=mode,
+                max_retries=max_retries,
+                delay=delay,
+            )
 
         if mode == "hybrid":
             try:
-                _save_cached_hybrid_payload(symbol_key, payload)
+                _save_cached_hybrid_payload(symbol_key, normalized_market, payload)
             except Exception as exc:
-                logger.debug("failed_to_write_financial_cache symbol=%s error=%s", symbol_key, exc)
+                logger.debug("failed_to_write_financial_cache symbol=%s market=%s error=%s", symbol_key, normalized_market, exc)
 
         rows.append(payload)
 
     return pd.DataFrame(rows)
 
 
-def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay=YAHOO_FINANCE_DELAY):
-    """Collect financial metrics via yfinance only."""
+def collect_financial_data(
+    symbols,
+    max_retries=YAHOO_FINANCE_MAX_RETRIES,
+    delay=YAHOO_FINANCE_DELAY,
+    *,
+    market: str = "us",
+):
     print("\ncollecting financial metrics via yfinance")
     return _collect_financial_data(
         symbols,
+        market=market,
         mode="yfinance",
         max_retries=max_retries,
         delay=delay,
@@ -274,11 +321,11 @@ def collect_financial_data(symbols, max_retries=YAHOO_FINANCE_MAX_RETRIES, delay
     )
 
 
-def collect_financial_data_yahooquery(symbols, max_retries=2, delay=1.0):
-    """Collect financial metrics via yahooquery only."""
+def collect_financial_data_yahooquery(symbols, max_retries=2, delay=1.0, *, market: str = "us"):
     print("\ncollecting financial metrics via yahooquery")
     return _collect_financial_data(
         symbols,
+        market=market,
         mode="yahooquery",
         max_retries=max_retries,
         delay=delay,
@@ -292,13 +339,14 @@ def collect_financial_data_hybrid(
     max_retries=2,
     delay=1.0,
     *,
+    market: str = "us",
     use_cache: bool = True,
     cache_max_age_hours: int = 24,
 ):
-    """Collect financial metrics with local CSV cache + hybrid fallback."""
     print("\ncollecting financial metrics via hybrid mode (cache + yfinance + yahooquery)")
     return _collect_financial_data(
         symbols,
+        market=market,
         mode="hybrid",
         max_retries=max_retries,
         delay=delay,

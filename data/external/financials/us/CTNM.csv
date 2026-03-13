@@ -1,0 +1,2 @@
+symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
+CTNM,CTNM,[],False,27.419354838709676,-359.6023083170387,True,True,0,-100.0,False,False,False,False,False,False,20.24937655860349,-285.99471830985914,0,0,2026-03-13T01:27:08.891164+00:00

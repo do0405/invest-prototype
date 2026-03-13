@@ -1,0 +1,23 @@
+{
+  "market": "US",
+  "benchmark_symbol": "SPY",
+  "regime_state": "Risk-Off",
+  "regime_score": 53.59,
+  "breadth_50": 57.08,
+  "breadth_200": 63.69,
+  "high_low_ratio": 1.3,
+  "top_group_share": 19.27,
+  "score_multiplier": 0.7,
+  "reason_codes": [
+    "REGIME_MIXED"
+  ],
+  "counts": {
+    "pattern_excluded_pool": 1898,
+    "pattern_included_candidates": 0,
+    "leaders": 0,
+    "confirmed_leaders": 0,
+    "followers": 0,
+    "high_quality_followers": 0,
+    "pairs": 0
+  }
+}

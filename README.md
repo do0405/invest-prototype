@@ -5,15 +5,14 @@ Collector and screener runtime for US/KR OHLCV workflows.
 ## Scope
 - US OHLCV collection and refresh
 - KR OHLCV collection
-- Breadth external cache generation
-- Mark Minervini, Leader Stock, Momentum Signals, and Qullamaggie screeners
+- Mark Minervini, Weinstein Stage 2, Leader/Lagging, Qullamaggie, and TradingView-style preset screeners
+- Market-separated outputs under `results/us/**` and `results/kr/**`
 
 Market state logic such as `regime`, `hazard`, `theme`, and `alert` now lives in the separate `market-intel-core` repository:
 `https://github.com/do0405/Initial-market-intel-core`
 
 ## Key Paths
 - `data_collectors/kr_ohlcv_collector.py`
-- `data_collectors/market_breadth_external_collector.py`
 - `data_collector.py`
 - `screeners/`
 - `main.py`
@@ -29,26 +28,33 @@ Market state logic such as `regime`, `hazard`, `theme`, and `alert` now lives in
 # Full data + screening flow
 .\.venv\Scripts\python main.py
 
-# Screening only
-.\.venv\Scripts\python main.py --task screening --skip-data
+# Screening only (US)
+.\.venv\Scripts\python main.py --task screening --skip-data --market us
+
+# Screening only (US + KR)
+.\.venv\Scripts\python main.py --task screening --skip-data --market both
 
 # KR OHLCV collection
 .\.venv\Scripts\python main.py --task kr-collect --market kr
 
-# Breadth external cache
-.\.venv\Scripts\python main.py --task breadth-external-collect --market us
-.\.venv\Scripts\python main.py --task breadth-external-collect --market kr
+# TradingView-style preset screeners only
+.\.venv\Scripts\python main.py --task tradingview --skip-data --market both
+
+# Weinstein Early Stage 2 only
+.\.venv\Scripts\python main.py --task weinstein --market both
+
+# Leader / lagging leader-follower screener only
+.\.venv\Scripts\python main.py --task leader --market both
 ```
 
 ## Data Contract
 - Input OHLCV: `data/{market}/*.csv`
 - Common columns: `date,symbol,open,high,low,close,volume`
 - Metadata: `data/stock_metadata.csv`
-- Breadth cache: `data/external/**`
+- KR benchmark CSVs may include `data/kr/KOSPI.csv` and `data/kr/KOSDAQ.csv`
 - Screener outputs:
-  - `results/screeners/**`
-  - `results/leader_stock/**`
-  - `results/momentum_signals/**`
+  - `results/us/**`
+  - `results/kr/**`
 
 ## Validation
 ```powershell

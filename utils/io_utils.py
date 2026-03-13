@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 from config import (
     DATA_DIR,
+    DATA_KR_DIR,
     DATA_US_DIR,
     RESULTS_DIR,
     QULLAMAGGIE_RESULTS_DIR,
@@ -44,6 +45,7 @@ def create_required_dirs(directories=None) -> None:
         directories = [
             DATA_DIR,
             DATA_US_DIR,
+            DATA_KR_DIR,
             RESULTS_DIR,
             QULLAMAGGIE_RESULTS_DIR,
             OPTION_RESULTS_DIR,
@@ -136,4 +138,3 @@ def safe_filename(filename: str) -> str:
     if name_without_ext.upper() in reserved_names:
         safe_name = name_without_ext + '_file' + extension
     return safe_name
-

@@ -1,229 +1,511 @@
-# -*- coding: utf-8 -*-
-# 쿨라매기 매매법 알고리즘 - 스크리너 모듈
+from __future__ import annotations
 
+import json
 import os
-import sys
-import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from typing import Any
 
-from utils.path_utils import add_project_root
+import pandas as pd
 
-# 프로젝트 루트 디렉토리를 Python 경로에 추가
-add_project_root()
-
-# 설정 및 유틸리티 임포트
-from config import DATA_US_DIR, QULLAMAGGIE_RESULTS_DIR
-from utils import ensure_dir, load_csvs_parallel
-from utils.screener_utils import save_screening_results, track_new_tickers, create_screener_summary
-from .core import (
-    apply_basic_filters,
-    screen_breakout_setup,
-    check_vcp_pattern,
-    screen_episode_pivot_setup,
-    screen_parabolic_short_setup,
+from utils.market_data_contract import load_benchmark_data, load_local_ohlcv_frame
+from utils.market_runtime import (
+    ensure_market_dirs,
+    get_benchmark_candidates,
+    get_market_data_dir,
+    get_primary_benchmark_symbol,
+    get_qullamaggie_results_dir,
+    get_stock_metadata_path,
+    is_index_symbol,
+    market_key,
 )
+from utils.progress_runtime import is_progress_tick, progress_interval
+from utils.screener_utils import create_screener_summary, save_screening_results, track_new_tickers
 
-# 결과 저장 경로 설정
-BREAKOUT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'breakout_results.csv')
-EPISODE_PIVOT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'episode_pivot_results.csv')
-PARABOLIC_SHORT_RESULTS_PATH = os.path.join(QULLAMAGGIE_RESULTS_DIR, 'parabolic_short_results.csv')
+from .core import MarketRegime, QullamaggieAnalyzer, _safe_bool, _safe_float
+from .earnings_data_collector import EarningsDataCollector
 
-# 기본 스크리닝 조건 함수
-def run_qullamaggie_screening(setup_type=None, enable_earnings_filter=True):
-    """
-    쿨라매기 매매법 스크리닝 실행 함수
-    
-    Args:
-        setup_type: 스크리닝할 셋업 타입 ('breakout', 'episode_pivot', 'parabolic_short', None=모두)
-        
-    Returns:
-        dict: 각 셋업별 스크리닝 결과
-    """
-    print("\n🔍 쿨라매기 매매법 스크리닝 시작...")
-    
-    # 결과 디렉토리 생성
-    ensure_dir(QULLAMAGGIE_RESULTS_DIR)
-    
-    # 데이터 디렉토리에서 모든 CSV 파일 경로 가져오기
-    csv_files = [os.path.join(DATA_US_DIR, f) for f in os.listdir(DATA_US_DIR) if f.endswith('.csv')]
-    
-    # 데이터 로드
-    print(f"📊 총 {len(csv_files)}개 종목 데이터 로드 중...")
-    stock_data = load_csvs_parallel(csv_files)
-    print(f"✅ {len(stock_data)}개 종목 데이터 로드 완료")
-    
-    # 결과 저장용 딕셔너리
-    results = {
-        'breakout': [],
-        'episode_pivot': [],
-        'parabolic_short': []
+
+_ANALYZER = QullamaggieAnalyzer()
+_SCREENING_CONTEXT: dict[str, Any] = {}
+
+
+def _load_market_symbols(market: str) -> list[str]:
+    data_dir = get_market_data_dir(market)
+    if not os.path.isdir(data_dir):
+        return []
+    symbols = {
+        os.path.splitext(name)[0].upper()
+        for name in os.listdir(data_dir)
+        if name.endswith(".csv")
     }
-    
-    # 각 종목에 대해 병렬 스크리닝 실행 (스레드 안전성 개선)
-    print("\n🔍 병렬 스크리닝 실행 중...")
-    
-    def process_stock(item):
-        """개별 종목 처리 함수"""
-        file_name, df = item
-        ticker = os.path.splitext(file_name)[0]
-        stock_results = {'breakout': [], 'episode_pivot': [], 'parabolic_short': []}
-        
-        try:
-            # 셋업별 스크리닝 실행
-            if setup_type is None or setup_type == 'breakout':
-                breakout_result = screen_breakout_setup(ticker, df)
-                if breakout_result['passed']:
-                    stock_results['breakout'].append(breakout_result)
-            
-            if setup_type is None or setup_type == 'episode_pivot':
-                episode_pivot_result = screen_episode_pivot_setup(ticker, df, enable_earnings_filter)
-                if episode_pivot_result['passed']:
-                    stock_results['episode_pivot'].append(episode_pivot_result)
-            
-            if setup_type is None or setup_type == 'parabolic_short':
-                parabolic_short_result = screen_parabolic_short_setup(ticker, df)
-                if parabolic_short_result['passed']:
-                    stock_results['parabolic_short'].append(parabolic_short_result)
-                    
-        except Exception as e:
-            print(f"⚠️ {ticker} 처리 중 오류: {e}")
-            
-        return stock_results
-    
-    # 병렬 처리 실행 (스레드 안전성 보장)
-    max_workers = min(4, len(stock_data))  # 최대 4개 워커
-    completed_count = 0
-    all_results = []  # 모든 결과를 임시로 저장
-    
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # 작업 제출
-        future_to_stock = {executor.submit(process_stock, item): item[0] for item in stock_data.items()}
-        
-        # 결과 수집 (스레드 안전)
-        for future in as_completed(future_to_stock):
-            completed_count += 1
-            
-            # 진행 상황 출력 (100개 단위)
-            if completed_count % 100 == 0 or completed_count == len(stock_data):
-                print(f"  진행률: {completed_count}/{len(stock_data)} ({completed_count/len(stock_data)*100:.1f}%)")
-            
-            try:
-                stock_results = future.result()
-                all_results.append(stock_results)
-            except Exception as e:
-                stock_name = future_to_stock[future]
-                print(f"⚠️ {stock_name} 결과 처리 중 오류: {e}")
-    
-    # 결과 병합 (메인 스레드에서 안전하게 처리)
-    for stock_results in all_results:
-        for setup_key in results.keys():
-            results[setup_key].extend(stock_results[setup_key])
-    
-    # 결과 저장
-    print("\n💾 스크리닝 결과 저장 중...")
-    
-    # 브레이크아웃 셋업 결과 저장
-    if setup_type is None or setup_type == 'breakout':
-        breakout_results = results['breakout']
-        if breakout_results:
-            # 점수 기준 내림차순 정렬
-            breakout_results = sorted(breakout_results, key=lambda x: x['score'], reverse=True)
-        
-        results_paths = save_screening_results(
-            results=breakout_results,
-            output_dir=QULLAMAGGIE_RESULTS_DIR,
-            filename_prefix="breakout_results",
-            include_timestamp=True,
-            incremental_update=True
-        )
-        print(f"✅ 브레이크아웃 셋업 결과 저장 완료: {len(breakout_results)}개 종목")
-    
-    # 에피소드 피벗 셋업 결과 저장
-    if setup_type is None or setup_type == 'episode_pivot':
-        episode_pivot_results = results['episode_pivot']
-        if episode_pivot_results:
-            # 점수 기준 내림차순 정렬
-            episode_pivot_results = sorted(episode_pivot_results, key=lambda x: x['score'], reverse=True)
-        
-        results_paths = save_screening_results(
-            results=episode_pivot_results,
-            output_dir=QULLAMAGGIE_RESULTS_DIR,
-            filename_prefix="episode_pivot_results",
-            include_timestamp=True,
-            incremental_update=True
-        )
-        print(f"✅ 에피소드 피벗 셋업 결과 저장 완료: {len(episode_pivot_results)}개 종목")
-    
-    # 파라볼릭 숏 셋업 결과 저장
-    if setup_type is None or setup_type == 'parabolic_short':
-        parabolic_short_results = results['parabolic_short']
-        if parabolic_short_results:
-            # 점수 기준 내림차순 정렬
-            parabolic_short_results = sorted(parabolic_short_results, key=lambda x: x['score'], reverse=True)
-        
-        results_paths = save_screening_results(
-            results=parabolic_short_results,
-            output_dir=QULLAMAGGIE_RESULTS_DIR,
-            filename_prefix="parabolic_short_results",
-            include_timestamp=True,
-            incremental_update=True
-        )
-        print(f"✅ 파라볼릭 숏 셋업 결과 저장 완료: {len(parabolic_short_results)}개 종목")
-    
-    # 새로운 티커 추적
-    print("\n🔍 새로운 티커 추적 중...")
-    
-    # 각 셋업별로 새로운 티커 추적
-    new_tickers_summary = {}
-    
-    if setup_type is None or setup_type == 'breakout':
-        tracker_file = os.path.join(QULLAMAGGIE_RESULTS_DIR, "new_breakout_tickers.csv")
-        new_breakout_tickers = track_new_tickers(
-            current_results=results['breakout'],
-            tracker_file=tracker_file,
-            symbol_key='ticker',
-            retention_days=14
-        )
-        new_tickers_summary['breakout'] = len(new_breakout_tickers)
-    
-    if setup_type is None or setup_type == 'episode_pivot':
-        tracker_file = os.path.join(QULLAMAGGIE_RESULTS_DIR, "new_episode_pivot_tickers.csv")
-        new_episode_tickers = track_new_tickers(
-            current_results=results['episode_pivot'],
-            tracker_file=tracker_file,
-            symbol_key='ticker',
-            retention_days=14
-        )
-        new_tickers_summary['episode_pivot'] = len(new_episode_tickers)
-    
-    if setup_type is None or setup_type == 'parabolic_short':
-        tracker_file = os.path.join(QULLAMAGGIE_RESULTS_DIR, "new_parabolic_short_tickers.csv")
-        new_parabolic_tickers = track_new_tickers(
-            current_results=results['parabolic_short'],
-            tracker_file=tracker_file,
-            symbol_key='ticker',
-            retention_days=14
-        )
-        new_tickers_summary['parabolic_short'] = len(new_parabolic_tickers)
-    
-    # 결과 요약
-    print("\n📊 스크리닝 결과 요약:")
-    print(f"  브레이크아웃 셋업: {len(results['breakout'])}개 종목 (신규: {new_tickers_summary.get('breakout', 0)}개)")
-    print(f"  에피소드 피벗 셋업: {len(results['episode_pivot'])}개 종목 (신규: {new_tickers_summary.get('episode_pivot', 0)}개)")
-    print(f"  파라볼릭 숏 셋업: {len(results['parabolic_short'])}개 종목 (신규: {new_tickers_summary.get('parabolic_short', 0)}개)")
-    
-    return results
+    return sorted(symbol for symbol in symbols if not is_index_symbol(market, symbol))
 
-# 메인 함수
-def main():
+
+def _load_metadata_map(market: str) -> dict[str, dict[str, Any]]:
+    metadata_path = get_stock_metadata_path(market)
+    if not os.path.exists(metadata_path):
+        return {}
+    frame = pd.read_csv(metadata_path)
+    if frame.empty or "symbol" not in frame.columns:
+        return {}
+    frame["symbol"] = frame["symbol"].astype(str).str.upper()
+    return {
+        row["symbol"]: row.dropna().to_dict()
+        for _, row in frame.iterrows()
+    }
+
+
+def _feature_to_snapshot(feature_row: dict[str, Any], regime: MarketRegime, market: str, *, stage: str) -> dict[str, Any]:
+    profile = _ANALYZER.market_profile(market)
+    a_pp_score = _safe_float(feature_row.get("a_pp_score")) or 0.0
+    setup_score = _safe_float(feature_row.get("focus_seed_score")) or 0.0
+    final_priority_score = (0.60 * a_pp_score) + (0.25 * setup_score) + (0.15 * regime.regime_score)
+    data_confidence_score = _safe_float(feature_row.get("data_confidence_score")) or 0.0
+    reasons: list[str] = []
+    if (_safe_float(feature_row.get("ret_3m_pctile")) or 0.0) >= 80.0:
+        reasons.append("TOP_RS_3M")
+    if (_safe_float(feature_row.get("ret_6m_pctile")) or 0.0) >= 80.0:
+        reasons.append("TOP_RS_6M")
+    if (_safe_float(feature_row.get("high_52w_proximity")) or 0.0) >= 0.92:
+        reasons.append("NEAR_52W_HIGH")
+    if (_safe_float(feature_row.get("compression_score")) or 0.0) >= 70.0:
+        reasons.append("TIGHT_BASE")
+    if regime.regime_state in {"RISK_ON", "RISK_ON_AGGRESSIVE"}:
+        reasons.append("REGIME_SUPPORTIVE")
+    if not reasons:
+        reasons.append("LEADERSHIP_POOL")
+
+    data_flags = [
+        "HAS_DAILY",
+        "HAS_SECTOR_MAPPING" if _safe_bool(feature_row.get("has_sector_mapping")) else "NO_SECTOR_MAPPING",
+        "HAS_FUNDAMENTALS" if _safe_bool(feature_row.get("has_fundamentals")) else "NO_FUNDAMENTALS",
+        "NO_INTRADAY",
+    ]
+    return {
+        "as_of_ts": feature_row.get("as_of_ts"),
+        "symbol": feature_row.get("symbol"),
+        "market": profile.market_code,
+        "market_code": profile.market_code,
+        "setup_family": "LEADERSHIP",
+        "candidate_stage": stage,
+        "stock_grade": feature_row.get("stock_grade"),
+        "setup_grade": "Watch",
+        "a_pp_score": round(a_pp_score, 2),
+        "setup_score": round(setup_score, 2),
+        "final_priority_score": round(final_priority_score, 2),
+        "regime_state": regime.regime_state,
+        "regime_score": round(regime.regime_score, 2),
+        "reason_codes": reasons,
+        "fail_codes": [],
+        "data_flags": data_flags,
+        "data_confidence_score": round(data_confidence_score, 2),
+        "pivot_price": feature_row.get("pivot_price"),
+        "stop_price": feature_row.get("stop_price"),
+        "risk_unit_pct": feature_row.get("risk_unit_pct"),
+        "entry_timeframe": profile.orh_windows[0],
+        "scores": {
+            "a_pp_score": round(a_pp_score, 2),
+            "setup_score": round(setup_score, 2),
+            "final_priority_score": round(final_priority_score, 2),
+            "data_confidence_score": round(data_confidence_score, 2),
+        },
+    }
+
+
+def _feature_to_patternless_pool_row(feature_row: dict[str, Any], regime: MarketRegime, market: str) -> dict[str, Any]:
+    profile = _ANALYZER.market_profile(market)
+    return {
+        "as_of_ts": feature_row.get("as_of_ts"),
+        "symbol": feature_row.get("symbol"),
+        "market": profile.market_code,
+        "sector": feature_row.get("sector"),
+        "setup_scope": "PATTERN_EXCLUDED_POOL",
+        "stock_grade": feature_row.get("stock_grade"),
+        "a_pp_score": round(_safe_float(feature_row.get("a_pp_score")) or 0.0, 2),
+        "focus_seed_score": round(_safe_float(feature_row.get("focus_seed_score")) or 0.0, 2),
+        "compression_score": round(_safe_float(feature_row.get("compression_score")) or 0.0, 2),
+        "high_52w_proximity": round(_safe_float(feature_row.get("high_52w_proximity")) or 0.0, 4),
+        "breakout_universe_pass": bool(feature_row.get("breakout_universe_pass")),
+        "ep_universe_pass": bool(feature_row.get("ep_universe_pass")),
+        "pivot_price": feature_row.get("pivot_price"),
+        "stop_price": feature_row.get("stop_price"),
+        "regime_state": regime.regime_state,
+        "regime_score": round(regime.regime_score, 2),
+    }
+
+
+def _write_records(results_dir: str, stem: str, records: list[dict[str, Any]]) -> None:
+    frame = pd.DataFrame(records)
+    csv_path = os.path.join(results_dir, f"{stem}.csv")
+    json_path = os.path.join(results_dir, f"{stem}.json")
+    frame.to_csv(csv_path, index=False)
+    frame.to_json(json_path, orient="records", indent=2, force_ascii=False)
+
+
+def _build_context(
+    market: str,
+    frames: dict[str, pd.DataFrame],
+    metadata_map: dict[str, dict[str, Any]],
+    *,
+    enable_earnings_filter: bool,
+) -> dict[str, Any]:
+    feature_rows = [
+        _ANALYZER.compute_feature_row(symbol, market, frame, metadata_map.get(symbol))
+        for symbol, frame in frames.items()
+    ]
+    feature_table = _ANALYZER.finalize_feature_table(pd.DataFrame(feature_rows)) if feature_rows else pd.DataFrame()
+    calibration = _ANALYZER.build_actual_data_calibration(feature_table, market=market)
+    if not feature_table.empty:
+        feature_table = _ANALYZER.apply_actual_data_calibration(
+            feature_table,
+            market=market,
+            calibration=calibration,
+        )
+    feature_map = {
+        row["symbol"]: row.to_dict()
+        for _, row in feature_table.iterrows()
+    } if not feature_table.empty else {}
+
+    benchmark_symbol, benchmark_daily = load_benchmark_data(
+        market,
+        get_benchmark_candidates(market),
+        allow_yfinance_fallback=True,
+    )
+    benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(market)
+    regime = _ANALYZER.compute_market_regime(
+        market=market,
+        benchmark_symbol=benchmark_symbol,
+        benchmark_daily=benchmark_daily,
+        feature_table=feature_table,
+        calibration=calibration,
+    )
+    return {
+        "market": market,
+        "feature_table": feature_table,
+        "feature_map": feature_map,
+        "calibration": calibration,
+        "frames": frames,
+        "metadata_map": metadata_map,
+        "benchmark_symbol": benchmark_symbol,
+        "benchmark_daily": benchmark_daily,
+        "regime": regime,
+        "earnings_collector": EarningsDataCollector(market=market) if enable_earnings_filter else None,
+    }
+
+
+def apply_basic_filters(df: pd.DataFrame):
+    return _ANALYZER.apply_basic_filters(
+        df,
+        market=_SCREENING_CONTEXT.get("market", "us"),
+        calibration=_SCREENING_CONTEXT.get("calibration"),
+    )
+
+
+def check_vcp_pattern(df: pd.DataFrame):
+    return _ANALYZER.check_vcp_pattern(
+        df,
+        market=_SCREENING_CONTEXT.get("market", "us"),
+        calibration=_SCREENING_CONTEXT.get("calibration"),
+    )
+
+
+def screen_breakout_setup(symbol: str, frame: pd.DataFrame):
+    context = _SCREENING_CONTEXT
+    return _ANALYZER.analyze_breakout(
+        symbol,
+        frame,
+        market=context.get("market", "us"),
+        feature_row=context.get("feature_map", {}).get(str(symbol).upper()),
+        regime=context.get("regime"),
+        calibration=context.get("calibration"),
+    )
+
+
+def screen_episode_pivot_setup(symbol: str, frame: pd.DataFrame, enable_earnings_filter: bool = True, market: str = "us"):
+    context = _SCREENING_CONTEXT
+    return _ANALYZER.analyze_episode_pivot(
+        symbol,
+        frame,
+        enable_earnings_filter,
+        market=market,
+        feature_row=context.get("feature_map", {}).get(str(symbol).upper()),
+        regime=context.get("regime"),
+        earnings_collector=context.get("earnings_collector"),
+        calibration=context.get("calibration"),
+    )
+
+
+def screen_parabolic_short_setup(symbol: str, frame: pd.DataFrame):
+    context = _SCREENING_CONTEXT
+    return _ANALYZER.analyze_parabolic_short(
+        symbol,
+        frame,
+        market=context.get("market", "us"),
+        feature_row=context.get("feature_map", {}).get(str(symbol).upper()),
+        regime=context.get("regime"),
+    )
+
+
+class QullamaggieScreener:
+    def __init__(self, *, market: str = "us", enable_earnings_filter: bool = True) -> None:
+        self.market = market_key(market)
+        self.enable_earnings_filter = bool(enable_earnings_filter)
+        ensure_market_dirs(self.market)
+        self.results_dir = get_qullamaggie_results_dir(self.market)
+
+    def _load_frames(self) -> dict[str, pd.DataFrame]:
+        symbols = _load_market_symbols(self.market)
+        frames: dict[str, pd.DataFrame] = {}
+        if not symbols:
+            return frames
+
+        def _load(symbol: str) -> tuple[str, pd.DataFrame]:
+            return symbol, load_local_ohlcv_frame(self.market, symbol)
+
+        max_workers = min(8, max(1, len(symbols)))
+        print(
+            f"[Qullamaggie] Frame load started ({self.market}) - "
+            f"symbols={len(symbols)}, workers={max_workers}"
+        )
+        interval = progress_interval(len(symbols), target_updates=8, min_interval=50)
+        completed = 0
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_map = {executor.submit(_load, symbol): symbol for symbol in symbols}
+            for future in as_completed(future_map):
+                completed += 1
+                symbol, frame = future.result()
+                if not frame.empty:
+                    frames[symbol] = frame
+                if is_progress_tick(completed, len(symbols), interval):
+                    print(
+                        f"[Qullamaggie] Frame load progress ({self.market}) - "
+                        f"processed={completed}/{len(symbols)}, loaded={len(frames)}"
+                    )
+        print(f"[Qullamaggie] Frame load completed ({self.market}) - loaded={len(frames)}")
+        return frames
+
+    def run(self, setup_type: str | None = None) -> dict[str, Any]:
+        global _SCREENING_CONTEXT
+
+        metadata_map = _load_metadata_map(self.market)
+        frames = self._load_frames()
+        print(
+            f"[Qullamaggie] Context build started ({self.market}) - "
+            f"frames={len(frames)}, metadata={len(metadata_map)}"
+        )
+        _SCREENING_CONTEXT = _build_context(
+            self.market,
+            frames,
+            metadata_map,
+            enable_earnings_filter=self.enable_earnings_filter,
+        )
+        regime: MarketRegime = _SCREENING_CONTEXT["regime"]
+        feature_table: pd.DataFrame = _SCREENING_CONTEXT["feature_table"]
+        print(
+            f"[Qullamaggie] Context ready ({self.market}) - "
+            f"features={len(feature_table)}, regime={regime.regime_state}"
+        )
+
+        results: dict[str, Any] = {
+            "breakout": [],
+            "episode_pivot": [],
+            "parabolic_short": [],
+            "all_candidates": [],
+            "pattern_excluded_pool": [],
+            "pattern_included_candidates": [],
+            "universe_list": [],
+            "wide_list": [],
+            "weekly_focus": [],
+            "daily_focus": [],
+            "market_regime": {
+                "benchmark_symbol": regime.benchmark_symbol,
+                "regime_state": regime.regime_state,
+                "regime_score": regime.regime_score,
+                "market_trend_score": regime.market_trend_score,
+                "breadth_score": regime.breadth_score,
+                "opportunity_score": regime.opportunity_score,
+                "focus_list_density": regime.focus_list_density,
+                "breakout_success_proxy": regime.breakout_success_proxy,
+                "reason_codes": list(regime.reason_codes),
+                "data_flags": list(regime.data_flags),
+            },
+            "actual_data_calibration": dict(_SCREENING_CONTEXT.get("calibration", {})),
+        }
+
+        def process_symbol(symbol: str) -> dict[str, list[dict[str, Any]]]:
+            frame = frames.get(symbol, pd.DataFrame())
+            if frame.empty:
+                return {"breakout": [], "episode_pivot": [], "parabolic_short": []}
+            symbol_results = {"breakout": [], "episode_pivot": [], "parabolic_short": []}
+            if setup_type in {None, "breakout"}:
+                breakout = screen_breakout_setup(symbol, frame.copy())
+                if breakout.get("passed"):
+                    symbol_results["breakout"].append(breakout)
+            if setup_type in {None, "episode_pivot"}:
+                episode = screen_episode_pivot_setup(symbol, frame.copy(), self.enable_earnings_filter, market=self.market)
+                if episode.get("passed"):
+                    symbol_results["episode_pivot"].append(episode)
+            if setup_type in {None, "parabolic_short"}:
+                parabolic = screen_parabolic_short_setup(symbol, frame.copy())
+                if parabolic.get("passed"):
+                    symbol_results["parabolic_short"].append(parabolic)
+            return symbol_results
+
+        max_workers = min(8, max(1, len(frames)))
+        total_symbols = len(frames)
+        print(
+            f"[Qullamaggie] Setup scan started ({self.market}) - "
+            f"symbols={total_symbols}, workers={max_workers}, setup={setup_type or 'all'}"
+        )
+        interval = progress_interval(total_symbols, target_updates=8, min_interval=50)
+        completed = 0
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_map = {executor.submit(process_symbol, symbol): symbol for symbol in sorted(frames)}
+            for future in as_completed(future_map):
+                completed += 1
+                symbol_results = future.result()
+                for key in ("breakout", "episode_pivot", "parabolic_short"):
+                    results[key].extend(symbol_results[key])
+                if is_progress_tick(completed, total_symbols, interval):
+                    print(
+                        f"[Qullamaggie] Setup scan progress ({self.market}) - "
+                        f"processed={completed}/{total_symbols}, breakout={len(results['breakout'])}, "
+                        f"episode={len(results['episode_pivot'])}, short={len(results['parabolic_short'])}"
+                    )
+
+        results["breakout"] = sorted(results["breakout"], key=lambda item: item.get("final_priority_score", 0), reverse=True)
+        results["episode_pivot"] = sorted(results["episode_pivot"], key=lambda item: item.get("final_priority_score", 0), reverse=True)
+        results["parabolic_short"] = sorted(results["parabolic_short"], key=lambda item: item.get("score", 0), reverse=True)
+        results["all_candidates"] = sorted(
+            results["breakout"] + results["episode_pivot"],
+            key=lambda item: item.get("final_priority_score", 0),
+            reverse=True,
+        )
+
+        if not feature_table.empty:
+            universe_rows = [
+                _feature_to_snapshot(row.to_dict(), regime, self.market, stage="UNIVERSE")
+                for _, row in feature_table.sort_values(["a_pp_score", "focus_seed_score"], ascending=[False, False]).iterrows()
+                if bool(row.get("breakout_universe_pass") or row.get("ep_universe_pass") or (_safe_float(row.get("a_pp_score")) or 0.0) >= 60.0)
+            ]
+            patternless_rows = [
+                _feature_to_patternless_pool_row(row.to_dict(), regime, self.market)
+                for _, row in feature_table.sort_values(["a_pp_score", "focus_seed_score"], ascending=[False, False]).iterrows()
+                if bool(row.get("breakout_universe_pass") or row.get("ep_universe_pass") or (_safe_float(row.get("a_pp_score")) or 0.0) >= 60.0)
+            ]
+            results["universe_list"] = universe_rows[:600]
+            results["pattern_excluded_pool"] = patternless_rows[:600]
+            results["wide_list"] = [
+                {**row, "candidate_stage": "WIDE_LIST"}
+                for row in results["universe_list"][:100]
+            ]
+            weekly_seed = [row for row in results["all_candidates"] if row.get("priority_tier") in {"Tier 1", "Tier 2"}]
+            if not weekly_seed:
+                weekly_seed = [
+                    {**row, "candidate_stage": "WEEKLY_FOCUS"}
+                    for row in results["wide_list"][:20]
+                ]
+            results["weekly_focus"] = weekly_seed[:20]
+            results["daily_focus"] = [row for row in results["all_candidates"] if row.get("priority_tier") == "Tier 1"][:5]
+            if not results["daily_focus"]:
+                results["daily_focus"] = results["all_candidates"][:5]
+            results["pattern_included_candidates"] = list(results["all_candidates"])
+
+        print(
+            f"[Qullamaggie] Persisting results ({self.market}) - "
+            f"all={len(results['all_candidates'])}, universe={len(results['universe_list'])}"
+        )
+        self._persist_results(results)
+        _SCREENING_CONTEXT = {}
+        return results
+
+    def _persist_results(self, results: dict[str, Any]) -> None:
+        def persist_result(key: str, filename_prefix: str, tracker_name: str) -> None:
+            payload = sorted(results[key], key=lambda item: item.get("score", item.get("final_priority_score", 0)), reverse=True)
+            results_paths = save_screening_results(
+                results=payload,
+                output_dir=self.results_dir,
+                filename_prefix=filename_prefix,
+                include_timestamp=True,
+                incremental_update=True,
+            )
+            tracker_file = os.path.join(self.results_dir, tracker_name)
+            new_tickers = track_new_tickers(
+                current_results=payload,
+                tracker_file=tracker_file,
+                symbol_key="symbol",
+                retention_days=14,
+            )
+            create_screener_summary(
+                screener_name=f"Qullamaggie {key} ({self.market.upper()})",
+                total_candidates=len(payload),
+                new_tickers=len(new_tickers),
+                results_paths=results_paths,
+            )
+
+        persist_result("breakout", "breakout_results", "new_breakout_tickers.csv")
+        persist_result("episode_pivot", "episode_pivot_results", "new_episode_pivot_tickers.csv")
+        persist_result("parabolic_short", "parabolic_short_results", "new_parabolic_short_tickers.csv")
+
+        _write_records(self.results_dir, "candidate_snapshots", results.get("all_candidates", []))
+        _write_records(self.results_dir, "pattern_excluded_pool", results.get("pattern_excluded_pool", []))
+        _write_records(self.results_dir, "pattern_included_candidates", results.get("pattern_included_candidates", []))
+        _write_records(self.results_dir, "universe_list", results.get("universe_list", []))
+        _write_records(self.results_dir, "wide_list", results.get("wide_list", []))
+        _write_records(self.results_dir, "weekly_focus_list", results.get("weekly_focus", []))
+        _write_records(self.results_dir, "daily_focus_list", results.get("daily_focus", []))
+
+        summary = {
+            "market": self.market.upper(),
+            "regime": results.get("market_regime", {}),
+            "actual_data_calibration": results.get("actual_data_calibration", {}),
+            "counts": {
+                "breakout": len(results.get("breakout", [])),
+                "episode_pivot": len(results.get("episode_pivot", [])),
+                "parabolic_short": len(results.get("parabolic_short", [])),
+                "universe": len(results.get("universe_list", [])),
+                "pattern_excluded_pool": len(results.get("pattern_excluded_pool", [])),
+                "pattern_included_candidates": len(results.get("pattern_included_candidates", [])),
+                "daily_focus": len(results.get("daily_focus", [])),
+            },
+        }
+        with open(os.path.join(self.results_dir, "market_summary.json"), "w", encoding="utf-8") as handle:
+            json.dump(summary, handle, ensure_ascii=False, indent=2)
+        with open(os.path.join(self.results_dir, "actual_data_calibration.json"), "w", encoding="utf-8") as handle:
+            json.dump(results.get("actual_data_calibration", {}), handle, ensure_ascii=False, indent=2)
+
+
+def run_qullamaggie_screening(
+    setup_type: str | None = None,
+    enable_earnings_filter: bool | None = None,
+    *,
+    market: str = "us",
+):
+    normalized_market = market_key(market)
+    if enable_earnings_filter is None:
+        enable_earnings_filter = True
+    screener = QullamaggieScreener(
+        market=normalized_market,
+        enable_earnings_filter=enable_earnings_filter,
+    )
+    return screener.run(setup_type=setup_type)
+
+
+def main() -> None:
     import argparse
-    
-    parser = argparse.ArgumentParser(description='쿨라매기 매매법 스크리너')
-    parser.add_argument('--setup', choices=['breakout', 'episode_pivot', 'parabolic_short'], 
-                        help='스크리닝할 셋업 타입')
-    
-    args = parser.parse_args()
-    
-    # 스크리닝 실행
-    run_qullamaggie_screening(args.setup)
 
+    parser = argparse.ArgumentParser(description="Qullamaggie screener")
+    parser.add_argument("--setup", choices=["breakout", "episode_pivot", "parabolic_short"])
+    parser.add_argument("--market", default="us", help="Target market (us|kr)")
+    parser.add_argument("--disable-earnings-filter", action="store_true")
+    args = parser.parse_args()
+
+    run_qullamaggie_screening(
+        setup_type=args.setup,
+        enable_earnings_filter=not args.disable_earnings_filter,
+        market=args.market,
+    )
+
+
+if __name__ == "__main__":
+    main()

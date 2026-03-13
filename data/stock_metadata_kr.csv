@@ -1,0 +1,2537 @@
+symbol,market,provider_symbol,sector,industry,pe_ratio,revenue_growth,market_cap,shares_outstanding
+000020,kr,000020.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.107,171019632640.0,27717930.0
+000040,kr,000040.KS,Consumer Cyclical,Recreational Vehicles,,-0.263,32472705024.0,86363576.0
+000050,kr,000050.KS,Consumer Cyclical,Textile Manufacturing,,0.033,234452697088.0,24915270.0
+000070,kr,000070.KS,Industrials,Conglomerates,,0.001,500208992256.0,6721162.0
+000080,kr,000080.KS,Consumer Defensive,Beverages - Wineries & Distilleries,,-0.024,1182117920768.0,68649427.0
+000087,kr,000087.KS,Consumer Defensive,Beverages - Wineries & Distilleries,,-0.024,1170636144640.0,1133209.0
+000100,kr,000100.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.048,7461459197952.0,73615781.0
+000105,kr,000105.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.048,7469224951808.0,1148340.0
+000120,kr,000120.KS,Industrials,Integrated Freight & Logistics,,0.031,2255793946624.0,19945129.0
+000140,kr,000140.KS,Consumer Defensive,Beverages - Brewers,,-0.024,200715272192.0,21366404.0
+000145,kr,000145.KS,Consumer Defensive,Beverages - Brewers,,-0.024,246101295104.0,470446.0
+000150,kr,000150.KS,Industrials,Conglomerates,,0.148,19927182344192.0,13562516.0
+000155,kr,000155.KS,Industrials,Conglomerates,,0.148,13039919169536.0,3432220.0
+000157,kr,000157.KS,Industrials,Conglomerates,,0.148,1311536316416.0,845176.0
+000180,kr,000180.KS,Basic Materials,Lumber & Wood Production,,-0.078,109091504128.0,69751600.0
+000210,kr,000210.KS,Basic Materials,Specialty Chemicals,,-0.024,1048196153344.0,20930727.0
+000215,kr,000215.KS,Basic Materials,Specialty Chemicals,,-0.024,855597449216.0,1684076.0
+000220,kr,000220.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.125,70718283776.0,16182673.0
+000225,kr,000225.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.125,42494951424.0,5859680.0
+000227,kr,000227.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.125,39075819520.0,5859680.0
+000230,kr,000230.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.064,120825364480.0,11292090.0
+000240,kr,000240.KS,Consumer Cyclical,Auto Parts,,0.009,2424784551936.0,94718144.0
+000250,kr,000250.KQ,,,,,18327208460288.0,23257878.0
+000270,kr,000270.KS,Consumer Cyclical,Auto Manufacturers,,0.082,63754217717760.0,386623520.0
+000300,kr,000300.KS,,,,,0.0,4566382.0
+000320,kr,000320.KS,Basic Materials,Specialty Chemicals,,0.024,247001858048.0,10248693.0
+000325,kr,000325.KS,Basic Materials,Specialty Chemicals,,0.024,311090216960.0,243388.0
+000370,kr,000370.KS,Financial Services,Insurance - Property & Casualty,,0.073,805874368512.0,115620426.0
+000390,kr,000390.KS,Basic Materials,Specialty Chemicals,,0.033,238966800384.0,24814827.0
+000400,kr,000400.KS,Financial Services,Insurance - Property & Casualty,,-0.078,650676600832.0,309110030.0
+000430,kr,000430.KS,Consumer Cyclical,Auto Parts,,0.06,250790002688.0,62000000.0
+000440,kr,000440.KQ,,,,,146538250240.0,4433835.0
+000480,kr,000480.KS,Basic Materials,Building Materials,,0.071,202363387904.0,41256552.0
+000490,kr,000490.KS,Industrials,Farm & Heavy Construction Machinery,,0.078,277063532544.0,26821252.0
+000500,kr,000500.KS,Technology,Communication Equipment,,0.613,1604682121216.0,16543115.0
+000520,kr,000520.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.04,212721106944.0,21229653.0
+000540,kr,000540.KS,Financial Services,Insurance - Property & Casualty,,0.12,297764651008.0,64242645.0
+000545,kr,000545.KS,Financial Services,Insurance - Property & Casualty,,0.12,342811639808.0,64242600.0
+000590,kr,000590.KS,Industrials,Tools & Accessories,,-0.094,84532707328.0,1029631.0
+000640,kr,000640.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.072,694969892864.0,6631391.0
+000650,kr,000650.KS,Industrials,Railroads,,-0.02,338925322240.0,1427054.0
+000660,kr,000660.KS,Technology,Semiconductors,,0.661,636254576181248.0,690455268.0
+000670,kr,000670.KS,Technology,Electronic Components,,0.141,959196626944.0,18410683.0
+000680,kr,000680.KS,Consumer Cyclical,Specialty Retail,,0.117,252957687808.0,78803014.0
+000700,kr,000700.KS,Industrials,Marine Shipping,,-0.154,166667599872.0,26041812.0
+000720,kr,000720.KS,Industrials,Engineering & Construction,,-0.052,18761304244224.0,111355765.0
+000725,kr,000725.KS,Industrials,Engineering & Construction,,-0.052,9152868909056.0,1054693.0
+000760,kr,000760.KS,Basic Materials,Chemicals,,-0.075,43315998720.0,2800000.0
+000810,kr,000810.KS,Financial Services,Insurance - Property & Casualty,,-0.025,20277039726592.0,39828296.0
+000815,kr,000815.KS,Financial Services,Insurance - Property & Casualty,,-0.025,21814130507776.0,2681220.0
+000850,kr,000850.KS,Industrials,Specialty Industrial Machinery,,0.091,81399996416.0,2200000.0
+000860,kr,000860.KS,Basic Materials,Specialty Chemicals,,-0.04,201630007296.0,13000000.0
+000880,kr,000880.KS,Industrials,Conglomerates,,0.456,10953309552640.0,69375482.0
+000890,kr,000890.KS,Consumer Defensive,Beverages - Wineries & Distilleries,,-0.024,61686648832.0,137081442.0
+000910,kr,000910.KS,Basic Materials,Building Materials,,-0.08,68222775296.0,15611619.0
+000950,kr,000950.KS,Consumer Cyclical,Textile Manufacturing,,-0.43,41305788416.0,1139470.0
+000970,kr,000970.KS,Basic Materials,Steel,,0.054,145414160384.0,21510970.0
+000990,kr,000990.KS,Technology,Semiconductors,,0.302,3421045784576.0,40247597.0
+001000,kr,001000.KQ,Consumer Cyclical,Textile Manufacturing,,0.001,49162018816.0,24277540.0
+001020,kr,001020.KS,Basic Materials,Paper & Paper Products,,-0.026,129348919296.0,177921482.0
+001040,kr,001040.KS,Industrials,Conglomerates,,0.054,6028862160896.0,27058455.0
+001045,kr,001045.KS,Industrials,Conglomerates,,0.054,4291552608256.0,2259102.0
+001060,kr,001060.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.12,733224566784.0,22549518.0
+001065,kr,001065.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.12,680934768640.0,20096000.0
+001067,kr,001067.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.12,1279390253056.0,206752.0
+001070,kr,001070.KS,Consumer Cyclical,Textile Manufacturing,,0.052,24708235264.0,3612315.0
+001080,kr,001080.KS,Basic Materials,Steel,,0.161,168704835584.0,34013070.0
+001120,kr,001120.KS,Industrials,Conglomerates,,-0.012,1546619846656.0,35967902.0
+001130,kr,001130.KS,Consumer Defensive,Packaged Foods,,0.055,255067422720.0,1649854.0
+001200,kr,001200.KS,Financial Services,Capital Markets,,-0.295,446338236416.0,91839145.0
+001210,kr,001210.KS,Industrials,Electrical Equipment & Parts,,-0.073,49703563264.0,60688113.0
+001230,kr,001230.KS,Basic Materials,Steel,,-0.065,330298392576.0,31101543.0
+001250,kr,001250.KS,Industrials,Industrial Distribution,,-0.104,209537810432.0,82495202.0
+001260,kr,001260.KS,Industrials,Engineering & Construction,,-0.222,91360542720.0,9823714.0
+001270,kr,001270.KS,Financial Services,Capital Markets,,0.099,738040610816.0,5939122.0
+001275,kr,001275.KS,Financial Services,Capital Markets,,0.099,556841435136.0,2963660.0
+001290,kr,001290.KS,Financial Services,Capital Markets,,-0.544,130385731584.0,106263841.0
+001340,kr,001340.KS,Basic Materials,Specialty Chemicals,,0.11,313017171968.0,44149107.0
+001360,kr,001360.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,1.227,176946151424.0,94120296.0
+001380,kr,001380.KS,Consumer Cyclical,Auto Parts,,0.046,66187218944.0,44964143.0
+001390,kr,001390.KS,Industrials,Conglomerates,,0.147,356335058944.0,67233030.0
+001420,kr,001420.KS,Consumer Cyclical,Auto Parts,,1.123,19616061440.0,7333107.0
+001430,kr,001430.KS,Basic Materials,Steel,,0.048,2535451787264.0,35862119.0
+001440,kr,001440.KS,Industrials,Electrical Equipment & Parts,,0.063,5624265441280.0,185772588.0
+001450,kr,001450.KS,Financial Services,Insurance - Property & Casualty,,0.084,2356355530752.0,78414500.0
+001460,kr,001460.KS,Consumer Cyclical,Apparel Manufacturing,,0.026,383282085888.0,6219017.0
+001465,kr,001465.KS,Consumer Cyclical,Apparel Manufacturing,,0.026,340410499072.0,2077132.0
+001470,kr,001470.KS,Industrials,Engineering & Construction,,-0.392,79699591168.0,229681824.0
+001500,kr,001500.KS,Financial Services,Capital Markets,,0.482,685110132736.0,61833044.0
+001510,kr,001510.KS,Financial Services,Asset Management,,0.203,739236511744.0,413906203.0
+001515,kr,001515.KS,Financial Services,Asset Management,,0.203,293568380928.0,308832992.0
+001520,kr,001520.KS,Basic Materials,Building Materials,,-0.075,159768494080.0,189804063.0
+001525,kr,001525.KS,Basic Materials,Building Materials,,-0.075,198569918464.0,205412992.0
+001527,kr,001527.KS,Basic Materials,Building Materials,,-0.075,1664413990912.0,241410.0
+001530,kr,001530.KS,Consumer Cyclical,Textile Manufacturing,,-0.051,436949155840.0,19726824.0
+001540,kr,001540.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.151,91604844544.0,11365365.0
+001550,kr,001550.KS,Basic Materials,Agricultural Inputs,,-0.208,93245227008.0,5191828.0
+001560,kr,001560.KS,Industrials,Tools & Accessories,,0.019,76657483776.0,6642763.0
+001570,kr,001570.KS,Basic Materials,Chemicals,,-0.439,632041439232.0,63842570.0
+001620,kr,001620.KS,Consumer Cyclical,Auto Parts,,0.266,70559784960.0,111293031.0
+001630,kr,001630.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.009,231839170560.0,4760558.0
+001680,kr,001680.KS,Consumer Defensive,Packaged Foods,,0.03,743776845824.0,34648025.0
+001685,kr,001685.KS,Consumer Defensive,Packaged Foods,,0.03,763608104960.0,1370223.0
+001720,kr,001720.KS,Financial Services,Capital Markets,,0.483,1675604393984.0,8017246.0
+001740,kr,001740.KS,Industrials,Conglomerates,,-0.034,1041491165184.0,193946210.0
+001750,kr,001750.KS,Financial Services,Capital Markets,,0.033,335396864000.0,12728534.0
+001755,kr,001755.KS,Financial Services,Capital Markets,,0.033,283435827200.0,12728500.0
+001770,kr,001770.KS,Consumer Cyclical,Packaging & Containers,,-0.266,20823009280.0,1214878.0
+001780,kr,001780.KS,Basic Materials,Aluminum,,-0.212,209637228544.0,96830132.0
+001790,kr,001790.KS,Consumer Defensive,Confectioners,,-0.025,238027669504.0,86241915.0
+001795,kr,001795.KS,Consumer Defensive,Confectioners,,-0.025,31835058176.0,8257690.0
+001800,kr,001800.KS,Consumer Defensive,Confectioners,,0.085,1455791013888.0,60156653.0
+001810,kr,001810.KQ,Basic Materials,Paper & Paper Products,,0.202,30217687040.0,22137500.0
+001820,kr,001820.KS,Technology,Electronic Components,,-0.032,526389313536.0,10261000.0
+001840,kr,001840.KQ,Industrials,Engineering & Construction,,0.071,26282577920.0,16263972.0
+001940,kr,001940.KS,Basic Materials,Steel,,-0.146,310261841920.0,12510558.0
+002020,kr,002020.KS,Industrials,Conglomerates,,-0.037,792035000320.0,12907680.0
+002025,kr,002025.KS,Industrials,Conglomerates,,-0.037,710953926656.0,1160437.0
+002030,kr,002030.KS,Basic Materials,Building Materials,,-0.028,468041891840.0,1630808.0
+002070,kr,002070.KS,Consumer Cyclical,Apparel Manufacturing,,0.043,22507644928.0,45196077.0
+002100,kr,002100.KS,Basic Materials,Agricultural Inputs,,0.062,175609511936.0,17864650.0
+002140,kr,002140.KS,Consumer Defensive,Packaged Foods,,-0.028,68216475648.0,24671420.0
+002150,kr,002150.KS,Industrials,Engineering & Construction,,0.382,212427358208.0,33295825.0
+002170,kr,002170.KS,Consumer Cyclical,Footwear & Accessories,,-0.129,153119997952.0,2640000.0
+002200,kr,002200.KS,Consumer Cyclical,Packaging & Containers,,0.012,111011905536.0,35810293.0
+002210,kr,002210.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.133,23749335040.0,24408359.0
+002220,kr,002220.KS,Basic Materials,Steel,,0.155,96319045632.0,24353740.0
+002230,kr,002230.KQ,Consumer Cyclical,Auto Parts,,0.255,184215568384.0,16931578.0
+002240,kr,002240.KS,Basic Materials,Steel,,0.039,569360515072.0,26983910.0
+002290,kr,002290.KQ,,,,,49103998976.0,12400000.0
+002310,kr,002310.KS,Basic Materials,Paper & Paper Products,,-0.05,353721778176.0,38785285.0
+002320,kr,002320.KS,Industrials,Integrated Freight & Logistics,,0.056,288049004544.0,14756609.0
+002350,kr,002350.KS,Consumer Cyclical,Auto Parts,,0.102,746363092992.0,96163426.0
+002355,kr,002355.KS,Consumer Cyclical,Auto Parts,,0.102,722420629504.0,6500000.0
+002360,kr,002360.KS,Basic Materials,Chemicals,,-0.307,44308045824.0,108598149.0
+002380,kr,002380.KS,Basic Materials,Chemicals,,-0.007,3794752241664.0,7354171.0
+002390,kr,002390.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.121,138353688576.0,12990956.0
+002410,kr,002410.KS,Industrials,Engineering & Construction,,-0.449,53169524736.0,27477790.0
+002420,kr,002420.KS,Communication Services,Entertainment,,-0.022,34028703744.0,5969948.0
+002450,kr,002450.KS,Technology,Electronic Components,,-0.033,89184256000.0,76030915.0
+002460,kr,002460.KS,Industrials,Engineering & Construction,,1.216,121811058688.0,9464729.0
+002600,kr,002600.KS,Consumer Defensive,Packaged Foods,,0.16,91139997696.0,600000.0
+002620,kr,002620.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.151,139081187328.0,15351125.0
+002630,kr,002630.KS,Healthcare,Biotechnology,,0.218,64856764416.0,118568126.0
+002680,kr,002680.KQ,Consumer Defensive,Farm Products,,-0.077,23975987200.0,31016799.0
+002690,kr,002690.KS,Basic Materials,Steel,,0.044,28554907648.0,18973360.0
+002700,kr,002700.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,,94843650048.0,69228947.0
+002710,kr,002710.KS,Basic Materials,Steel,,0.014,358865502208.0,26213697.0
+002720,kr,002720.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.151,101507072000.0,20362502.0
+002760,kr,002760.KS,Basic Materials,Specialty Chemicals,,-0.055,73317597184.0,59900000.0
+002780,kr,002780.KS,Industrials,Engineering & Construction,,0.359,111243264000.0,145413614.0
+002785,kr,002785.KS,Industrials,Engineering & Construction,,0.359,501987082240.0,857145.0
+002787,kr,002787.KS,Industrials,Engineering & Construction,,0.359,1201837703168.0,294808.0
+002790,kr,002790.KS,Consumer Defensive,Household & Personal Products,,0.038,2409685843968.0,76272711.0
+002795,kr,002795.KS,Consumer Defensive,Household & Personal Products,,0.038,2507719573504.0,13473506.0
+002800,kr,002800.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.117,85561622528.0,15170500.0
+002810,kr,002810.KS,Industrials,Industrial Distribution,,-0.033,339934248960.0,17806927.0
+002820,kr,002820.KS,Basic Materials,Lumber & Wood Production,,-0.14,28227897344.0,12063204.0
+002840,kr,002840.KS,Basic Materials,Chemicals,,0.065,639477874688.0,4577508.0
+002870,kr,002870.KS,Consumer Cyclical,Packaging & Containers,,0.028,35574992896.0,27706380.0
+002880,kr,002880.KS,Consumer Cyclical,Auto Parts,,0.225,44424019968.0,46762127.0
+002900,kr,002900.KS,Industrials,Farm & Heavy Construction Machinery,,0.19,261230755840.0,38080285.0
+002920,kr,002920.KS,Consumer Cyclical,Auto Parts,,-0.059,51807948800.0,25647500.0
+002960,kr,002960.KS,Energy,Oil & Gas Refining & Marketing,,0.067,692900003840.0,1300000.0
+002990,kr,002990.KS,Industrials,Engineering & Construction,,0.352,190940594176.0,35938529.0
+002995,kr,002995.KS,Industrials,Engineering & Construction,,0.352,524586647552.0,289829.0
+003000,kr,003000.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.123,591001354240.0,98664671.0
+003010,kr,003010.KS,Industrials,Industrial Distribution,,-0.138,55155195904.0,10138823.0
+003030,kr,003030.KS,Basic Materials,Steel,,0.073,597584183296.0,4040461.0
+003060,kr,003060.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.453,54134947840.0,197572806.0
+003070,kr,003070.KS,Industrials,Engineering & Construction,,-0.139,276513619968.0,25349469.0
+003075,kr,003075.KS,Industrials,Engineering & Construction,,-0.139,397523386368.0,734743.0
+003080,kr,003080.KS,Basic Materials,Agricultural Inputs,,-0.064,51947429888.0,19588021.0
+003090,kr,003090.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.051,989555261440.0,40890710.0
+003100,kr,003100.KQ,,,,,135235002368.0,6290000.0
+003120,kr,003120.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.119,162894577664.0,6815673.0
+003160,kr,003160.KS,Technology,Semiconductor Equipment & Materials,,1.01,819528204288.0,26016769.0
+003200,kr,003200.KS,Consumer Cyclical,Textile Manufacturing,,0.037,271139192832.0,21199313.0
+003220,kr,003220.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.082,224408109056.0,21433439.0
+003230,kr,003230.KS,Consumer Defensive,Packaged Foods,,0.44,8196482662400.0,7458128.0
+003240,kr,003240.KS,Basic Materials,Chemicals,,-0.154,942626701312.0,841631.0
+003280,kr,003280.KS,Industrials,Marine Shipping,,-0.155,580239622144.0,240264842.0
+003300,kr,003300.KS,Basic Materials,Building Materials,,0.026,543558369280.0,30831444.0
+003310,kr,003310.KQ,Consumer Defensive,Packaged Foods,,-0.021,147586105344.0,35392350.0
+003350,kr,003350.KS,Consumer Defensive,Household & Personal Products,,-0.188,174000340992.0,3625007.0
+003380,kr,003380.KQ,Consumer Defensive,Packaged Foods,,0.066,1500740059136.0,97261181.0
+003460,kr,003460.KS,Financial Services,Capital Markets,,0.225,223131566080.0,45756005.0
+003465,kr,003465.KS,Financial Services,Capital Markets,,0.225,217555075072.0,14877570.0
+003470,kr,003470.KS,Financial Services,Capital Markets,,0.035,1025402470400.0,192680103.0
+003475,kr,003475.KS,Financial Services,Capital Markets,,0.035,970664116224.0,12811370.0
+003480,kr,003480.KS,Industrials,Engineering & Construction,,-0.101,123794694144.0,26089504.0
+003490,kr,003490.KS,Industrials,Airlines,,0.289,9030153011200.0,368220610.0
+003495,kr,003495.KS,Industrials,Airlines,,0.289,8660820951040.0,1110791.0
+003520,kr,003520.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.047,336156327936.0,182892454.0
+003530,kr,003530.KS,Financial Services,Capital Markets,,0.073,1608944189440.0,213870388.0
+003535,kr,003535.KS,Financial Services,Capital Markets,,0.073,1816526323712.0,4200000.0
+003540,kr,003540.KS,Financial Services,Capital Markets,,-0.215,2709412904960.0,38020285.0
+003545,kr,003545.KS,Financial Services,Capital Markets,,-0.215,2065555259392.0,21150000.0
+003547,kr,003547.KS,Financial Services,Capital Markets,,-0.215,2048393216000.0,8820000.0
+003550,kr,003550.KS,Technology,Consumer Electronics,,0.027,13970810339328.0,151192004.0
+003555,kr,003555.KS,Technology,Consumer Electronics,,0.027,12443908571136.0,3011199.0
+003570,kr,003570.KS,Industrials,Aerospace & Defense,,0.167,1207505518592.0,23630243.0
+003580,kr,003580.KS,Industrials,Conglomerates,,0.354,98860564480.0,50310718.0
+003610,kr,003610.KS,Consumer Cyclical,Textile Manufacturing,,0.1,169823125504.0,32163471.0
+003620,kr,003620.KS,Consumer Cyclical,Auto Manufacturers,,0.354,728549687296.0,202374912.0
+003650,kr,003650.KS,Energy,Oil & Gas Refining & Marketing,,0.109,179741900800.0,1512979.0
+003670,kr,003670.KS,Industrials,Electrical Equipment & Parts,,-0.052,17033194373120.0,88946184.0
+003680,kr,003680.KS,Consumer Defensive,Packaged Foods,,0.004,28748599296.0,5648055.0
+003690,kr,003690.KS,Financial Services,Insurance - Reinsurance,,-0.128,2330950369280.0,176721031.0
+003720,kr,003720.KS,Consumer Cyclical,Packaging & Containers,,0.472,241990991872.0,32923945.0
+003780,kr,003780.KS,Consumer Cyclical,Auto Parts,,-0.142,78649999360.0,13000000.0
+003800,kr,003800.KQ,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,0.032,356296884224.0,10556945.0
+003830,kr,003830.KS,Consumer Cyclical,Textile Manufacturing,,-0.022,134959341568.0,1081405.0
+003850,kr,003850.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.033,810167894016.0,84480489.0
+003920,kr,003920.KS,Consumer Defensive,Packaged Foods,,-0.021,433263083520.0,5863214.0
+003925,kr,003925.KS,Consumer Defensive,Packaged Foods,,-0.021,435005227008.0,2000000.0
+003960,kr,003960.KS,Consumer Defensive,Packaged Foods,,0.473,302187577344.0,8940461.0
+004000,kr,004000.KS,Basic Materials,Chemicals,,0.055,1316798988288.0,25470000.0
+004020,kr,004020.KS,Basic Materials,Steel,,0.02,4926387781632.0,131545739.0
+004060,kr,004060.KS,Consumer Cyclical,Apparel Manufacturing,,-0.008,104904564736.0,197933130.0
+004080,kr,004080.KS,Healthcare,Medical Devices,,0.011,129720000512.0,9348502.0
+004090,kr,004090.KS,Basic Materials,Building Materials,,-0.021,263590821888.0,12642246.0
+004100,kr,004100.KS,Consumer Cyclical,Auto Parts,,0.076,114917277696.0,36423860.0
+004105,kr,004105.KS,Consumer Cyclical,Auto Parts,,0.076,53638356992.0,36423900.0
+004140,kr,004140.KS,Industrials,Integrated Freight & Logistics,,0.102,126656241664.0,47794806.0
+004150,kr,004150.KS,Basic Materials,Paper & Paper Products,,-0.035,134567313408.0,41026620.0
+004170,kr,004170.KS,Consumer Cyclical,Department Stores,,0.062,2919637712896.0,8767681.0
+004250,kr,004250.KS,Consumer Cyclical,Packaging & Containers,,0.001,145437179904.0,32911340.0
+004255,kr,004255.KS,Consumer Cyclical,Packaging & Containers,,0.001,130887409664.0,5211121.0
+004270,kr,004270.KS,Technology,Consumer Electronics,,-0.04,23961702400.0,31322487.0
+004310,kr,004310.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.05,245414199296.0,26135698.0
+004360,kr,004360.KS,Industrials,Integrated Freight & Logistics,,-0.058,334926020608.0,18330870.0
+004365,kr,004365.KS,Industrials,Integrated Freight & Logistics,,-0.058,291892199424.0,3689250.0
+004370,kr,004370.KS,Consumer Defensive,Packaged Foods,,0.024,2268825387008.0,6082642.0
+004380,kr,004380.KS,Technology,Semiconductor Equipment & Materials,,-0.33,206171996160.0,20700000.0
+004410,kr,004410.KS,Consumer Defensive,Packaged Foods,,-0.03,86486769664.0,390174986.0
+004415,kr,004415.KS,Consumer Defensive,Packaged Foods,,-0.03,474410975232.0,2224500.0
+004430,kr,004430.KS,Basic Materials,Specialty Chemicals,,-0.062,210480005120.0,24000000.0
+004440,kr,004440.KS,Basic Materials,Building Materials,,0.02,75118485504.0,12731947.0
+004450,kr,004450.KS,Consumer Cyclical,Packaging & Containers,,-0.061,50256420864.0,1798083.0
+004490,kr,004490.KS,Industrials,Electrical Equipment & Parts,,0.045,811707793408.0,13350457.0
+004540,kr,004540.KS,Basic Materials,Paper & Paper Products,,-0.058,72355856384.0,37239246.0
+004545,kr,004545.KS,Basic Materials,Paper & Paper Products,,-0.058,59000209408.0,37239200.0
+004560,kr,004560.KS,Basic Materials,Steel,,0.025,273699700736.0,15078811.0
+004590,kr,004590.KQ,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.038,71924998144.0,15000000.0
+004650,kr,004650.KQ,Consumer Defensive,Beverages - Wineries & Distilleries,,-0.186,72686821376.0,7587351.0
+004690,kr,004690.KS,Utilities,Utilities - Regulated Gas,,-0.044,481760313344.0,3424025.0
+004700,kr,004700.KS,Consumer Cyclical,Auto Parts,,-0.233,247994023936.0,3552923.0
+004710,kr,004710.KS,Technology,Electronic Components,,0.022,168397881344.0,31417517.0
+004720,kr,004720.KS,Healthcare,Drug Manufacturers - General,,0.009,84692164608.0,21912592.0
+004770,kr,004770.KS,Technology,Electronic Components,,-0.206,57522053120.0,35507438.0
+004780,kr,004780.KQ,Consumer Cyclical,Packaging & Containers,,0.031,60432154624.0,15903199.0
+004800,kr,004800.KS,Industrials,Conglomerates,,0.06,2225113137152.0,16717604.0
+004830,kr,004830.KS,Consumer Cyclical,Textile Manufacturing,,0.133,74997891072.0,13778910.0
+004835,kr,004835.KS,Consumer Cyclical,Textile Manufacturing,,0.133,92239134720.0,1392000.0
+004840,kr,004840.KS,Consumer Cyclical,Auto Parts,,0.151,110045200384.0,19272364.0
+004870,kr,004870.KS,Basic Materials,Building Materials,,0.598,39267557376.0,113162985.0
+004890,kr,004890.KS,Basic Materials,Steel,,-0.079,83519512576.0,2141526.0
+004910,kr,004910.KS,Basic Materials,Specialty Chemicals,,-0.157,49228222464.0,10234558.0
+004920,kr,004920.KS,Technology,Information Technology Services,,0.084,54371450880.0,50065793.0
+004960,kr,004960.KS,Industrials,Engineering & Construction,,-0.228,151460495360.0,11570702.0
+004970,kr,004970.KS,Consumer Defensive,Packaged Foods,,-0.02,149799649280.0,15785000.0
+004980,kr,004980.KS,Basic Materials,Building Materials,,0.215,236178587648.0,24115097.0
+004985,kr,004985.KS,Basic Materials,Building Materials,,0.215,269382041600.0,735645.0
+004990,kr,004990.KS,Consumer Defensive,Confectioners,,0.003,2167406723072.0,70805300.0
+005010,kr,005010.KS,Basic Materials,Steel,,-0.132,276726284288.0,56188075.0
+005030,kr,005030.KS,,,,,0.0,78782988.0
+005070,kr,005070.KS,Basic Materials,Specialty Chemicals,,1.501,1576201355264.0,32498996.0
+005090,kr,005090.KS,Industrials,Engineering & Construction,,0.106,883163922432.0,14407242.0
+005110,kr,005110.KS,,,,,0.0,21106407.0
+005160,kr,005160.KQ,Basic Materials,Steel,,-0.146,146844581888.0,51524411.0
+005180,kr,005180.KS,Consumer Defensive,Packaged Foods,,0.005,687007924224.0,8841801.0
+005250,kr,005250.KS,Healthcare,Biotechnology,,0.208,653223723008.0,44934190.0
+005257,kr,005257.KS,Healthcare,Biotechnology,,0.208,1088713850880.0,240657.0
+005290,kr,005290.KQ,Basic Materials,Chemicals,,0.053,2570724835328.0,51414494.0
+005300,kr,005300.KS,Consumer Defensive,Beverages - Non-Alcoholic,,0.013,1229627981824.0,9278884.0
+005305,kr,005305.KS,Consumer Defensive,Beverages - Non-Alcoholic,,0.013,1333505032192.0,775310.0
+005320,kr,005320.KS,Consumer Cyclical,Apparel Manufacturing,,-0.318,34909405184.0,67262827.0
+005360,kr,005360.KS,Consumer Cyclical,Specialty Retail,,0.011,33693900800.0,18897307.0
+005380,kr,005380.KS,Consumer Cyclical,Auto Manufacturers,,,136655725920256.0,202006914.0
+005385,kr,005385.KS,Consumer Cyclical,Auto Manufacturers,,,93362371690496.0,21633818.0
+005387,kr,005387.KS,Consumer Cyclical,Auto Manufacturers,,,90782606295040.0,34329160.0
+005389,kr,005389.KS,Consumer Cyclical,Auto Manufacturers,,,88515584983040.0,2326726.0
+005420,kr,005420.KS,Basic Materials,Specialty Chemicals,,-0.088,557434142720.0,38364359.0
+005430,kr,005430.KS,Industrials,Airports & Air Services,,0.062,182575202304.0,3058211.0
+005440,kr,005440.KS,Consumer Defensive,Food Distribution,,-0.042,2243462955008.0,155904301.0
+005490,kr,005490.KS,Basic Materials,Steel,,-0.054,25748874199040.0,75620779.0
+005500,kr,005500.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.015,225297907712.0,12257775.0
+005610,kr,005610.KS,Consumer Defensive,Packaged Foods,,0.021,420661067776.0,8105223.0
+005670,kr,005670.KQ,Consumer Defensive,Packaged Foods,,0.139,55909564416.0,9428257.0
+005680,kr,005680.KS,Technology,Electronic Components,,-0.1,241340661760.0,19003202.0
+005690,kr,005690.KS,Healthcare,Biotechnology,,-0.582,970864984064.0,60004014.0
+005710,kr,005710.KQ,Consumer Cyclical,Auto Parts,,0.151,251271512064.0,20037600.0
+005720,kr,005720.KS,Consumer Cyclical,Auto Parts,,0.095,355039019008.0,48485690.0
+005725,kr,005725.KS,Consumer Cyclical,Auto Parts,,0.095,269606436864.0,3420600.0
+005740,kr,005740.KS,Consumer Defensive,Confectioners,,0.022,100337057792.0,14382735.0
+005745,kr,005745.KS,Consumer Defensive,Confectioners,,0.022,110804410368.0,570627.0
+005750,kr,005750.KS,Industrials,Building Products & Equipment,,0.017,86374146048.0,16420940.0
+005800,kr,005800.KS,Consumer Cyclical,Apparel Manufacturing,,-0.094,149130002432.0,9000000.0
+005810,kr,005810.KS,Basic Materials,Copper,,-0.061,530620547072.0,13728863.0
+005820,kr,005820.KS,Consumer Cyclical,Packaging & Containers,,0.117,32251095040.0,2056830.0
+005830,kr,005830.KS,Financial Services,Insurance - Property & Casualty,,-0.063,10627694198784.0,60043469.0
+005850,kr,005850.KS,Consumer Cyclical,Auto Parts,,0.093,2984394096640.0,46055462.0
+005860,kr,005860.KQ,Consumer Defensive,Packaged Foods,,0.173,171208998912.0,39403685.0
+005870,kr,005870.KS,Technology,Communication Equipment,,0.968,108651069440.0,13090490.0
+005880,kr,005880.KS,Industrials,Marine Shipping,,-0.241,724567719936.0,322747340.0
+005930,kr,005930.KS,Technology,Consumer Electronics,,0.238,1240936981987328.0,5876745450.0
+005935,kr,005935.KS,Technology,Consumer Electronics,,0.238,1254013681008640.0,809337676.0
+005940,kr,005940.KS,Financial Services,Capital Markets,,0.163,12006890405888.0,356344369.0
+005945,kr,005945.KS,Financial Services,Capital Markets,,0.163,10746840743936.0,18870968.0
+005950,kr,005950.KS,Basic Materials,Chemicals,,-0.073,206485209088.0,25650336.0
+005960,kr,005960.KS,Industrials,Engineering & Construction,,-0.006,184670437376.0,22974525.0
+005965,kr,005965.KS,Industrials,Engineering & Construction,,-0.006,438476308480.0,225280.0
+005990,kr,005990.KQ,Consumer Defensive,Packaged Foods,,0.006,137030500352.0,12356222.0
+006040,kr,006040.KS,Consumer Defensive,Food Distribution,,0.106,1699628974080.0,44146210.0
+006050,kr,006050.KQ,,,,,43724865536.0,33895243.0
+006060,kr,006060.KS,Consumer Cyclical,Footwear & Accessories,,-0.178,162999664640.0,48656618.0
+006090,kr,006090.KS,Consumer Defensive,Packaged Foods,,0.049,77831798784.0,9422736.0
+006110,kr,006110.KS,Basic Materials,Aluminum,,0.207,473723699200.0,14711916.0
+006120,kr,006120.KS,Energy,Oil & Gas Refining & Marketing,,0.188,1016338251776.0,17115218.0
+006125,kr,006125.KS,Energy,Oil & Gas Refining & Marketing,,0.188,1035263934464.0,1230238.0
+006140,kr,006140.KQ,Technology,Electronic Components,,0.158,100784701440.0,14865000.0
+006200,kr,006200.KS,Technology,Semiconductors,,-0.158,32804204544.0,43855887.0
+006220,kr,006220.KS,Financial Services,Banks - Regional,,0.054,519730135040.0,37798557.0
+006260,kr,006260.KS,Industrials,Electrical Equipment & Parts,,0.139,7044665442304.0,27734903.0
+006280,kr,006280.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.311,1734803062784.0,11413178.0
+006340,kr,006340.KS,Industrials,Electrical Equipment & Parts,,0.162,473238470656.0,77074671.0
+006345,kr,006345.KS,Industrials,Electrical Equipment & Parts,,0.162,121777553408.0,68107200.0
+006360,kr,006360.KS,Industrials,Engineering & Construction,,0.032,1948200206336.0,84888895.0
+006370,kr,006370.KS,Consumer Cyclical,Department Stores,,-0.127,40424665088.0,8721611.0
+006380,kr,006380.KS,,,,,0.0,168996893.0
+006400,kr,006400.KS,Industrials,Electrical Equipment & Parts,,0.028,31202025144320.0,77254139.0
+006405,kr,006405.KS,Industrials,Electrical Equipment & Parts,,0.028,32546456862720.0,1439496.0
+006490,kr,006490.KS,Communication Services,Telecom Services,,-0.022,53270388736.0,123597191.0
+006570,kr,006570.KS,Consumer Defensive,Household & Personal Products,,-0.025,31786035200.0,15064472.0
+006620,kr,006620.KQ,,,,,149272428544.0,27042108.0
+006650,kr,006650.KS,Basic Materials,Chemicals,,0.193,788687945728.0,6176100.0
+006660,kr,006660.KS,Consumer Cyclical,Auto Parts,,0.117,95822741504.0,7860766.0
+006730,kr,006730.KQ,Consumer Cyclical,Lodging,,0.558,951196188672.0,63667752.0
+006740,kr,006740.KS,Basic Materials,Paper & Paper Products,,0.07,30227523584.0,54660985.0
+006800,kr,006800.KS,Financial Services,Capital Markets,,13.817,41133568688128.0,437927964.0
+006805,kr,006805.KS,Financial Services,Capital Markets,,13.817,31848811986944.0,9855790.0
+006840,kr,006840.KS,Basic Materials,Chemicals,,-0.143,102798499840.0,13045495.0
+006880,kr,006880.KS,Industrials,Conglomerates,,0.183,75527905280.0,10789701.0
+006890,kr,006890.KS,Utilities,Utilities - Regulated Gas,,-0.204,101098381312.0,11333899.0
+006910,kr,006910.KQ,,,,,598411771904.0,48929824.0
+006920,kr,006920.KQ,Basic Materials,Building Materials,,-0.099,65599008768.0,10092155.0
+006980,kr,006980.KS,Consumer Defensive,Packaged Foods,,0.064,55955279872.0,2566756.0
+007070,kr,007070.KS,Consumer Cyclical,Department Stores,,0.053,1587746308096.0,83565590.0
+007110,kr,007110.KS,Industrials,Building Products & Equipment,,0.213,134803906560.0,77429010.0
+007120,kr,007120.KS,Industrials,Security & Protection Services,,1.968,47350956032.0,27323114.0
+007160,kr,007160.KS,Consumer Defensive,Packaged Foods,,0.07,268999999488.0,5000000.0
+007210,kr,007210.KS,Industrials,Building Products & Equipment,,0.043,106365583360.0,55981885.0
+007280,kr,007280.KS,Basic Materials,Steel,,0.036,79697436672.0,57295067.0
+007310,kr,007310.KS,Consumer Defensive,Packaged Foods,,0.057,1265672388608.0,3439327.0
+007330,kr,007330.KQ,,,,,133586567168.0,11718120.0
+007340,kr,007340.KS,Consumer Cyclical,Auto Parts,,0.083,1440285196288.0,51762270.0
+007370,kr,007370.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.075,57324273664.0,12354369.0
+007390,kr,007390.KQ,,,,,1202358190080.0,64435056.0
+007460,kr,007460.KS,Industrials,Conglomerates,,-0.034,96373891072.0,305948867.0
+007530,kr,007530.KQ,,,,,49505476608.0,20372625.0
+007540,kr,007540.KS,Consumer Defensive,Packaged Foods,,0.043,115687866368.0,2015468.0
+007570,kr,007570.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.004,233920774144.0,17924965.0
+007575,kr,007575.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.004,319633784832.0,18165500.0
+007590,kr,007590.KS,Basic Materials,Agricultural Inputs,,0.001,73813860352.0,12405691.0
+007610,kr,007610.KS,,,,,0.0,16969000.0
+007660,kr,007660.KS,Technology,Electronic Components,,0.435,7744672235520.0,73409219.0
+007680,kr,007680.KQ,Industrials,Conglomerates,,-0.622,55981600768.0,13360764.0
+007690,kr,007690.KS,Basic Materials,Chemicals,,0.143,311684005888.0,8586336.0
+007700,kr,007700.KS,Consumer Cyclical,Apparel Manufacturing,,0.051,718104625152.0,39069893.0
+007720,kr,007720.KQ,Industrials,Conglomerates,,0.329,52416233472.0,100800450.0
+007770,kr,007770.KQ,Basic Materials,Specialty Chemicals,,-0.055,26991900672.0,3510000.0
+007810,kr,007810.KS,Technology,Electronic Components,,0.101,1433693323264.0,23982624.0
+007815,kr,007815.KS,Technology,Electronic Components,,0.101,1240257921024.0,2964690.0
+007820,kr,007820.KQ,,,,,109232570368.0,19717070.0
+007860,kr,007860.KS,Consumer Cyclical,Auto Parts,,0.056,218809450496.0,21707286.0
+007980,kr,007980.KS,Consumer Cyclical,Apparel Manufacturing,,-0.161,90852360192.0,46686721.0
+008040,kr,008040.KS,Consumer Defensive,Packaged Foods,,-0.018,163215687680.0,140946194.0
+008060,kr,008060.KS,Technology,Electronic Components,,0.152,432078290944.0,32570150.0
+008110,kr,008110.KS,,,,,0.0,6990447.0
+008250,kr,008250.KS,Basic Materials,Lumber & Wood Production,,-0.033,40232873984.0,10224364.0
+008260,kr,008260.KS,Basic Materials,Steel,,0.157,99783057408.0,28187304.0
+008290,kr,008290.KQ,,,,,14903362560.0,39955397.0
+008350,kr,008350.KS,Industrials,Metal Fabrication,,-0.117,173378551808.0,129079090.0
+008355,kr,008355.KS,Industrials,Metal Fabrication,,-0.117,1716965212160.0,307890.0
+008370,kr,008370.KQ,Consumer Cyclical,Textile Manufacturing,,0.106,50515128320.0,10491200.0
+008420,kr,008420.KS,Basic Materials,Steel,,-0.134,40199467008.0,18567884.0
+008470,kr,008470.KQ,Industrials,Specialty Industrial Machinery,,0.09,30145155072.0,8081811.0
+008490,kr,008490.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.111,229609684992.0,11119113.0
+008500,kr,008500.KS,Consumer Cyclical,Textile Manufacturing,,-0.185,17103905792.0,5908085.0
+008600,kr,008600.KS,Consumer Cyclical,Apparel Manufacturing,,-0.126,1730523904.0,6579939.0
+008700,kr,008700.KS,Technology,Consumer Electronics,,-0.285,93316808704.0,77121330.0
+008730,kr,008730.KS,Consumer Cyclical,Packaging & Containers,,0.094,607599984640.0,24800000.0
+008770,kr,008770.KS,Consumer Cyclical,Specialty Retail,,0.103,1608777596928.0,37113121.0
+008775,kr,008775.KS,Consumer Cyclical,Specialty Retail,,0.103,1597131325440.0,740472.0
+008830,kr,008830.KQ,Consumer Cyclical,Auto Parts,,0.055,192782303232.0,8987520.0
+008870,kr,008870.KS,Consumer Cyclical,Packaging & Containers,,-0.088,39934201856.0,883500.0
+008930,kr,008930.KS,Healthcare,Medical Distribution,,0.071,2539263885312.0,67713706.0
+008970,kr,008970.KS,Basic Materials,Steel,,-0.05,180004569088.0,103749030.0
+009070,kr,009070.KS,Industrials,Integrated Freight & Logistics,,0.181,195899998208.0,30000000.0
+009140,kr,009140.KS,Technology,Electronic Components,,0.745,28460433408.0,1302537.0
+009150,kr,009150.KS,Technology,Electronic Components,,0.164,30294446964736.0,72693696.0
+009155,kr,009155.KS,Technology,Electronic Components,,0.164,29072625238016.0,2853554.0
+009160,kr,009160.KS,Industrials,Specialty Industrial Machinery,,0.598,129607139328.0,25413163.0
+009180,kr,009180.KS,Industrials,Integrated Freight & Logistics,,-0.036,84728889344.0,28149134.0
+009190,kr,009190.KS,Basic Materials,Steel,,0.054,52991627264.0,43187962.0
+009200,kr,009200.KS,Basic Materials,Paper & Paper Products,,-0.119,82386436096.0,41609310.0
+009240,kr,009240.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.028,716303892480.0,16600322.0
+009270,kr,009270.KS,Consumer Cyclical,Apparel Manufacturing,,0.051,126492770304.0,87236393.0
+009290,kr,009290.KS,Consumer Defensive,Packaged Foods,,0.047,333602062336.0,36659569.0
+009300,kr,009300.KQ,,,,,96432799744.0,6103342.0
+009310,kr,009310.KS,Technology,Semiconductors,,0.259,23204773888.0,21788520.0
+009320,kr,009320.KS,Consumer Cyclical,Auto Parts,,0.106,50137862144.0,49299770.0
+009410,kr,009410.KS,Industrials,Engineering & Construction,,-0.198,556430458880.0,297556381.0
+009415,kr,009415.KS,Industrials,Engineering & Construction,,-0.198,728419598336.0,68280000.0
+009420,kr,009420.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.108,2903177691136.0,50754857.0
+009440,kr,009440.KS,Industrials,Pollution & Treatment Controls,,-0.874,17334429696.0,22929141.0
+009450,kr,009450.KS,Industrials,Specialty Industrial Machinery,,-0.052,885964734464.0,14452932.0
+009460,kr,009460.KS,Basic Materials,Paper & Paper Products,,0.095,29714409472.0,59667486.0
+009470,kr,009470.KS,Technology,Electronic Components,,-0.075,269513162752.0,6613820.0
+009520,kr,009520.KQ,,,,,742849773568.0,41639559.0
+009540,kr,009540.KS,Industrials,Aerospace & Defense,,0.214,29081393430528.0,70714630.0
+009580,kr,009580.KS,Basic Materials,Paper & Paper Products,,-0.126,151543971840.0,62363778.0
+009620,kr,009620.KQ,Basic Materials,Aluminum,,-0.032,25568043008.0,16379271.0
+009680,kr,009680.KS,Consumer Cyclical,Auto Parts,,-0.041,242878218240.0,21627624.0
+009730,kr,009730.KQ,,,,,38858616832.0,62675189.0
+009770,kr,009770.KS,Basic Materials,Paper & Paper Products,,0.087,81874051072.0,2499971.0
+009780,kr,009780.KQ,,,,,129008001024.0,17600000.0
+009810,kr,009810.KS,Industrials,Industrial Distribution,,-0.049,31408345088.0,30375577.0
+009830,kr,009830.KS,Technology,Solar,,0.225,8629023408128.0,169348279.0
+009835,kr,009835.KS,Technology,Solar,,0.225,7817787342848.0,2544616.0
+009900,kr,009900.KS,Consumer Cyclical,Auto Parts,,0.152,568776261632.0,52470133.0
+009970,kr,009970.KS,Consumer Cyclical,Apparel Manufacturing,,0.174,2640114352128.0,11604898.0
+010040,kr,010040.KS,Industrials,Specialty Industrial Machinery,,0.019,72468881408.0,35437102.0
+010060,kr,010060.KS,Financial Services,Asset Management,,-0.07,3086189330432.0,18670232.0
+010100,kr,010100.KS,Consumer Cyclical,Auto Parts,,0.062,144030482432.0,30450420.0
+010120,kr,010120.KS,Industrials,Electrical Equipment & Parts,,0.191,22131486228480.0,29706691.0
+010130,kr,010130.KS,Basic Materials,Other Industrial Metals & Mining,,0.396,30057351348224.0,18183516.0
+010140,kr,010140.KS,Industrials,Aerospace & Defense,,0.134,26222417412096.0,854035571.0
+010170,kr,010170.KQ,Technology,Communication Equipment,,-0.014,1064748515328.0,137742368.0
+010240,kr,010240.KQ,,,,,58844286976.0,11102696.0
+010280,kr,010280.KQ,Technology,Information Technology Services,,0.081,75869200384.0,65123774.0
+010400,kr,010400.KS,Industrials,Specialty Industrial Machinery,,0.253,26387408896.0,6740079.0
+010470,kr,010470.KQ,Communication Services,Advertising Agencies,,-0.101,68393418752.0,11651349.0
+010580,kr,010580.KS,Consumer Cyclical,Auto Parts,,0.29,229989990400.0,111106268.0
+010640,kr,010640.KS,Basic Materials,Specialty Chemicals,,-0.053,32084101120.0,11730933.0
+010660,kr,010660.KS,Industrials,Specialty Industrial Machinery,,0.055,128480002048.0,22000000.0
+010690,kr,010690.KS,Consumer Cyclical,Auto Parts,,0.161,445474996224.0,34748441.0
+010770,kr,010770.KS,Industrials,Electrical Equipment & Parts,,0.096,57124175872.0,14388961.0
+010780,kr,010780.KS,Industrials,Engineering & Construction,,-0.31,994290171904.0,29724668.0
+010820,kr,010820.KS,Industrials,Aerospace & Defense,,-0.217,349882810368.0,48594837.0
+010950,kr,010950.KS,Energy,Oil & Gas Refining & Marketing,,-0.014,12980901117952.0,112582792.0
+010955,kr,010955.KS,Energy,Oil & Gas Refining & Marketing,,-0.014,10003665649664.0,3837847.0
+010960,kr,010960.KS,Industrials,Engineering & Construction,,0.182,85812600832.0,21480000.0
+011000,kr,011000.KS,Healthcare,Biotechnology,,-0.429,91931312128.0,85200472.0
+011040,kr,011040.KQ,,,,,148012433408.0,26960370.0
+011070,kr,011070.KS,Technology,Electronic Components,,-0.056,5963456184320.0,23664507.0
+011080,kr,011080.KQ,,,,,20857075712.0,42306441.0
+011090,kr,011090.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.269,26626848768.0,59302561.0
+011150,kr,011150.KS,Consumer Defensive,Packaged Foods,,-0.078,97553702912.0,35931000.0
+011155,kr,011155.KS,Consumer Defensive,Packaged Foods,,-0.078,520286404608.0,200000.0
+011170,kr,011170.KS,Basic Materials,Chemicals,,-0.058,3010734325760.0,42167147.0
+011200,kr,011200.KS,Industrials,Marine Shipping,,-0.238,19996644212736.0,943237970.0
+011210,kr,011210.KS,Consumer Cyclical,Auto Parts,,0.072,2247509409792.0,26597745.0
+011230,kr,011230.KS,Technology,Electronic Components,,-0.065,50113839104.0,19163993.0
+011280,kr,011280.KS,Consumer Cyclical,Packaging & Containers,,0.102,129830584320.0,68839121.0
+011300,kr,011300.KS,Consumer Cyclical,Textile Manufacturing,,0.6,50104745984.0,155604800.0
+011320,kr,011320.KQ,Consumer Cyclical,Auto Parts,,0.149,75833729024.0,19320695.0
+011330,kr,011330.KS,Consumer Cyclical,Footwear & Accessories,,1.092,69353807872.0,93217482.0
+011370,kr,011370.KQ,Industrials,Engineering & Construction,,-0.14,107004239872.0,98894865.0
+011390,kr,011390.KS,Basic Materials,Building Materials,,-0.283,86591995904.0,1056000.0
+011420,kr,011420.KS,Communication Services,Broadcasting,,1.021,48652673024.0,27549644.0
+011500,kr,011500.KS,Basic Materials,Chemicals,,-0.081,341821358080.0,15294020.0
+011560,kr,011560.KQ,Industrials,Engineering & Construction,,0.013,176703438848.0,9849690.0
+011690,kr,011690.KS,Technology,Electronic Components,,0.179,256681312256.0,36668762.0
+011700,kr,011700.KS,Industrials,Specialty Industrial Machinery,,-0.114,164318445568.0,32346151.0
+011760,kr,011760.KS,Industrials,Industrial Distribution,,0.046,309882912768.0,12010966.0
+011780,kr,011780.KS,Basic Materials,Specialty Chemicals,,-0.101,3034959314944.0,22960753.0
+011785,kr,011785.KS,Basic Materials,Specialty Chemicals,,-0.101,2913207582720.0,3023486.0
+011790,kr,011790.KS,Basic Materials,Specialty Chemicals,,0.141,3386417610752.0,34068587.0
+011810,kr,011810.KS,Industrials,Specialty Industrial Machinery,,-0.242,109359579136.0,30980050.0
+011930,kr,011930.KS,Industrials,Building Products & Equipment,,0.116,486522748928.0,203565999.0
+012030,kr,012030.KS,Technology,Information Technology Services,,0.155,358182223872.0,191030533.0
+012160,kr,012160.KS,Basic Materials,Steel,,-0.039,37729349632.0,68103517.0
+012170,kr,012170.KS,Communication Services,Entertainment,,-0.279,25513117696.0,19386868.0
+012200,kr,012200.KS,Industrials,Tools & Accessories,,0.153,223728238592.0,27222829.0
+012205,kr,012205.KS,Industrials,Tools & Accessories,,0.153,170053664768.0,1169079.0
+012210,kr,012210.KQ,Consumer Cyclical,Auto Parts,,,350263771136.0,19766578.0
+012280,kr,012280.KS,Consumer Cyclical,Auto Parts,,0.019,51703582720.0,49524505.0
+012320,kr,012320.KS,Utilities,Utilities - Regulated Gas,,-0.032,195141500928.0,2180352.0
+012330,kr,012330.KS,Consumer Cyclical,Auto Parts,,0.074,36564516208640.0,88228129.0
+012340,kr,012340.KQ,,,,,18319026176.0,51602893.0
+012450,kr,012450.KS,Industrials,Aerospace & Defense,,1.465,74857983246336.0,51448788.0
+012510,kr,012510.KS,Technology,Software - Application,,0.182,3335412252672.0,28028674.0
+012610,kr,012610.KS,Basic Materials,Chemicals,,-0.021,170968203264.0,40999568.0
+012620,kr,012620.KQ,Basic Materials,Steel,,0.138,38059999232.0,4400000.0
+012630,kr,012630.KS,Industrials,Engineering & Construction,,0.161,1232592306176.0,49501701.0
+012690,kr,012690.KS,Consumer Defensive,Household & Personal Products,,-0.032,76960432128.0,36560775.0
+012700,kr,012700.KQ,Energy,Oil & Gas Refining & Marketing,,-0.015,94061084672.0,25594852.0
+012750,kr,012750.KS,Industrials,Security & Protection Services,,0.023,2775820795904.0,33810239.0
+012790,kr,012790.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.0,70282133504.0,11559561.0
+012800,kr,012800.KS,Industrials,Metal Fabrication,,0.139,104485183488.0,76322266.0
+012860,kr,012860.KQ,Consumer Cyclical,Auto Parts,,0.055,291083976704.0,72680144.0
+013000,kr,013000.KS,Basic Materials,Specialty Chemicals,,-0.069,32922318848.0,28702981.0
+013030,kr,013030.KQ,Industrials,Specialty Industrial Machinery,,0.189,445424238592.0,11768144.0
+013120,kr,013120.KQ,Real Estate,Real Estate - Development,,-0.013,265078718464.0,89252100.0
+013310,kr,013310.KQ,Consumer Cyclical,Auto Parts,,0.278,123202519040.0,38803942.0
+013360,kr,013360.KS,Industrials,Engineering & Construction,,0.049,97082712064.0,54024880.0
+013520,kr,013520.KS,Consumer Cyclical,Auto Parts,,0.048,142826455040.0,46905242.0
+013570,kr,013570.KS,Consumer Cyclical,Auto Parts,,0.083,123839340544.0,24669191.0
+013580,kr,013580.KS,Industrials,Engineering & Construction,,-0.109,234731618304.0,8857797.0
+013700,kr,013700.KS,Industrials,Engineering & Construction,,-0.022,78512594944.0,59750830.0
+013720,kr,013720.KQ,,,,,46551068672.0,60771631.0
+013810,kr,013810.KQ,Basic Materials,Building Materials,,0.182,40668930048.0,14655470.0
+013870,kr,013870.KS,Consumer Cyclical,Auto Parts,,0.174,101083086848.0,19072280.0
+013890,kr,013890.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.114,268152684544.0,21925813.0
+013990,kr,013990.KQ,Consumer Cyclical,Apparel Manufacturing,,0.066,136732532736.0,27706694.0
+014100,kr,014100.KQ,Consumer Defensive,Household & Personal Products,,0.04,18939994112.0,11300713.0
+014130,kr,014130.KS,Industrials,Integrated Freight & Logistics,,-0.141,31270000640.0,11800000.0
+014160,kr,014160.KS,Consumer Cyclical,Packaging & Containers,,0.027,106511851520.0,103109249.0
+014190,kr,014190.KQ,Basic Materials,Specialty Chemicals,,-0.054,63357177856.0,35395071.0
+014280,kr,014280.KS,Basic Materials,Steel,,0.06,135704182784.0,26872117.0
+014285,kr,014285.KS,Basic Materials,Steel,,0.06,61519900672.0,21776000.0
+014440,kr,014440.KS,Basic Materials,Chemicals,,0.086,92625002496.0,19500000.0
+014470,kr,014470.KQ,,,,,72718082048.0,53666481.0
+014530,kr,014530.KS,Basic Materials,Specialty Chemicals,,0.015,133330903040.0,33669420.0
+014570,kr,014570.KQ,Healthcare,Drug Manufacturers - General,,-0.031,42521276416.0,10819663.0
+014580,kr,014580.KS,Basic Materials,Building Materials,,0.264,124123947008.0,27583100.0
+014620,kr,014620.KQ,Industrials,Metal Fabrication,,0.422,940130697216.0,26557364.0
+014680,kr,014680.KS,Basic Materials,Chemicals,,0.207,2954685579264.0,10902899.0
+014710,kr,014710.KS,Consumer Defensive,Packaged Foods,,0.316,131721863168.0,17218543.0
+014790,kr,014790.KS,Industrials,Engineering & Construction,,0.35,125311967232.0,37858601.0
+014820,kr,014820.KS,Consumer Cyclical,Packaging & Containers,,0.023,732847538176.0,28991282.0
+014825,kr,014825.KS,Consumer Cyclical,Packaging & Containers,,0.023,755189940224.0,264111.0
+014830,kr,014830.KS,Basic Materials,Chemicals,,0.135,563645054976.0,6638929.0
+014910,kr,014910.KS,Technology,Electronic Components,,-0.169,36798554112.0,20757257.0
+014915,kr,014915.KS,Technology,Electronic Components,,-0.169,93117636608.0,600000.0
+014940,kr,014940.KQ,Industrials,Aerospace & Defense,,0.012,352991477760.0,45547289.0
+014950,kr,014950.KQ,Healthcare,Biotechnology,,0.112,112166379520.0,9171413.0
+014970,kr,014970.KQ,Consumer Cyclical,Packaging & Containers,,-0.019,92211503104.0,14825000.0
+014990,kr,014990.KS,Consumer Cyclical,Apparel Manufacturing,,-0.087,61965742080.0,75109990.0
+015020,kr,015020.KS,Industrials,Conglomerates,,-0.294,18908315648.0,39890959.0
+015230,kr,015230.KS,Consumer Cyclical,Auto Parts,,0.051,162125627392.0,25213940.0
+015260,kr,015260.KS,Technology,Electronic Components,,0.19,33609285632.0,45113138.0
+015360,kr,015360.KS,Utilities,Utilities - Regulated Gas,,0.213,342690791424.0,4439000.0
+015590,kr,015590.KS,Industrials,Specialty Industrial Machinery,,-0.07,122045489152.0,236981541.0
+015710,kr,015710.KQ,,,,,64234016768.0,16597937.0
+015750,kr,015750.KQ,Consumer Cyclical,Auto Parts,,0.123,857109889024.0,79991593.0
+015760,kr,015760.KS,Utilities,Utilities - Regulated Electric,,0.007,31359946981376.0,641964077.0
+015860,kr,015860.KS,Industrials,Electrical Equipment & Parts,,0.335,348570353664.0,45985537.0
+015890,kr,015890.KS,Basic Materials,Chemicals,,0.119,140297994240.0,29228750.0
+016090,kr,016090.KS,Consumer Cyclical,Apparel Manufacturing,,0.109,73110093824.0,44282310.0
+016100,kr,016100.KQ,Consumer Defensive,Household & Personal Products,,0.06,29905735680.0,18335827.0
+016250,kr,016250.KQ,Industrials,Engineering & Construction,,0.298,92267159552.0,5028183.0
+016360,kr,016360.KS,Financial Services,Capital Markets,,0.358,8581730009088.0,89300000.0
+016380,kr,016380.KS,Basic Materials,Steel,,-0.005,553896574976.0,96782356.0
+016450,kr,016450.KS,Consumer Cyclical,Textile Manufacturing,,0.162,194240233472.0,39280127.0
+016580,kr,016580.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.035,158014177280.0,15267070.0
+016590,kr,016590.KS,Basic Materials,Paper & Paper Products,,-0.014,396155846656.0,29652385.0
+016600,kr,016600.KQ,,,,,50436284416.0,174520022.0
+016610,kr,016610.KS,Financial Services,Capital Markets,,0.625,561001857024.0,40128889.0
+016670,kr,016670.KQ,,,,,20185630720.0,4935362.0
+016710,kr,016710.KS,Utilities,Utilities - Regulated Gas,,-0.091,144212574208.0,16041444.0
+016740,kr,016740.KS,Consumer Cyclical,Auto Parts,,0.051,135281844224.0,28360974.0
+016790,kr,016790.KQ,,,,,0.0,188471729.0
+016800,kr,016800.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.136,346771881984.0,8948952.0
+016880,kr,016880.KS,Industrials,Conglomerates,,0.305,164368171008.0,77715446.0
+016920,kr,016920.KQ,,,,,23394752512.0,24574319.0
+017000,kr,017000.KQ,,,,,33418608640.0,11195514.0
+017040,kr,017040.KS,Industrials,Electrical Equipment & Parts,,-0.18,60212617216.0,42195246.0
+017180,kr,017180.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.061,61173846016.0,33428331.0
+017250,kr,017250.KQ,Technology,Electronics & Computer Distribution,,0.022,21095778304.0,20245467.0
+017370,kr,017370.KS,Consumer Cyclical,Auto Parts,,-0.64,91362705408.0,15201781.0
+017390,kr,017390.KS,Utilities,Utilities - Regulated Gas,,0.003,271755919360.0,3932792.0
+017480,kr,017480.KQ,Basic Materials,Steel,,-0.029,70265151488.0,15442890.0
+017510,kr,017510.KQ,,,,,148038664192.0,15246000.0
+017550,kr,017550.KS,Industrials,Farm & Heavy Construction Machinery,,-0.089,119057539072.0,62399130.0
+017650,kr,017650.KQ,,,,,74348199936.0,8335000.0
+017670,kr,017670.KS,Communication Services,Telecom Services,,-0.048,16037565169664.0,212982275.0
+017800,kr,017800.KS,Industrials,Specialty Industrial Machinery,,-0.139,3191687610368.0,36105062.0
+017810,kr,017810.KS,Consumer Defensive,Packaged Foods,,0.066,446039556096.0,36893263.0
+017860,kr,017860.KS,Basic Materials,Specialty Chemicals,,-0.017,369409130496.0,17760054.0
+017890,kr,017890.KQ,Basic Materials,Chemicals,,0.009,234880745472.0,20248339.0
+017900,kr,017900.KS,Technology,Semiconductors,,-0.014,103749353472.0,50363763.0
+017940,kr,017940.KS,Energy,Oil & Gas Refining & Marketing,,-0.132,559095349248.0,5781751.0
+017960,kr,017960.KS,Basic Materials,Chemicals,,0.296,2394986119168.0,50367746.0
+018000,kr,018000.KQ,Industrials,Specialty Industrial Machinery,,0.931,255193022464.0,221714182.0
+018120,kr,018120.KQ,,,,,118722682880.0,6617764.0
+018250,kr,018250.KS,Consumer Defensive,Household & Personal Products,,0.024,362772987904.0,25192568.0
+018260,kr,018260.KS,Technology,Information Technology Services,,-0.029,12499789283328.0,77350186.0
+018290,kr,018290.KQ,Industrials,Business Equipment & Supplies,,0.058,524048138240.0,34636358.0
+018310,kr,018310.KQ,Basic Materials,Aluminum,,-0.239,268110118912.0,14215807.0
+018470,kr,018470.KS,Basic Materials,Aluminum,,0.029,154490699776.0,126631721.0
+018500,kr,018500.KS,Consumer Cyclical,Auto Parts,,0.047,75352621056.0,46744805.0
+018620,kr,018620.KQ,,,,,19469953024.0,28887171.0
+018670,kr,018670.KS,Energy,Oil & Gas Refining & Marketing,,0.125,2085690671104.0,8990046.0
+018680,kr,018680.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.018,31655051264.0,11659319.0
+018700,kr,018700.KQ,Communication Services,Entertainment,,-0.072,18590885888.0,34427568.0
+018880,kr,018880.KS,Consumer Cyclical,Auto Parts,,0.082,4196875894784.0,1026130982.0
+019010,kr,019010.KQ,,,,,182507995136.0,40200000.0
+019170,kr,019170.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.122,565935341568.0,49271029.0
+019175,kr,019175.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.122,856079728640.0,1991230.0
+019180,kr,019180.KS,Consumer Cyclical,Auto Parts,,0.699,159480004608.0,18000000.0
+019210,kr,019210.KQ,Industrials,Tools & Accessories,,0.074,439817043968.0,33573819.0
+019490,kr,019490.KS,Industrials,Security & Protection Services,,0.551,41342119936.0,76417966.0
+019540,kr,019540.KQ,,,,,87603027968.0,13213126.0
+019550,kr,019550.KQ,,,,,110060257280.0,161142403.0
+019570,kr,019570.KQ,,,,,27781378048.0,67104778.0
+019660,kr,019660.KQ,,,,,34159478784.0,13942644.0
+019680,kr,019680.KS,Consumer Defensive,Education & Training Services,,-0.045,128002670592.0,67137850.0
+019685,kr,019685.KS,Consumer Defensive,Education & Training Services,,-0.045,129129226240.0,13774077.0
+019770,kr,019770.KQ,Consumer Cyclical,Auto Parts,,0.496,45551501312.0,11650000.0
+019990,kr,019990.KQ,,,,,88325718016.0,9569417.0
+020000,kr,020000.KS,Consumer Cyclical,Apparel Manufacturing,,-0.015,511152455680.0,21476994.0
+020120,kr,020120.KS,Communication Services,Internet Content & Information,,0.049,128238641152.0,37063192.0
+020150,kr,020150.KS,Industrials,Electrical Equipment & Parts,,-0.32,1953231798272.0,52365463.0
+020180,kr,020180.KQ,,,,,38774775808.0,38428915.0
+020400,kr,020400.KQ,Industrials,Metal Fabrication,,0.226,21367412736.0,3189166.0
+020560,kr,020560.KS,Industrials,Airlines,,-0.228,1441357889536.0,205908268.0
+020710,kr,020710.KQ,,,,,74226941952.0,18863265.0
+020760,kr,020760.KS,Technology,Electronic Components,,-0.336,46408720384.0,51450907.0
+021040,kr,021040.KQ,,,,,25053808640.0,18316726.0
+021045,kr,021045.KQ,,,,,50943840256.0,799162.0
+021050,kr,021050.KS,Industrials,Metal Fabrication,,0.118,63141208064.0,47474590.0
+021080,kr,021080.KQ,Financial Services,Asset Management,,1.931,144882909184.0,45994575.0
+021240,kr,021240.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,0.14,5222635667456.0,70614213.0
+021320,kr,021320.KQ,,,,,131839328256.0,19945436.0
+021650,kr,021650.KQ,Industrials,Specialty Business Services,,-0.036,37862707200.0,16250089.0
+021820,kr,021820.KS,Consumer Cyclical,Auto Parts,,0.185,161599995904.0,10000000.0
+021880,kr,021880.KQ,,,,,50287706112.0,212184408.0
+022100,kr,022100.KS,Technology,Information Technology Services,,-0.232,4691315392512.0,151822519.0
+022220,kr,022220.KQ,Industrials,Building Products & Equipment,,0.37,27917279232.0,51794579.0
+023000,kr,023000.KS,Consumer Cyclical,Auto Parts,,0.095,92991496192.0,39739956.0
+023150,kr,023150.KS,Consumer Defensive,Beverages - Wineries & Distilleries,,-0.113,26947852288.0,6408526.0
+023160,kr,023160.KQ,,,,,801884471296.0,25867242.0
+023350,kr,023350.KS,Industrials,Engineering & Construction,,0.227,46349443072.0,10403915.0
+023410,kr,023410.KQ,Financial Services,Capital Markets,,-0.015,297458466816.0,68538817.0
+023440,kr,023440.KQ,Basic Materials,Steel,,0.702,62208466944.0,88616044.0
+023450,kr,023450.KS,Basic Materials,Chemicals,,0.108,103973806080.0,3386769.0
+023530,kr,023530.KS,Consumer Cyclical,Department Stores,,0.013,2725289656320.0,28270640.0
+023590,kr,023590.KS,Technology,Information Technology Services,,0.238,2101446311936.0,43150849.0
+023600,kr,023600.KQ,Consumer Cyclical,Packaging & Containers,,0.033,154960347136.0,16008300.0
+023760,kr,023760.KQ,,,,,325406195712.0,312890575.0
+023770,kr,023770.KQ,,,,,25318580224.0,8946495.0
+023790,kr,023790.KQ,,,,,23457853440.0,26122331.0
+023800,kr,023800.KS,Consumer Cyclical,Auto Parts,,0.13,107344445440.0,15809197.0
+023810,kr,023810.KS,Consumer Cyclical,Auto Parts,,0.118,80999997440.0,10000000.0
+023900,kr,023900.KQ,Consumer Defensive,Beverages - Brewers,,0.09,131796000768.0,12600000.0
+023910,kr,023910.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.024,174636007424.0,5880000.0
+023960,kr,023960.KS,Industrials,Engineering & Construction,,-0.09,53478576128.0,38035973.0
+024060,kr,024060.KQ,,,,,383150522368.0,14540817.0
+024070,kr,024070.KS,Basic Materials,Chemicals,,0.217,29503393792.0,15326438.0
+024090,kr,024090.KS,Basic Materials,Steel,,0.138,104577286144.0,8607184.0
+024110,kr,024110.KS,Financial Services,Banks - Regional,,0.023,18540151177216.0,797425867.0
+024120,kr,024120.KQ,Consumer Cyclical,Auto Parts,,-0.014,41514999808.0,11500000.0
+024720,kr,024720.KS,Consumer Defensive,Household & Personal Products,,0.016,314839662592.0,34296259.0
+024740,kr,024740.KQ,,,,,96813850624.0,32597255.0
+024800,kr,024800.KQ,Industrials,Integrated Freight & Logistics,,-0.609,131257786368.0,33398928.0
+024830,kr,024830.KQ,Consumer Cyclical,Auto Parts,,-0.113,95106498560.0,8350000.0
+024840,kr,024840.KQ,Technology,Electronic Components,,0.188,78211489792.0,34838081.0
+024850,kr,024850.KQ,Technology,Semiconductor Equipment & Materials,,0.313,477021863936.0,144333394.0
+024880,kr,024880.KQ,Industrials,Tools & Accessories,,-0.047,125197000704.0,19350386.0
+024890,kr,024890.KS,Basic Materials,Specialty Chemicals,,-0.089,31303366656.0,40759592.0
+024900,kr,024900.KS,Consumer Cyclical,Auto Parts,,-0.036,66152263680.0,32427580.0
+024910,kr,024910.KQ,Consumer Cyclical,Auto Parts,,0.085,66186018816.0,35583880.0
+024940,kr,024940.KQ,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.014,45818564608.0,9398680.0
+024950,kr,024950.KQ,Consumer Cyclical,Leisure,,-0.066,49862991872.0,12102668.0
+025000,kr,025000.KS,Basic Materials,Chemicals,,-0.041,222876286976.0,4378709.0
+025320,kr,025320.KQ,Technology,Electronic Components,,0.186,556314853376.0,92105111.0
+025440,kr,025440.KQ,Consumer Cyclical,Auto Parts,,0.73,43508973568.0,48776877.0
+025530,kr,025530.KS,Consumer Cyclical,Auto Parts,,-0.007,48516128768.0,13551991.0
+025540,kr,025540.KS,Industrials,Electrical Equipment & Parts,,-0.026,739406512128.0,10115000.0
+025550,kr,025550.KQ,Basic Materials,Steel,,0.055,84383105024.0,24143950.0
+025560,kr,025560.KS,Technology,Semiconductor Equipment & Materials,,2.626,61368061952.0,4466380.0
+025620,kr,025620.KS,Consumer Defensive,Household & Personal Products,,-0.398,76513280000.0,8020260.0
+025750,kr,025750.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.076,46888919040.0,80565149.0
+025770,kr,025770.KQ,Industrials,Business Equipment & Supplies,,0.096,281613303808.0,35201665.0
+025820,kr,025820.KS,Industrials,Metal Fabrication,,0.147,171216830464.0,33440789.0
+025860,kr,025860.KS,Basic Materials,Agricultural Inputs,,0.113,439689543680.0,47948695.0
+025870,kr,025870.KQ,Consumer Defensive,Packaged Foods,,-0.035,17679998976.0,4000000.0
+025880,kr,025880.KQ,,,,,46171521024.0,15785136.0
+025890,kr,025890.KS,Basic Materials,Steel,,-0.017,18678376448.0,11144616.0
+025900,kr,025900.KQ,Basic Materials,Lumber & Wood Production,,-0.017,431338389504.0,45741078.0
+025950,kr,025950.KQ,,,,,129360003072.0,8400000.0
+025980,kr,025980.KQ,,,,,768878641152.0,91971129.0
+026040,kr,026040.KQ,Consumer Cyclical,Luxury Goods,,0.167,49976913920.0,15144519.0
+026150,kr,026150.KQ,,,,,116858568704.0,17546331.0
+026890,kr,026890.KS,Financial Services,Asset Management,,-0.038,366216675328.0,36044947.0
+026910,kr,026910.KQ,Basic Materials,Steel,,-0.032,11830782976.0,6405405.0
+026940,kr,026940.KS,Basic Materials,Steel,,0.093,37809995776.0,19154000.0
+026960,kr,026960.KS,Consumer Defensive,Food Distribution,,0.044,2530950250496.0,98672523.0
+027040,kr,027040.KQ,Technology,Electronic Components,,-0.25,24286271488.0,69588168.0
+027050,kr,027050.KQ,Consumer Defensive,Household & Personal Products,,-0.144,61373198336.0,32200000.0
+027360,kr,027360.KQ,,,,,715220123648.0,118610308.0
+027410,kr,027410.KS,Basic Materials,Specialty Chemicals,,0.158,405326626816.0,95708766.0
+027580,kr,027580.KQ,,,,,32334708736.0,56332243.0
+027710,kr,027710.KQ,,,,,145994989568.0,110602261.0
+027740,kr,027740.KS,Consumer Defensive,Packaged Foods,,0.178,53277519872.0,63501218.0
+027830,kr,027830.KQ,,,,,83699998720.0,54000000.0
+027970,kr,027970.KS,Basic Materials,Paper & Paper Products,,-0.077,146416058368.0,190150720.0
+028050,kr,028050.KS,Industrials,Engineering & Construction,,-0.139,6487600005120.0,196000000.0
+028080,kr,028080.KQ,Technology,Communication Equipment,,-0.108,16650038272.0,10918058.0
+028100,kr,028100.KS,Industrials,Engineering & Construction,,0.325,217145720832.0,12728354.0
+028260,kr,028260.KS,Industrials,Engineering & Construction,,-0.015,46226934333440.0,162167581.0
+028300,kr,028300.KQ,Healthcare,Biotechnology,,0.304,6422144221184.0,131198038.0
+028670,kr,028670.KS,Industrials,Marine Shipping,,-0.006,2742341599232.0,534569512.0
+029460,kr,029460.KS,Technology,Semiconductor Equipment & Materials,,0.207,354084356096.0,11117248.0
+029480,kr,029480.KQ,Technology,Electronic Components,,0.444,128491593728.0,57362321.0
+029530,kr,029530.KS,Industrials,Business Equipment & Supplies,,0.007,474252836864.0,8622779.0
+029780,kr,029780.KS,Financial Services,Credit Services,,0.077,6338615181312.0,106710695.0
+030000,kr,030000.KS,Communication Services,Advertising Agencies,,0.109,2111661539328.0,101278725.0
+030190,kr,030190.KS,Financial Services,Credit Services,,0.124,1019488567296.0,58591294.0
+030200,kr,030200.KS,Communication Services,Telecom Services,,0.041,14371494297600.0,241132446.0
+030210,kr,030210.KS,Financial Services,Capital Markets,,0.131,268700155904.0,59315709.0
+030350,kr,030350.KQ,,,,,13497395200.0,13871937.0
+030520,kr,030520.KQ,,,,,496672538624.0,24168980.0
+030530,kr,030530.KQ,Industrials,Specialty Industrial Machinery,,-0.02,2402245672960.0,76383005.0
+030610,kr,030610.KS,Financial Services,Capital Markets,,0.682,1410867003392.0,112869363.0
+030720,kr,030720.KS,Consumer Defensive,Food Distribution,,-0.292,27550525440.0,4653805.0
+030960,kr,030960.KQ,,,,,104765407232.0,14006070.0
+031210,kr,031210.KS,Financial Services,Insurance - Diversified,,-0.01,3889063002112.0,69821598.0
+031310,kr,031310.KQ,,,,,38480982016.0,25450384.0
+031330,kr,031330.KQ,Technology,Electronics & Computer Distribution,,0.401,496504373248.0,97545067.0
+031430,kr,031430.KS,Consumer Cyclical,Apparel Retail,,0.049,431823618048.0,34629000.0
+031440,kr,031440.KS,Consumer Defensive,Packaged Foods,,0.0,187806105600.0,3872291.0
+031510,kr,031510.KQ,Consumer Cyclical,Auto Parts,,0.834,25441259520.0,25090000.0
+031820,kr,031820.KS,Technology,Communication Equipment,,0.133,94056988672.0,121051466.0
+031860,kr,031860.KQ,Healthcare,Diagnostics & Research,,1.502,9698989056.0,18095127.0
+031980,kr,031980.KQ,,,,,2175645777920.0,21562395.0
+032080,kr,032080.KQ,,,,,27538917376.0,20990029.0
+032190,kr,032190.KQ,Technology,Information Technology Services,,0.23,938350018560.0,38300000.0
+032280,kr,032280.KQ,Industrials,Trucking,,0.019,21746028544.0,15510720.0
+032300,kr,032300.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.248,135243096064.0,10906701.0
+032350,kr,032350.KS,Consumer Cyclical,Resorts & Casinos,,0.342,1563746369536.0,79539484.0
+032500,kr,032500.KQ,Technology,Communication Equipment,,-0.059,1028799463424.0,40744533.0
+032540,kr,032540.KQ,,,,,87351189504.0,13931609.0
+032560,kr,032560.KS,Basic Materials,Steel,,0.06,102782132224.0,16988782.0
+032580,kr,032580.KQ,,,,,33544882176.0,33114397.0
+032620,kr,032620.KQ,,,,,204492832768.0,50742642.0
+032640,kr,032640.KS,Communication Services,Telecom Services,,0.055,6543846670336.0,434807091.0
+032680,kr,032680.KQ,,,,,25131337728.0,104279408.0
+032685,kr,032685.KQ,,,,,13248873472.0,29773800.0
+032750,kr,032750.KQ,Technology,Electronic Components,,-0.318,30414444544.0,9025058.0
+032790,kr,032790.KQ,Healthcare,Biotechnology,,-0.079,29352994816.0,46592058.0
+032800,kr,032800.KQ,Communication Services,Entertainment,,-0.01,14256754688.0,45694726.0
+032820,kr,032820.KQ,,,,,4032056000512.0,166270353.0
+032830,kr,032830.KS,Financial Services,Insurance - Life,,0.294,38653472538624.0,179574779.0
+032850,kr,032850.KQ,Healthcare,Health Information Services,,0.002,86212788224.0,15505897.0
+032860,kr,032860.KQ,Industrials,Waste Management,,-0.722,51046498304.0,40289265.0
+032940,kr,032940.KQ,Industrials,Conglomerates,,0.182,192665780224.0,18193181.0
+032960,kr,032960.KQ,Industrials,Electrical Equipment & Parts,,0.028,62048669696.0,3823085.0
+032980,kr,032980.KQ,Industrials,Conglomerates,,-0.648,6758842880.0,22380274.0
+033050,kr,033050.KQ,Technology,Computer Hardware,,0.06,28591716352.0,31839328.0
+033100,kr,033100.KQ,Industrials,Specialty Industrial Machinery,,0.005,799104827392.0,16062409.0
+033130,kr,033130.KQ,,,,,110232346624.0,37115267.0
+033160,kr,033160.KQ,Technology,Semiconductor Equipment & Materials,,0.407,291810476032.0,20903330.0
+033170,kr,033170.KQ,Technology,Semiconductor Equipment & Materials,,0.004,67468189696.0,85728319.0
+033200,kr,033200.KQ,Technology,Electronic Components,,0.315,35115278336.0,9204529.0
+033230,kr,033230.KQ,Technology,Communication Equipment,,-0.052,79620177920.0,50107101.0
+033240,kr,033240.KS,Technology,Electronic Components,,0.441,847806791680.0,20602838.0
+033250,kr,033250.KS,Consumer Cyclical,Auto Parts,,0.025,32096000000.0,32000000.0
+033270,kr,033270.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.061,292443095040.0,14441635.0
+033290,kr,033290.KQ,Industrials,Integrated Freight & Logistics,,0.037,108916383744.0,52489824.0
+033310,kr,033310.KQ,,,,,71644241920.0,39582456.0
+033320,kr,033320.KQ,Technology,Electronics & Computer Distribution,,0.322,86147301376.0,18891951.0
+033340,kr,033340.KQ,Consumer Cyclical,Apparel Manufacturing,,-0.162,204080922624.0,96950558.0
+033500,kr,033500.KQ,,,,,860577398784.0,29933129.0
+033530,kr,033530.KS,Consumer Cyclical,Auto Parts,,0.066,233190834176.0,27052299.0
+033540,kr,033540.KQ,,,,,43409510400.0,37421991.0
+033560,kr,033560.KQ,Technology,Communication Equipment,,-0.803,49799606272.0,15987033.0
+033640,kr,033640.KQ,Technology,Semiconductor Equipment & Materials,,0.263,399615983616.0,23059202.0
+033780,kr,033780.KS,Consumer Defensive,Tobacco,,0.116,16139521359872.0,105383751.0
+033790,kr,033790.KQ,Technology,Communication Equipment,,-0.36,374224420864.0,67917321.0
+033830,kr,033830.KQ,Communication Services,Entertainment,,0.151,57950351360.0,94535650.0
+033920,kr,033920.KS,Consumer Defensive,Beverages - Wineries & Distilleries,,-0.098,242884575232.0,26486868.0
+034020,kr,034020.KS,Industrials,Specialty Industrial Machinery,,0.143,68337631494144.0,640465168.0
+034120,kr,034120.KS,Communication Services,Entertainment,,-0.278,310129131520.0,18548394.0
+034220,kr,034220.KS,Technology,Consumer Electronics,,-0.081,5759999934464.0,500000000.0
+034230,kr,034230.KS,Consumer Cyclical,Resorts & Casinos,,0.075,1463243505664.0,86994261.0
+034310,kr,034310.KS,Financial Services,Financial Data & Stock Exchanges,,0.073,486179471360.0,34751927.0
+034590,kr,034590.KS,Utilities,Utilities - Regulated Gas,,0.204,111500075008.0,4121999.0
+034730,kr,034730.KS,Industrials,Conglomerates,,0.033,18237609738240.0,54522004.0
+034810,kr,034810.KQ,Real Estate,Real Estate Services,,0.051,220179513344.0,29633850.0
+034830,kr,034830.KS,Real Estate,REIT - Diversified,,-0.079,318215553024.0,215447223.0
+034940,kr,034940.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.016,28098703360.0,30979827.0
+034950,kr,034950.KQ,Financial Services,Capital Markets,,0.056,451440148480.0,4460871.0
+035000,kr,035000.KS,Communication Services,Advertising Agencies,,-0.208,142303117312.0,16207644.0
+035080,kr,035080.KQ,Consumer Cyclical,Internet Retail,,-0.024,136362491904.0,11585598.0
+035150,kr,035150.KS,Consumer Cyclical,Footwear & Accessories,,0.043,274696699904.0,20302786.0
+035200,kr,035200.KQ,,,,,28618819584.0,8153510.0
+035250,kr,035250.KS,Consumer Cyclical,Resorts & Casinos,,0.022,3635358990336.0,200405684.0
+035290,kr,035290.KQ,Communication Services,Publishing,,,13897694208.0,23838240.0
+035420,kr,035420.KS,Communication Services,Internet Content & Information,,0.107,33260371443712.0,149484820.0
+035460,kr,035460.KQ,Technology,Communication Equipment,,-0.117,37317992448.0,14577340.0
+035510,kr,035510.KS,Technology,Information Technology Services,,0.135,216774410240.0,13145810.0
+035600,kr,035600.KQ,Technology,Software - Infrastructure,,0.053,278961750016.0,26618488.0
+035610,kr,035610.KQ,Industrials,Conglomerates,,-0.012,104735162368.0,27345997.0
+035620,kr,035620.KQ,Communication Services,Electronic Gaming & Multimedia,,-0.512,17229998080.0,74267231.0
+035720,kr,035720.KS,Communication Services,Internet Content & Information,,0.09,22257797693440.0,439877415.0
+035760,kr,035760.KQ,Communication Services,Entertainment,,0.108,1334930964480.0,20744849.0
+035810,kr,035810.KQ,Consumer Defensive,Packaged Foods,,0.044,385161625600.0,64516185.0
+035890,kr,035890.KQ,Industrials,Engineering & Construction,,-0.306,300853264384.0,185368615.0
+035900,kr,035900.KQ,Communication Services,Entertainment,,0.365,2209975107584.0,33133059.0
+036000,kr,036000.KQ,Communication Services,Publishing,,-0.12,71636598784.0,23034277.0
+036010,kr,036010.KQ,Technology,Electronic Components,,0.157,107008114688.0,13292934.0
+036030,kr,036030.KQ,Communication Services,Internet Content & Information,,-0.013,231860535296.0,49019141.0
+036090,kr,036090.KQ,Technology,Electronic Components,,-0.044,77136314368.0,117945435.0
+036120,kr,036120.KQ,Financial Services,Financial Data & Stock Exchanges,,0.106,73386156032.0,33740761.0
+036170,kr,036170.KQ,,,,,326678085632.0,60272708.0
+036180,kr,036180.KQ,,,,,654251712.0,93464524.0
+036190,kr,036190.KQ,Industrials,Engineering & Construction,,0.429,208474390528.0,5905790.0
+036200,kr,036200.KQ,,,,,287394824192.0,29416053.0
+036220,kr,036220.KQ,Healthcare,Medical Devices,,0.248,138196205568.0,13750867.0
+036420,kr,036420.KS,Communication Services,Entertainment,,0.221,130293071872.0,19104557.0
+036460,kr,036460.KS,Utilities,Utilities - Regulated Gas,,-0.214,3133188079616.0,87275434.0
+036480,kr,036480.KQ,Healthcare,Biotechnology,,0.235,31577999360.0,3800000.0
+036530,kr,036530.KS,Industrials,Conglomerates,,0.237,858022543360.0,14819042.0
+036540,kr,036540.KQ,Technology,Semiconductors,,0.015,1151034195968.0,163964999.0
+036560,kr,036560.KQ,,,,,210892505088.0,15750000.0
+036570,kr,036570.KS,Communication Services,Electronic Gaming & Multimedia,,-0.104,4324724572160.0,19393383.0
+036580,kr,036580.KS,Consumer Defensive,Packaged Foods,,0.048,114686689280.0,35018836.0
+036620,kr,036620.KQ,,,,,519633928192.0,90214221.0
+036630,kr,036630.KQ,,,,,80342368256.0,9992832.0
+036640,kr,036640.KQ,,,,,81826635776.0,15981765.0
+036670,kr,036670.KQ,,,,,64345997312.0,10760200.0
+036690,kr,036690.KQ,,,,,0.0,15904938.0
+036710,kr,036710.KQ,Technology,Semiconductors,,0.164,121700245504.0,50814299.0
+036800,kr,036800.KQ,Technology,Software - Infrastructure,,0.162,232376270848.0,8735950.0
+036810,kr,036810.KQ,Technology,Semiconductors,,0.121,902994919424.0,20360653.0
+036830,kr,036830.KQ,Basic Materials,Chemicals,,0.488,1188907188224.0,20082893.0
+036890,kr,036890.KQ,Industrials,Farm & Heavy Construction Machinery,,0.263,349746102272.0,19985492.0
+036930,kr,036930.KQ,,,,,2970104889344.0,45693922.0
+037030,kr,037030.KQ,Technology,Electronic Components,,-0.072,75708825600.0,25194285.0
+037070,kr,037070.KQ,Technology,Consumer Electronics,,0.094,163572187136.0,19972185.0
+037230,kr,037230.KQ,Consumer Cyclical,Packaging & Containers,,0.031,53521387520.0,29800327.0
+037270,kr,037270.KS,Communication Services,Advertising Agencies,,0.705,387071705088.0,63663110.0
+037330,kr,037330.KQ,,,,,61176000512.0,43885224.0
+037350,kr,037350.KQ,Industrials,Engineering & Construction,,-0.37,158789533696.0,14203000.0
+037370,kr,037370.KQ,Basic Materials,Chemicals,,-0.04,45453602816.0,8624972.0
+037400,kr,037400.KQ,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.235,22989793280.0,24250836.0
+037440,kr,037440.KQ,Industrials,Engineering & Construction,,-0.031,53086105600.0,12624520.0
+037460,kr,037460.KQ,Technology,Communication Equipment,,0.399,342239674368.0,14879986.0
+037560,kr,037560.KS,Communication Services,Broadcasting,,-0.071,176191619072.0,77446865.0
+037710,kr,037710.KS,Consumer Cyclical,Department Stores,,-0.039,292120690688.0,7627172.0
+037760,kr,037760.KQ,Basic Materials,Steel,,0.094,58039173120.0,30402921.0
+037950,kr,037950.KQ,Technology,Communication Equipment,,-0.304,63135993856.0,84406407.0
+038010,kr,038010.KQ,Basic Materials,Steel,,-0.177,51751346176.0,8668567.0
+038060,kr,038060.KQ,,,,,34778517504.0,48103069.0
+038070,kr,038070.KQ,Healthcare,Biotechnology,,0.335,58345365504.0,8826833.0
+038110,kr,038110.KQ,,,,,116719230976.0,40178738.0
+038290,kr,038290.KQ,,,,,180400898048.0,10841400.0
+038390,kr,038390.KQ,,,,,179247218688.0,16720822.0
+038460,kr,038460.KQ,,,,,118790348800.0,25274542.0
+038500,kr,038500.KQ,Basic Materials,Building Materials,,-0.093,1997849624576.0,107353552.0
+038530,kr,038530.KQ,,,,,41001377792.0,115496841.0
+038540,kr,038540.KQ,,,,,121214271488.0,54724276.0
+038620,kr,038620.KQ,Technology,Information Technology Services,,0.077,45736226816.0,72025551.0
+038680,kr,038680.KQ,Technology,Communication Equipment,,-0.143,60442447872.0,18427576.0
+038870,kr,038870.KQ,,,,,41898160128.0,14012763.0
+038880,kr,038880.KQ,,,,,52203163648.0,365057084.0
+038950,kr,038950.KQ,Technology,Communication Equipment,,-0.043,26407067648.0,8200953.0
+039010,kr,039010.KQ,Technology,Communication Equipment,,0.117,64094248960.0,7769000.0
+039020,kr,039020.KQ,,,,,70609059840.0,21659221.0
+039030,kr,039030.KQ,Technology,Semiconductor Equipment & Materials,,0.211,5001737404416.0,12319550.0
+039130,kr,039130.KS,Consumer Cyclical,Travel Services,,-0.227,645155651584.0,15489932.0
+039200,kr,039200.KQ,,,,,2192021520384.0,38255176.0
+039240,kr,039240.KQ,,,,,68123500544.0,26979604.0
+039290,kr,039290.KQ,,,,,39018770432.0,8346261.0
+039310,kr,039310.KQ,Consumer Cyclical,Travel Services,,-0.544,26475757568.0,18121667.0
+039340,kr,039340.KQ,,,,,83983441920.0,16403016.0
+039420,kr,039420.KQ,Technology,Information Technology Services,,-0.103,59121086464.0,20599682.0
+039440,kr,039440.KQ,Technology,Semiconductor Equipment & Materials,,0.141,479690883072.0,14737047.0
+039490,kr,039490.KS,Financial Services,Capital Markets,,0.344,11246796537856.0,25884457.0
+039560,kr,039560.KQ,Technology,Communication Equipment,,0.416,168935964672.0,38791268.0
+039570,kr,039570.KS,Technology,Electronic Components,,-0.012,194822504448.0,22974353.0
+039610,kr,039610.KQ,,,,,86198108160.0,10410400.0
+039740,kr,039740.KQ,,,,,26300342272.0,8018397.0
+039830,kr,039830.KQ,,,,,103761788928.0,9432890.0
+039840,kr,039840.KQ,Healthcare,Medical Instruments & Supplies,,0.322,216768364544.0,13389028.0
+039860,kr,039860.KQ,Technology,Scientific & Technical Instruments,,0.081,200045805568.0,32110082.0
+039980,kr,039980.KQ,Technology,Information Technology Services,,0.094,148207648768.0,71945466.0
+040160,kr,040160.KQ,Technology,Software - Application,,-0.643,112866869248.0,11297985.0
+040300,kr,040300.KQ,Communication Services,Internet Content & Information,,0.192,158525964288.0,47676980.0
+040350,kr,040350.KQ,,,,,65942802432.0,97404435.0
+040420,kr,040420.KQ,Consumer Defensive,Education & Training Services,,-0.026,87092862976.0,14938742.0
+040610,kr,040610.KQ,Industrials,Conglomerates,,-0.065,66344808448.0,33746086.0
+040910,kr,040910.KQ,Technology,Electronic Components,,0.31,90957938688.0,16329971.0
+041020,kr,041020.KQ,,,,,253387341824.0,49683793.0
+041190,kr,041190.KQ,Financial Services,Asset Management,,4.674,524851576832.0,77871156.0
+041440,kr,041440.KQ,Industrials,Farm & Heavy Construction Machinery,,0.059,152368218112.0,17841712.0
+041460,kr,041460.KQ,Industrials,Security & Protection Services,,-0.106,70563217408.0,18328109.0
+041510,kr,041510.KQ,Communication Services,Entertainment,,0.328,2278021660672.0,22894690.0
+041520,kr,041520.KQ,,,,,90543456256.0,11698121.0
+041590,kr,041590.KQ,,,,,0.0,48967296.0
+041650,kr,041650.KS,Consumer Cyclical,Auto Parts,,-0.072,50336804864.0,19360310.0
+041830,kr,041830.KQ,,,,,359671529472.0,12192255.0
+041910,kr,041910.KQ,,,,,103477297152.0,13283350.0
+041920,kr,041920.KQ,,,,,391164395520.0,18451150.0
+041930,kr,041930.KQ,Consumer Cyclical,Auto Parts,,0.043,94223187968.0,14585633.0
+041960,kr,041960.KQ,,,,,575046680576.0,71701582.0
+042000,kr,042000.KQ,Technology,Software - Infrastructure,,0.017,696331206656.0,24178169.0
+042040,kr,042040.KQ,,,,,35123560448.0,195130889.0
+042110,kr,042110.KQ,,,,,65341571072.0,48329564.0
+042370,kr,042370.KQ,Industrials,Electrical Equipment & Parts,,-0.024,290034253824.0,26200025.0
+042420,kr,042420.KQ,Communication Services,Internet Content & Information,,0.383,158445387776.0,6165190.0
+042500,kr,042500.KQ,Technology,Information Technology Services,,0.375,75169153024.0,19323690.0
+042510,kr,042510.KQ,Technology,Software - Application,,0.07,102115074048.0,10805828.0
+042520,kr,042520.KQ,Healthcare,Medical Devices,,0.523,602409795584.0,14241367.0
+042600,kr,042600.KQ,Technology,Electronic Components,,-0.265,144577150976.0,12231569.0
+042660,kr,042660.KS,Industrials,Aerospace & Defense,,0.118,40934662209536.0,306397187.0
+042700,kr,042700.KS,Technology,Semiconductor Equipment & Materials,,-0.203,29451857428480.0,94853002.0
+042940,kr,042940.KQ,Industrials,Engineering & Construction,,1.737,60989091840.0,6822046.0
+043090,kr,043090.KQ,,,,,4618560000.0,12154105.0
+043100,kr,043100.KQ,,,,,20403789824.0,20102256.0
+043150,kr,043150.KQ,,,,,349817733120.0,14854256.0
+043200,kr,043200.KQ,Industrials,Electrical Equipment & Parts,,-0.263,37613457408.0,41792732.0
+043220,kr,043220.KQ,,,,,2722733056.0,15922416.0
+043260,kr,043260.KQ,,,,,3553233469440.0,70922823.0
+043340,kr,043340.KQ,Industrials,Metal Fabrication,,0.183,44555001856.0,95000000.0
+043360,kr,043360.KQ,,,,,21759844352.0,8917969.0
+043370,kr,043370.KQ,Consumer Cyclical,Auto Parts,,0.043,240844505088.0,19533213.0
+043590,kr,043590.KQ,,,,,16476199936.0,26703728.0
+043610,kr,043610.KQ,Communication Services,Internet Content & Information,,0.035,100307247104.0,58115438.0
+043650,kr,043650.KQ,,,,,64142397440.0,15740466.0
+043710,kr,043710.KQ,,,,,76087975936.0,86561973.0
+043910,kr,043910.KQ,,,,,56014389248.0,113389454.0
+044180,kr,044180.KQ,Real Estate,Real Estate - Development,,-0.866,8585799680.0,27785760.0
+044340,kr,044340.KQ,Technology,Consumer Electronics,,0.028,77379690496.0,15807904.0
+044380,kr,044380.KS,Technology,Computer Hardware,,0.518,22697517056.0,64481582.0
+044450,kr,044450.KS,Industrials,Marine Shipping,,0.084,240224862208.0,22577525.0
+044480,kr,044480.KQ,Communication Services,Entertainment,,0.017,16858719232.0,80663728.0
+044490,kr,044490.KQ,Industrials,Metal Fabrication,,-0.013,997367873536.0,20007381.0
+044780,kr,044780.KQ,Industrials,Specialty Industrial Machinery,,0.123,25187702784.0,18358383.0
+044820,kr,044820.KS,Consumer Defensive,Packaged Foods,,0.01,135105421312.0,9554839.0
+044960,kr,044960.KQ,,,,,48731340800.0,12274897.0
+044990,kr,044990.KQ,,,,,163381379072.0,8027640.0
+045060,kr,045060.KQ,Basic Materials,Specialty Chemicals,,0.011,37611184128.0,16941974.0
+045100,kr,045100.KQ,,,,,478969069568.0,16319219.0
+045300,kr,045300.KQ,Technology,Semiconductor Equipment & Materials,,-0.047,29324218368.0,10182020.0
+045340,kr,045340.KQ,,,,,60248600576.0,8558040.0
+045390,kr,045390.KQ,,,,,340386414592.0,70473377.0
+045510,kr,045510.KQ,Technology,Electronics & Computer Distribution,,0.237,23074807808.0,31479957.0
+045520,kr,045520.KQ,Industrials,Specialty Industrial Machinery,,-0.119,19207380992.0,6117000.0
+045660,kr,045660.KQ,,,,,71825932288.0,7344165.0
+045970,kr,045970.KQ,,,,,128769040384.0,24955241.0
+046070,kr,046070.KQ,,,,,158832295936.0,15450613.0
+046120,kr,046120.KQ,Industrials,Consulting Services,,-0.219,226185330688.0,27120544.0
+046210,kr,046210.KQ,,,,,91607244800.0,45126718.0
+046310,kr,046310.KQ,,,,,49854332928.0,16082043.0
+046390,kr,046390.KQ,,,,,36303466496.0,39589386.0
+046440,kr,046440.KQ,,,,,180071661568.0,36050386.0
+046890,kr,046890.KQ,Technology,Semiconductors,,,581291606016.0,56381340.0
+046940,kr,046940.KQ,Industrials,Engineering & Construction,,0.308,87660601344.0,18074350.0
+046970,kr,046970.KQ,Technology,Communication Equipment,,-0.027,66530906112.0,43399157.0
+047040,kr,047040.KS,Industrials,Engineering & Construction,,,5329187766272.0,410885720.0
+047050,kr,047050.KS,Industrials,Conglomerates,,-0.013,13124224679936.0,170444487.0
+047080,kr,047080.KQ,Communication Services,Electronic Gaming & Multimedia,,0.181,29662722048.0,24822362.0
+047310,kr,047310.KQ,,,,,202091380736.0,36610755.0
+047400,kr,047400.KS,Industrials,Tools & Accessories,,-0.051,65771999232.0,42000000.0
+047560,kr,047560.KQ,,,,,151990140928.0,10360609.0
+047770,kr,047770.KQ,,,,,201203548160.0,37749259.0
+047810,kr,047810.KS,Industrials,Aerospace & Defense,,-0.226,16999657766912.0,97475107.0
+047820,kr,047820.KQ,Communication Services,Entertainment,,0.137,103172833280.0,24419606.0
+047920,kr,047920.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.743,496245473280.0,32798775.0
+048410,kr,048410.KQ,Healthcare,Biotechnology,,0.206,1623054090240.0,96038704.0
+048430,kr,048430.KQ,Consumer Cyclical,Auto Parts,,0.06,88760377344.0,11452952.0
+048470,kr,048470.KQ,,,,,30506293248.0,9286543.0
+048530,kr,048530.KQ,Healthcare,Biotechnology,,0.343,144475897856.0,31613982.0
+048550,kr,048550.KQ,,,,,109793484800.0,95973327.0
+048770,kr,048770.KQ,,,,,48428302336.0,15697991.0
+048830,kr,048830.KQ,,,,,16994114560.0,18695397.0
+048870,kr,048870.KQ,Healthcare,Biotechnology,,0.254,186346225664.0,88106963.0
+048910,kr,048910.KQ,Communication Services,Entertainment,,0.55,112134176768.0,12335992.0
+049070,kr,049070.KQ,Technology,Consumer Electronics,,-0.036,285958701056.0,15833815.0
+049080,kr,049080.KQ,Technology,Semiconductor Equipment & Materials,,-0.15,41930719232.0,84879998.0
+049120,kr,049120.KQ,Technology,Electronic Components,,-0.209,28624492544.0,53008319.0
+049180,kr,049180.KQ,Healthcare,Medical Instruments & Supplies,,0.12,61981405184.0,54948055.0
+049430,kr,049430.KQ,,,,,171062411264.0,8984370.0
+049470,kr,049470.KQ,,,,,78506254336.0,117348664.0
+049480,kr,049480.KQ,,,,,59678642176.0,27312880.0
+049520,kr,049520.KQ,,,,,126331338752.0,31386669.0
+049550,kr,049550.KQ,Basic Materials,Specialty Chemicals,,0.057,62053863424.0,19606277.0
+049630,kr,049630.KQ,Technology,Electronic Components,,0.819,305375477760.0,101791820.0
+049720,kr,049720.KQ,Industrials,Specialty Business Services,,0.049,146199298048.0,13937016.0
+049800,kr,049800.KS,Industrials,Specialty Industrial Machinery,,-0.116,50500001792.0,20000000.0
+049830,kr,049830.KQ,Consumer Cyclical,Packaging & Containers,,0.041,44719972352.0,5907526.0
+049950,kr,049950.KQ,,,,,121515220992.0,7926629.0
+049960,kr,049960.KQ,,,,,98073083904.0,6843900.0
+050090,kr,050090.KQ,,,,,12569720832.0,19701755.0
+050110,kr,050110.KQ,,,,,34845507584.0,17123099.0
+050120,kr,050120.KQ,,,,,32145856512.0,13394107.0
+050760,kr,050760.KQ,,,,,17604757504.0,15442769.0
+050860,kr,050860.KQ,,,,,36832231424.0,18188756.0
+050890,kr,050890.KQ,,,,,732860055552.0,59923145.0
+050960,kr,050960.KQ,Industrials,Security & Protection Services,,,61231570944.0,6751000.0
+051160,kr,051160.KQ,Technology,Information Technology Services,,0.123,105202868224.0,13478907.0
+051360,kr,051360.KQ,Technology,Electronic Components,,0.01,225859387392.0,15047261.0
+051370,kr,051370.KQ,Technology,Electronic Components,,-0.118,310955212800.0,23327472.0
+051380,kr,051380.KQ,Technology,Electronics & Computer Distribution,,0.136,28791185408.0,14395593.0
+051390,kr,051390.KQ,Technology,Communication Equipment,,-0.174,33126686720.0,8030712.0
+051490,kr,051490.KQ,Industrials,Metal Fabrication,,-0.102,47810625536.0,13207355.0
+051500,kr,051500.KQ,Consumer Defensive,Food Distribution,,0.083,397104545792.0,11871586.0
+051600,kr,051600.KS,Industrials,Engineering & Construction,,0.111,2700000100352.0,45000000.0
+051630,kr,051630.KS,Basic Materials,Chemicals,,-0.272,54802001920.0,21200000.0
+051780,kr,051780.KQ,,,,,17102940160.0,23174715.0
+051900,kr,051900.KS,Consumer Defensive,Household & Personal Products,,-0.085,4163876945920.0,14659785.0
+051905,kr,051905.KS,Consumer Defensive,Household & Personal Products,,-0.085,3924028555264.0,2096259.0
+051910,kr,051910.KS,Basic Materials,Chemicals,,,23384687640576.0,70592342.0
+051915,kr,051915.KS,Basic Materials,Chemicals,,,22018476998656.0,7682759.0
+051980,kr,051980.KQ,Healthcare,Diagnostics & Research,,0.064,190245126144.0,110865456.0
+052020,kr,052020.KQ,,,,,1137203216384.0,67933291.0
+052220,kr,052220.KQ,,,,,73600000000.0,23000000.0
+052260,kr,052260.KQ,,,,,125699997696.0,30000000.0
+052300,kr,052300.KQ,,,,,30214078464.0,16244128.0
+052330,kr,052330.KQ,Technology,Computer Hardware,,0.238,134457901056.0,13169236.0
+052400,kr,052400.KQ,Technology,Semiconductors,,0.678,1011787366400.0,14371980.0
+052420,kr,052420.KQ,,,,,119705280512.0,87760474.0
+052460,kr,052460.KQ,,,,,40303558656.0,12157936.0
+052600,kr,052600.KQ,Industrials,Specialty Business Services,,0.086,38738395136.0,11563700.0
+052690,kr,052690.KS,Industrials,Engineering & Construction,,0.082,6604352126976.0,38043505.0
+052710,kr,052710.KQ,,,,,185433210880.0,14612546.0
+052770,kr,052770.KQ,Communication Services,Electronic Gaming & Multimedia,,-0.839,7094992896.0,14568774.0
+052790,kr,052790.KQ,Communication Services,Electronic Gaming & Multimedia,,-0.16,59538780160.0,10924547.0
+052860,kr,052860.KQ,,,,,55666188288.0,16229209.0
+052900,kr,052900.KQ,,,,,62931185664.0,54344720.0
+053030,kr,053030.KQ,,,,,420389322752.0,31847676.0
+053050,kr,053050.KQ,Utilities,Utilities - Regulated Gas,,0.002,91612102656.0,29987597.0
+053060,kr,053060.KQ,,,,,21735622656.0,17656882.0
+053080,kr,053080.KQ,Industrials,Engineering & Construction,,-0.244,154983612416.0,12958496.0
+053160,kr,053160.KQ,Technology,Electronic Components,,0.558,40787193856.0,5359684.0
+053210,kr,053210.KS,Communication Services,Broadcasting,,-0.039,242630606848.0,47296416.0
+053260,kr,053260.KQ,Basic Materials,Steel,,0.054,69073666048.0,15716420.0
+053270,kr,053270.KQ,,,,,60383571968.0,26083616.0
+053280,kr,053280.KQ,Consumer Cyclical,Internet Retail,,-0.065,88699068416.0,24985652.0
+053290,kr,053290.KQ,,,,,33713666048.0,16526307.0
+053300,kr,053300.KQ,Technology,Information Technology Services,,0.095,245320482816.0,39954476.0
+053350,kr,053350.KQ,,,,,51403509760.0,16771129.0
+053450,kr,053450.KQ,Technology,Electronic Components,,-0.117,76652273664.0,14628297.0
+053580,kr,053580.KQ,,,,,111697895424.0,12592773.0
+053610,kr,053610.KQ,Technology,Semiconductor Equipment & Materials,,0.184,504899993600.0,9000000.0
+053620,kr,053620.KQ,Basic Materials,Specialty Chemicals,,-0.028,54453452800.0,7961031.0
+053690,kr,053690.KS,Industrials,Engineering & Construction,,0.029,205918617600.0,10094050.0
+053700,kr,053700.KQ,,,,,151156899840.0,22228956.0
+053800,kr,053800.KQ,Technology,Software - Infrastructure,,-0.058,609605976064.0,9540000.0
+053950,kr,053950.KQ,,,,,53452595200.0,78147071.0
+053980,kr,053980.KQ,Technology,Software - Application,,0.023,62040723456.0,18972698.0
+054040,kr,054040.KQ,Technology,Electronic Components,,0.119,67968061440.0,13197682.0
+054050,kr,054050.KQ,Basic Materials,Agricultural Inputs,,-0.011,132091822080.0,16030561.0
+054090,kr,054090.KQ,,,,,18986819584.0,24786973.0
+054180,kr,054180.KQ,Industrials,Aerospace & Defense,,-0.121,12664394752.0,5518255.0
+054210,kr,054210.KQ,Industrials,Electrical Equipment & Parts,,0.575,255588253696.0,24886881.0
+054220,kr,054220.KQ,Industrials,Electrical Equipment & Parts,,0.535,34413068288.0,59953081.0
+054300,kr,054300.KQ,Industrials,Specialty Industrial Machinery,,-0.235,73387081728.0,114667317.0
+054410,kr,054410.KQ,Industrials,Specialty Industrial Machinery,,0.064,19899392000.0,5726444.0
+054450,kr,054450.KQ,Technology,Semiconductors,,0.055,191306399744.0,14761296.0
+054540,kr,054540.KQ,Basic Materials,Steel,,0.031,150048096256.0,12130000.0
+054620,kr,054620.KQ,Technology,Semiconductors,,0.443,147203719168.0,16842530.0
+054670,kr,054670.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.002,97264549888.0,14035289.0
+054780,kr,054780.KQ,,,,,47773499392.0,19539265.0
+054800,kr,054800.KQ,Technology,Communication Equipment,,0.075,131224297472.0,8713433.0
+054920,kr,054920.KQ,,,,,114820448256.0,25124824.0
+054930,kr,054930.KQ,Industrials,Engineering & Construction,,0.017,70650003456.0,3000000.0
+054940,kr,054940.KQ,,,,,21728673792.0,33173548.0
+054950,kr,054950.KQ,Healthcare,Medical Devices,,0.062,304650256384.0,11517968.0
+055490,kr,055490.KS,Basic Materials,Specialty Chemicals,,0.143,69732286464.0,4769650.0
+055550,kr,055550.KS,Financial Services,Banks - Regional,,0.216,43051149950976.0,474654360.0
+056080,kr,056080.KQ,,,,,1059718299648.0,37512152.0
+056090,kr,056090.KQ,Healthcare,Medical Devices,,0.336,317005266944.0,103259036.0
+056190,kr,056190.KQ,Industrials,Specialty Industrial Machinery,,-0.125,824515166208.0,28333854.0
+056360,kr,056360.KQ,Technology,Communication Equipment,,0.267,56972939264.0,9144934.0
+056700,kr,056700.KQ,Basic Materials,Specialty Chemicals,,-0.222,52684144640.0,29011091.0
+056730,kr,056730.KQ,,,,,34395586560.0,69626698.0
+057030,kr,057030.KQ,,,,,44506955776.0,16184347.0
+057050,kr,057050.KS,Consumer Cyclical,Internet Retail,,-0.027,874204495872.0,11207750.0
+057540,kr,057540.KQ,,,,,49119059968.0,59394268.0
+057680,kr,057680.KQ,,,,,45670289408.0,71248501.0
+058110,kr,058110.KQ,,,,,27337641984.0,15497530.0
+058400,kr,058400.KQ,Communication Services,Entertainment,,0.128,98527715328.0,132429720.0
+058430,kr,058430.KS,Industrials,Metal Fabrication,,-0.003,276765245440.0,5990590.0
+058450,kr,058450.KQ,Technology,Electronic Components,,-0.661,8084816384.0,14780286.0
+058470,kr,058470.KQ,Technology,Semiconductor Equipment & Materials,,0.16,8576202964992.0,75895600.0
+058610,kr,058610.KQ,,,,,2905234210816.0,22177360.0
+058630,kr,058630.KQ,,,,,97663516672.0,18602574.0
+058650,kr,058650.KS,Basic Materials,Steel,,0.138,654054522880.0,4208845.0
+058730,kr,058730.KS,Basic Materials,Steel,,-0.08,63567937536.0,17511829.0
+058820,kr,058820.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.23,253105799168.0,147842183.0
+058850,kr,058850.KS,Industrials,Specialty Business Services,,0.04,99589160960.0,37938729.0
+058860,kr,058860.KS,Communication Services,Telecom Services,,0.096,86807085056.0,30619782.0
+058970,kr,058970.KQ,Technology,Software - Application,,-0.082,380906110976.0,12347038.0
+059090,kr,059090.KQ,Technology,Semiconductor Equipment & Materials,,0.78,447244566528.0,31496097.0
+059100,kr,059100.KQ,Technology,Electronic Components,,-0.137,36494704640.0,6459240.0
+059120,kr,059120.KQ,,,,,137325494272.0,18310066.0
+059210,kr,059210.KQ,,,,,125751730176.0,26812735.0
+059270,kr,059270.KQ,Industrials,Metal Fabrication,,0.118,119580352512.0,11165299.0
+060150,kr,060150.KQ,,,,,186613841920.0,43909141.0
+060230,kr,060230.KQ,,,,,14076481536.0,7641955.0
+060240,kr,060240.KQ,Technology,Software - Application,,-0.034,11494657024.0,5817134.0
+060250,kr,060250.KQ,Technology,Software - Infrastructure,,0.165,739616948224.0,37716317.0
+060260,kr,060260.KQ,Industrials,Building Products & Equipment,,-0.009,13969446912.0,13342356.0
+060280,kr,060280.KQ,,,,,630731374592.0,41089990.0
+060310,kr,060310.KQ,,,,,68233924608.0,53059040.0
+060370,kr,060370.KQ,,,,,1615852077056.0,50892979.0
+060380,kr,060380.KQ,,,,,27251599360.0,19300000.0
+060480,kr,060480.KQ,Basic Materials,Other Industrial Metals & Mining,,0.723,16712630272.0,11090000.0
+060540,kr,060540.KQ,,,,,33162692608.0,26132934.0
+060560,kr,060560.KQ,Basic Materials,Building Materials,,-0.163,84415102976.0,126940008.0
+060570,kr,060570.KQ,Communication Services,Entertainment,,-0.089,92800090112.0,74062317.0
+060590,kr,060590.KQ,Healthcare,Biotechnology,,-0.112,99460505600.0,23908775.0
+060720,kr,060720.KQ,,,,,331883872256.0,22037442.0
+060850,kr,060850.KQ,Technology,Software - Application,,0.104,47700582400.0,7976686.0
+060900,kr,060900.KQ,Utilities,Utilities - Renewable,,0.31,16448350208.0,59812186.0
+060980,kr,060980.KS,Consumer Cyclical,Auto Parts,,0.052,400516251648.0,9123377.0
+061040,kr,061040.KQ,Technology,Electronic Components,,-0.334,52971900928.0,30708348.0
+061090,kr,061090.KQ,Communication Services,Telecom Services,,0.219,216398233600.0,5577274.0
+061250,kr,061250.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.116,83839148032.0,84175847.0
+061970,kr,061970.KQ,Technology,Semiconductors,,0.052,253641113600.0,56553205.0
+062040,kr,062040.KS,Industrials,Electrical Equipment & Parts,,0.665,4259899506688.0,30384447.0
+062970,kr,062970.KQ,Technology,Communication Equipment,,-0.433,65565155328.0,27262018.0
+063080,kr,063080.KQ,,,,,122468220928.0,6594950.0
+063160,kr,063160.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.126,106976198656.0,5485959.0
+063170,kr,063170.KQ,,,,,139915624448.0,16837018.0
+063440,kr,063440.KQ,,,,,66374037504.0,46029154.0
+063570,kr,063570.KQ,,,,,125871030272.0,30330368.0
+063760,kr,063760.KQ,Technology,Scientific & Technical Instruments,,1.139,21632425984.0,8499971.0
+064090,kr,064090.KQ,Consumer Defensive,Household & Personal Products,,0.834,39694708736.0,49742745.0
+064240,kr,064240.KQ,,,,,73016582144.0,34360745.0
+064260,kr,064260.KQ,Technology,Software - Infrastructure,,-0.175,488924741632.0,66792995.0
+064290,kr,064290.KQ,Technology,Semiconductor Equipment & Materials,,-0.435,184619122688.0,12202189.0
+064350,kr,064350.KS,Industrials,Railroads,,0.128,21522861260800.0,109142293.0
+064400,kr,064400.KS,Technology,Information Technology Services,,0.058,6597933268992.0,96885948.0
+064480,kr,064480.KQ,Technology,Information Technology Services,,0.183,52388851712.0,11590454.0
+064520,kr,064520.KQ,,,,,37339365376.0,22345522.0
+064550,kr,064550.KQ,,,,,320047611904.0,25810291.0
+064760,kr,064760.KQ,,,,,2599791886336.0,11206000.0
+064800,kr,064800.KQ,Technology,Software - Application,,-0.129,86343671808.0,126049160.0
+064820,kr,064820.KQ,,,,,345634406400.0,30860215.0
+064850,kr,064850.KQ,Financial Services,Financial Data & Stock Exchanges,,0.199,228777148416.0,11410332.0
+064960,kr,064960.KS,Consumer Cyclical,Auto Parts,,0.02,790106144768.0,23834272.0
+065060,kr,065060.KQ,,,,,12985754624.0,23783434.0
+065130,kr,065130.KQ,Technology,Semiconductor Equipment & Materials,,-0.037,47354646528.0,14821486.0
+065150,kr,065150.KQ,,,,,0.0,159020005.0
+065170,kr,065170.KQ,Consumer Defensive,Food Distribution,,-0.646,112451796992.0,26678955.0
+065350,kr,065350.KQ,Industrials,Electrical Equipment & Parts,,0.084,1927341932544.0,27183948.0
+065370,kr,065370.KQ,Technology,Information Technology Services,,0.176,35573911552.0,6907556.0
+065420,kr,065420.KQ,,,,,12740302848.0,71574734.0
+065440,kr,065440.KQ,,,,,63005294592.0,27275020.0
+065450,kr,065450.KQ,Industrials,Aerospace & Defense,,0.581,144983162880.0,28652800.0
+065500,kr,065500.KQ,Consumer Cyclical,Auto Parts,,-0.068,77412794368.0,31726554.0
+065510,kr,065510.KQ,Healthcare,Medical Devices,,0.052,89435856896.0,10584125.0
+065530,kr,065530.KQ,Communication Services,Telecom Services,,0.154,67452653568.0,47838759.0
+065570,kr,065570.KQ,,,,,12295692288.0,16093838.0
+065650,kr,065650.KQ,Healthcare,Biotechnology,,0.395,25152530432.0,13308217.0
+065660,kr,065660.KQ,,,,,572348891136.0,10006100.0
+065680,kr,065680.KQ,Technology,Electronic Components,,0.116,241154129920.0,8038471.0
+065690,kr,065690.KQ,Industrials,Specialty Industrial Machinery,,-0.157,18942920704.0,13330697.0
+065710,kr,065710.KQ,Industrials,Specialty Industrial Machinery,,1.325,210361024512.0,4519034.0
+065770,kr,065770.KQ,,,,,14461291520.0,19411130.0
+065950,kr,065950.KQ,Consumer Cyclical,Textile Manufacturing,,0.178,43349213184.0,27246521.0
+066130,kr,066130.KQ,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.12,50449772544.0,12011851.0
+066310,kr,066310.KQ,,,,,85223923712.0,9095403.0
+066360,kr,066360.KQ,Consumer Defensive,Packaged Foods,,0.037,51500466176.0,47952015.0
+066410,kr,066410.KQ,,,,,0.0,86443390.0
+066430,kr,066430.KQ,Basic Materials,Specialty Chemicals,,-0.035,100994408448.0,39145122.0
+066570,kr,066570.KS,Technology,Consumer Electronics,,0.048,20383463899136.0,162884638.0
+066575,kr,066575.KS,Technology,Consumer Electronics,,0.048,18636381093888.0,17181299.0
+066590,kr,066590.KQ,Consumer Cyclical,Auto Parts,,0.076,106944495616.0,38677937.0
+066620,kr,066620.KQ,Industrials,Consulting Services,,0.09,150037102592.0,6609564.0
+066670,kr,066670.KQ,,,,,42697564160.0,15697634.0
+066700,kr,066700.KQ,,,,,96293715968.0,36683320.0
+066790,kr,066790.KQ,Communication Services,Entertainment,,0.073,90304339968.0,60485161.0
+066900,kr,066900.KQ,,,,,28739379200.0,16100493.0
+066910,kr,066910.KQ,,,,,42906890240.0,66833164.0
+066970,kr,066970.KS,Industrials,Electrical Equipment & Parts,,0.855,4049229840384.0,37492869.0
+066980,kr,066980.KQ,Industrials,Waste Management,,0.632,72393555968.0,51932250.0
+067000,kr,067000.KQ,Communication Services,Electronic Gaming & Multimedia,,-0.221,200273379328.0,69903446.0
+067010,kr,067010.KQ,,,,,24172470272.0,10888500.0
+067080,kr,067080.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.026,261873909760.0,17516650.0
+067160,kr,067160.KQ,,,,,692698742784.0,10656904.0
+067170,kr,067170.KQ,Consumer Cyclical,Auto Manufacturers,,0.002,41392467968.0,22705689.0
+067280,kr,067280.KQ,,,,,167135166464.0,5926779.0
+067290,kr,067290.KQ,,,,,113996267520.0,55880525.0
+067310,kr,067310.KQ,,,,,2061057523712.0,66271949.0
+067370,kr,067370.KQ,,,,,63257632768.0,12164929.0
+067390,kr,067390.KQ,Industrials,Aerospace & Defense,,0.497,322016313344.0,403024182.0
+067570,kr,067570.KQ,Consumer Cyclical,Auto Parts,,-0.026,96202317824.0,41736364.0
+067630,kr,067630.KQ,,,,,463628337152.0,121847138.0
+067730,kr,067730.KQ,Industrials,Specialty Business Services,,0.147,23362521088.0,9673922.0
+067770,kr,067770.KQ,,,,,16135114752.0,8295689.0
+067830,kr,067830.KS,Consumer Cyclical,Department Stores,,-0.127,111539609600.0,37682300.0
+067900,kr,067900.KQ,,,,,129593565184.0,18099659.0
+067920,kr,067920.KQ,Industrials,Security & Protection Services,,0.142,61158551552.0,10142380.0
+067990,kr,067990.KQ,Consumer Cyclical,Auto & Truck Dealerships,,0.177,121191464960.0,28151327.0
+068050,kr,068050.KQ,,,,,44375969792.0,27042029.0
+068100,kr,068100.KQ,Technology,Scientific & Technical Instruments,,0.25,27060813824.0,9734106.0
+068240,kr,068240.KQ,Industrials,Railroads,,-0.621,95981043712.0,38163437.0
+068270,kr,068270.KS,Healthcare,Biotechnology,,0.167,44958329339904.0,218775332.0
+068290,kr,068290.KS,Communication Services,Publishing,,-0.04,94700003328.0,10000000.0
+068330,kr,068330.KQ,,,,,61973340160.0,41676758.0
+068760,kr,068760.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.927,2701975617536.0,44294684.0
+068790,kr,068790.KQ,,,,,176273457152.0,22570224.0
+068930,kr,068930.KQ,Consumer Defensive,Education & Training Services,,0.158,234784260096.0,26203600.0
+068940,kr,068940.KQ,,,,,0.0,45357127.0
+069080,kr,069080.KQ,,,,,359556513792.0,29066815.0
+069140,kr,069140.KQ,Industrials,Engineering & Construction,,0.262,29877149696.0,13075339.0
+069260,kr,069260.KS,Basic Materials,Chemicals,,-0.01,727511793664.0,38370877.0
+069330,kr,069330.KQ,Technology,Electronic Components,,-0.062,14036754432.0,14107291.0
+069410,kr,069410.KQ,Technology,Software - Infrastructure,,0.339,48319643648.0,9771414.0
+069460,kr,069460.KS,Basic Materials,Aluminum,,0.491,48179892224.0,86967311.0
+069500,kr,069500.KQ,,,,,,
+069510,kr,069510.KQ,,,,,126402297856.0,8410000.0
+069540,kr,069540.KQ,Technology,Communication Equipment,,1.423,84425678848.0,59412866.0
+069620,kr,069620.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.149,1915793965056.0,11506270.0
+069640,kr,069640.KS,Consumer Cyclical,Apparel Manufacturing,,0.068,25197963264.0,42137065.0
+069660,kr,069660.KQ,,,,,,
+069730,kr,069730.KS,Industrials,Electrical Equipment & Parts,,0.011,70200000512.0,14400000.0
+069920,kr,069920.KQ,,,,,22459467776.0,40613862.0
+069960,kr,069960.KS,Consumer Cyclical,Department Stores,,-0.026,1836657541120.0,21633186.0
+070300,kr,070300.KQ,Technology,Communication Equipment,,0.2,36496486400.0,23305547.0
+070590,kr,070590.KQ,,,,,27283963904.0,13662476.0
+070960,kr,070960.KS,Consumer Cyclical,Resorts & Casinos,,-0.371,146407374848.0,47304483.0
+071050,kr,071050.KS,Financial Services,Capital Markets,,0.744,12672097583104.0,52738513.0
+071055,kr,071055.KS,Financial Services,Capital Markets,,0.744,12741954764800.0,5658251.0
+071090,kr,071090.KS,Basic Materials,Steel,,0.041,73064456192.0,20183551.0
+071200,kr,071200.KQ,,,,,170878926848.0,24376453.0
+071280,kr,071280.KQ,Technology,Semiconductor Equipment & Materials,,-0.378,129024000000.0,14916069.0
+071320,kr,071320.KS,Utilities,Utilities - Renewable,,0.296,1014297985024.0,11578744.0
+071670,kr,071670.KQ,,,,,90099998720.0,10000000.0
+071840,kr,071840.KS,Consumer Cyclical,Specialty Retail,,0.008,180227194880.0,23135712.0
+071850,kr,071850.KQ,Consumer Cyclical,Auto Parts,,0.049,35590795264.0,24260938.0
+071950,kr,071950.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.326,24953266176.0,11316674.0
+071970,kr,071970.KS,Industrials,Specialty Industrial Machinery,,0.351,2740854980608.0,33921473.0
+072020,kr,072020.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.011,87035789312.0,9358687.0
+072130,kr,072130.KS,Communication Services,Telecom Services,,0.266,62920814592.0,12361653.0
+072470,kr,072470.KQ,Consumer Cyclical,Auto Parts,,0.224,77045612544.0,18883729.0
+072710,kr,072710.KS,Consumer Defensive,Packaged Foods,,0.308,438271148032.0,4637790.0
+072770,kr,072770.KQ,,,,,56696090624.0,74112533.0
+072870,kr,072870.KQ,,,,,142815657984.0,11407002.0
+072950,kr,072950.KQ,Industrials,Electrical Equipment & Parts,,0.399,58157129728.0,8010624.0
+072990,kr,072990.KQ,Technology,Semiconductors,,0.16,67173892096.0,14171707.0
+073010,kr,073010.KQ,,,,,155669594112.0,40069394.0
+073110,kr,073110.KQ,,,,,29906526208.0,5784628.0
+073190,kr,073190.KQ,Industrials,Business Equipment & Supplies,,-0.326,13076983808.0,11063438.0
+073240,kr,073240.KS,Consumer Cyclical,Auto Parts,,-0.001,1648874094592.0,287260287.0
+073490,kr,073490.KQ,,,,,333808828416.0,7603846.0
+073540,kr,073540.KQ,,,,,29867999232.0,11400000.0
+073560,kr,073560.KQ,Consumer Defensive,Farm Products,,-0.026,117496274944.0,69237643.0
+073570,kr,073570.KQ,Technology,Semiconductors,,9.434,34243713024.0,60182271.0
+073640,kr,073640.KQ,,,,,0.0,101888561.0
+074430,kr,074430.KQ,,,,,122957586432.0,87826844.0
+074600,kr,074600.KQ,Technology,Semiconductor Equipment & Materials,,0.023,899049586688.0,26288000.0
+074610,kr,074610.KS,Industrials,Farm & Heavy Construction Machinery,,1.147,4481540096.0,8770137.0
+075130,kr,075130.KQ,Technology,Software - Infrastructure,,0.116,34602323968.0,15586633.0
+075180,kr,075180.KS,Consumer Cyclical,Auto Parts,,0.019,58655997952.0,19200000.0
+075580,kr,075580.KS,Industrials,Marine Shipping,,0.219,1001118892032.0,56849456.0
+075970,kr,075970.KQ,Industrials,Building Products & Equipment,,0.101,41768001536.0,18400000.0
+076080,kr,076080.KQ,,,,,25979779072.0,22072881.0
+076610,kr,076610.KQ,Technology,Electronic Components,,0.68,46952230912.0,44887412.0
+077360,kr,077360.KQ,,,,,636117975040.0,45437002.0
+077500,kr,077500.KS,Technology,Electronics & Computer Distribution,,0.041,133272633344.0,21600102.0
+077970,kr,077970.KS,Industrials,Specialty Industrial Machinery,,-0.01,1368731942912.0,40138766.0
+078000,kr,078000.KS,Communication Services,Telecom Services,,-0.051,96928333824.0,5164003.0
+078020,kr,078020.KQ,,,,,385603534848.0,50405692.0
+078070,kr,078070.KQ,,,,,228373594112.0,16512914.0
+078130,kr,078130.KQ,,,,,342731358208.0,1127405871.0
+078140,kr,078140.KQ,,,,,113970438144.0,10948169.0
+078150,kr,078150.KQ,Technology,Semiconductor Equipment & Materials,,-0.169,188371779584.0,88854618.0
+078160,kr,078160.KQ,,,,,885288927232.0,39085603.0
+078340,kr,078340.KQ,Communication Services,Electronic Gaming & Multimedia,,-0.067,387981115392.0,11444871.0
+078350,kr,078350.KQ,,,,,366759247872.0,14582873.0
+078520,kr,078520.KS,Consumer Defensive,Household & Personal Products,,-0.055,282412548096.0,25767567.0
+078590,kr,078590.KQ,,,,,35214630912.0,65698941.0
+078600,kr,078600.KQ,,,,,1635079684096.0,14986981.0
+078860,kr,078860.KQ,,,,,24261689344.0,59319537.0
+078890,kr,078890.KQ,,,,,114879586304.0,16697614.0
+078930,kr,078930.KS,Industrials,Conglomerates,,0.023,6068678164480.0,92895495.0
+078935,kr,078935.KS,Industrials,Conglomerates,,0.023,6195637125120.0,1779676.0
+079000,kr,079000.KQ,,,,,60559785984.0,6428852.0
+079160,kr,079160.KS,Communication Services,Entertainment,,0.066,817143349248.0,165581235.0
+079170,kr,079170.KQ,,,,,33035321344.0,5169847.0
+079190,kr,079190.KQ,,,,,14877997056.0,37665814.0
+079370,kr,079370.KQ,,,,,523264393216.0,30281505.0
+079430,kr,079430.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.25,145827971072.0,20114202.0
+079550,kr,079550.KS,Industrials,Aerospace & Defense,,0.417,15706735247360.0,21845250.0
+079650,kr,079650.KQ,,,,,28760000512.0,20000000.0
+079810,kr,079810.KQ,,,,,91110514688.0,21188491.0
+079900,kr,079900.KS,Industrials,Farm & Heavy Construction Machinery,,0.043,824879153152.0,14522520.0
+079940,kr,079940.KQ,,,,,366465286144.0,13041469.0
+079950,kr,079950.KQ,,,,,9121590272.0,7065523.0
+079960,kr,079960.KQ,,,,,240897884160.0,7551658.0
+079970,kr,079970.KQ,,,,,7277714432.0,12210930.0
+079980,kr,079980.KS,Consumer Cyclical,Textile Manufacturing,,-0.111,84250419200.0,32910320.0
+080010,kr,080010.KQ,,,,,65182023680.0,9232581.0
+080160,kr,080160.KQ,,,,,204414746624.0,17852816.0
+080220,kr,080220.KQ,,,,,1437426515968.0,33683104.0
+080420,kr,080420.KQ,Technology,Electronic Components,,-0.172,168070660096.0,78721622.0
+080470,kr,080470.KQ,,,,,29820499968.0,7300000.0
+080520,kr,080520.KQ,,,,,33295155200.0,10324079.0
+080530,kr,080530.KQ,Consumer Defensive,Household & Personal Products,,-0.158,50934296576.0,55363364.0
+080580,kr,080580.KQ,Technology,Semiconductor Equipment & Materials,,0.361,359499005952.0,19163060.0
+080720,kr,080720.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.548,19700373504.0,7229495.0
+081000,kr,081000.KS,Industrials,Tools & Accessories,,0.184,201045524480.0,14198130.0
+081150,kr,081150.KQ,,,,,71063576576.0,22740345.0
+081180,kr,081180.KQ,Industrials,Specialty Industrial Machinery,,0.199,107893161984.0,8807605.0
+081580,kr,081580.KQ,,,,,46146260992.0,15204699.0
+081660,kr,081660.KS,Consumer Cyclical,Leisure,,0.037,2537789849600.0,53091840.0
+082210,kr,082210.KQ,,,,,65538150400.0,32525135.0
+082270,kr,082270.KQ,,,,,1615723626496.0,42076135.0
+082640,kr,082640.KS,Financial Services,Insurance - Life,,-0.174,1226651860992.0,156062581.0
+082660,kr,082660.KQ,,,,,47827116032.0,99639825.0
+082740,kr,082740.KS,Industrials,Specialty Industrial Machinery,,0.014,4087851253760.0,83425535.0
+082800,kr,082800.KQ,,,,,207515975680.0,52205277.0
+082850,kr,082850.KQ,,,,,86483910656.0,47207378.0
+082920,kr,082920.KQ,,,,,1130103439360.0,22467264.0
+083310,kr,083310.KQ,,,,,198454362112.0,15614033.0
+083420,kr,083420.KS,Basic Materials,Specialty Chemicals,,-0.063,132493516800.0,23326324.0
+083450,kr,083450.KQ,,,,,522871111680.0,17875935.0
+083470,kr,083470.KQ,,,,,15364024320.0,21338922.0
+083500,kr,083500.KQ,Technology,Semiconductor Equipment & Materials,,-0.469,110564458496.0,7726377.0
+083550,kr,083550.KQ,,,,,45059952640.0,12710847.0
+083640,kr,083640.KQ,,,,,31924027392.0,77111176.0
+083650,kr,083650.KQ,,,,,3208699183104.0,30942134.0
+083660,kr,083660.KQ,,,,,16943353856.0,59242494.0
+083790,kr,083790.KQ,,,,,106882916352.0,76894182.0
+083930,kr,083930.KQ,,,,,209247158272.0,14283083.0
+084010,kr,084010.KS,Basic Materials,Steel,,0.072,337356881920.0,28833922.0
+084110,kr,084110.KQ,,,,,907411587072.0,12180021.0
+084180,kr,084180.KQ,,,,,28571467776.0,18071770.0
+084370,kr,084370.KQ,,,,,2711473881088.0,22261690.0
+084440,kr,084440.KQ,Industrials,Electrical Equipment & Parts,,-0.267,20245045248.0,19712800.0
+084650,kr,084650.KQ,,,,,106385907712.0,74239990.0
+084670,kr,084670.KS,Industrials,Railroads,,0.003,110491148288.0,2609000.0
+084680,kr,084680.KS,Consumer Cyclical,Leisure,,0.144,228441374720.0,141800978.0
+084690,kr,084690.KS,Consumer Defensive,Packaged Foods,,0.069,353068449792.0,36212538.0
+084695,kr,084695.KS,Consumer Defensive,Packaged Foods,,0.069,536470978560.0,913482.0
+084730,kr,084730.KQ,Technology,Scientific & Technical Instruments,,0.003,90982653952.0,10554832.0
+084850,kr,084850.KQ,Technology,Semiconductors,,-0.127,233575645184.0,20688721.0
+084870,kr,084870.KS,Consumer Cyclical,Apparel Manufacturing,,0.118,39443517440.0,20458256.0
+084990,kr,084990.KQ,,,,,275360382976.0,46046888.0
+085310,kr,085310.KS,Industrials,Specialty Industrial Machinery,,0.197,72346492928.0,69497113.0
+085620,kr,085620.KS,Financial Services,Insurance - Life,,0.857,1762784837632.0,130480000.0
+085660,kr,085660.KQ,Healthcare,Biotechnology,,0.172,1484960694272.0,76426183.0
+085670,kr,085670.KQ,,,,,133987557376.0,24450284.0
+085810,kr,085810.KQ,,,,,28452110336.0,60025548.0
+085910,kr,085910.KQ,,,,,239598436352.0,13377914.0
+086040,kr,086040.KQ,,,,,48451858432.0,15405996.0
+086060,kr,086060.KQ,,,,,44775051264.0,8610587.0
+086280,kr,086280.KS,Industrials,Integrated Freight & Logistics,,-0.015,16912500129792.0,75000000.0
+086390,kr,086390.KQ,,,,,397913194496.0,20332817.0
+086450,kr,086450.KQ,,,,,810598924288.0,44392055.0
+086520,kr,086520.KQ,,,,,20479983222784.0,134383081.0
+086670,kr,086670.KQ,,,,,132561436672.0,9704351.0
+086710,kr,086710.KQ,,,,,111094906880.0,12010260.0
+086790,kr,086790.KS,Financial Services,Banks - Regional,,0.829,29919251791872.0,273985814.0
+086820,kr,086820.KQ,Healthcare,Biotechnology,,0.314,316596813824.0,24130854.0
+086890,kr,086890.KQ,,,,,199921074176.0,39666882.0
+086900,kr,086900.KQ,Healthcare,Biotechnology,,0.133,773661130752.0,6578751.0
+086960,kr,086960.KQ,,,,,110829215744.0,92821788.0
+086980,kr,086980.KQ,,,,,177636114432.0,62438000.0
+087010,kr,087010.KQ,,,,,6938151092224.0,23243389.0
+087260,kr,087260.KQ,Technology,Scientific & Technical Instruments,,-0.28,57260482560.0,32552861.0
+087600,kr,087600.KQ,Technology,Semiconductors,,-0.109,40518578176.0,6524731.0
+088130,kr,088130.KQ,,,,,159640911872.0,17485314.0
+088260,kr,088260.KS,Real Estate,REIT - Diversified,,,306890014720.0,63341590.0
+088280,kr,088280.KQ,Technology,Semiconductors,,0.3,39718395904.0,17306490.0
+088290,kr,088290.KQ,Consumer Cyclical,Auto Parts,,0.083,23888080896.0,39879938.0
+088340,kr,088340.KQ,Technology,Software - Application,,-0.051,48658444288.0,3924068.0
+088350,kr,088350.KS,Financial Services,Insurance - Life,,0.051,3595402477568.0,751390250.0
+088390,kr,088390.KQ,,,,,115445760000.0,9385834.0
+088790,kr,088790.KS,Consumer Cyclical,Apparel Manufacturing,,-0.206,30061301760.0,12447744.0
+088800,kr,088800.KQ,,,,,264275574784.0,75078292.0
+088910,kr,088910.KQ,Consumer Defensive,Packaged Foods,,0.041,64047194112.0,25721764.0
+088980,kr,088980.KS,,,,,3982592049152.0,349044000.0
+089010,kr,089010.KQ,,,,,442025312256.0,15455431.0
+089030,kr,089030.KQ,Technology,Semiconductor Equipment & Materials,,-0.106,2265945997312.0,35740474.0
+089140,kr,089140.KQ,,,,,34590621696.0,14909750.0
+089150,kr,089150.KQ,,,,,40388251648.0,17150000.0
+089230,kr,089230.KQ,,,,,55992168448.0,25108597.0
+089470,kr,089470.KS,Consumer Cyclical,Auto Parts,,0.022,139342004224.0,25900000.0
+089590,kr,089590.KS,Industrials,Airlines,,-0.192,423804043264.0,80571111.0
+089600,kr,089600.KQ,Communication Services,Advertising Agencies,,0.033,134091161600.0,11306169.0
+089790,kr,089790.KQ,Technology,Semiconductor Equipment & Materials,,1.507,55565848576.0,9139120.0
+089850,kr,089850.KQ,Technology,Semiconductors,,0.011,78379483136.0,14732985.0
+089860,kr,089860.KS,Industrials,Rental & Leasing Services,,0.055,1171780141056.0,35999388.0
+089890,kr,089890.KQ,,,,,465553063936.0,15970946.0
+089970,kr,089970.KQ,Technology,Semiconductor Equipment & Materials,,2.9,932499554304.0,24095595.0
+089980,kr,089980.KQ,Technology,Electronic Components,,0.176,344550998016.0,15590543.0
+090080,kr,090080.KS,Consumer Cyclical,Auto Parts,,0.133,51717926912.0,54902259.0
+090150,kr,090150.KQ,,,,,30898919424.0,39715836.0
+090350,kr,090350.KS,Basic Materials,Specialty Chemicals,,0.008,177311842304.0,20000000.0
+090355,kr,090355.KS,Basic Materials,Specialty Chemicals,,0.008,270113259520.0,463126.0
+090360,kr,090360.KQ,Industrials,Specialty Industrial Machinery,,0.018,640575012864.0,9750000.0
+090370,kr,090370.KS,Consumer Cyclical,Apparel Manufacturing,,2.383,35011690496.0,24901629.0
+090410,kr,090410.KQ,Industrials,Industrial Distribution,,-0.256,57005953024.0,46084035.0
+090430,kr,090430.KS,Consumer Defensive,Household & Personal Products,,0.041,9085441277952.0,58434274.0
+090435,kr,090435.KS,Consumer Defensive,Household & Personal Products,,0.041,8481681178624.0,10551612.0
+090460,kr,090460.KS,Technology,Electronic Components,,0.127,570349191168.0,32461538.0
+090470,kr,090470.KQ,,,,,145915183104.0,17350201.0
+090710,kr,090710.KQ,,,,,1437701636096.0,119410440.0
+090850,kr,090850.KQ,,,,,140486901760.0,22477903.0
+091120,kr,091120.KQ,,,,,101473517568.0,15805844.0
+091160,kr,091160.KQ,,,,,,
+091170,kr,091170.KQ,,,,,,
+091180,kr,091180.KQ,,,,,,
+091220,kr,091220.KQ,,,,,,
+091230,kr,091230.KQ,,,,,,
+091340,kr,091340.KQ,,,,,24577804288.0,10709283.0
+091440,kr,091440.KQ,,,,,91590172672.0,28444151.0
+091580,kr,091580.KQ,Industrials,Electrical Equipment & Parts,,0.156,209253040128.0,13328219.0
+091590,kr,091590.KQ,Industrials,Engineering & Construction,,0.898,42029199360.0,11740000.0
+091700,kr,091700.KQ,,,,,428018040832.0,49481856.0
+091810,kr,091810.KS,Industrials,Airlines,,0.139,391736492032.0,349452693.0
+091970,kr,091970.KQ,Basic Materials,Specialty Chemicals,,-0.273,23635337216.0,36139661.0
+092040,kr,092040.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.746,76930375680.0,55266076.0
+092070,kr,092070.KQ,,,,,226836054016.0,11229508.0
+092130,kr,092130.KQ,,,,,183664902144.0,12043600.0
+092190,kr,092190.KQ,Technology,Electronic Components,,0.017,179554975744.0,45227953.0
+092200,kr,092200.KS,Consumer Cyclical,Auto Parts,,0.129,362273931264.0,38745875.0
+092220,kr,092220.KS,Technology,Semiconductor Equipment & Materials,,-0.138,281469911040.0,200763141.0
+092230,kr,092230.KS,Industrials,Conglomerates,,-0.007,311955914752.0,3948809.0
+092300,kr,092300.KQ,Technology,Electronic Components,,0.287,58369306624.0,18297589.0
+092440,kr,092440.KS,Industrials,Metal Fabrication,,-0.038,64969998336.0,29200000.0
+092460,kr,092460.KQ,,,,,275465863168.0,17109680.0
+092600,kr,092600.KQ,,,,,14742620160.0,24489402.0
+092730,kr,092730.KQ,,,,,274504040448.0,15641256.0
+092780,kr,092780.KS,Consumer Cyclical,Auto Parts,,0.083,56604880896.0,12620932.0
+092790,kr,092790.KS,Industrials,Metal Fabrication,,-0.223,306043551744.0,26002000.0
+092870,kr,092870.KQ,,,,,366320582656.0,12502409.0
+093050,kr,093050.KS,Consumer Cyclical,Apparel Manufacturing,,-0.171,587400347648.0,27320946.0
+093190,kr,093190.KQ,,,,,117382004736.0,14385050.0
+093240,kr,093240.KS,Consumer Cyclical,Apparel Manufacturing,,0.072,45777321984.0,43639011.0
+093320,kr,093320.KQ,,,,,480781598720.0,4836837.0
+093370,kr,093370.KS,Basic Materials,Chemicals,,0.132,755076825088.0,107255236.0
+093380,kr,093380.KQ,,,,,25360846848.0,9588222.0
+093520,kr,093520.KQ,,,,,220296265728.0,8690188.0
+093640,kr,093640.KQ,,,,,179431178240.0,32623851.0
+093920,kr,093920.KQ,,,,,94302003200.0,18600000.0
+094170,kr,094170.KQ,Technology,Semiconductors,,0.142,547811426304.0,20214445.0
+094280,kr,094280.KS,Technology,Information Technology Services,,0.02,136434188288.0,11038365.0
+094360,kr,094360.KQ,,,,,340427276288.0,20482987.0
+094480,kr,094480.KQ,,,,,342476488704.0,39229838.0
+094800,kr,094800.KS,,,,,541996318720.0,92834304.0
+094820,kr,094820.KQ,,,,,273855905792.0,14835098.0
+094840,kr,094840.KQ,Technology,Scientific & Technical Instruments,,-0.082,72761327616.0,9806109.0
+094850,kr,094850.KQ,,,,,71094231040.0,13464817.0
+094860,kr,094860.KQ,,,,,33984180224.0,24034074.0
+094940,kr,094940.KQ,,,,,80313409536.0,7904863.0
+094970,kr,094970.KQ,,,,,46041927680.0,16712134.0
+095190,kr,095190.KQ,,,,,158256627712.0,65260462.0
+095270,kr,095270.KQ,,,,,60869771264.0,12760958.0
+095340,kr,095340.KQ,,,,,3728575823872.0,20464192.0
+095500,kr,095500.KQ,,,,,264998060032.0,28372383.0
+095570,kr,095570.KS,Industrials,Rental & Leasing Services,,0.12,223755239424.0,44751050.0
+095610,kr,095610.KQ,,,,,1138425593856.0,17541226.0
+095660,kr,095660.KQ,,,,,545216692224.0,19754228.0
+095700,kr,095700.KQ,Healthcare,Biotechnology,,1.996,225124352000.0,45479667.0
+095720,kr,095720.KS,Communication Services,Publishing,,-0.045,128313188352.0,108098728.0
+095910,kr,095910.KQ,,,,,52785553408.0,26632468.0
+096240,kr,096240.KQ,,,,,97346904064.0,8435607.0
+096250,kr,096250.KQ,Technology,Software - Infrastructure,,0.142,136727838720.0,13096536.0
+096350,kr,096350.KQ,,,,,87678025728.0,35933616.0
+096530,kr,096530.KQ,Healthcare,Biotechnology,,0.043,1026020409344.0,46113277.0
+096610,kr,096610.KQ,,,,,0.0,17386411.0
+096630,kr,096630.KQ,,,,,66503540736.0,78331616.0
+096690,kr,096690.KQ,Technology,Computer Hardware,,0.379,29168664576.0,24126274.0
+096760,kr,096760.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.078,289563607040.0,69190827.0
+096770,kr,096770.KS,Energy,Oil & Gas Refining & Marketing,,0.163,19167675678720.0,165992639.0
+096775,kr,096775.KS,Energy,Oil & Gas Refining & Marketing,,0.163,18756841504768.0,1118742.0
+096870,kr,096870.KQ,Technology,Semiconductors,,-0.131,15226752000.0,6678400.0
+097230,kr,097230.KS,Industrials,Engineering & Construction,,-0.003,2306894200832.0,90289403.0
+097520,kr,097520.KS,Technology,Electronic Components,,0.239,390298599424.0,16330485.0
+097780,kr,097780.KQ,,,,,50542477312.0,63415904.0
+097800,kr,097800.KQ,Technology,Semiconductors,,0.313,57718444032.0,136450229.0
+097870,kr,097870.KQ,,,,,53099700224.0,7890000.0
+097950,kr,097950.KS,Consumer Defensive,Packaged Foods,,0.003,3195022606336.0,14696879.0
+097955,kr,097955.KS,Consumer Defensive,Packaged Foods,,0.003,3169941979136.0,1326304.0
+098070,kr,098070.KQ,Industrials,Specialty Industrial Machinery,,0.152,461527351296.0,11121141.0
+098120,kr,098120.KQ,,,,,237745111040.0,8312766.0
+098460,kr,098460.KQ,Technology,Semiconductor Equipment & Materials,,0.302,1933608091648.0,65993450.0
+098660,kr,098660.KQ,,,,,17101382656.0,12137248.0
+099140,kr,099140.KQ,,,,,,
+099190,kr,099190.KQ,,,,,544823214080.0,27585986.0
+099220,kr,099220.KQ,,,,,76729163776.0,62944350.0
+099320,kr,099320.KQ,,,,,2147545645056.0,10951278.0
+099390,kr,099390.KQ,,,,,32026888192.0,7607337.0
+099410,kr,099410.KQ,,,,,71264337920.0,13946055.0
+099430,kr,099430.KQ,Healthcare,Medical Instruments & Supplies,,0.465,300317474816.0,61540462.0
+099440,kr,099440.KQ,Industrials,Specialty Industrial Machinery,,-0.347,350583095296.0,65285492.0
+099520,kr,099520.KQ,,,,,,
+099750,kr,099750.KQ,Healthcare,Health Information Services,,0.115,233618964480.0,26883656.0
+100,kr,000100.KQ,,,,,,
+100030,kr,100030.KQ,Technology,Software - Application,,-0.224,51396825088.0,2663048.0
+100090,kr,100090.KS,Industrials,Aerospace & Defense,,0.472,1191457849344.0,62478129.0
+100120,kr,100120.KQ,Healthcare,Medical Devices,,0.109,237742391296.0,8971411.0
+100130,kr,100130.KQ,,,,,117598158848.0,55733723.0
+100220,kr,100220.KS,Communication Services,Publishing,,-0.001,64565485568.0,12251515.0
+100250,kr,100250.KS,Basic Materials,Specialty Chemicals,,0.054,176409034752.0,58029289.0
+100590,kr,100590.KQ,Technology,Communication Equipment,,-0.018,73892388864.0,15805858.0
+100660,kr,100660.KQ,Industrials,Tools & Accessories,,0.033,55755001856.0,12600000.0
+100700,kr,100700.KQ,,,,,105653387264.0,42177000.0
+100790,kr,100790.KQ,,,,,1163340677120.0,53120578.0
+100840,kr,100840.KS,Industrials,Specialty Industrial Machinery,,1.109,876405129216.0,19761108.0
+100910,kr,100910.KQ,,,,,,
+101000,kr,101000.KQ,,,,,42517590016.0,39624969.0
+101140,kr,101140.KS,Consumer Cyclical,Footwear & Accessories,,0.032,95454420992.0,9984772.0
+101160,kr,101160.KQ,,,,,498631999488.0,16510993.0
+101170,kr,101170.KQ,,,,,183450599424.0,13216902.0
+101240,kr,101240.KQ,Basic Materials,Chemicals,,-0.033,42186821632.0,10858899.0
+101280,kr,101280.KQ,,,,,,
+101330,kr,101330.KQ,,,,,109071753216.0,21428635.0
+101360,kr,101360.KQ,Consumer Cyclical,Auto Parts,,0.683,314629292032.0,17547646.0
+101390,kr,101390.KQ,,,,,5127170560.0,12947400.0
+101400,kr,101400.KQ,Technology,Semiconductors,,-0.024,33266485248.0,68449563.0
+101490,kr,101490.KQ,,,,,1774682243072.0,20829604.0
+101530,kr,101530.KS,Consumer Defensive,Packaged Foods,,0.036,175281750016.0,26517662.0
+101670,kr,101670.KQ,,,,,100681809920.0,52934703.0
+101680,kr,101680.KQ,,,,,25922541568.0,8402769.0
+101730,kr,101730.KQ,,,,,444173025280.0,83334524.0
+101930,kr,101930.KQ,Industrials,Aerospace & Defense,,0.4,471800283136.0,9232882.0
+101970,kr,101970.KQ,Industrials,Metal Fabrication,,-0.41,188171223040.0,14781714.0
+102110,kr,102110.KQ,,,,,,
+102120,kr,102120.KQ,,,,,190395613184.0,16498754.0
+102260,kr,102260.KS,Basic Materials,Chemicals,,0.239,201938911232.0,49193401.0
+102370,kr,102370.KQ,Industrials,Specialty Business Services,,-0.537,91126784000.0,25888290.0
+102460,kr,102460.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.019,192030179328.0,18340991.0
+102710,kr,102710.KQ,,,,,804405182464.0,14287836.0
+102780,kr,102780.KQ,,,,,,
+102940,kr,102940.KQ,,,,,701921361920.0,12423387.0
+102960,kr,102960.KQ,,,,,,
+102970,kr,102970.KQ,,,,,,
+103140,kr,103140.KS,Industrials,Metal Fabrication,,0.04,2840684920832.0,27314278.0
+103230,kr,103230.KQ,,,,,26964000768.0,7200000.0
+103590,kr,103590.KS,Industrials,Electrical Equipment & Parts,,0.358,3785575104512.0,47677269.0
+103840,kr,103840.KQ,Consumer Defensive,Packaged Foods,,0.053,49262948352.0,16366428.0
+104040,kr,104040.KQ,Consumer Cyclical,Auto Parts,,0.819,91715780608.0,133307816.0
+104200,kr,104200.KQ,Communication Services,Internet Content & Information,,0.008,71253426176.0,13520574.0
+104460,kr,104460.KQ,,,,,145372151808.0,9470498.0
+104480,kr,104480.KQ,Consumer Cyclical,Textile Manufacturing,,1.004,170610720768.0,90895434.0
+104520,kr,104520.KQ,,,,,,
+104530,kr,104530.KQ,,,,,,
+104540,kr,104540.KQ,Healthcare,Medical Devices,,0.302,76330868736.0,12785740.0
+104620,kr,104620.KQ,Consumer Cyclical,Leisure,,-0.309,76740173824.0,16810552.0
+104700,kr,104700.KS,Basic Materials,Steel,,-0.145,312886951936.0,33109733.0
+104830,kr,104830.KQ,Basic Materials,Specialty Chemicals,,0.044,542774394880.0,12608000.0
+105,kr,000105.KQ,,,,,,
+105010,kr,105010.KQ,,,,,,
+105190,kr,105190.KQ,,,,,,
+105330,kr,105330.KQ,,,,,125852295168.0,15870403.0
+105550,kr,105550.KQ,Consumer Cyclical,Auto Parts,,0.036,95813836800.0,71663306.0
+105560,kr,105560.KS,Financial Services,Banks - Regional,,0.318,53465426427904.0,358587722.0
+105630,kr,105630.KS,Consumer Cyclical,Apparel Manufacturing,,0.018,489528688640.0,39382839.0
+105740,kr,105740.KQ,Industrials,Metal Fabrication,,0.521,96841719808.0,9891902.0
+105760,kr,105760.KQ,Technology,Computer Hardware,,0.313,54830923776.0,9721795.0
+105780,kr,105780.KQ,,,,,,
+105840,kr,105840.KS,Technology,Scientific & Technical Instruments,,0.918,549398773760.0,19691712.0
+106080,kr,106080.KQ,Technology,Electronic Components,,-0.664,9133490176.0,27677245.0
+106190,kr,106190.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.056,161296515072.0,10632598.0
+106240,kr,106240.KQ,,,,,33811548160.0,16948145.0
+106520,kr,106520.KQ,,,,,0.0,38691726.0
+107590,kr,107590.KS,Basic Materials,Specialty Chemicals,,0.092,152125063168.0,2315450.0
+107600,kr,107600.KQ,Industrials,Waste Management,,0.593,147507412992.0,5630054.0
+107640,kr,107640.KQ,Consumer Cyclical,Auto Parts,,-0.036,564746125312.0,9064946.0
+108230,kr,108230.KQ,,,,,158676992000.0,36435588.0
+108320,kr,108320.KS,Technology,Semiconductors,,-0.061,834358607872.0,16264300.0
+108380,kr,108380.KQ,,,,,269070991360.0,9246426.0
+108450,kr,108450.KQ,,,,,,
+108490,kr,108490.KQ,Technology,Computer Hardware,,0.352,3357425795072.0,13063914.0
+108590,kr,108590.KQ,,,,,,
+108670,kr,108670.KS,Industrials,Building Products & Equipment,,-0.087,288414269440.0,8949795.0
+108675,kr,108675.KS,Industrials,Building Products & Equipment,,-0.087,248887066624.0,1029937.0
+108860,kr,108860.KQ,Technology,Software - Application,,-0.067,276678770688.0,26914276.0
+109070,kr,109070.KS,Technology,Communication Equipment,,-0.212,47519301632.0,52799223.0
+109080,kr,109080.KQ,,,,,48649547776.0,4723257.0
+109610,kr,109610.KQ,Industrials,Building Products & Equipment,,-0.075,136587902976.0,47758010.0
+109670,kr,109670.KQ,Consumer Cyclical,Apparel Manufacturing,,0.018,31919085568.0,5835299.0
+109740,kr,109740.KQ,,,,,158058086400.0,25048824.0
+109820,kr,109820.KQ,Healthcare,Diagnostics & Research,,-0.054,43621699584.0,19964163.0
+109860,kr,109860.KQ,,,,,62006120448.0,8459225.0
+109960,kr,109960.KQ,,,,,35099889664.0,220754019.0
+110020,kr,110020.KQ,Basic Materials,Specialty Chemicals,,-0.152,16885532672.0,9058762.0
+110790,kr,110790.KQ,Consumer Cyclical,Apparel Manufacturing,,0.728,84695318528.0,20860916.0
+110990,kr,110990.KQ,Technology,Electronic Components,,0.844,413328113664.0,18493429.0
+111110,kr,111110.KS,Consumer Cyclical,Textile Manufacturing,,-0.058,67044782080.0,8798528.0
+111380,kr,111380.KS,Consumer Cyclical,Leisure,,0.013,84062027776.0,5801382.0
+111710,kr,111710.KQ,Consumer Cyclical,Leisure,,-0.327,80910843904.0,20588000.0
+111770,kr,111770.KS,Consumer Cyclical,Apparel Manufacturing,,0.128,3792105897984.0,42560112.0
+112040,kr,112040.KQ,,,,,780029132800.0,33804081.0
+112290,kr,112290.KQ,Basic Materials,Specialty Chemicals,,0.134,275006816256.0,10110545.0
+112610,kr,112610.KS,Industrials,Specialty Industrial Machinery,,-0.259,2299846721536.0,41438680.0
+113810,kr,113810.KQ,Consumer Cyclical,Auto Parts,,-0.126,25906673664.0,32628051.0
+114090,kr,114090.KS,Consumer Cyclical,Resorts & Casinos,,0.167,745360850944.0,61855670.0
+114100,kr,114100.KQ,,,,,,
+114190,kr,114190.KQ,Industrials,Specialty Industrial Machinery,,-0.112,343779180544.0,26123038.0
+114260,kr,114260.KQ,,,,,,
+114450,kr,114450.KQ,,,,,52872290304.0,19087470.0
+114460,kr,114460.KQ,,,,,,
+114470,kr,114470.KQ,,,,,,
+114630,kr,114630.KQ,Basic Materials,Specialty Chemicals,,0.536,44470321152.0,86182791.0
+114800,kr,114800.KQ,,,,,,
+114810,kr,114810.KQ,Technology,Semiconductor Equipment & Materials,,0.402,401066098688.0,27640667.0
+114820,kr,114820.KQ,,,,,,
+114840,kr,114840.KQ,,,,,196801183744.0,17202900.0
+115160,kr,115160.KQ,Technology,Communication Equipment,,-0.106,30141876224.0,43121423.0
+115180,kr,115180.KQ,Healthcare,Biotechnology,,-0.253,1717974990848.0,34882741.0
+115310,kr,115310.KQ,Communication Services,Entertainment,,0.159,119513292800.0,1462831.0
+115440,kr,115440.KQ,Technology,Communication Equipment,,-0.167,78819622912.0,10343782.0
+115450,kr,115450.KQ,Healthcare,Biotechnology,,0.143,260939956224.0,88155388.0
+115480,kr,115480.KQ,,,,,32017491968.0,60524558.0
+115500,kr,115500.KQ,Technology,Information Technology Services,,-0.471,108840001536.0,12000000.0
+115530,kr,115530.KQ,Technology,Electronic Components,,1.237,19233529856.0,67963000.0
+115570,kr,115570.KQ,Industrials,Specialty Business Services,,0.192,23078301696.0,7890018.0
+115610,kr,115610.KQ,,,,,30728800256.0,23637538.0
+117460,kr,117460.KQ,,,,,,
+117580,kr,117580.KS,Utilities,Utilities - Regulated Gas,,-0.065,302403354624.0,27194546.0
+117670,kr,117670.KQ,Technology,Semiconductors,,-0.097,122282770432.0,6135613.0
+117680,kr,117680.KQ,,,,,,
+117690,kr,117690.KQ,,,,,,
+117700,kr,117700.KQ,,,,,,
+117730,kr,117730.KQ,Technology,Computer Hardware,,-0.44,375453974528.0,18782090.0
+118000,kr,118000.KS,Healthcare,Drug Manufacturers - General,,1.213,39680073728.0,171775210.0
+118990,kr,118990.KQ,Consumer Cyclical,Auto Parts,,0.036,205032374272.0,24379592.0
+119500,kr,119500.KQ,Industrials,Metal Fabrication,,0.062,49225248768.0,11847232.0
+119610,kr,119610.KQ,Healthcare,Medical Instruments & Supplies,,-0.022,213094662144.0,11413747.0
+119650,kr,119650.KS,Industrials,Pollution & Treatment Controls,,-0.411,50391457792.0,109785310.0
+119830,kr,119830.KQ,Technology,Semiconductor Equipment & Materials,,-0.03,183047979008.0,21974547.0
+119850,kr,119850.KQ,Industrials,Specialty Industrial Machinery,,-0.061,579228008448.0,16022905.0
+120,kr,000120.KQ,,,,,,
+120030,kr,120030.KS,Industrials,Tools & Accessories,,-0.081,97243635712.0,937740.0
+120110,kr,120110.KS,Basic Materials,Chemicals,,0.032,2210439364608.0,27512131.0
+120115,kr,120115.KS,Basic Materials,Chemicals,,0.032,1376254558208.0,2767860.0
+120240,kr,120240.KQ,,,,,95762096128.0,7173191.0
+121440,kr,121440.KQ,,,,,188874997760.0,38624742.0
+121600,kr,121600.KQ,Basic Materials,Specialty Chemicals,,0.446,717702955008.0,11981685.0
+121800,kr,121800.KQ,,,,,0.0,77197596.0
+121850,kr,121850.KQ,Basic Materials,Chemicals,,-0.591,9225126912.0,3647018.0
+121890,kr,121890.KQ,Industrials,Specialty Industrial Machinery,,0.49,18355486720.0,13291446.0
+122090,kr,122090.KQ,,,,,,
+122260,kr,122260.KQ,,,,,,
+122310,kr,122310.KQ,Healthcare,Diagnostics & Research,,-0.089,53083901952.0,12147346.0
+122350,kr,122350.KQ,Consumer Cyclical,Auto Parts,,0.083,58346930176.0,37961568.0
+122450,kr,122450.KQ,Communication Services,Broadcasting,,-0.198,139369611264.0,42817083.0
+122630,kr,122630.KQ,,,,,,
+122640,kr,122640.KQ,Industrials,Specialty Industrial Machinery,,-0.198,519546208256.0,20576088.0
+122690,kr,122690.KQ,,,,,57374072832.0,22238011.0
+122870,kr,122870.KQ,Communication Services,Entertainment,,1.072,1172162740224.0,18546878.0
+122900,kr,122900.KS,Industrials,Specialty Business Services,,-0.026,241960779776.0,31464340.0
+122990,kr,122990.KQ,Technology,Electronic Components,,-0.049,208585834496.0,26673381.0
+123010,kr,123010.KQ,Technology,Semiconductor Equipment & Materials,,-0.094,33686466560.0,32422007.0
+123040,kr,123040.KQ,Consumer Cyclical,Auto Parts,,0.08,145802919936.0,55019968.0
+123310,kr,123310.KQ,,,,,,
+123320,kr,123320.KQ,,,,,,
+123330,kr,123330.KQ,Consumer Defensive,Household & Personal Products,,0.557,207354183680.0,7824686.0
+123410,kr,123410.KQ,Consumer Cyclical,Auto Parts,,0.082,209643175936.0,27841059.0
+123420,kr,123420.KQ,Communication Services,Electronic Gaming & Multimedia,,0.071,71455154176.0,10401041.0
+123570,kr,123570.KQ,,,,,42215133184.0,21353129.0
+123690,kr,123690.KS,Consumer Defensive,Household & Personal Products,,-0.026,138016145408.0,16067071.0
+123700,kr,123700.KS,Consumer Cyclical,Auto Parts,,-0.007,56411705344.0,15604898.0
+123750,kr,123750.KQ,Consumer Cyclical,Leisure,,-0.207,30109517824.0,12731297.0
+123840,kr,123840.KQ,Industrials,Specialty Industrial Machinery,,1.704,23056828416.0,33907100.0
+123860,kr,123860.KQ,Technology,Semiconductors,,-0.421,190216388608.0,12123415.0
+123890,kr,123890.KS,Real Estate,REIT - Diversified,,-0.053,351805276160.0,122367055.0
+124500,kr,124500.KQ,Technology,Information Technology Services,,0.344,1666085158912.0,23204527.0
+124560,kr,124560.KQ,Industrials,Integrated Freight & Logistics,,-0.133,107642470400.0,38720311.0
+125020,kr,125020.KQ,Basic Materials,Copper,,0.046,241295409152.0,34226301.0
+125210,kr,125210.KQ,Industrials,Electrical Equipment & Parts,,0.024,124220825600.0,16496790.0
+125490,kr,125490.KQ,Industrials,Electrical Equipment & Parts,,0.056,572721922048.0,36502352.0
+126340,kr,126340.KQ,,,,,1021402546176.0,6737484.0
+126560,kr,126560.KS,Communication Services,Entertainment,,0.037,360721350656.0,109475375.0
+126600,kr,126600.KQ,Consumer Cyclical,Auto Parts,,0.165,226332950528.0,61924200.0
+126640,kr,126640.KQ,,,,,53600489472.0,35055910.0
+126700,kr,126700.KQ,Technology,Scientific & Technical Instruments,,-0.428,224509149184.0,12807139.0
+126720,kr,126720.KS,Industrials,Specialty Industrial Machinery,,0.219,407447371776.0,14074175.0
+126730,kr,126730.KQ,Industrials,Electrical Equipment & Parts,,0.427,151769104384.0,7933565.0
+126880,kr,126880.KQ,,,,,87227990016.0,23168123.0
+127120,kr,127120.KQ,Healthcare,Biotechnology,,0.264,1252368056320.0,30032809.0
+127710,kr,127710.KQ,Communication Services,Internet Content & Information,,-0.067,44009795584.0,33853686.0
+127980,kr,127980.KQ,Technology,Electronic Components,,-0.129,60618924032.0,11839634.0
+128540,kr,128540.KQ,Consumer Cyclical,Auto Parts,,0.088,50059464704.0,25991414.0
+128660,kr,128660.KQ,Basic Materials,Aluminum,,0.295,83463331840.0,24803369.0
+128820,kr,128820.KS,Energy,Oil & Gas Refining & Marketing,,-0.022,300694929408.0,36447871.0
+128940,kr,128940.KS,Healthcare,Drug Manufacturers - Specialty & Generic,,0.001,6219644796928.0,12680214.0
+129260,kr,129260.KS,Industrials,Integrated Freight & Logistics,,-0.036,70676398080.0,28214132.0
+129890,kr,129890.KQ,Technology,Computer Hardware,,-0.017,42903953408.0,45545602.0
+129920,kr,129920.KQ,Industrials,Specialty Industrial Machinery,,0.144,135504723968.0,13715053.0
+130500,kr,130500.KQ,Consumer Cyclical,Footwear & Accessories,,0.0,36798935040.0,14545033.0
+130580,kr,130580.KQ,,,,,89319997440.0,15400000.0
+130660,kr,130660.KS,Utilities,Utilities - Regulated Electric,,0.092,722090000384.0,32600000.0
+130680,kr,130680.KQ,,,,,,
+130730,kr,130730.KQ,,,,,,
+130740,kr,130740.KQ,Consumer Cyclical,Auto Parts,,0.096,24301242368.0,11276679.0
+131030,kr,131030.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,0.247,162432106496.0,15294925.0
+131090,kr,131090.KQ,Technology,Software - Infrastructure,,-0.013,28957566976.0,7650612.0
+131100,kr,131100.KQ,Basic Materials,Chemicals,,,42881839104.0,32241985.0
+131180,kr,131180.KQ,,,,,25647271936.0,27786861.0
+131220,kr,131220.KQ,Technology,Scientific & Technical Instruments,,0.15,33722095616.0,7452397.0
+131290,kr,131290.KQ,,,,,1127086817280.0,10785520.0
+131370,kr,131370.KQ,Technology,Software - Application,,0.049,115026780160.0,51930828.0
+131400,kr,131400.KQ,,,,,100903256064.0,68595007.0
+131760,kr,131760.KQ,Technology,Electronic Components,,-0.439,28838572032.0,43431583.0
+131890,kr,131890.KQ,,,,,,
+131970,kr,131970.KQ,,,,,1294753202176.0,19238533.0
+132030,kr,132030.KQ,,,,,,
+133690,kr,133690.KQ,,,,,,
+133750,kr,133750.KQ,Consumer Defensive,Education & Training Services,,-0.09,41721720832.0,22074985.0
+133820,kr,133820.KS,Basic Materials,Steel,,0.582,45912571904.0,34914504.0
+134060,kr,134060.KQ,Communication Services,Publishing,,-0.104,15142011904.0,3780777.0
+134380,kr,134380.KS,Basic Materials,Chemicals,,0.131,215065460736.0,1969464.0
+134580,kr,134580.KQ,Technology,Communication Equipment,,1.204,86231097344.0,49050679.0
+134790,kr,134790.KS,Consumer Cyclical,"Furnishings, Fixtures & Appliances",,-0.037,32890787840.0,1678958.0
+136150,kr,136150.KQ,Industrials,Specialty Industrial Machinery,,,140677922816.0,8241237.0
+136340,kr,136340.KQ,,,,,,
+136410,kr,136410.KQ,Basic Materials,Specialty Chemicals,,0.017,82944696320.0,10579681.0
+136480,kr,136480.KQ,Consumer Defensive,Packaged Foods,,0.087,331304009728.0,106187182.0
+136490,kr,136490.KS,Consumer Defensive,Farm Products,,0.183,248492720128.0,23779208.0
+136540,kr,136540.KQ,Technology,Information Technology Services,,-0.068,125147488256.0,10797885.0
+137080,kr,137080.KQ,Technology,Semiconductor Equipment & Materials,,0.275,52366364672.0,11059422.0
+137310,kr,137310.KS,Healthcare,Medical Instruments & Supplies,,-0.038,977289019392.0,119619215.0
+137400,kr,137400.KQ,Industrials,Specialty Industrial Machinery,,-0.465,1114192084992.0,23212336.0
+137610,kr,137610.KQ,,,,,,
+137940,kr,137940.KQ,,,,,17641664512.0,83609782.0
+137950,kr,137950.KQ,Basic Materials,Chemicals,,0.057,88602042368.0,21583931.0
+138040,kr,138040.KS,Financial Services,Capital Markets,,0.185,19078469124096.0,170343476.0
+138070,kr,138070.KQ,Industrials,Tools & Accessories,,0.092,30650683392.0,16767332.0
+138080,kr,138080.KQ,,,,,338070962176.0,10076631.0
+138230,kr,138230.KQ,,,,,,
+138360,kr,138360.KQ,Basic Materials,Chemicals,,-0.95,87824048128.0,51905462.0
+138490,kr,138490.KS,Basic Materials,Specialty Chemicals,,-0.021,504260001792.0,38000000.0
+138520,kr,138520.KQ,,,,,,
+138530,kr,138530.KQ,,,,,,
+138540,kr,138540.KQ,,,,,,
+138610,kr,138610.KQ,Healthcare,Biotechnology,,-0.107,341501345792.0,11307992.0
+138910,kr,138910.KQ,,,,,,
+138920,kr,138920.KQ,,,,,,
+138930,kr,138930.KS,Financial Services,Banks - Regional,,-0.01,5749702393856.0,311975154.0
+139050,kr,139050.KQ,,,,,0.0,8639820.0
+139130,kr,139130.KS,Financial Services,Banks - Regional,,,2655124193280.0,160624583.0
+139220,kr,139220.KQ,,,,,,
+139230,kr,139230.KQ,,,,,,
+139240,kr,139240.KQ,,,,,,
+139250,kr,139250.KQ,,,,,,
+139260,kr,139260.KQ,,,,,,
+139270,kr,139270.KQ,,,,,,
+139280,kr,139280.KQ,,,,,,
+139290,kr,139290.KQ,,,,,,
+139320,kr,139320.KQ,,,,,,
+139480,kr,139480.KS,Consumer Defensive,Discount Stores,,-0.014,2518105194496.0,26788353.0
+139660,kr,139660.KQ,,,,,,
+139670,kr,139670.KQ,Technology,Software - Application,,-0.072,27672866816.0,14118810.0
+139990,kr,139990.KS,Basic Materials,Steel,,0.097,114579718144.0,37877594.0
+140,kr,000140.KQ,,,,,,
+140070,kr,140070.KQ,Technology,Semiconductor Equipment & Materials,,-0.437,68148912128.0,34470872.0
+140410,kr,140410.KQ,,,,,3814009602048.0,30221946.0
+140430,kr,140430.KQ,Industrials,Building Products & Equipment,,-0.431,34362490880.0,51517980.0
+140520,kr,140520.KQ,Basic Materials,Steel,,0.127,42848907264.0,21107836.0
+140570,kr,140570.KQ,,,,,,
+140580,kr,140580.KQ,,,,,,
+140670,kr,140670.KQ,Industrials,Electrical Equipment & Parts,,-0.118,170911956992.0,9238484.0
+140700,kr,140700.KQ,,,,,,
+140710,kr,140710.KQ,,,,,,
+140860,kr,140860.KQ,Technology,Scientific & Technical Instruments,,0.103,1775737765888.0,6950050.0
+140910,kr,140910.KS,,,,,0.0,4275227.0
+140950,kr,140950.KQ,,,,,,
+141000,kr,141000.KQ,,,,,90381852672.0,10270665.0
+141080,kr,141080.KQ,Healthcare,Biotechnology,,0.361,7408443719680.0,36405130.0
+142210,kr,142210.KQ,,,,,119528087552.0,20751403.0
+142280,kr,142280.KQ,Healthcare,Drug Manufacturers - Specialty & Generic,,-0.018,79358033920.0,21741926.0
+142760,kr,142760.KQ,Healthcare,Biotechnology,,-0.666,25462894592.0,39053522.0
+143160,kr,143160.KQ,Industrials,Building Products & Equipment,,-0.065,174041907200.0,9679750.0
+143210,kr,143210.KS,Consumer Cyclical,Auto Parts,,0.066,21988059136.0,21493705.0
+143240,kr,143240.KQ,Industrials,Staffing & Employment Services,,-0.062,147402178560.0,10498731.0
+143540,kr,143540.KQ,,,,,51812544512.0,43686800.0
+143850,kr,143850.KQ,,,,,,
+143860,kr,143860.KQ,,,,,,
+144510,kr,144510.KQ,Healthcare,Diagnostics & Research,,-0.007,397467877376.0,15027141.0
+144600,kr,144600.KQ,,,,,,
+144960,kr,144960.KQ,Technology,Semiconductor Equipment & Materials,,0.177,225799077888.0,40465783.0
+145,kr,000145.KQ,,,,,,
+145020,kr,145020.KQ,Healthcare,Biotechnology,,0.213,2592310034432.0,10801292.0
+145170,kr,145170.KQ,Consumer Cyclical,Apparel Manufacturing,,0.139,62135967744.0,16416372.0
+145210,kr,145210.KS,Industrials,Specialty Industrial Machinery,,0.288,9472142336.0,36291732.0
+145270,kr,145270.KS,Real Estate,REIT - Diversified,,-0.177,42522865664.0,47405647.0
+145670,kr,145670.KQ,,,,,,
+145720,kr,145720.KS,Healthcare,Medical Instruments & Supplies,,-0.174,462240546816.0,8623891.0
+145850,kr,145850.KQ,,,,,,
+145990,kr,145990.KS,Consumer Defensive,Packaged Foods,,0.008,472213553152.0,9666350.0
+145995,kr,145995.KS,Consumer Defensive,Packaged Foods,,0.008,502650208256.0,370070.0
+146060,kr,146060.KQ,Basic Materials,Steel,,0.103,39310819328.0,24013939.0
+146320,kr,146320.KQ,Technology,Semiconductor Equipment & Materials,,0.134,176155983872.0,12700504.0
+147760,kr,147760.KQ,,,,,42684370944.0,10819866.0
+147830,kr,147830.KQ,Industrials,Electrical Equipment & Parts,,0.291,146129600512.0,19151979.0
+147970,kr,147970.KQ,,,,,,
+148020,kr,148020.KQ,,,,,,
+148070,kr,148070.KQ,,,,,,
+148150,kr,148150.KQ,Technology,Electronic Components,,-0.024,154132037632.0,33987221.0
+148250,kr,148250.KQ,Technology,Semiconductors,,0.257,33535684608.0,9446672.0
+148780,kr,148780.KQ,Technology,Software - Application,,-0.025,38269444096.0,31445725.0
+148930,kr,148930.KQ,Technology,Electronic Components,,0.298,27902312448.0,9722060.0
+149950,kr,149950.KQ,Technology,Electronic Components,,0.184,134900228096.0,13667703.0
+149980,kr,149980.KQ,Healthcare,Medical Devices,,0.18,74309140480.0,14599046.0
+150,kr,000150.KQ,,,,,,
+150460,kr,150460.KQ,,,,,,
+150900,kr,150900.KQ,Technology,Software - Infrastructure,,0.068,40349245440.0,11318161.0
+151860,kr,151860.KQ,Consumer Cyclical,Auto Manufacturers,,0.184,258869133312.0,41956099.0
+152100,kr,152100.KQ,,,,,,
+152380,kr,152380.KQ,,,,,,
+152500,kr,152500.KQ,,,,,,
+152550,kr,152550.KQ,,,,,,
+152870,kr,152870.KQ,,,,,,
+153130,kr,153130.KQ,,,,,,
+153270,kr,153270.KQ,,,,,,
+153460,kr,153460.KQ,,,,,,
+153490,kr,153490.KQ,,,,,,
+153710,kr,153710.KQ,,,,,,
+154030,kr,154030.KQ,,,,,,
+154040,kr,154040.KQ,,,,,,
+155,kr,000155.KQ,,,,,,
+155650,kr,155650.KQ,,,,,,
+155660,kr,155660.KQ,,,,,,
+156080,kr,156080.KQ,,,,,,
+156100,kr,156100.KQ,,,,,,
+157,kr,000157.KQ,,,,,,
+157450,kr,157450.KQ,,,,,,
+157490,kr,157490.KQ,,,,,,
+157500,kr,157500.KQ,,,,,,
+158430,kr,158430.KQ,,,,,,
+159010,kr,159010.KQ,,,,,,
+159580,kr,159580.KQ,,,,,,
+159800,kr,159800.KQ,,,,,,
+159910,kr,159910.KQ,,,,,,
+160190,kr,160190.KQ,,,,,,
+160550,kr,160550.KQ,,,,,,
+160580,kr,160580.KQ,,,,,,
+160980,kr,160980.KQ,,,,,,
+161000,kr,161000.KQ,,,,,,
+161390,kr,161390.KQ,,,,,,
+161510,kr,161510.KQ,,,,,,
+161580,kr,161580.KQ,,,,,,
+161890,kr,161890.KQ,,,,,,
+162300,kr,162300.KQ,,,,,,
+163280,kr,163280.KQ,,,,,,
+163560,kr,163560.KQ,,,,,,
+163730,kr,163730.KQ,,,,,,
+166090,kr,166090.KQ,,,,,,
+166400,kr,166400.KQ,,,,,,
+166480,kr,166480.KQ,,,,,,
+167860,kr,167860.KQ,,,,,,
+168330,kr,168330.KQ,,,,,,
+168360,kr,168360.KQ,,,,,,
+168580,kr,168580.KQ,,,,,,
+169330,kr,169330.KQ,,,,,,
+169950,kr,169950.KQ,,,,,,
+170030,kr,170030.KQ,,,,,,
+170790,kr,170790.KQ,,,,,,
+170900,kr,170900.KQ,,,,,,
+170920,kr,170920.KQ,,,,,,
+171010,kr,171010.KQ,,,,,,
+171090,kr,171090.KQ,,,,,,
+171120,kr,171120.KQ,,,,,,
+172670,kr,172670.KQ,,,,,,
+173130,kr,173130.KQ,,,,,,
+173940,kr,173940.KQ,,,,,,
+174350,kr,174350.KQ,,,,,,
+174360,kr,174360.KQ,,,,,,
+174900,kr,174900.KQ,,,,,,
+175140,kr,175140.KQ,,,,,,
+175250,kr,175250.KQ,,,,,,
+175330,kr,175330.KQ,,,,,,
+176750,kr,176750.KQ,,,,,,
+176950,kr,176950.KQ,,,,,,
+177350,kr,177350.KQ,,,,,,
+177830,kr,177830.KQ,,,,,,
+177900,kr,177900.KQ,,,,,,
+178320,kr,178320.KQ,,,,,,
+178780,kr,178780.KQ,,,,,,
+178920,kr,178920.KQ,,,,,,
+179290,kr,179290.KQ,,,,,,
+179530,kr,179530.KQ,,,,,,
+179900,kr,179900.KQ,,,,,,
+180,kr,000180.KQ,,,,,,
+180400,kr,180400.KQ,,,,,,
+180640,kr,180640.KQ,,,,,,
+181480,kr,181480.KQ,,,,,,
+181710,kr,181710.KQ,,,,,,
+182360,kr,182360.KQ,,,,,,
+182400,kr,182400.KQ,,,,,,
+182480,kr,182480.KQ,,,,,,
+182490,kr,182490.KQ,,,,,,
+183190,kr,183190.KQ,,,,,,
+183300,kr,183300.KQ,,,,,,
+183490,kr,183490.KQ,,,,,,
+183700,kr,183700.KQ,,,,,,
+183710,kr,183710.KQ,,,,,,
+184230,kr,184230.KQ,,,,,,
+185490,kr,185490.KQ,,,,,,
+185680,kr,185680.KQ,,,,,,
+185750,kr,185750.KQ,,,,,,
+186230,kr,186230.KQ,,,,,,
+187220,kr,187220.KQ,,,,,,
+187270,kr,187270.KQ,,,,,,
+187420,kr,187420.KQ,,,,,,
+187660,kr,187660.KQ,,,,,,
+187790,kr,187790.KQ,,,,,,
+187870,kr,187870.KQ,,,,,,
+188040,kr,188040.KQ,,,,,,
+188260,kr,188260.KQ,,,,,,
+189300,kr,189300.KQ,,,,,,
+189330,kr,189330.KQ,,,,,,
+189400,kr,189400.KQ,,,,,,
+189690,kr,189690.KQ,,,,,,
+189860,kr,189860.KQ,,,,,,
+189980,kr,189980.KQ,,,,,,
+190510,kr,190510.KQ,,,,,,
+190620,kr,190620.KQ,,,,,,
+190650,kr,190650.KQ,,,,,,
+191410,kr,191410.KQ,,,,,,
+191420,kr,191420.KQ,,,,,,
+192080,kr,192080.KQ,,,,,,
+192090,kr,192090.KQ,,,,,,
+192250,kr,192250.KQ,,,,,,
+192390,kr,192390.KQ,,,,,,
+192400,kr,192400.KQ,,,,,,
+192410,kr,192410.KQ,,,,,,
+192440,kr,192440.KQ,,,,,,
+192650,kr,192650.KQ,,,,,,
+192720,kr,192720.KQ,,,,,,
+192820,kr,192820.KQ,,,,,,
+193250,kr,193250.KQ,,,,,,
+194370,kr,194370.KQ,,,,,,
+194480,kr,194480.KQ,,,,,,
+194700,kr,194700.KQ,,,,,,
+195500,kr,195500.KQ,,,,,,
+195870,kr,195870.KQ,,,,,,
+195920,kr,195920.KQ,,,,,,
+195930,kr,195930.KQ,,,,,,
+195940,kr,195940.KQ,,,,,,
+195970,kr,195970.KQ,,,,,,
+195980,kr,195980.KQ,,,,,,
+195990,kr,195990.KQ,,,,,,
+196030,kr,196030.KQ,,,,,,
+196170,kr,196170.KQ,,,,,,
+196230,kr,196230.KQ,,,,,,
+196300,kr,196300.KQ,,,,,,
+196450,kr,196450.KQ,,,,,,
+196490,kr,196490.KQ,,,,,,
+196700,kr,196700.KQ,,,,,,
+197140,kr,197140.KQ,,,,,,
+198080,kr,198080.KQ,,,,,,
+198440,kr,198440.KQ,,,,,,
+198940,kr,198940.KQ,,,,,,
+199430,kr,199430.KQ,,,,,,
+199480,kr,199480.KQ,,,,,,
+199550,kr,199550.KQ,,,,,,
+199730,kr,199730.KQ,,,,,,
+199800,kr,199800.KQ,,,,,,
+199820,kr,199820.KQ,,,,,,
+20,kr,000020.KQ,,,,,,
+200030,kr,200030.KQ,,,,,,
+200130,kr,200130.KQ,,,,,,
+200230,kr,200230.KQ,,,,,,
+200250,kr,200250.KQ,,,,,,
+200350,kr,200350.KQ,,,,,,
+200470,kr,200470.KQ,,,,,,
+200670,kr,200670.KQ,,,,,,
+200710,kr,200710.KQ,,,,,,
+200780,kr,200780.KQ,,,,,,
+200880,kr,200880.KQ,,,,,,
+201490,kr,201490.KQ,,,,,,
+203400,kr,203400.KQ,,,,,,
+203450,kr,203450.KQ,,,,,,
+203650,kr,203650.KQ,,,,,,
+203690,kr,203690.KQ,,,,,,
+203780,kr,203780.KQ,,,,,,
+204020,kr,204020.KQ,,,,,,
+204210,kr,204210.KQ,,,,,,
+204270,kr,204270.KQ,,,,,,
+204320,kr,204320.KQ,,,,,,
+204450,kr,204450.KQ,,,,,,
+204480,kr,204480.KQ,,,,,,
+204610,kr,204610.KQ,,,,,,
+204620,kr,204620.KQ,,,,,,
+204630,kr,204630.KQ,,,,,,
+204840,kr,204840.KQ,,,,,,
+205100,kr,205100.KQ,,,,,,
+205470,kr,205470.KQ,,,,,,
+205500,kr,205500.KQ,,,,,,
+205720,kr,205720.KQ,,,,,,
+206400,kr,206400.KQ,,,,,,
+206560,kr,206560.KQ,,,,,,
+206640,kr,206640.KQ,,,,,,
+206650,kr,206650.KQ,,,,,,
+207760,kr,207760.KQ,,,,,,
+207940,kr,207940.KQ,,,,,,
+208140,kr,208140.KQ,,,,,,
+208350,kr,208350.KQ,,,,,,
+208370,kr,208370.KQ,,,,,,
+208640,kr,208640.KQ,,,,,,
+208710,kr,208710.KQ,,,,,,
+208860,kr,208860.KQ,,,,,,
+209640,kr,209640.KQ,,,,,,
+210,kr,000210.KQ,,,,,,
+210120,kr,210120.KQ,,,,,,
+210540,kr,210540.KQ,,,,,,
+210780,kr,210780.KQ,,,,,,
+210980,kr,210980.KQ,,,,,,
+211050,kr,211050.KQ,,,,,,
+211270,kr,211270.KQ,,,,,,
+211560,kr,211560.KQ,,,,,,
+211900,kr,211900.KQ,,,,,,
+212560,kr,212560.KQ,,,,,,
+212710,kr,212710.KQ,,,,,,
+213420,kr,213420.KQ,,,,,,
+213500,kr,213500.KQ,,,,,,
+213610,kr,213610.KQ,,,,,,
+213630,kr,213630.KQ,,,,,,
+214150,kr,214150.KQ,,,,,,
+214180,kr,214180.KQ,,,,,,
+214260,kr,214260.KQ,,,,,,
+214270,kr,214270.KQ,,,,,,
+214320,kr,214320.KQ,,,,,,
+214330,kr,214330.KQ,,,,,,
+214370,kr,214370.KQ,,,,,,
+214390,kr,214390.KQ,,,,,,
+214420,kr,214420.KQ,,,,,,
+214430,kr,214430.KQ,,,,,,
+214450,kr,214450.KQ,,,,,,
+214610,kr,214610.KQ,,,,,,
+214680,kr,214680.KQ,,,,,,
+214980,kr,214980.KQ,,,,,,
+215,kr,000215.KQ,,,,,,
+215000,kr,215000.KQ,,,,,,
+215090,kr,215090.KQ,,,,,,
+215100,kr,215100.KQ,,,,,,
+215200,kr,215200.KQ,,,,,,
+215360,kr,215360.KQ,,,,,,
+215380,kr,215380.KQ,,,,,,
+215480,kr,215480.KQ,,,,,,
+215600,kr,215600.KQ,,,,,,
+215620,kr,215620.KQ,,,,,,
+215790,kr,215790.KQ,,,,,,
+216050,kr,216050.KQ,,,,,,
+216080,kr,216080.KQ,,,,,,
+217190,kr,217190.KQ,,,,,,
+217270,kr,217270.KQ,,,,,,
+217330,kr,217330.KQ,,,,,,
+217480,kr,217480.KQ,,,,,,
+217500,kr,217500.KQ,,,,,,
+217590,kr,217590.KQ,,,,,,
+217620,kr,217620.KQ,,,,,,
+217730,kr,217730.KQ,,,,,,
+217770,kr,217770.KQ,,,,,,
+217780,kr,217780.KQ,,,,,,
+217820,kr,217820.KQ,,,,,,
+218150,kr,218150.KQ,,,,,,
+218410,kr,218410.KQ,,,,,,
+218420,kr,218420.KQ,,,,,,
+219130,kr,219130.KQ,,,,,,
+219390,kr,219390.KQ,,,,,,
+219420,kr,219420.KQ,,,,,,
+219480,kr,219480.KQ,,,,,,
+219550,kr,219550.KQ,,,,,,
+219750,kr,219750.KQ,,,,,,
+219900,kr,219900.KQ,,,,,,
+220,kr,000220.KQ,,,,,,
+220100,kr,220100.KQ,,,,,,
+220130,kr,220130.KQ,,,,,,
+220180,kr,220180.KQ,,,,,,
+220260,kr,220260.KQ,,,,,,
+221800,kr,221800.KQ,,,,,,
+221840,kr,221840.KQ,,,,,,
+221980,kr,221980.KQ,,,,,,
+222040,kr,222040.KQ,,,,,,
+222080,kr,222080.KQ,,,,,,
+222110,kr,222110.KQ,,,,,,
+222160,kr,222160.KQ,,,,,,
+222420,kr,222420.KQ,,,,,,
+222800,kr,222800.KQ,,,,,,
+222810,kr,222810.KQ,,,,,,
+222980,kr,222980.KQ,,,,,,
+223190,kr,223190.KQ,,,,,,
+223250,kr,223250.KQ,,,,,,
+223310,kr,223310.KQ,,,,,,
+224060,kr,224060.KQ,,,,,,
+224110,kr,224110.KQ,,,,,,
+225,kr,000225.KQ,,,,,,
+225030,kr,225030.KQ,,,,,,
+225040,kr,225040.KQ,,,,,,
+225050,kr,225050.KQ,,,,,,
+225060,kr,225060.KQ,,,,,,
+225130,kr,225130.KQ,,,,,,
+225190,kr,225190.KQ,,,,,,
+225220,kr,225220.KQ,,,,,,
+225430,kr,225430.KQ,,,,,,
+225530,kr,225530.KQ,,,,,,
+225570,kr,225570.KQ,,,,,,
+225590,kr,225590.KQ,,,,,,
+225800,kr,225800.KQ,,,,,,
+226320,kr,226320.KQ,,,,,,
+226330,kr,226330.KQ,,,,,,
+226340,kr,226340.KQ,,,,,,
+226380,kr,226380.KQ,,,,,,
+226400,kr,226400.KQ,,,,,,
+226490,kr,226490.KQ,,,,,,
+226590,kr,226590.KQ,,,,,,
+226950,kr,226950.KQ,,,,,,
+226980,kr,226980.KQ,,,,,,
+227,kr,000227.KQ,,,,,,
+227100,kr,227100.KQ,,,,,,
+227540,kr,227540.KQ,,,,,,
+227550,kr,227550.KQ,,,,,,
+227560,kr,227560.KQ,,,,,,
+227570,kr,227570.KQ,,,,,,
+227610,kr,227610.KQ,,,,,,
+227830,kr,227830.KQ,,,,,,
+227840,kr,227840.KQ,,,,,,
+227950,kr,227950.KQ,,,,,,
+228340,kr,228340.KQ,,,,,,
+228670,kr,228670.KQ,,,,,,
+228760,kr,228760.KQ,,,,,,
+228790,kr,228790.KQ,,,,,,
+228800,kr,228800.KQ,,,,,,
+228810,kr,228810.KQ,,,,,,
+228820,kr,228820.KQ,,,,,,
+228850,kr,228850.KQ,,,,,,
+229000,kr,229000.KQ,,,,,,
+229200,kr,229200.KQ,,,,,,
+229640,kr,229640.KQ,,,,,,
+229720,kr,229720.KQ,,,,,,
+230,kr,000230.KQ,,,,,,
+230240,kr,230240.KQ,,,,,,
+230360,kr,230360.KQ,,,,,,
+230480,kr,230480.KQ,,,,,,
+230980,kr,230980.KQ,,,,,,
+232080,kr,232080.KQ,,,,,,
+232140,kr,232140.KQ,,,,,,
+232680,kr,232680.KQ,,,,,,
+232830,kr,232830.KQ,,,,,,
+233160,kr,233160.KQ,,,,,,
+233740,kr,233740.KQ,,,,,,
+234030,kr,234030.KQ,,,,,,
+234080,kr,234080.KQ,,,,,,
+234100,kr,234100.KQ,,,,,,
+234300,kr,234300.KQ,,,,,,
+234310,kr,234310.KQ,,,,,,
+234340,kr,234340.KQ,,,,,,
+234690,kr,234690.KQ,,,,,,
+234920,kr,234920.KQ,,,,,,
+235980,kr,235980.KQ,,,,,,
+236200,kr,236200.KQ,,,,,,
+236350,kr,236350.KQ,,,,,,
+236810,kr,236810.KQ,,,,,,
+237350,kr,237350.KQ,,,,,,
+237370,kr,237370.KQ,,,,,,
+237440,kr,237440.KQ,,,,,,
+237690,kr,237690.KQ,,,,,,
+237750,kr,237750.KQ,,,,,,
+237820,kr,237820.KQ,,,,,,
+237880,kr,237880.KQ,,,,,,
+238090,kr,238090.KQ,,,,,,
+238120,kr,238120.KQ,,,,,,
+238200,kr,238200.KQ,,,,,,
+238490,kr,238490.KQ,,,,,,
+238670,kr,238670.KQ,,,,,,
+238720,kr,238720.KQ,,,,,,
+239340,kr,239340.KQ,,,,,,
+239610,kr,239610.KQ,,,,,,
+239660,kr,239660.KQ,,,,,,
+239890,kr,239890.KQ,,,,,,
+240,kr,000240.KQ,,,,,,
+240550,kr,240550.KQ,,,,,,
+240600,kr,240600.KQ,,,,,,
+240810,kr,240810.KQ,,,,,,
+241180,kr,241180.KQ,,,,,,
+241390,kr,241390.KQ,,,,,,
+241520,kr,241520.KQ,,,,,,
+241560,kr,241560.KQ,,,,,,
+241590,kr,241590.KQ,,,,,,
+241690,kr,241690.KQ,,,,,,
+241710,kr,241710.KQ,,,,,,
+241770,kr,241770.KQ,,,,,,
+241790,kr,241790.KQ,,,,,,
+241820,kr,241820.KQ,,,,,,
+241840,kr,241840.KQ,,,,,,
+242040,kr,242040.KQ,,,,,,
+243070,kr,243070.KQ,,,,,,
+243840,kr,243840.KQ,,,,,,
+243880,kr,243880.KQ,,,,,,
+243890,kr,243890.KQ,,,,,,
+244460,kr,244460.KQ,,,,,,
+244580,kr,244580.KQ,,,,,,
+244620,kr,244620.KQ,,,,,,
+244660,kr,244660.KQ,,,,,,
+244670,kr,244670.KQ,,,,,,
+244920,kr,244920.KQ,,,,,,
+245340,kr,245340.KQ,,,,,,
+245350,kr,245350.KQ,,,,,,
+245360,kr,245360.KQ,,,,,,
+245620,kr,245620.KQ,,,,,,
+245710,kr,245710.KQ,,,,,,
+246250,kr,246250.KQ,,,,,,
+246690,kr,246690.KQ,,,,,,
+246710,kr,246710.KQ,,,,,,
+246720,kr,246720.KQ,,,,,,
+246960,kr,246960.KQ,,,,,,
+247540,kr,247540.KQ,,,,,,
+247660,kr,247660.KQ,,,,,,
+248070,kr,248070.KQ,,,,,,
+248170,kr,248170.KQ,,,,,,
+248270,kr,248270.KQ,,,,,,
+249420,kr,249420.KQ,,,,,,
+250,kr,000250.KQ,,,,,,
+250000,kr,250000.KQ,,,,,,
+250060,kr,250060.KQ,,,,,,
+250730,kr,250730.KQ,,,,,,
+250780,kr,250780.KQ,,,,,,
+250930,kr,250930.KQ,,,,,,
+251120,kr,251120.KQ,,,,,,
+251270,kr,251270.KQ,,,,,,
+251340,kr,251340.KQ,,,,,,
+251350,kr,251350.KQ,,,,,,
+251370,kr,251370.KQ,,,,,,
+251590,kr,251590.KQ,,,,,,
+251600,kr,251600.KQ,,,,,,
+251630,kr,251630.KQ,,,,,,
+251970,kr,251970.KQ,,,,,,
+252000,kr,252000.KQ,,,,,,
+252400,kr,252400.KQ,,,,,,
+252410,kr,252410.KQ,,,,,,
+252420,kr,252420.KQ,,,,,,
+252500,kr,252500.KQ,,,,,,
+252650,kr,252650.KQ,,,,,,
+252670,kr,252670.KQ,,,,,,
+252710,kr,252710.KQ,,,,,,
+252990,kr,252990.KQ,,,,,,
+253150,kr,253150.KQ,,,,,,
+253160,kr,253160.KQ,,,,,,
+253230,kr,253230.KQ,,,,,,
+253240,kr,253240.KQ,,,,,,
+253250,kr,253250.KQ,,,,,,
+253280,kr,253280.KQ,,,,,,
+253290,kr,253290.KQ,,,,,,
+253450,kr,253450.KQ,,,,,,
+253590,kr,253590.KQ,,,,,,
+253840,kr,253840.KQ,,,,,,
+254120,kr,254120.KQ,,,,,,
+254490,kr,254490.KQ,,,,,,
+255220,kr,255220.KQ,,,,,,
+255440,kr,255440.KQ,,,,,,
+256150,kr,256150.KQ,,,,,,
+256440,kr,256440.KQ,,,,,,
+256450,kr,256450.KQ,,,,,,
+256630,kr,256630.KQ,,,,,,
+256750,kr,256750.KQ,,,,,,
+256840,kr,256840.KQ,,,,,,
+256940,kr,256940.KQ,,,,,,
+257370,kr,257370.KQ,,,,,,
+257720,kr,257720.KQ,,,,,,
+258610,kr,258610.KQ,,,,,,
+258790,kr,258790.KQ,,,,,,
+258830,kr,258830.KQ,,,,,,
+259630,kr,259630.KQ,,,,,,
+259960,kr,259960.KQ,,,,,,
+260660,kr,260660.KQ,,,,,,
+260930,kr,260930.KQ,,,,,,
+260970,kr,260970.KQ,,,,,,
+261060,kr,261060.KQ,,,,,,
+261070,kr,261070.KQ,,,,,,
+261110,kr,261110.KQ,,,,,,
+261120,kr,261120.KQ,,,,,,
+261140,kr,261140.KQ,,,,,,
+261200,kr,261200.KQ,,,,,,
+261220,kr,261220.KQ,,,,,,
+261240,kr,261240.KQ,,,,,,
+261250,kr,261250.KQ,,,,,,
+261260,kr,261260.KQ,,,,,,
+261270,kr,261270.KQ,,,,,,
+261520,kr,261520.KQ,,,,,,
+261780,kr,261780.KQ,,,,,,
+261920,kr,261920.KQ,,,,,,
+262260,kr,262260.KQ,,,,,,
+262840,kr,262840.KQ,,,,,,
+263020,kr,263020.KQ,,,,,,
+263050,kr,263050.KQ,,,,,,
+263600,kr,263600.KQ,,,,,,
+263690,kr,263690.KQ,,,,,,
+263700,kr,263700.KQ,,,,,,
+263720,kr,263720.KQ,,,,,,
+263750,kr,263750.KQ,,,,,,
+263770,kr,263770.KQ,,,,,,
+263800,kr,263800.KQ,,,,,,
+263810,kr,263810.KQ,,,,,,
+263860,kr,263860.KQ,,,,,,
+263920,kr,263920.KQ,,,,,,
+264450,kr,264450.KQ,,,,,,
+264660,kr,264660.KQ,,,,,,
+264850,kr,264850.KQ,,,,,,
+264900,kr,264900.KQ,,,,,,
+265520,kr,265520.KQ,,,,,,
+265560,kr,265560.KQ,,,,,,
+265690,kr,265690.KQ,,,,,,
+265740,kr,265740.KQ,,,,,,
+266160,kr,266160.KQ,,,,,,
+266360,kr,266360.KQ,,,,,,
+266370,kr,266370.KQ,,,,,,
+266390,kr,266390.KQ,,,,,,
+266410,kr,266410.KQ,,,,,,
+266420,kr,266420.KQ,,,,,,
+266550,kr,266550.KQ,,,,,,
+267250,kr,267250.KQ,,,,,,
+267260,kr,267260.KQ,,,,,,
+267270,kr,267270.KQ,,,,,,
+267290,kr,267290.KQ,,,,,,
+267320,kr,267320.KQ,,,,,,
+267440,kr,267440.KQ,,,,,,
+267450,kr,267450.KQ,,,,,,
+267490,kr,267490.KQ,,,,,,
+267770,kr,267770.KQ,,,,,,
+267790,kr,267790.KQ,,,,,,
+267850,kr,267850.KQ,,,,,,
+267980,kr,267980.KQ,,,,,,
+268280,kr,268280.KQ,,,,,,
+269370,kr,269370.KQ,,,,,,
+269420,kr,269420.KQ,,,,,,
+269530,kr,269530.KQ,,,,,,
+269540,kr,269540.KQ,,,,,,
+269620,kr,269620.KQ,,,,,,
+270,kr,000270.KQ,,,,,,
+270520,kr,270520.KQ,,,,,,
+270660,kr,270660.KQ,,,,,,
+270800,kr,270800.KQ,,,,,,
+270810,kr,270810.KQ,,,,,,
+270870,kr,270870.KQ,,,,,,
+271050,kr,271050.KQ,,,,,,
+271060,kr,271060.KQ,,,,,,
+271560,kr,271560.KQ,,,,,,
+271830,kr,271830.KQ,,,,,,
+271940,kr,271940.KQ,,,,,,
+271980,kr,271980.KQ,,,,,,
+272110,kr,272110.KQ,,,,,,
+272210,kr,272210.KQ,,,,,,
+272290,kr,272290.KQ,,,,,,
+272450,kr,272450.KQ,,,,,,
+272550,kr,272550.KQ,,,,,,
+272560,kr,272560.KQ,,,,,,
+272570,kr,272570.KQ,,,,,,
+272580,kr,272580.KQ,,,,,,
+272910,kr,272910.KQ,,,,,,
+273060,kr,273060.KQ,,,,,,
+273130,kr,273130.KQ,,,,,,
+273140,kr,273140.KQ,,,,,,
+273640,kr,273640.KQ,,,,,,
+274090,kr,274090.KQ,,,,,,
+274400,kr,274400.KQ,,,,,,
+275280,kr,275280.KQ,,,,,,
+275290,kr,275290.KQ,,,,,,
+275300,kr,275300.KQ,,,,,,
+275630,kr,275630.KQ,,,,,,
+275750,kr,275750.KQ,,,,,,
+275980,kr,275980.KQ,,,,,,
+276000,kr,276000.KQ,,,,,,
+276040,kr,276040.KQ,,,,,,
+276650,kr,276650.KQ,,,,,,
+276730,kr,276730.KQ,,,,,,
+276970,kr,276970.KQ,,,,,,
+276990,kr,276990.KQ,,,,,,
+277070,kr,277070.KQ,,,,,,
+277410,kr,277410.KQ,,,,,,
+277540,kr,277540.KQ,,,,,,
+277630,kr,277630.KQ,,,,,,
+277640,kr,277640.KQ,,,,,,
+277650,kr,277650.KQ,,,,,,
+277810,kr,277810.KQ,,,,,,
+277880,kr,277880.KQ,,,,,,
+278240,kr,278240.KQ,,,,,,
+278280,kr,278280.KQ,,,,,,
+278470,kr,278470.KQ,,,,,,
+278530,kr,278530.KQ,,,,,,
+278540,kr,278540.KQ,,,,,,
+278620,kr,278620.KQ,,,,,,
+278650,kr,278650.KQ,,,,,,
+279530,kr,279530.KQ,,,,,,
+279540,kr,279540.KQ,,,,,,
+279570,kr,279570.KQ,,,,,,
+279600,kr,279600.KQ,,,,,,
+280320,kr,280320.KQ,,,,,,
+280360,kr,280360.KQ,,,,,,
+280920,kr,280920.KQ,,,,,,
+280930,kr,280930.KQ,,,,,,
+280940,kr,280940.KQ,,,,,,
+281740,kr,281740.KQ,,,,,,
+281820,kr,281820.KQ,,,,,,
+281990,kr,281990.KQ,,,,,,
+282000,kr,282000.KQ,,,,,,
+282330,kr,282330.KQ,,,,,,
+282720,kr,282720.KQ,,,,,,
+282880,kr,282880.KQ,,,,,,
+283580,kr,283580.KQ,,,,,,
+284430,kr,284430.KQ,,,,,,
+284620,kr,284620.KQ,,,,,,
+284740,kr,284740.KQ,,,,,,
+284980,kr,284980.KQ,,,,,,
+285130,kr,285130.KQ,,,,,,
+285490,kr,285490.KQ,,,,,,
+285690,kr,285690.KQ,,,,,,
+285800,kr,285800.KQ,,,,,,
+286750,kr,286750.KQ,,,,,,
+286940,kr,286940.KQ,,,,,,
+287180,kr,287180.KQ,,,,,,
+287840,kr,287840.KQ,,,,,,
+288330,kr,288330.KQ,,,,,,
+288620,kr,288620.KQ,,,,,,
+288980,kr,288980.KQ,,,,,,
+289010,kr,289010.KQ,,,,,,
+289040,kr,289040.KQ,,,,,,
+289080,kr,289080.KQ,,,,,,
+289220,kr,289220.KQ,,,,,,
+289250,kr,289250.KQ,,,,,,
+289260,kr,289260.KQ,,,,,,
+289480,kr,289480.KQ,,,,,,
+289670,kr,289670.KQ,,,,,,
+289930,kr,289930.KQ,,,,,,
+290080,kr,290080.KQ,,,,,,
+290090,kr,290090.KQ,,,,,,
+290120,kr,290120.KQ,,,,,,
+290130,kr,290130.KQ,,,,,,
+290270,kr,290270.KQ,,,,,,
+290520,kr,290520.KQ,,,,,,
+290550,kr,290550.KQ,,,,,,
+290560,kr,290560.KQ,,,,,,
+290650,kr,290650.KQ,,,,,,
+290660,kr,290660.KQ,,,,,,
+290670,kr,290670.KQ,,,,,,
+290690,kr,290690.KQ,,,,,,
+290720,kr,290720.KQ,,,,,,
+290740,kr,290740.KQ,,,,,,
+291130,kr,291130.KQ,,,,,,
+291230,kr,291230.KQ,,,,,,
+291620,kr,291620.KQ,,,,,,
+291630,kr,291630.KQ,,,,,,
+291650,kr,291650.KQ,,,,,,
+291680,kr,291680.KQ,,,,,,
+291810,kr,291810.KQ,,,,,,
+291890,kr,291890.KQ,,,,,,
+292050,kr,292050.KQ,,,,,,
+292150,kr,292150.KQ,,,,,,
+292160,kr,292160.KQ,,,,,,
+292190,kr,292190.KQ,,,,,,
+292500,kr,292500.KQ,,,,,,
+292560,kr,292560.KQ,,,,,,
+292770,kr,292770.KQ,,,,,,
+293180,kr,293180.KQ,,,,,,
+293480,kr,293480.KQ,,,,,,
+293490,kr,293490.KQ,,,,,,
+293580,kr,293580.KQ,,,,,,
+293780,kr,293780.KQ,,,,,,
+293940,kr,293940.KQ,,,,,,
+294090,kr,294090.KQ,,,,,,
+294140,kr,294140.KQ,,,,,,
+294400,kr,294400.KQ,,,,,,
+294570,kr,294570.KQ,,,,,,
+294630,kr,294630.KQ,,,,,,
+294870,kr,294870.KQ,,,,,,
+295000,kr,295000.KQ,,,,,,
+295020,kr,295020.KQ,,,,,,
+295040,kr,295040.KQ,,,,,,
+295310,kr,295310.KQ,,,,,,
+296640,kr,296640.KQ,,,,,,
+297090,kr,297090.KQ,,,,,,
+297570,kr,297570.KQ,,,,,,
+297890,kr,297890.KQ,,,,,,
+298000,kr,298000.KQ,,,,,,
+298020,kr,298020.KQ,,,,,,
+298040,kr,298040.KQ,,,,,,
+298050,kr,298050.KQ,,,,,,
+298060,kr,298060.KQ,,,,,,
+298340,kr,298340.KQ,,,,,,
+298380,kr,298380.KQ,,,,,,
+298540,kr,298540.KQ,,,,,,
+298690,kr,298690.KQ,,,,,,
+298770,kr,298770.KQ,,,,,,
+298830,kr,298830.KQ,,,,,,
+299030,kr,299030.KQ,,,,,,
+299170,kr,299170.KQ,,,,,,
+299660,kr,299660.KQ,,,,,,
+299900,kr,299900.KQ,,,,,,
+300,kr,000300.KQ,,,,,,
+300080,kr,300080.KQ,,,,,,
+300120,kr,300120.KQ,,,,,,
+300610,kr,300610.KQ,,,,,,
+300640,kr,300640.KQ,,,,,,
+300720,kr,300720.KQ,,,,,,
+300950,kr,300950.KQ,,,,,,
+301300,kr,301300.KQ,,,,,,
+301400,kr,301400.KQ,,,,,,
+301410,kr,301410.KQ,,,,,,
+302190,kr,302190.KQ,,,,,,
+302430,kr,302430.KQ,,,,,,
+302440,kr,302440.KQ,,,,,,
+302450,kr,302450.KQ,,,,,,
+302550,kr,302550.KQ,,,,,,
+303030,kr,303030.KQ,,,,,,
+303360,kr,303360.KQ,,,,,,
+303530,kr,303530.KQ,,,,,,
+303810,kr,303810.KQ,,,,,,
+304100,kr,304100.KQ,,,,,,
+304360,kr,304360.KQ,,,,,,
+304660,kr,304660.KQ,,,,,,
+304670,kr,304670.KQ,,,,,,
+304760,kr,304760.KQ,,,,,,
+304770,kr,304770.KQ,,,,,,
+304780,kr,304780.KQ,,,,,,
+304840,kr,304840.KQ,,,,,,
+304940,kr,304940.KQ,,,,,,
+305050,kr,305050.KQ,,,,,,
+305080,kr,305080.KQ,,,,,,
+305090,kr,305090.KQ,,,,,,
+305540,kr,305540.KQ,,,,,,
+305720,kr,305720.KQ,,,,,,
+306040,kr,306040.KQ,,,,,,
+306200,kr,306200.KQ,,,,,,
+306520,kr,306520.KQ,,,,,,
+306530,kr,306530.KQ,,,,,,
+320,kr,000320.KQ,,,,,,
+325,kr,000325.KQ,,,,,,
+370,kr,000370.KQ,,,,,,
+390,kr,000390.KQ,,,,,,
+40,kr,000040.KQ,,,,,,
+400,kr,000400.KQ,,,,,,
+430,kr,000430.KQ,,,,,,
+440,kr,000440.KQ,,,,,,
+480,kr,000480.KQ,,,,,,
+490,kr,000490.KQ,,,,,,
+50,kr,000050.KQ,,,,,,
+500,kr,000500.KQ,,,,,,
+520,kr,000520.KQ,,,,,,
+70,kr,000070.KQ,,,,,,
+80,kr,000080.KQ,,,,,,
+87,kr,000087.KQ,,,,,,

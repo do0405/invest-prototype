@@ -13,13 +13,11 @@ OPTION_RESULTS_DIR = os.path.join(RESULTS_DIR, "option")
 
 MARKMINERVINI_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, "markminervini")
 QULLAMAGGIE_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, "qullamaggie")
-LEADER_STOCK_RESULTS_DIR = os.path.join(RESULTS_DIR, "leader_stock")
 MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, "momentum_signals")
 RANKING_RESULTS_DIR = os.path.join(RESULTS_DIR, "ranking")
 
 DATA_US_DIR = os.path.join(DATA_DIR, "us")
 DATA_KR_DIR = os.path.join(DATA_DIR, "kr")
-BREADTH_DATA_DIR = os.path.join(DATA_DIR, "breadth")
 OPTION_DATA_DIR = os.path.join(DATA_DIR, "options")
 EXTERNAL_DATA_DIR = os.path.join(DATA_DIR, "external")
 BACKUP_DIR = os.path.join(BASE_DIR, "backup")
@@ -27,7 +25,6 @@ BACKUP_DIR = os.path.join(BASE_DIR, "backup")
 SCREENERS_DIR = os.path.join(BASE_DIR, "screeners")
 MARKMINERVINI_DIR = os.path.join(SCREENERS_DIR, "markminervini")
 QULLAMAGGIE_DIR = os.path.join(SCREENERS_DIR, "qullamaggie")
-LEADER_STOCK_DIR = os.path.join(SCREENERS_DIR, "leader_stock")
 MOMENTUM_SIGNALS_DIR = os.path.join(SCREENERS_DIR, "momentum_signals")
 
 US_WITH_RS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, "us_with_rs.csv")
@@ -50,27 +47,6 @@ OPTION_DATA_SOURCES = [
     "yfinance",
     "exclusion",
 ]
-
-LEADER_STOCK_CRITERIA = {
-    "stage1": {
-        "rsi_threshold": 30,
-        "volume_surge": 2.0,
-    },
-    "stage2": {
-        "sma_period": 30,
-        "bollinger_breakout": True,
-        "volume_threshold": 1.5,
-    },
-    "stage3": {
-        "rsi_overbought": 70,
-        "volume_explosion": 5.0,
-        "momentum_threshold": 10,
-    },
-    "stage4": {
-        "price_decline_min": 5,
-        "price_decline_max": 10,
-    },
-}
 
 MOMENTUM_SIGNALS_CRITERIA = {
     "min_momentum_score": 10,

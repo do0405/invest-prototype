@@ -1,21 +1,35 @@
-"""KR OHLCV collector using pykrx and CSV artifacts."""
+"""KR OHLCV collector using local seed symbols and yfinance only."""
 
 from __future__ import annotations
 
+import contextlib
+import io
+import logging
 import os
+import time
+from functools import lru_cache
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
+import yfinance as yf
 
 from config import DATA_KR_DIR
+from data_collectors.symbol_universe import load_kr_symbol_universe
+from utils import ensure_dir
+from utils.console_runtime import bootstrap_windows_utf8
 from utils.market_data_contract import (
     CANONICAL_OHLCV_COLUMNS,
     LEGACY_MOJIBAKE_ALIASES,
     OHLCV_COLUMN_ALIASES,
     normalize_ohlcv_columns,
 )
-from utils import ensure_dir
+from utils.market_runtime import get_stock_metadata_path, iter_provider_symbols
+from utils.ohlcv_progress import format_us_style_chunk_start, format_us_style_chunk_summary
+from utils.yfinance_runtime import bootstrap_yfinance_cache
+
+
+logger = logging.getLogger(__name__)
 
 CANONICAL_KR_OHLCV_COLUMNS = CANONICAL_OHLCV_COLUMNS
 KR_OHLCV_COLUMN_ALIASES = {
@@ -26,6 +40,14 @@ KR_OHLCV_COLUMN_ALIASES = {
 for canonical, aliases in LEGACY_MOJIBAKE_ALIASES.items():
     for alias in aliases:
         KR_OHLCV_COLUMN_ALIASES[alias] = canonical
+
+KR_OHLCV_CHUNK_SIZE = 30
+KR_OHLCV_CHUNK_PAUSE_SECONDS = 1.0
+KR_OHLCV_REQUEST_DELAY_SECONDS = 0.1
+KR_OHLCV_MAX_RETRIES = 2
+KR_OHLCV_EMPTY_RETRY_DELAY_SECONDS = 1.0
+KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS = 10.0
+
 
 def _normalize_kr_ohlcv_frame(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
     if df is None or df.empty:
@@ -61,111 +83,525 @@ def _normalize_kr_ohlcv_frame(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
     return frame
 
 
-def _resolve_business_day_yyyymmdd(stock_module, day: datetime) -> str:
-    day_str = day.strftime("%Y%m%d")
-    try:
-        return stock_module.get_nearest_business_day_in_a_week(day_str)
-    except Exception:
-        return day_str
+def _resolve_market_day(day: datetime) -> datetime:
+    current = day.replace(hour=0, minute=0, second=0, microsecond=0)
+    while current.weekday() >= 5:
+        current -= timedelta(days=1)
+    return current
 
 
-def _collect_ticker_list(
-    stock_module,
-    as_of_yyyymmdd: str,
+def _resolve_kr_universe(
+    *,
+    target_dir: str,
     include_kosdaq: bool,
     include_etf: bool,
     include_etn: bool,
-) -> List[str]:
-    tickers: List[str] = []
-    markets = ["KOSPI"]
-    if include_kosdaq:
-        markets.append("KOSDAQ")
-    if include_etf:
-        markets.append("ETF")
-    if include_etn:
-        markets.append("ETN")
+) -> Tuple[List[str], List[Dict[str, str]]]:
+    universe = load_kr_symbol_universe(
+        data_dir=target_dir,
+        stock_metadata_path=get_stock_metadata_path("kr"),
+        include_kosdaq=include_kosdaq,
+        include_etf=include_etf,
+        include_etn=include_etn,
+    )
+    diagnostics: List[Dict[str, str]] = []
+    if universe:
+        diagnostics.append(
+            {
+                "source": "local_seed",
+                "scope": "universe",
+                "error": "using existing KR csv files and stock_metadata_kr.csv",
+            }
+        )
+    return universe, diagnostics
 
-    for market in markets:
+
+@lru_cache(maxsize=1)
+def _load_kr_provider_symbol_map() -> dict[str, str]:
+    metadata_path = get_stock_metadata_path("kr")
+    if not os.path.exists(metadata_path):
+        return {}
+    try:
+        frame = pd.read_csv(metadata_path)
+    except Exception:
+        return {}
+    if frame is None or frame.empty or "symbol" not in frame.columns:
+        return {}
+
+    mapping: dict[str, str] = {}
+    for _, row in frame.iterrows():
+        symbol = str(row.get("symbol") or "").strip().upper()
+        provider_symbol = str(row.get("provider_symbol") or "").strip().upper()
+        if symbol and provider_symbol:
+            mapping[symbol] = provider_symbol
+    return mapping
+
+
+def _iter_kr_provider_symbols(ticker: str) -> list[str]:
+    provider_symbols: list[str] = []
+    preferred = _load_kr_provider_symbol_map().get(str(ticker or "").strip().upper(), "")
+    if preferred:
+        provider_symbols.append(preferred)
+    for candidate in iter_provider_symbols(ticker, "kr"):
+        if candidate not in provider_symbols:
+            provider_symbols.append(candidate)
+    return provider_symbols
+
+
+def _fetch_kr_ohlcv_via_yfinance(
+    *,
+    ticker: str,
+    start_dt: datetime,
+    end_dt: datetime,
+) -> Tuple[pd.DataFrame, Optional[str], Optional[str]]:
+    last_error: Optional[str] = None
+    for provider_symbol in _iter_kr_provider_symbols(ticker):
+        sink = io.StringIO()
         try:
-            tickers.extend(stock_module.get_market_ticker_list(as_of_yyyymmdd, market=market))
-        except Exception:
+            with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+                history = yf.Ticker(provider_symbol).history(
+                    start=start_dt.strftime("%Y-%m-%d"),
+                    end=(end_dt + timedelta(days=1)).strftime("%Y-%m-%d"),
+                    interval="1d",
+                    auto_adjust=False,
+                    actions=False,
+                )
+        except Exception as exc:
+            last_error = str(exc)
+            noisy_output = sink.getvalue().strip()
+            if noisy_output:
+                last_error = f"{last_error} | {noisy_output}" if last_error else noisy_output
             continue
 
-    return sorted(set(tickers))
+        normalized = _normalize_kr_ohlcv_frame(history, ticker=ticker)
+        if not normalized.empty:
+            return normalized, provider_symbol, None
+
+        noisy_output = sink.getvalue().strip()
+        if noisy_output:
+            last_error = noisy_output
+
+    return pd.DataFrame(), None, last_error or "yfinance returned empty frame"
+
+
+def _fetch_kr_ohlcv_with_fallback(
+    *,
+    ticker: str,
+    start_dt: datetime,
+    end_dt: datetime,
+    end_yyyymmdd: str,
+    stock_client: Any,
+    fdr_module: Any | None,
+    provider_mode: str = "yfinance_only",
+) -> Tuple[pd.DataFrame, str, Optional[str]]:
+    del end_yyyymmdd, stock_client, fdr_module, provider_mode
+    normalized, provider_symbol, fetch_error = _fetch_kr_ohlcv_via_yfinance(
+        ticker=ticker,
+        start_dt=start_dt,
+        end_dt=end_dt,
+    )
+    if not normalized.empty:
+        return normalized, f"yfinance:{provider_symbol}", None
+    return pd.DataFrame(), "unavailable", fetch_error
+
+
+def _fetch_yfinance_index_ohlcv(
+    *,
+    symbol: str,
+    provider_symbol: str,
+    start_dt: datetime,
+    end_dt: datetime,
+) -> pd.DataFrame:
+    sink = io.StringIO()
+    try:
+        with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+            history = yf.Ticker(provider_symbol).history(
+                start=start_dt.strftime("%Y-%m-%d"),
+                end=(end_dt + timedelta(days=1)).strftime("%Y-%m-%d"),
+                interval="1d",
+                auto_adjust=False,
+                actions=False,
+            )
+    except Exception:
+        return pd.DataFrame()
+    return _normalize_kr_ohlcv_frame(history, ticker=symbol)
+
+
+def _collect_index_benchmarks(
+    stock_module: Any,
+    *,
+    start_yyyymmdd: str,
+    end_yyyymmdd: str,
+    target_dir: str,
+) -> list[str]:
+    del stock_module
+    start_dt = datetime.strptime(start_yyyymmdd, "%Y%m%d")
+    end_dt = datetime.strptime(end_yyyymmdd, "%Y%m%d")
+    saved: list[str] = []
+    index_specs = [
+        ("KOSPI", "^KS11"),
+        ("KOSDAQ", "^KQ11"),
+    ]
+    for symbol, provider_symbol in index_specs:
+        normalized = _fetch_yfinance_index_ohlcv(
+            symbol=symbol,
+            provider_symbol=provider_symbol,
+            start_dt=start_dt,
+            end_dt=end_dt,
+        )
+        if normalized.empty:
+            continue
+        out_path = os.path.join(target_dir, f"{symbol}.csv")
+        normalized.to_csv(out_path, index=False)
+        saved.append(symbol)
+    return saved
+
+
+def _read_existing_kr_ohlcv(path: str, ticker: str) -> Optional[pd.DataFrame]:
+    if not os.path.exists(path):
+        return None
+    existing = pd.read_csv(path)
+    return _normalize_kr_ohlcv_frame(existing, ticker=ticker)
+
+
+def _trim_kr_ohlcv_window(frame: pd.DataFrame, start_dt: datetime) -> pd.DataFrame:
+    if frame is None or frame.empty:
+        return pd.DataFrame(columns=list(CANONICAL_KR_OHLCV_COLUMNS))
+
+    trimmed = frame.copy()
+    trimmed["date"] = pd.to_datetime(trimmed["date"], errors="coerce")
+    trimmed = trimmed.dropna(subset=["date"])
+    trimmed = trimmed[trimmed["date"] >= pd.Timestamp(start_dt.date())].copy()
+    trimmed["date"] = trimmed["date"].dt.strftime("%Y-%m-%d")
+    trimmed = trimmed.sort_values("date").reset_index(drop=True)
+    return trimmed[list(CANONICAL_KR_OHLCV_COLUMNS)]
+
+
+def _merge_kr_ohlcv_frames(existing: Optional[pd.DataFrame], new_frame: pd.DataFrame) -> pd.DataFrame:
+    if existing is None or existing.empty:
+        return new_frame.copy()
+
+    merged_existing = existing.copy()
+    merged_new = new_frame.copy()
+    merged_existing["date"] = pd.to_datetime(merged_existing["date"], errors="coerce")
+    merged_new["date"] = pd.to_datetime(merged_new["date"], errors="coerce")
+    merged_existing = merged_existing.dropna(subset=["date"])
+    merged_new = merged_new.dropna(subset=["date"])
+
+    merged_existing["date_key"] = merged_existing["date"].dt.strftime("%Y-%m-%d")
+    merged_new["date_key"] = merged_new["date"].dt.strftime("%Y-%m-%d")
+    merged_existing = merged_existing[~merged_existing["date_key"].isin(merged_new["date_key"])].copy()
+
+    merged = pd.concat([merged_existing, merged_new], ignore_index=True)
+    merged = merged.sort_values("date").reset_index(drop=True)
+    merged["date"] = merged["date"].dt.strftime("%Y-%m-%d")
+    merged = merged.drop(columns=["date_key"], errors="ignore")
+    return merged[list(CANONICAL_KR_OHLCV_COLUMNS)]
+
+
+def _is_kr_rate_limit_error(message: str) -> bool:
+    lowered = (message or "").lower()
+    return any(
+        token in lowered
+        for token in (
+            "429",
+            "too many requests",
+            "rate limit",
+            "rate exceeded",
+            "service unavailable",
+            "temporarily unavailable",
+            "try again later",
+            "failed to establish a new connection",
+            "max retries exceeded",
+            "connection aborted",
+            "connection pool",
+            "read timed out",
+        )
+    )
+
+
+def _is_kr_unavailable_error(message: str) -> bool:
+    normalized = str(message or "").lower()
+    return any(
+        token in normalized
+        for token in (
+            "delisted",
+            "no timezone found",
+            "possibly delisted",
+            "not found",
+            "invalid ticker",
+            "symbol may be delisted",
+            "404",
+            "no price data found",
+        )
+    )
+
+
+def _normalize_kr_unavailable_reason(message: str) -> str:
+    raw = str(message or "").strip()
+    normalized = raw.lower()
+
+    if "no timezone found" in normalized:
+        return "possibly delisted; no timezone found"
+    if "quote not found for symbol" in normalized:
+        return "quote not found"
+    if "no price data found" in normalized:
+        return "possibly delisted; no price data found"
+    if "symbol may be delisted" in normalized:
+        return "possibly delisted; symbol may be delisted"
+    if "invalid ticker" in normalized:
+        return "invalid ticker"
+    if "not found" in normalized or "404" in normalized:
+        return "not found"
+    compact = " ".join(raw.split())
+    return compact[:120] if compact else "possibly delisted"
+
+
+def _classify_kr_unavailable_reason(reason: str) -> str:
+    normalized = str(reason or "").lower().strip()
+    if normalized.startswith("possibly delisted;"):
+        return "soft"
+    return "hard"
+
+
+def _format_kr_chunk_summary(chunk_num: int, total_chunks: int, statuses: List[str]) -> str:
+    return format_us_style_chunk_summary(chunk_num, total_chunks, statuses)
 
 
 def collect_kr_ohlcv_csv(
     days: int = 450,
     include_kosdaq: bool = True,
     include_etf: bool = True,
-    include_etn: bool = False,
+    include_etn: bool = True,
     *,
     stock_module=None,
+    fdr_module=None,
     output_dir: Optional[str] = None,
     tickers: Optional[List[str]] = None,
     as_of: Optional[datetime] = None,
     max_failed_samples: int = 20,
+    provider_mode: str = "yfinance_only",
 ) -> Dict[str, object]:
-    """Collect KR OHLCV for all tickers and save canonical CSV files.
+    """Collect KR OHLCV for all tickers and save canonical CSV files."""
+    bootstrap_windows_utf8()
+    bootstrap_yfinance_cache()
+    requested_mode = str(provider_mode or "yfinance_only").strip().lower()
+    normalized_provider_mode = "yfinance_only"
+    if requested_mode not in {"", "yfinance_only", "yfinance", "yahoo"}:
+        print(f"[KR] provider_mode={requested_mode} is ignored; using yfinance_only")
 
-    Args:
-        days: History window from resolved business day.
-        include_kosdaq: Include KOSDAQ universe in addition to KOSPI.
-        include_etf: Include ETF universe (including leveraged/inverse ETFs).
-        include_etn: Include ETN universe.
-        stock_module: Optional injected module compatible with ``pykrx.stock`` API.
-        output_dir: Optional destination directory (defaults to ``DATA_KR_DIR``).
-        tickers: Optional explicit ticker universe override.
-        as_of: Optional 기준 시점 for reproducible runs.
-        max_failed_samples: Max failed ticker records to include in summary.
-    """
-    stock_client = stock_module
-    if stock_client is None:
-        from pykrx import stock as stock_client
+    del stock_module, fdr_module
 
     target_dir = output_dir or DATA_KR_DIR
     ensure_dir(target_dir)
 
-    end_dt = as_of or datetime.now()
-    end_yyyymmdd = _resolve_business_day_yyyymmdd(stock_client, end_dt)
-    start_dt = datetime.strptime(end_yyyymmdd, "%Y%m%d") - timedelta(days=days)
+    end_dt = _resolve_market_day(as_of or datetime.now())
+    end_yyyymmdd = end_dt.strftime("%Y%m%d")
+    start_dt = end_dt - timedelta(days=days)
     start_yyyymmdd = start_dt.strftime("%Y%m%d")
 
-    universe = sorted(
-        set(
-            tickers
-            or _collect_ticker_list(
-                stock_client,
-                end_yyyymmdd,
-                include_kosdaq=include_kosdaq,
-                include_etf=include_etf,
-                include_etn=include_etn,
-            )
+    universe_errors: List[Dict[str, str]] = []
+    if tickers is not None:
+        universe = sorted({str(ticker or "").strip().upper() for ticker in tickers if str(ticker or "").strip()})
+    else:
+        universe, universe_errors = _resolve_kr_universe(
+            target_dir=target_dir,
+            include_kosdaq=include_kosdaq,
+            include_etf=include_etf,
+            include_etn=include_etn,
         )
-    )
-    saved = 0
-    failed = 0
-    skipped_empty = 0
+        for item in universe_errors:
+            print(f"[KR] universe source: {item['source']}/{item['scope']} - {item['error']}")
+
+    if not universe:
+        if tickers is not None:
+            raise RuntimeError("KR ticker universe is empty: explicit ticker override is empty")
+        raise RuntimeError(
+            "KR ticker universe is empty (no numeric symbols found in data/kr or data/stock_metadata_kr.csv)"
+        )
+
+    status_counts = {
+        "saved": 0,
+        "latest": 0,
+        "kept_existing": 0,
+        "soft_unavailable": 0,
+        "delisted": 0,
+        "rate_limited": 0,
+        "failed": 0,
+    }
     failed_samples: List[Dict[str, str]] = []
+    used_sources: set[str] = set()
 
-    for ticker in universe:
-        try:
-            raw = stock_client.get_market_ohlcv_by_date(start_yyyymmdd, end_yyyymmdd, ticker)
-            normalized = _normalize_kr_ohlcv_frame(raw, ticker=ticker)
-            if normalized.empty:
-                skipped_empty += 1
+    def process_ticker(ticker: str) -> Tuple[str, Optional[str]]:
+        out_path = os.path.join(target_dir, f"{ticker}.csv")
+        existing: Optional[pd.DataFrame] = None
+        last_date: Optional[pd.Timestamp] = None
+        fetch_start_dt = start_dt
+
+        if os.path.exists(out_path):
+            try:
+                existing = _read_existing_kr_ohlcv(out_path, ticker=ticker)
+                if existing is None or existing.empty:
+                    print(f"[KR] 📊 빈 파일 감지, 새로 데이터 수집: {ticker}")
+                    existing = None
+                else:
+                    existing["date"] = pd.to_datetime(existing["date"], errors="coerce")
+                    existing = existing.dropna(subset=["date"]).sort_values("date").reset_index(drop=True)
+                    if not existing.empty:
+                        last_date = existing["date"].max()
+                        fetch_start_dt = (last_date + timedelta(days=1)).to_pydatetime()
+            except Exception as exc:
+                print(f"[KR] ⚠️ {ticker} 기존 파일 오류: {exc}")
+                existing = None
+
+        if fetch_start_dt.date() > end_dt.date():
+            last_date_str = last_date.strftime("%Y-%m-%d") if last_date is not None else end_dt.strftime("%Y-%m-%d")
+            print(f"[KR] ⏩ 최신 상태: {ticker} (마지막 데이터: {last_date_str})")
+            return "latest", None
+
+        print(
+            f"[DEBUG] {ticker}: 수집 시작일 {fetch_start_dt.strftime('%Y-%m-%d')}, "
+            f"종료일 {end_dt.strftime('%Y-%m-%d')}"
+        )
+
+        saw_rate_limit = False
+        last_error: Optional[str] = None
+
+        for attempt in range(KR_OHLCV_MAX_RETRIES):
+            if KR_OHLCV_REQUEST_DELAY_SECONDS > 0:
+                time.sleep(KR_OHLCV_REQUEST_DELAY_SECONDS)
+
+            print(
+                f"[KR] 📊 데이터 요청 중: {ticker} "
+                f"({fetch_start_dt.strftime('%Y-%m-%d')} ~ {end_dt.strftime('%Y-%m-%d')})"
+            )
+            normalized, provider_source, fetch_error = _fetch_kr_ohlcv_with_fallback(
+                ticker=ticker,
+                start_dt=fetch_start_dt,
+                end_dt=end_dt,
+                end_yyyymmdd=end_yyyymmdd,
+                stock_client=None,
+                fdr_module=None,
+                provider_mode=normalized_provider_mode,
+            )
+
+            if provider_source != "unavailable":
+                used_sources.add(provider_source.split(":", 1)[0])
+
+            if not normalized.empty:
+                before_len = len(existing) if existing is not None else 0
+                merged = _merge_kr_ohlcv_frames(existing, normalized)
+                merged = _trim_kr_ohlcv_window(merged, start_dt)
+                merged.to_csv(out_path, index=False)
+
+                if before_len > 0:
+                    delta = len(merged) - before_len
+                    if delta > 0:
+                        print(f"[KR] ✅ 저장됨: {ticker} ({len(merged)} rows, +{delta})")
+                    else:
+                        print(f"[KR] 🔄 데이터 업데이트됨: {ticker} ({len(merged)} rows)")
+                else:
+                    print(f"[KR] ✅ 신규 저장: {ticker} ({len(merged)} rows)")
+                return "saved", None
+
+            last_error = fetch_error
+            if fetch_error and _is_kr_rate_limit_error(fetch_error):
+                saw_rate_limit = True
+                wait = KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS * (attempt + 1)
+                print(
+                    f"[KR] 🚫 API 제한 도달: {ticker} - 잠시 후 다시 시도하세요"
+                )
+                if attempt < KR_OHLCV_MAX_RETRIES - 1:
+                    print(
+                        f"[KR] ⚠️ {ticker} 빈 데이터 반환, 재시도 {attempt + 1}/{KR_OHLCV_MAX_RETRIES} "
+                        f"({wait:.0f}s 대기)"
+                    )
+                    time.sleep(wait)
+                    continue
+                break
+
+            if attempt < KR_OHLCV_MAX_RETRIES - 1:
+                wait = KR_OHLCV_EMPTY_RETRY_DELAY_SECONDS * (attempt + 1)
+                print(
+                    f"[KR] ⚠️ {ticker} 빈 데이터 반환, 재시도 {attempt + 1}/{KR_OHLCV_MAX_RETRIES} "
+                    f"({wait:.0f}s 대기)"
+                )
+                time.sleep(wait)
                 continue
-            out_path = os.path.join(target_dir, f"{ticker}.csv")
-            normalized.to_csv(out_path, index=False)
-            saved += 1
-        except Exception as exc:
-            failed += 1
-            if len(failed_samples) < max_failed_samples:
-                failed_samples.append({"ticker": ticker, "error": str(exc)})
 
+        if saw_rate_limit:
+            if existing is not None and len(existing) > 0:
+                print(f"[KR] 🚫 API 제한으로 수집 보류, 기존 데이터 유지: {ticker}")
+                return "rate_limited", last_error
+            print(f"[KR] 🚫 API 제한으로 수집 보류, 다음 실행에서 재시도: {ticker}")
+            return "rate_limited", last_error
+
+        if last_error:
+            if _is_kr_unavailable_error(last_error):
+                reason = _normalize_kr_unavailable_reason(last_error)
+                if _classify_kr_unavailable_reason(reason) == "soft":
+                    print(f"[KR] ⚠️ Yahoo soft signal: {ticker} - {reason}")
+                    if existing is not None and len(existing) > 0:
+                        print(f"[KR] ⏩ Yahoo soft signal, 기존 데이터 유지: {ticker}")
+                        return "kept_existing", last_error
+                    print(f"[KR] ⚠️ 미확정 심볼 응답, 다음 실행에서 재시도: {ticker}")
+                    return "soft_unavailable", last_error
+
+                if existing is not None and len(existing) > 0:
+                    print(f"[KR] 🚫 공급자 미지원/비활성 심볼: {ticker} - {reason}")
+                    print(f"[KR] 🚫 비활성 심볼로 마킹: {ticker}")
+                else:
+                    print(f"[KR] 🚫 공급자 미지원/비활성 심볼: {ticker} - {reason}")
+
+                empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
+                empty_df.to_csv(out_path, index=False)
+                return "delisted", last_error
+
+            if existing is not None and len(existing) > 0:
+                print(f"[KR] ⏩ 새 데이터 없음, 기존 데이터 유지: {ticker}")
+                return "kept_existing", last_error
+            print(f"[KR] ❌ 오류 발생 ({ticker}): {last_error[:100]}")
+            return "failed", last_error
+
+        if existing is not None and len(existing) > 0:
+            print(f"[KR] ❌ 빈 데이터: {ticker}")
+            print(f"[KR] ⏩ 새 데이터 없음, 기존 데이터 유지: {ticker}")
+            return "kept_existing", last_error
+
+        print(f"[KR] ❌ 빈 데이터: {ticker}")
+        print(f"[KR] ⚠️ 신규 데이터 수집 실패, 다음 실행에서 재시도: {ticker}")
+        return "failed", last_error
+
+    total_chunks = (len(universe) + KR_OHLCV_CHUNK_SIZE - 1) // KR_OHLCV_CHUNK_SIZE
+    for chunk_index, offset in enumerate(range(0, len(universe), KR_OHLCV_CHUNK_SIZE), start=1):
+        chunk = universe[offset : offset + KR_OHLCV_CHUNK_SIZE]
+        print(format_us_style_chunk_start(chunk_index, total_chunks, chunk))
+
+        chunk_statuses: List[str] = []
+        for ticker in chunk:
+            status, error = process_ticker(ticker)
+            chunk_statuses.append(status)
+            status_counts[status] += 1
+            if status in {"failed", "rate_limited", "soft_unavailable", "delisted"} and error and len(failed_samples) < max_failed_samples:
+                failed_samples.append({"ticker": ticker, "error": error})
+
+        print(_format_kr_chunk_summary(chunk_index, total_chunks, chunk_statuses))
+        if chunk_index < total_chunks:
+            pause = KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS if "rate_limited" in chunk_statuses else KR_OHLCV_CHUNK_PAUSE_SECONDS
+            print(f"⏳ {pause:.1f}초 대기 중...")
+            time.sleep(pause)
+
+    benchmark_files = _collect_index_benchmarks(
+        None,
+        start_yyyymmdd=start_yyyymmdd,
+        end_yyyymmdd=end_yyyymmdd,
+        target_dir=target_dir,
+    )
+
+    source_label = "+".join(sorted(used_sources)) if used_sources else "yfinance"
     return {
         "schema_version": "1.0",
-        "source": "pykrx",
+        "source": source_label,
         "market": "kr",
         "include_kosdaq": bool(include_kosdaq),
         "include_etf": bool(include_etf),
@@ -174,16 +610,25 @@ def collect_kr_ohlcv_csv(
         "from": start_yyyymmdd,
         "to": end_yyyymmdd,
         "total": len(universe),
-        "saved": saved,
-        "failed": failed,
-        "skipped_empty": skipped_empty,
+        "saved": status_counts["saved"],
+        "latest": status_counts["latest"],
+        "kept_existing": status_counts["kept_existing"],
+        "failed": status_counts["failed"],
+        "soft_unavailable": status_counts["soft_unavailable"],
+        "delisted": status_counts["delisted"],
+        "skipped_empty": status_counts["soft_unavailable"],
+        "rate_limited": status_counts["rate_limited"],
+        "status_counts": status_counts,
         "failed_samples": failed_samples,
+        "benchmark_files": benchmark_files,
         "data_dir": target_dir,
+        "sources_used": sorted(used_sources),
+        "provider_mode": normalized_provider_mode,
     }
 
 
 if __name__ == "__main__":
+    bootstrap_windows_utf8()
+    bootstrap_yfinance_cache()
     summary = collect_kr_ohlcv_csv()
     print(summary)
-    
-    

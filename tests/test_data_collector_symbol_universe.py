@@ -78,3 +78,38 @@ def test_update_symbol_list_writes_new_csvs_to_existing_data_us_dir(monkeypatch)
     assert "SPY" in symbols
     assert "SQQQ" in symbols
     assert (us_dir / "SQQQ.csv").exists()
+
+
+def test_collect_data_without_symbol_update_uses_existing_csv_universe(monkeypatch):
+    captured: dict[str, object] = {}
+
+    monkeypatch.setattr(dc, "_list_symbols_from_existing_us_csv", lambda: {"AAA", "BBB"})
+    monkeypatch.setattr(dc, "_load_us_symbol_universe", lambda: (_ for _ in ()).throw(AssertionError("seeded universe should not be used")))
+    monkeypatch.setattr(dc, "ensure_dir", lambda directory: None)
+    monkeypatch.setattr(
+        dc,
+        "fetch_and_save_us_ohlcv_chunked",
+        lambda **kwargs: captured.update({"tickers": kwargs["tickers"]}),
+    )
+
+    dc.collect_data(update_symbols=False)
+
+    assert captured["tickers"] == ["AAA", "BBB"]
+
+
+def test_collect_data_update_symbol_failure_falls_back_to_existing_csv_universe(monkeypatch):
+    captured: dict[str, object] = {}
+
+    monkeypatch.setattr(dc, "update_symbol_list", lambda: (_ for _ in ()).throw(RuntimeError("boom")))
+    monkeypatch.setattr(dc, "_list_symbols_from_existing_us_csv", lambda: {"SPY"})
+    monkeypatch.setattr(dc, "_load_us_symbol_universe", lambda: (_ for _ in ()).throw(AssertionError("seeded universe should not be used")))
+    monkeypatch.setattr(dc, "ensure_dir", lambda directory: None)
+    monkeypatch.setattr(
+        dc,
+        "fetch_and_save_us_ohlcv_chunked",
+        lambda **kwargs: captured.update({"tickers": kwargs["tickers"]}),
+    )
+
+    dc.collect_data(update_symbols=True)
+
+    assert captured["tickers"] == ["SPY"]

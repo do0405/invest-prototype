@@ -6,6 +6,7 @@ import pandas as pd
 
 from tests._paths import runtime_root
 from screeners.qullamaggie.earnings_data_collector import EarningsDataCollector
+from screeners.qullamaggie import screener as qullamaggie_screener
 
 
 def _reset_dir(path: Path) -> None:
@@ -150,3 +151,41 @@ def test_calculate_surprise_does_not_invent_missing_revenue_values():
     assert payload["revenue_actual"] is None
     assert payload["revenue_estimate"] is None
     assert payload["revenue_surprise_pct"] is None
+
+
+def test_qullamaggie_kr_defaults_to_earnings_filter(monkeypatch):
+    captured: dict[str, object] = {}
+    sample_frame = pd.DataFrame(
+        {
+            "date": pd.date_range("2025-01-01", periods=80, freq="B").strftime("%Y-%m-%d"),
+            "open": [100 + index for index in range(80)],
+            "high": [101 + index for index in range(80)],
+            "low": [99 + index for index in range(80)],
+            "close": [100.5 + index for index in range(80)],
+            "volume": [1_000_000] * 80,
+            "symbol": ["005930"] * 80,
+        }
+    )
+
+    monkeypatch.setattr(qullamaggie_screener, "_load_market_symbols", lambda market: ["005930"])
+    monkeypatch.setattr(qullamaggie_screener, "load_local_ohlcv_frame", lambda market, symbol: sample_frame.copy())
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "screen_episode_pivot_setup",
+        lambda symbol, frame, enable_earnings_filter, market: {
+            "symbol": symbol,
+            "passed": True,
+            "score": 5,
+            "earnings_filter_enabled": captured.setdefault("earnings_filter_enabled", enable_earnings_filter),
+            "market": captured.setdefault("market", market),
+        },
+    )
+    monkeypatch.setattr(qullamaggie_screener, "save_screening_results", lambda **kwargs: {"csv": "dummy.csv", "json": "dummy.json"})
+    monkeypatch.setattr(qullamaggie_screener, "track_new_tickers", lambda **kwargs: [])
+    monkeypatch.setattr(qullamaggie_screener, "create_screener_summary", lambda **kwargs: None)
+
+    result = qullamaggie_screener.run_qullamaggie_screening(setup_type="episode_pivot", market="kr")
+
+    assert captured["earnings_filter_enabled"] is True
+    assert captured["market"] == "kr"
+    assert len(result["episode_pivot"]) == 1

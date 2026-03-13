@@ -1,0 +1,20 @@
+[
+  {
+    "as_of_ts":"2025-04-22",
+    "symbol":"005930",
+    "market":"KR",
+    "sector":"",
+    "setup_scope":"PATTERN_EXCLUDED_POOL",
+    "stock_grade":"A+",
+    "a_pp_score":84.62,
+    "focus_seed_score":80.52,
+    "compression_score":70.0,
+    "high_52w_proximity":0.9972,
+    "breakout_universe_pass":false,
+    "ep_universe_pass":false,
+    "pivot_price":180.18,
+    "stop_price":178.18,
+    "regime_state":"RISK_ON",
+    "regime_score":66.5
+  }
+]

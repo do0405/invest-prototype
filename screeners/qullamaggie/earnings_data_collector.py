@@ -13,9 +13,9 @@ from typing import Any, Dict, Optional
 import pandas as pd
 import yfinance as yf
 
-from config import EARNINGS_CACHE_DIR
 from utils.external_data_cache import is_file_fresh, load_csv, write_csv_atomic
 from utils.io_utils import safe_filename
+from utils.market_runtime import get_earnings_cache_dir, iter_provider_symbols, market_key
 
 try:
     import yahoo_fin.stock_info as si
@@ -31,11 +31,12 @@ logger = logging.getLogger(__name__)
 class EarningsDataCollector:
     """Collect and score earnings surprise data with in-memory + CSV cache."""
 
-    def __init__(self, cache_dir: Optional[str] = None, cache_duration: int = 3600):
+    def __init__(self, cache_dir: Optional[str] = None, cache_duration: int = 3600, *, market: str = "us"):
         self.cache: dict[str, Dict[str, Any]] = {}
         self.cache_expiry: dict[str, datetime] = {}
         self.cache_duration = int(cache_duration)
-        self.cache_dir = cache_dir or EARNINGS_CACHE_DIR
+        self.market = market_key(market)
+        self.cache_dir = cache_dir or get_earnings_cache_dir(self.market)
         self._cache_lock = threading.Lock()
 
     def _symbol_key(self, symbol: str) -> str:
@@ -132,86 +133,88 @@ class EarningsDataCollector:
             return None
 
     def _fetch_yf_earnings(self, symbol: str) -> Optional[pd.DataFrame]:
-        try:
-            ticker = yf.Ticker(symbol)
-            earnings_history = getattr(ticker, "earnings_history", None)
-            if earnings_history is None or earnings_history.empty:
-                return None
+        for provider_symbol in iter_provider_symbols(symbol, self.market):
+            try:
+                ticker = yf.Ticker(provider_symbol)
+                earnings_history = getattr(ticker, "earnings_history", None)
+                if earnings_history is None or earnings_history.empty:
+                    continue
 
-            history = earnings_history.copy()
-            if isinstance(history.columns, pd.MultiIndex):
-                history.columns = [col[0] if isinstance(col, tuple) else col for col in history.columns]
-            if isinstance(history.index, pd.MultiIndex) or not isinstance(history.index, pd.RangeIndex):
-                history = history.reset_index()
+                history = earnings_history.copy()
+                if isinstance(history.columns, pd.MultiIndex):
+                    history.columns = [col[0] if isinstance(col, tuple) else col for col in history.columns]
+                if isinstance(history.index, pd.MultiIndex) or not isinstance(history.index, pd.RangeIndex):
+                    history = history.reset_index()
 
-            date_col = self._find_column(history, ["earnings date", "earnings_date", "date", "asofdate"])
-            eps_actual_col = self._find_column(history, ["reported eps", "eps actual", "epsactual", "actualeps"])
-            eps_estimate_col = self._find_column(history, ["eps estimate", "epsestimate", "estimateeps", "consensuseps"])
-            revenue_actual_col = self._find_column(history, ["revenue actual", "revenueactual", "actualrevenue"])
-            revenue_estimate_col = self._find_column(history, ["revenue estimate", "revenueestimate", "estimatedrevenue"])
+                date_col = self._find_column(history, ["earnings date", "earnings_date", "date", "asofdate"])
+                eps_actual_col = self._find_column(history, ["reported eps", "eps actual", "epsactual", "actualeps"])
+                eps_estimate_col = self._find_column(history, ["eps estimate", "epsestimate", "estimateeps", "consensuseps"])
+                revenue_actual_col = self._find_column(history, ["revenue actual", "revenueactual", "actualrevenue"])
+                revenue_estimate_col = self._find_column(history, ["revenue estimate", "revenueestimate", "estimatedrevenue"])
 
-            if not date_col or not eps_actual_col or not eps_estimate_col:
-                return None
+                if not date_col or not eps_actual_col or not eps_estimate_col:
+                    continue
 
-            earnings_data = pd.DataFrame(
-                {
-                    "date": pd.to_datetime(history[date_col], errors="coerce"),
-                    "eps_actual": pd.to_numeric(history[eps_actual_col], errors="coerce"),
-                    "eps_estimate": pd.to_numeric(history[eps_estimate_col], errors="coerce"),
-                }
-            )
-            if revenue_actual_col:
-                earnings_data["revenue_actual"] = pd.to_numeric(history[revenue_actual_col], errors="coerce")
-            else:
-                earnings_data["revenue_actual"] = pd.NA
+                earnings_data = pd.DataFrame(
+                    {
+                        "date": pd.to_datetime(history[date_col], errors="coerce"),
+                        "eps_actual": pd.to_numeric(history[eps_actual_col], errors="coerce"),
+                        "eps_estimate": pd.to_numeric(history[eps_estimate_col], errors="coerce"),
+                    }
+                )
+                if revenue_actual_col:
+                    earnings_data["revenue_actual"] = pd.to_numeric(history[revenue_actual_col], errors="coerce")
+                else:
+                    earnings_data["revenue_actual"] = pd.NA
 
-            if revenue_estimate_col:
-                earnings_data["revenue_estimate"] = pd.to_numeric(history[revenue_estimate_col], errors="coerce")
-            else:
-                earnings_data["revenue_estimate"] = pd.NA
+                if revenue_estimate_col:
+                    earnings_data["revenue_estimate"] = pd.to_numeric(history[revenue_estimate_col], errors="coerce")
+                else:
+                    earnings_data["revenue_estimate"] = pd.NA
 
-            earnings_data = earnings_data.dropna(subset=["date"]).sort_values("date", ascending=False).head(4).reset_index(drop=True)
-            if earnings_data.empty:
-                return None
-            if earnings_data["eps_actual"].notna().sum() == 0 or earnings_data["eps_estimate"].notna().sum() == 0:
-                return None
+                earnings_data = earnings_data.dropna(subset=["date"]).sort_values("date", ascending=False).head(4).reset_index(drop=True)
+                if earnings_data.empty:
+                    continue
+                if earnings_data["eps_actual"].notna().sum() == 0 or earnings_data["eps_estimate"].notna().sum() == 0:
+                    continue
 
-            earnings_data["data_source"] = "yfinance_actual"
-            return earnings_data
-        except Exception as exc:
-            logger.error("%s: yfinance earnings fetch failed - %s", symbol, str(exc))
-            return None
+                earnings_data["data_source"] = f"yfinance_actual:{provider_symbol}"
+                return earnings_data
+            except Exception as exc:
+                logger.debug("%s: yfinance earnings fetch failed for %s - %s", symbol, provider_symbol, str(exc))
+        return None
 
     def _fetch_yahoo_fin_earnings(self, symbol: str) -> Optional[pd.DataFrame]:
         if not YAHOO_FIN_AVAILABLE:
             return None
 
-        try:
-            earnings_history = si.get_earnings_history(symbol)
-            if not earnings_history:
-                return None
+        for provider_symbol in iter_provider_symbols(symbol, self.market):
+            try:
+                earnings_history = si.get_earnings_history(provider_symbol)
+                if not earnings_history:
+                    continue
 
-            earnings_df = pd.DataFrame(earnings_history)
-            recent_earnings = earnings_df.head(8)
-            earnings_data = pd.DataFrame(
-                {
-                    "date": pd.to_datetime(recent_earnings["startdatetime"]),
-                    "eps_actual": pd.to_numeric(recent_earnings["epsactual"], errors="coerce"),
-                    "eps_estimate": pd.to_numeric(recent_earnings["epsestimate"], errors="coerce"),
-                    "revenue_actual": [pd.NA] * len(recent_earnings),
-                    "revenue_estimate": [pd.NA] * len(recent_earnings),
-                }
-            )
-            earnings_data = earnings_data.dropna(subset=["date"]).sort_values("date", ascending=False).head(4).reset_index(drop=True)
-            if earnings_data.empty:
-                return None
-            if earnings_data["eps_actual"].notna().sum() == 0 or earnings_data["eps_estimate"].notna().sum() == 0:
-                return None
-            earnings_data["data_source"] = "yahoo_fin_actual"
-            return earnings_data
-        except Exception as exc:
-            logger.error("%s: yahoo_fin earnings fetch failed - %s", symbol, str(exc))
-            return None
+                earnings_df = pd.DataFrame(earnings_history)
+                recent_earnings = earnings_df.head(8)
+                earnings_data = pd.DataFrame(
+                    {
+                        "date": pd.to_datetime(recent_earnings["startdatetime"]),
+                        "eps_actual": pd.to_numeric(recent_earnings["epsactual"], errors="coerce"),
+                        "eps_estimate": pd.to_numeric(recent_earnings["epsestimate"], errors="coerce"),
+                        "revenue_actual": [pd.NA] * len(recent_earnings),
+                        "revenue_estimate": [pd.NA] * len(recent_earnings),
+                    }
+                )
+                earnings_data = earnings_data.dropna(subset=["date"]).sort_values("date", ascending=False).head(4).reset_index(drop=True)
+                if earnings_data.empty:
+                    continue
+                if earnings_data["eps_actual"].notna().sum() == 0 or earnings_data["eps_estimate"].notna().sum() == 0:
+                    continue
+                earnings_data["data_source"] = f"yahoo_fin_actual:{provider_symbol}"
+                return earnings_data
+            except Exception as exc:
+                logger.debug("%s: yahoo_fin earnings fetch failed for %s - %s", symbol, provider_symbol, str(exc))
+        return None
 
     def _calculate_surprise(self, earnings_data: pd.DataFrame) -> Optional[Dict[str, Any]]:
         if earnings_data is None or earnings_data.empty:

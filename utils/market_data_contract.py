@@ -83,7 +83,13 @@ def normalize_ohlcv_frame(frame: pd.DataFrame, symbol: str) -> pd.DataFrame:
     if "date" not in normalized.columns:
         return pd.DataFrame(columns=CANONICAL_OHLCV_COLUMNS)
 
-    normalized["date"] = pd.to_datetime(normalized["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    # Some vendor CSVs mix offset-aware and naive timestamps; normalize into UTC first.
+    normalized["date"] = pd.to_datetime(
+        normalized["date"],
+        errors="coerce",
+        utc=True,
+        format="mixed",
+    ).dt.strftime("%Y-%m-%d")
     normalized["symbol"] = symbol
 
     for col in ("open", "high", "low", "close", "volume"):

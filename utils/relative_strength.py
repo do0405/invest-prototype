@@ -4,7 +4,11 @@ from scipy.stats import percentileofscore
 __all__ = ["calculate_rs_score_enhanced", "calculate_rs_score"]
 
 
-def calculate_rs_score_enhanced(df: pd.DataFrame, price_col: str = "close", benchmark_symbol: str = "SPY") -> pd.Series:
+def calculate_rs_score_enhanced(
+    df: pd.DataFrame,
+    price_col: str = "close",
+    benchmark_symbol: str = "SPY",
+) -> pd.Series:
     """Fred6724의 TradingView 기반 RS Rating 알고리즘을 구현한 고도화된 RS 점수 계산
     
     메모리 경합 문제 해결을 위한 개선사항:
@@ -24,23 +28,23 @@ def calculate_rs_score_enhanced(df: pd.DataFrame, price_col: str = "close", benc
                         df[date_col] = pd.to_datetime(df[date_col], utc=True)
                     df = df.set_index([date_col, symbol_col])
                 else:
-                    print("❌ 날짜/심볼 컬럼을 찾을 수 없습니다.")
+                    print("[RS] missing date/symbol columns")
                     return pd.Series(dtype=float)
 
             if df.index.nlevels != 2:
-                print(f"⚠️ 인덱스 레벨이 2가 아닙니다: {df.index.nlevels}")
+                print(f"[RS] invalid index levels: {df.index.nlevels}")
                 return pd.Series(dtype=float)
 
             try:
                 benchmark_data = df.xs(benchmark_symbol, level=1)[price_col]
                 if len(benchmark_data) < 252:
-                    print(f"⚠️ {benchmark_symbol} 벤치마크 데이터가 부족합니다 (필요: 252일, 현재: {len(benchmark_data)}일)")
+                    print(f"[RS] benchmark history too short for {benchmark_symbol}: {len(benchmark_data)}")
                     return pd.Series(dtype=float)
                     
                 # 벤치마크 데이터를 미리 계산하여 메모리 효율성 향상
                 bench_252 = benchmark_data.tail(252).values
                 if len(bench_252) < 252:
-                    print(f"⚠️ 벤치마크 데이터 길이 부족: {len(bench_252)}")
+                    print(f"[RS] benchmark tail too short: {len(bench_252)}")
                     return pd.Series(dtype=float)
                     
                 # 벤치마크 점수 미리 계산
@@ -51,7 +55,7 @@ def calculate_rs_score_enhanced(df: pd.DataFrame, price_col: str = "close", benc
                 bench_score = 0.4 * b3 + 0.2 * b6 + 0.2 * b9 + 0.2 * b12
                 
             except KeyError:
-                print(f"⚠️ {benchmark_symbol} 벤치마크 데이터를 찾을 수 없습니다.")
+                print(f"[RS] benchmark not found: {benchmark_symbol}")
                 return pd.Series(dtype=float)
 
             # 심볼 리스트를 청크로 분할하여 메모리 사용량 제한
@@ -62,7 +66,7 @@ def calculate_rs_score_enhanced(df: pd.DataFrame, price_col: str = "close", benc
             rs_scores = {}
             
             for chunk_idx, symbol_chunk in enumerate(symbol_chunks):
-                print(f"📊 RS 점수 계산 진행: {chunk_idx + 1}/{len(symbol_chunks)} 청크 ({len(symbol_chunk)}개 종목)")
+                print(f"[RS] enhanced chunk {chunk_idx + 1}/{len(symbol_chunks)} ({len(symbol_chunk)} symbols)")
                 
                 chunk_scores = {}
                 for symbol in symbol_chunk:
@@ -97,12 +101,12 @@ def calculate_rs_score_enhanced(df: pd.DataFrame, price_col: str = "close", benc
                     gc.collect()
 
             if not rs_scores:
-                print("⚠️ RS Score를 계산할 수 있는 종목이 없습니다.")
+                print("[RS] no symbols eligible for enhanced RS calculation")
                 return pd.Series(dtype=float)
 
             # 백분위 계산을 메모리 효율적으로 수행
             rs_score_values = list(rs_scores.values())
-            print(f"✅ RS 점수 계산 완료: {len(rs_score_values)}개 종목")
+            print(f"[RS] enhanced RS complete: {len(rs_score_values)} symbols")
             
             # 메모리 사용량 최적화를 위해 배치로 백분위 계산
             rs_ratings = {}
@@ -115,12 +119,18 @@ def calculate_rs_score_enhanced(df: pd.DataFrame, price_col: str = "close", benc
             return pd.Series(rs_ratings)
             
     except Exception as e:
-        print(f"❌ 고도화된 RS Score 계산 오류: {e}")
+        print(f"[RS] enhanced RS calculation error: {e}")
         gc.collect()  # 오류 발생 시에도 메모리 정리
         return pd.Series(dtype=float)
 
 
-def calculate_rs_score(df: pd.DataFrame, price_col: str = "close", window: int = 126, use_enhanced: bool = True) -> pd.Series:
+def calculate_rs_score(
+    df: pd.DataFrame,
+    price_col: str = "close",
+    window: int = 126,
+    use_enhanced: bool = True,
+    benchmark_symbol: str = "SPY",
+) -> pd.Series:
     """RS 점수 계산 함수. 기본적으로 고도화 버전을 사용한다.
     
     메모리 경합 문제 해결을 위한 개선사항:
@@ -129,7 +139,7 @@ def calculate_rs_score(df: pd.DataFrame, price_col: str = "close", window: int =
     - 스레드 안전성 보장
     """
     if use_enhanced:
-        return calculate_rs_score_enhanced(df, price_col)
+        return calculate_rs_score_enhanced(df, price_col, benchmark_symbol=benchmark_symbol)
 
     import gc
     
@@ -142,18 +152,18 @@ def calculate_rs_score(df: pd.DataFrame, price_col: str = "close", window: int =
                         df[date_col] = pd.to_datetime(df[date_col], utc=True)
                     df = df.set_index([date_col, symbol_col])
                 else:
-                    print("❌ 날짜/심볼 컬럼을 찾을 수 없습니다.")
+                    print("[RS] missing date/symbol columns")
                     return pd.Series(dtype=float)
 
             if df.index.nlevels != 2:
-                print(f"⚠️ 인덱스 레벨이 2가 아닙니다: {df.index.nlevels}")
+                print(f"[RS] invalid index levels: {df.index.nlevels}")
                 return pd.Series(dtype=float)
 
             grouped = df.groupby(level=1)[price_col]
             symbol_counts = grouped.count()
             valid_symbols = symbol_counts[symbol_counts >= window].index
             if len(valid_symbols) == 0:
-                print("⚠️ 충분한 데이터가 있는 심볼이 없습니다.")
+                print("[RS] no symbols with sufficient history")
                 return pd.Series(dtype=float)
 
             # 심볼을 청크로 분할하여 메모리 사용량 제한
@@ -164,7 +174,7 @@ def calculate_rs_score(df: pd.DataFrame, price_col: str = "close", window: int =
             returns = {}
             
             for chunk_idx, symbol_chunk in enumerate(symbol_chunks):
-                print(f"📊 기본 RS 점수 계산 진행: {chunk_idx + 1}/{len(symbol_chunks)} 청크 ({len(symbol_chunk)}개 종목)")
+                print(f"[RS] basic chunk {chunk_idx + 1}/{len(symbol_chunks)} ({len(symbol_chunk)} symbols)")
                 
                 chunk_returns = {}
                 for symbol in symbol_chunk:
@@ -188,7 +198,7 @@ def calculate_rs_score(df: pd.DataFrame, price_col: str = "close", window: int =
 
             returns_series = pd.Series(returns)
             if len(returns_series) > 0:
-                print(f"✅ 기본 RS 점수 계산 완료: {len(returns_series)}개 종목")
+                print(f"[RS] basic RS complete: {len(returns_series)} symbols")
                 
                 # 메모리 효율적인 랭킹 계산
                 from scipy.stats import rankdata
@@ -203,6 +213,6 @@ def calculate_rs_score(df: pd.DataFrame, price_col: str = "close", window: int =
             return pd.Series(dtype=float)
             
     except Exception as e:
-        print(f"❌ RS Score 계산 오류: {e}")
+        print(f"[RS] RS calculation error: {e}")
         gc.collect()  # 오류 발생 시에도 메모리 정리
         return pd.Series(dtype=float)

@@ -1,0 +1,2 @@
+symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
+PRLD,PRLD,[],False,36.58536585365853,16.831683168316836,False,False,0,0,False,False,False,False,False,False,36.84159969261311,-4.383905706218399,0,0,2026-03-13T01:16:45.658399+00:00

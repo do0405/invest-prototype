@@ -1,552 +1,1042 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Mark Minervini 향상된 다차원 패턴 분석기
-VCP와 Cup & Handle 패턴을 다차원 평가 시스템과 정규화된 신뢰도로 감지
-"""
+from __future__ import annotations
+
+import logging
+from dataclasses import dataclass, field
+from typing import Any
 
 import numpy as np
 import pandas as pd
-from typing import Dict, List, Tuple, Union
-import logging
-from dataclasses import dataclass
-
-from .mathematical_functions import (
-    kernel_smoothing,
-    extract_peaks_troughs,
-    calculate_amplitude_contraction,
-    quadratic_fit_cup,
-    bezier_curve_correlation
-)
 
 logger = logging.getLogger(__name__)
 
 
+def _safe_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        casted = float(value)
+    except (TypeError, ValueError):
+        return None
+    if np.isnan(casted) or np.isinf(casted):
+        return None
+    return casted
+
+
+def _series_median(series: pd.Series) -> float | None:
+    if series is None or series.empty:
+        return None
+    value = pd.to_numeric(series, errors="coerce").dropna().median()
+    return _safe_float(value)
+
+
+def _date_str(value: Any) -> str | None:
+    ts = pd.to_datetime(value, errors="coerce")
+    if pd.isna(ts):
+        return None
+    return ts.strftime("%Y-%m-%d")
+
+
+@dataclass(frozen=True)
+class PivotPoint:
+    index: int
+    date: str | None
+    pivot_type: str
+    pivot_price: float
+    prominence_pct: float
+    source_window: int
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "pivot_index": int(self.index),
+            "pivot_date": self.date,
+            "pivot_type": self.pivot_type,
+            "pivot_price": round(self.pivot_price, 4),
+            "prominence_pct": round(self.prominence_pct, 4),
+            "source_window": int(self.source_window),
+        }
+
+
 @dataclass
 class DimensionalScores:
-    """다차원 평가 점수 구조체"""
     technical_quality: float = 0.0
     volume_confirmation: float = 0.0
     temporal_validity: float = 0.0
     market_context: float = 0.0
-    
-    def to_dict(self) -> Dict[str, float]:
+
+    def to_dict(self) -> dict[str, float]:
         return {
-            'technical_quality': float(self.technical_quality),
-            'volume_confirmation': float(self.volume_confirmation),
-            'temporal_validity': float(self.temporal_validity),
-            'market_context': float(self.market_context)
+            "technical_quality": round(float(self.technical_quality), 4),
+            "volume_confirmation": round(float(self.volume_confirmation), 4),
+            "temporal_validity": round(float(self.temporal_validity), 4),
+            "market_context": round(float(self.market_context), 4),
+        }
+
+
+@dataclass
+class PatternCandidate:
+    pattern_type: str
+    state_detail: str
+    state_bucket: str
+    detected: bool
+    confidence: float
+    confidence_level: str
+    pattern_start: str | None = None
+    pattern_end: str | None = None
+    pivot_price: float | None = None
+    invalidation_price: float | None = None
+    breakout_date: str | None = None
+    breakout_price: float | None = None
+    breakout_volume: float | None = None
+    volume_multiple: float | None = None
+    distance_to_pivot_pct: float | None = None
+    extended: bool = False
+    dimensional_scores: dict[str, float] = field(default_factory=dict)
+    metrics: dict[str, Any] = field(default_factory=dict)
+    pivots: list[dict[str, Any]] = field(default_factory=list)
+
+    def to_output(self) -> dict[str, Any]:
+        return {
+            "pattern_type": self.pattern_type,
+            "detected": bool(self.detected),
+            "state_detail": self.state_detail,
+            "state_bucket": self.state_bucket,
+            "confidence": round(float(self.confidence), 3),
+            "confidence_level": self.confidence_level,
+            "pattern_start": self.pattern_start,
+            "pattern_end": self.pattern_end,
+            "pivot_price": _safe_float(self.pivot_price),
+            "invalidation_price": _safe_float(self.invalidation_price),
+            "breakout_date": self.breakout_date,
+            "breakout_price": _safe_float(self.breakout_price),
+            "breakout_volume": _safe_float(self.breakout_volume),
+            "volume_multiple": _safe_float(self.volume_multiple),
+            "distance_to_pivot_pct": _safe_float(self.distance_to_pivot_pct),
+            "extended": bool(self.extended),
+            "dimensional_scores": self.dimensional_scores,
+            "metrics": self.metrics,
+            "pivots": self.pivots,
         }
 
 
 class EnhancedPatternAnalyzer:
-    """향상된 다차원 패턴 분석기"""
-    
-    def __init__(self):
-        self.DETECTION_THRESHOLD = 0.6
+    """Rule-based pattern analyzer rebuilt around structural pivot logic."""
+
+    def __init__(self) -> None:
+        self.DETECTION_THRESHOLD = 0.58
+        self.HIGH_CONFIDENCE_THRESHOLD = 0.8
         self.DIMENSION_WEIGHTS = {
-            'technical_quality': 0.35,
-            'volume_confirmation': 0.25,
-            'temporal_validity': 0.25,
-            'market_context': 0.15
+            "technical_quality": 0.38,
+            "volume_confirmation": 0.25,
+            "temporal_validity": 0.2,
+            "market_context": 0.17,
         }
-        
-        # 통일된 임계값
-        self.HIGH_CONFIDENCE_THRESHOLD = 0.8  # 고신뢰도 기준
-    
-    def _normalize_score(self, score: float, max_score: float = 1.0) -> float:
-        """점수를 0-1 범위로 정규화"""
-        if max_score <= 0 or np.isnan(max_score) or np.isinf(max_score):
-            return 0.0
-        
+        self.EXTREMA_RADIUS = 3
+        self.BREAKOUT_EPS = 0.003
+        self.BREAKOUT_VOL_MULT = 1.4
+
+    def _empty_pattern_output(self, pattern_type: str) -> dict[str, Any]:
+        return PatternCandidate(
+            pattern_type=pattern_type,
+            detected=False,
+            state_detail="NONE",
+            state_bucket="NONE",
+            confidence=0.0,
+            confidence_level="None",
+            dimensional_scores=DimensionalScores().to_dict(),
+        ).to_output()
+
+    def _prepare_ohlcv(self, stock_data: pd.DataFrame) -> pd.DataFrame:
+        if stock_data is None or stock_data.empty:
+            return pd.DataFrame()
+
+        df = stock_data.copy()
+        rename_map: dict[str, str] = {}
+        for column in df.columns:
+            lowered = str(column).strip().lower()
+            if lowered in {"date", "open", "high", "low", "close", "volume"}:
+                rename_map[column] = lowered
+        df = df.rename(columns=rename_map)
+
+        if "date" not in df.columns:
+            if isinstance(df.index, pd.DatetimeIndex):
+                df = df.reset_index().rename(columns={df.index.name or "index": "date"})
+            else:
+                df = df.reset_index()
+                df = df.rename(columns={df.columns[0]: "date"})
+
+        required = ("open", "high", "low", "close", "volume")
+        for column in required:
+            if column not in df.columns:
+                if column == "volume":
+                    df[column] = 0.0
+                elif "close" in df.columns:
+                    df[column] = df["close"]
+                else:
+                    df[column] = 0.0
+
+        df["date"] = pd.to_datetime(df["date"], errors="coerce", utc=True)
+        for column in required:
+            df[column] = pd.to_numeric(df[column], errors="coerce")
+
+        df = df.dropna(subset=["date", "open", "high", "low", "close"]).copy()
+        if df.empty:
+            return df
+
+        df = df.sort_values("date").reset_index(drop=True)
+        prev_close = df["close"].shift(1)
+        tr_components = pd.concat(
+            [
+                df["high"] - df["low"],
+                (df["high"] - prev_close).abs(),
+                (df["low"] - prev_close).abs(),
+            ],
+            axis=1,
+        )
+        df["tr"] = tr_components.max(axis=1)
+        df["atr14"] = df["tr"].rolling(14, min_periods=3).mean()
+        df["atr20"] = df["tr"].rolling(20, min_periods=5).mean()
+        df["natr10"] = df["tr"].rolling(10, min_periods=3).mean() / df["close"].replace(0, np.nan)
+        df["natr20"] = df["atr20"] / df["close"].replace(0, np.nan)
+        df["range_pct"] = (df["high"] - df["low"]) / df["close"].replace(0, np.nan)
+        df["vol_ma10"] = df["volume"].rolling(10, min_periods=3).mean()
+        df["vol_ma20"] = df["volume"].rolling(20, min_periods=5).mean()
+        df["vol_ma50"] = df["volume"].rolling(50, min_periods=10).mean()
+        df["sma20"] = df["close"].rolling(20, min_periods=5).mean()
+        df["sma50"] = df["close"].rolling(50, min_periods=10).mean()
+        df["sma150"] = df["close"].rolling(150, min_periods=30).mean()
+        df["sma200"] = df["close"].rolling(200, min_periods=50).mean()
+        df["rolling_high_252"] = df["high"].rolling(252, min_periods=30).max()
+        df["rolling_low_252"] = df["low"].rolling(252, min_periods=30).min()
+        df["smoothed_close"] = df["close"].rolling(5, center=True, min_periods=1).mean()
+        return df
+
+    def _normalize_score(self, score: float) -> float:
         if np.isnan(score) or np.isinf(score):
             return 0.0
-        
-        normalized = score / max_score
-        
-        if np.isnan(normalized) or np.isinf(normalized):
+        return float(min(max(score, 0.0), 1.0))
+
+    def _range_score(
+        self,
+        value: float | None,
+        ideal_low: float,
+        ideal_high: float,
+        min_low: float,
+        max_high: float,
+    ) -> float:
+        if value is None:
             return 0.0
-        
-        return min(max(normalized, 0.0), 1.0)
-    
-    def _calculate_technical_quality_vcp(self, prices: np.ndarray, peaks: np.ndarray, 
-                                        troughs: np.ndarray, amplitudes: List[float]) -> float:
-        """VCP 기술적 품질 평가 (0-1 정규화)"""
-        score = 0.0
-        
-        # 1. 수축 패턴 품질 (0.4)
-        if len(amplitudes) >= 2:
-            decreasing_count = sum(1 for i in range(len(amplitudes)-1) 
-                                 if amplitudes[i] >= amplitudes[i+1])
-            decrease_ratio = decreasing_count / (len(amplitudes) - 1)
-            score += decrease_ratio * 0.4
-        
-        # 2. 수축 강도 (0.4)
-        if len(amplitudes) >= 3:
-            contraction_ratio = amplitudes[-1] / amplitudes[0] if amplitudes[0] > 0 else 1
-            if contraction_ratio < 0.3:      # 70% 이상 수축
-                score += 0.4
-            elif contraction_ratio < 0.5:    # 50% 이상 수축
-                score += 0.3
-            elif contraction_ratio < 0.7:    # 30% 이상 수축
-                score += 0.2
-            elif contraction_ratio < 0.85:   # 15% 이상 수축
-                score += 0.1
-        
-        # 3. 패턴 일관성 (0.2)
-        if len(peaks) >= 3:
-            peak_consistency = 1.0 - (np.std(prices[peaks]) / np.mean(prices[peaks]))
-            score += max(peak_consistency, 0) * 0.2
-        
-        return self._normalize_score(score)
-    
-    def _calculate_volume_confirmation_vcp(self, volumes: np.ndarray) -> float:
-        """VCP 거래량 확인 평가 (0-1 정규화)"""
-        score = 0.0
-        
-        if len(volumes) >= 30:
-            # 1. 거래량 수축 패턴 (0.6)
-            vol_sections = np.array_split(volumes[-30:], 3)
-            vol_means = [np.mean(section) for section in vol_sections]
-            
-            vol_decrease_score = 0.0
-            for i in range(len(vol_means)-1):
-                if vol_means[i] > vol_means[i+1]:
-                    decrease_ratio = (vol_means[i] - vol_means[i+1]) / vol_means[i]
-                    vol_decrease_score += decrease_ratio
-            
-            score += min(vol_decrease_score / 2, 0.6)  # 정규화
-            
-            # 2. 거래량 변동성 감소 (0.4)
-            early_vol_std = np.std(volumes[-30:-20]) if len(volumes) >= 30 else 0
-            late_vol_std = np.std(volumes[-10:]) if len(volumes) >= 10 else 0
-            
-            if early_vol_std > 0:
-                volatility_reduction = 1 - (late_vol_std / early_vol_std)
-                score += max(volatility_reduction, 0) * 0.4
-        
-        return self._normalize_score(score)
-    
-    def _calculate_temporal_validity_vcp(self, prices: np.ndarray, peaks: np.ndarray) -> float:
-        """VCP 시간적 유효성 평가 (0-1 정규화)"""
-        score = 0.0
-        
-        # 1. 형성 기간 적절성 (0.5)
-        data_length = len(prices)
-        if 60 <= data_length <= 120:  # 이상적 기간
-            score += 0.5
-        elif 45 <= data_length < 60 or 120 < data_length <= 150:
-            score += 0.3
-        elif data_length >= 30:
-            score += 0.1
-        
-        # 2. 패턴 진행 속도 (0.3)
-        if len(peaks) >= 2:
-            avg_peak_interval = np.mean(np.diff(peaks))
-            if 5 <= avg_peak_interval <= 20:  # 적절한 간격
-                score += 0.3
-            elif avg_peak_interval <= 30:
-                score += 0.2
-        
-        # 3. 최근성 (0.2)
-        if len(peaks) > 0:
-            last_peak_recency = (len(prices) - peaks[-1]) / len(prices)
-            if last_peak_recency <= 0.1:  # 최근 10% 내
-                score += 0.2
-            elif last_peak_recency <= 0.2:
-                score += 0.1
-        
-        return self._normalize_score(score)
-    
-    def _calculate_market_context(self, prices: np.ndarray) -> float:
-        """시장 맥락 평가 (0-1 정규화)"""
-        score = 0.0
-        
-        # 1. 상대적 강도 (0.5)
-        if len(prices) >= 20:
-            recent_performance = (prices[-1] - prices[-20]) / prices[-20]
-            if recent_performance > 0.05:  # 5% 이상 상승
-                score += 0.5
-            elif recent_performance > 0:
-                score += 0.3
-            elif recent_performance > -0.05:
-                score += 0.1
-        
-        # 2. 가격 위치 (0.3)
-        if len(prices) >= 50:
-            price_percentile = np.percentile(prices[-50:], 90)
-            if prices[-1] >= price_percentile:
-                score += 0.3
-            elif prices[-1] >= np.percentile(prices[-50:], 70):
-                score += 0.2
-        
-        # 3. 추세 일관성 (0.2)
-        if len(prices) >= 10:
-            ma_short = np.mean(prices[-5:])
-            ma_long = np.mean(prices[-10:])
-            if ma_short > ma_long:
-                score += 0.2
-            elif ma_short >= ma_long * 0.98:
-                score += 0.1
-        
-        return self._normalize_score(score)
-    
-    def detect_vcp_pattern_enhanced(self, prices: np.ndarray, volumes: np.ndarray, 
-                                  symbol: str) -> Tuple[bool, float, DimensionalScores]:
-        """향상된 VCP 패턴 감지 (다차원 평가)"""
-        try:
-            if len(prices) < 60:
-                return False, 0.0, DimensionalScores()
-            
-            # 최근 90일 데이터 사용
-            recent_prices = prices[-90:] if len(prices) >= 90 else prices
-            recent_volumes = volumes[-90:] if len(volumes) >= 90 else volumes
-            
-            # 1. 커널 회귀를 이용한 가격 곡선 스무딩
-            smoothed_prices = kernel_smoothing(recent_prices)
-            
-            # 2. 피크와 골 추출
-            peaks, troughs = extract_peaks_troughs(smoothed_prices)
-            
-            if len(peaks) < 3:
-                return False, 0.0, DimensionalScores()
-            
-            # 3. 연속적 변동성 수축 검출
-            amplitudes = calculate_amplitude_contraction(peaks, troughs, smoothed_prices)
-            
-            if len(amplitudes) < 2:
-                return False, 0.0, DimensionalScores()
-            
-            # 4. 다차원 평가
-            dimensional_scores = DimensionalScores(
-                technical_quality=self._calculate_technical_quality_vcp(
-                    smoothed_prices, peaks, troughs, amplitudes),
-                volume_confirmation=self._calculate_volume_confirmation_vcp(recent_volumes),
-                temporal_validity=self._calculate_temporal_validity_vcp(recent_prices, peaks),
-                market_context=self._calculate_market_context(recent_prices)
+        if ideal_low <= value <= ideal_high:
+            return 1.0
+        if value < min_low or value > max_high:
+            return 0.0
+        if value < ideal_low:
+            denom = ideal_low - min_low
+            return self._normalize_score((value - min_low) / denom) if denom > 0 else 0.0
+        denom = max_high - ideal_high
+        return self._normalize_score((max_high - value) / denom) if denom > 0 else 0.0
+
+    def _inverse_score(self, value: float | None, good_max: float, bad_max: float) -> float:
+        if value is None:
+            return 0.0
+        if value <= good_max:
+            return 1.0
+        if value >= bad_max:
+            return 0.0
+        denom = bad_max - good_max
+        return self._normalize_score((bad_max - value) / denom) if denom > 0 else 0.0
+
+    def _ratio_score(self, value: float | None, good_min: float, bad_min: float) -> float:
+        if value is None:
+            return 0.0
+        if value >= good_min:
+            return 1.0
+        if value <= bad_min:
+            return 0.0
+        denom = good_min - bad_min
+        return self._normalize_score((value - bad_min) / denom) if denom > 0 else 0.0
+
+    def _prominence_floor(self, df: pd.DataFrame, idx: int) -> float:
+        natr20 = _safe_float(df.loc[idx, "natr20"]) if idx in df.index else None
+        return max(0.04, 1.5 * (natr20 or 0.0))
+
+    def _choose_more_extreme(self, left: PivotPoint, right: PivotPoint) -> PivotPoint:
+        if left.pivot_type != right.pivot_type:
+            return left if left.prominence_pct >= right.prominence_pct else right
+        if left.pivot_type == "H":
+            return left if left.pivot_price >= right.pivot_price else right
+        return left if left.pivot_price <= right.pivot_price else right
+
+    def _merge_pivots(self, pivots: list[PivotPoint]) -> list[PivotPoint]:
+        if not pivots:
+            return []
+
+        ordered = sorted(
+            pivots,
+            key=lambda pivot: (pivot.index, pivot.pivot_type, -pivot.prominence_pct, pivot.source_window),
+        )
+        deduped: list[PivotPoint] = []
+        for pivot in ordered:
+            if deduped and pivot.index == deduped[-1].index and pivot.pivot_type == deduped[-1].pivot_type:
+                if pivot.prominence_pct > deduped[-1].prominence_pct:
+                    deduped[-1] = pivot
+                continue
+            deduped.append(pivot)
+
+        merged: list[PivotPoint] = []
+        for pivot in deduped:
+            if not merged:
+                merged.append(pivot)
+                continue
+            last = merged[-1]
+            if pivot.index - last.index <= 2:
+                merged[-1] = self._choose_more_extreme(last, pivot)
+                continue
+            if pivot.pivot_type == last.pivot_type:
+                merged[-1] = self._choose_more_extreme(last, pivot)
+                continue
+            price_gap = abs(pivot.pivot_price - last.pivot_price) / max(pivot.pivot_price, last.pivot_price, 1e-9)
+            if price_gap < min(last.prominence_pct, pivot.prominence_pct) * 0.35:
+                if pivot.prominence_pct > last.prominence_pct:
+                    merged[-1] = pivot
+                continue
+            merged.append(pivot)
+        return merged
+
+    def _append_recent_endpoint_pivots(
+        self,
+        df: pd.DataFrame,
+        pivots: list[PivotPoint],
+        radius: int,
+    ) -> list[PivotPoint]:
+        if df.empty:
+            return pivots
+
+        recent = df.iloc[max(0, len(df) - (radius + 6)) :].copy()
+        if recent.empty:
+            return pivots
+
+        candidates = list(pivots)
+        endpoint_specs = [
+            ("H", int(recent["high"].idxmax()), float(recent["high"].max()), float(recent["low"].min())),
+            ("L", int(recent["low"].idxmin()), float(recent["low"].min()), float(recent["high"].max())),
+        ]
+        for pivot_type, idx, price, opposite_price in endpoint_specs:
+            if any(existing.pivot_type == pivot_type and abs(existing.index - idx) <= 2 for existing in pivots):
+                continue
+            prominence = (
+                (price - opposite_price) / max(price, 1e-9)
+                if pivot_type == "H"
+                else (opposite_price - price) / max(opposite_price, 1e-9)
             )
-            
-            # 5. 가중 평균으로 최종 신뢰도 계산
-            final_confidence = 0.0
-            for dimension, score in dimensional_scores.to_dict().items():
-                if dimension in self.DIMENSION_WEIGHTS:
-                    weight = self.DIMENSION_WEIGHTS[dimension]
-                    if not (np.isnan(score) or np.isinf(score) or np.isnan(weight) or np.isinf(weight)):
-                        final_confidence += score * weight
-            
-            # NaN 체크
-            if np.isnan(final_confidence) or np.isinf(final_confidence):
-                final_confidence = 0.0
-            else:
-                final_confidence = max(0.0, min(1.0, final_confidence))  # 0-1 범위로 제한
-            
-            # 6. 패턴 감지 결정
-            vcp_detected = final_confidence >= self.DETECTION_THRESHOLD
-            
-            return vcp_detected, final_confidence, dimensional_scores
-            
-        except Exception as e:
-            logger.warning(f"{symbol}: VCP 패턴 감지 중 오류 - {str(e)}")
-            return False, 0.0, DimensionalScores()
-    
-    def _calculate_technical_quality_cup(self, smoothed_prices: np.ndarray, A_idx: int, 
-                                       B_idx: int, C_idx: int, r_squared: float, 
-                                       bezier_corr: float) -> float:
-        """Cup&Handle 기술적 품질 평가 (0-1 정규화)"""
-        score = 0.0
-        
-        A_price = smoothed_prices[A_idx]
-        B_price = smoothed_prices[B_idx]
-        C_price = smoothed_prices[C_idx]
-        
-        # 1. 깊이 적절성 (0.3)
-        if A_price > 0:
-            depth_ratio = (A_price - B_price) / A_price
-            if 0.12 <= depth_ratio <= 0.35:  # 이상적 깊이
-                score += 0.3
-            elif 0.10 <= depth_ratio <= 0.50:  # 허용 깊이
-                score += 0.2
-            elif 0.05 <= depth_ratio <= 0.60:  # 최소 깊이
-                score += 0.1
-        
-        # 2. 대칭성 (0.25)
-        if A_price > 0:
-            symmetry_ratio = C_price / A_price
-            if symmetry_ratio >= 0.95:  # 거의 완벽한 대칭
-                score += 0.25
-            elif symmetry_ratio >= 0.90:  # 좋은 대칭
-                score += 0.20
-            elif symmetry_ratio >= 0.85:  # 허용 가능한 대칭
-                score += 0.15
-        
-        # 3. U자형 적합도 (0.25)
-        if r_squared >= 0.8:  # 매우 높은 적합도
-            score += 0.25
-        elif r_squared >= 0.7:  # 높은 적합도
-            score += 0.20
-        elif r_squared >= 0.6:  # 중간 적합도
-            score += 0.15
-        elif r_squared >= 0.5:  # 최소 적합도
-            score += 0.10
-        
-        # 4. 베지어 곡선 상관계수 (0.2)
-        if bezier_corr >= 0.9:  # 매우 높은 상관관계
-            score += 0.2
-        elif bezier_corr >= 0.85:  # 높은 상관관계
-            score += 0.15
-        elif bezier_corr >= 0.8:  # 중간 상관관계
-            score += 0.1
-        
-        return self._normalize_score(score)
-    
-    def _calculate_volume_confirmation_cup(self, volumes: np.ndarray, A_idx: int, 
-                                         B_idx: int, C_idx: int) -> float:
-        """Cup&Handle 거래량 확인 평가 (0-1 정규화)"""
-        score = 0.0
-        
-        if len(volumes) > max(A_idx, B_idx, C_idx):
-            # 1. 컵 형성 중 거래량 감소 (0.6)
-            if B_idx > 10 and A_idx < len(volumes) - 10:
-                early_volume = np.mean(volumes[A_idx:A_idx+10])
-                cup_volume = np.mean(volumes[max(0, B_idx-5):B_idx+5])
-                
-                if early_volume > 0:
-                    volume_decrease = 1 - (cup_volume / early_volume)
-                    if volume_decrease >= 0.3:  # 30% 이상 감소
-                        score += 0.6
-                    elif volume_decrease >= 0.2:  # 20% 이상 감소
-                        score += 0.4
-                    elif volume_decrease >= 0.1:  # 10% 이상 감소
-                        score += 0.2
-            
-            # 2. 거래량 패턴 일관성 (0.4)
-            cup_volumes = volumes[A_idx:C_idx+1]
-            if len(cup_volumes) > 10:
-                early_vol = cup_volumes[:len(cup_volumes)//3]
-                late_vol = cup_volumes[-len(cup_volumes)//3:]
-                
-                early_avg = np.mean(early_vol)
-                late_avg = np.mean(late_vol)
-                
-                if early_avg > 0 and late_avg <= early_avg * 1.1:  # 후반부 거래량 증가 제한
-                    score += 0.4
-                elif late_avg <= early_avg * 1.3:
-                    score += 0.2
-        
-        return self._normalize_score(score)
-    
-    def _calculate_temporal_validity_cup(self, A_idx: int, B_idx: int, C_idx: int, 
-                                       total_length: int) -> float:
-        """Cup&Handle 시간적 유효성 평가 (0-1 정규화)"""
-        score = 0.0
-        
-        # 1. 컵 폭 적절성 (0.4)
-        cup_width = C_idx - A_idx
-        if 35 <= cup_width <= 200:  # 7주-40주 (이상적)
-            score += 0.4
-        elif 20 <= cup_width <= 250:  # 4주-50주 (허용)
-            score += 0.3
-        elif cup_width >= 15:  # 최소 3주
-            score += 0.2
-        
-        # 2. 좌우 균형 (0.3)
-        left_width = B_idx - A_idx
-        right_width = C_idx - B_idx
-        
-        if left_width > 0 and right_width > 0:
-            balance_ratio = min(left_width, right_width) / max(left_width, right_width)
-            if balance_ratio >= 0.7:  # 좋은 균형
-                score += 0.3
-            elif balance_ratio >= 0.5:  # 허용 가능한 균형
-                score += 0.2
-            elif balance_ratio >= 0.3:  # 최소 균형
-                score += 0.1
-        
-        # 3. 전체 기간 적절성 (0.3)
-        if 40 <= total_length <= 180:  # 이상적 기간
-            score += 0.3
-        elif 30 <= total_length <= 250:  # 허용 기간
-            score += 0.2
-        elif total_length >= 20:  # 최소 기간
-            score += 0.1
-        
-        return self._normalize_score(score)
-    
-    def detect_cup_handle_pattern_enhanced(self, prices: np.ndarray, volumes: np.ndarray, 
-                                         symbol: str) -> Tuple[bool, float, DimensionalScores]:
-        """향상된 Cup&Handle 패턴 감지 (다차원 평가)"""
-        try:
-            if len(prices) < 40:
-                return False, 0.0, DimensionalScores()
-            
-            # 최근 120일 데이터 사용
-            recent_prices = prices[-120:] if len(prices) >= 120 else prices
-            recent_volumes = volumes[-120:] if len(volumes) >= 120 else volumes
-            
-            # 1. 커널 회귀를 이용한 가격 곡선 스무딩
-            smoothed_prices = kernel_smoothing(recent_prices)
-            
-            # 2. 피크와 골 추출
-            peaks, troughs = extract_peaks_troughs(smoothed_prices)
-            
-            if len(peaks) < 2 or len(troughs) < 1:
-                return False, 0.0, DimensionalScores()
-            
-            # 3. 컵 구조 식별 (A-B-C 포인트)
-            n = len(smoothed_prices)
-            
-            # A점: 초기 1/3 구간에서 최고점
-            A_region_end = n // 3
-            A_candidates = peaks[peaks < A_region_end]
-            if len(A_candidates) == 0:
-                return False, 0.0, DimensionalScores()
-            A_idx = A_candidates[np.argmax(smoothed_prices[A_candidates])]
-            
-            # B점: 중간 구간에서 최저점
-            B_region_start = A_idx + 5
-            B_region_end = min(n - 10, A_idx + 60)
-            if B_region_end <= B_region_start:
-                return False, 0.0, DimensionalScores()
-            
-            B_candidates = troughs[(troughs >= B_region_start) & (troughs <= B_region_end)]
-            if len(B_candidates) == 0:
-                B_idx = B_region_start + np.argmin(smoothed_prices[B_region_start:B_region_end])
-            else:
-                B_idx = B_candidates[np.argmin(smoothed_prices[B_candidates])]
-            
-            # C점: 마지막 구간에서 고점
-            C_region_start = B_idx + 5
-            C_region_end = min(n - 3, B_idx + 40)
-            if C_region_end <= C_region_start:
-                return False, 0.0, DimensionalScores()
-            
-            C_candidates = peaks[(peaks >= C_region_start) & (peaks <= C_region_end)]
-            if len(C_candidates) == 0:
-                C_idx = C_region_start + np.argmax(smoothed_prices[C_region_start:C_region_end])
-            else:
-                C_idx = C_candidates[np.argmax(smoothed_prices[C_candidates])]
-            
-            # 4. 수학적 검증
-            cup_indices = np.arange(A_idx, C_idx + 1)
-            cup_prices = smoothed_prices[A_idx:C_idx + 1]
-            
-            r_squared, curvature = 0.0, 0.0
-            if len(cup_indices) >= 10:
-                r_squared, curvature = quadratic_fit_cup(cup_indices, cup_prices)
-            
-            bezier_corr = 0.0
-            if len(cup_prices) >= 5:
-                control_points = np.array([cup_prices[0], np.min(cup_prices), cup_prices[-1]])
-                bezier_corr = bezier_curve_correlation(control_points, cup_prices)
-            
-            # 5. 다차원 평가
-            dimensional_scores = DimensionalScores(
-                technical_quality=self._calculate_technical_quality_cup(
-                    smoothed_prices, A_idx, B_idx, C_idx, r_squared, bezier_corr),
-                volume_confirmation=self._calculate_volume_confirmation_cup(
-                    recent_volumes, A_idx, B_idx, C_idx),
-                temporal_validity=self._calculate_temporal_validity_cup(
-                    A_idx, B_idx, C_idx, len(recent_prices)),
-                market_context=self._calculate_market_context(recent_prices)
+            if prominence < max(0.03, self._prominence_floor(df, idx) * 0.8):
+                continue
+            candidates.append(
+                PivotPoint(
+                    index=idx,
+                    date=_date_str(df.loc[idx, "date"]),
+                    pivot_type=pivot_type,
+                    pivot_price=price,
+                    prominence_pct=prominence,
+                    source_window=2 * radius + 1,
+                )
             )
-            
-            # 6. 가중 평균으로 최종 신뢰도 계산
-            final_confidence = 0.0
-            for dimension, score in dimensional_scores.to_dict().items():
-                if dimension in self.DIMENSION_WEIGHTS:
-                    weight = self.DIMENSION_WEIGHTS[dimension]
-                    if not (np.isnan(score) or np.isinf(score) or np.isnan(weight) or np.isinf(weight)):
-                        final_confidence += score * weight
-            
-            # NaN 체크
-            if np.isnan(final_confidence) or np.isinf(final_confidence):
-                final_confidence = 0.0
-            else:
-                final_confidence = max(0.0, min(1.0, final_confidence))  # 0-1 범위로 제한
-            
-            # 7. 패턴 감지 결정
-            cup_handle_detected = final_confidence >= self.DETECTION_THRESHOLD
-            
-            return cup_handle_detected, final_confidence, dimensional_scores
-            
-        except Exception as e:
-            logger.warning(f"{symbol}: Cup&Handle 패턴 감지 중 오류 - {str(e)}")
-            return False, 0.0, DimensionalScores()
-    
-    def analyze_patterns_enhanced(self, symbol: str, stock_data: pd.DataFrame) -> Dict[str, Dict]:
-        """향상된 패턴 분석 (다차원 평가 결과 포함)"""
-        try:
-            if stock_data.empty or len(stock_data) < 40:
-                return {
-                    'vcp': {
-                        'detected': False, 
-                        'confidence': 0.0,
-                        'dimensional_scores': DimensionalScores().to_dict()
-                    },
-                    'cup_handle': {
-                        'detected': False, 
-                        'confidence': 0.0,
-                        'dimensional_scores': DimensionalScores().to_dict()
-                    }
-                }
-            
-            # 가격과 거래량 데이터 추출
-            prices = stock_data['Close'].values
-            volumes = stock_data['Volume'].values if 'Volume' in stock_data.columns else np.ones(len(prices))
-            
-            # VCP 패턴 분석
-            vcp_detected, vcp_confidence, vcp_dimensions = self.detect_vcp_pattern_enhanced(
-                prices, volumes, symbol)
-            
-            # Cup & Handle 패턴 분석
-            cup_detected, cup_confidence, cup_dimensions = self.detect_cup_handle_pattern_enhanced(
-                prices, volumes, symbol)
-            
-            return {
-                'vcp': {
-                    'detected': vcp_detected,
-                    'confidence': round(vcp_confidence, 3),
-                    'dimensional_scores': vcp_dimensions.to_dict(),
-                    'confidence_level': self._get_confidence_level(vcp_confidence)
-                },
-                'cup_handle': {
-                    'detected': cup_detected,
-                    'confidence': round(cup_confidence, 3),
-                    'dimensional_scores': cup_dimensions.to_dict(),
-                    'confidence_level': self._get_confidence_level(cup_confidence)
-                }
-            }
-            
-        except Exception as e:
-            logger.error(f"{symbol}: 향상된 패턴 분석 오류: {e}")
-            return {
-                'vcp': {
-                    'detected': False, 
-                    'confidence': 0.0,
-                    'dimensional_scores': DimensionalScores().to_dict(),
-                    'confidence_level': 'None'
-                },
-                'cup_handle': {
-                    'detected': False, 
-                    'confidence': 0.0,
-                    'dimensional_scores': DimensionalScores().to_dict(),
-                    'confidence_level': 'None'
-                }
-            }
-    
-    def _get_confidence_level(self, confidence: float) -> str:
-        """신뢰도 수준 분류"""
-        # NaN이나 무한대 값을 0으로 처리
-        if np.isnan(confidence) or np.isinf(confidence):
-            confidence = 0.0
-            
+        return candidates
+
+    def _extract_pivots(self, df: pd.DataFrame) -> list[PivotPoint]:
+        if df.empty or len(df) < (2 * self.EXTREMA_RADIUS + 3):
+            return []
+
+        smoothed = df["smoothed_close"].to_numpy(dtype=float)
+        candidates: list[PivotPoint] = []
+        for idx in range(self.EXTREMA_RADIUS, len(df) - self.EXTREMA_RADIUS):
+            segment = smoothed[idx - self.EXTREMA_RADIUS : idx + self.EXTREMA_RADIUS + 1]
+            if np.isnan(segment).any():
+                continue
+
+            center = segment[self.EXTREMA_RADIUS]
+            left = segment[: self.EXTREMA_RADIUS]
+            right = segment[self.EXTREMA_RADIUS + 1 :]
+            local_window = df.iloc[idx - self.EXTREMA_RADIUS : idx + self.EXTREMA_RADIUS + 1]
+
+            if center > np.nanmax(left) and center >= np.nanmax(right):
+                raw_idx = int(local_window["high"].idxmax())
+                price = float(df.loc[raw_idx, "high"])
+                prominence = (price - float(local_window["low"].min())) / max(price, 1e-9)
+                if prominence >= self._prominence_floor(df, raw_idx):
+                    candidates.append(
+                        PivotPoint(
+                            index=raw_idx,
+                            date=_date_str(df.loc[raw_idx, "date"]),
+                            pivot_type="H",
+                            pivot_price=price,
+                            prominence_pct=prominence,
+                            source_window=2 * self.EXTREMA_RADIUS + 1,
+                        )
+                    )
+
+            if center < np.nanmin(left) and center <= np.nanmin(right):
+                raw_idx = int(local_window["low"].idxmin())
+                price = float(df.loc[raw_idx, "low"])
+                prominence = (float(local_window["high"].max()) - price) / max(float(local_window["high"].max()), 1e-9)
+                if prominence >= self._prominence_floor(df, raw_idx):
+                    candidates.append(
+                        PivotPoint(
+                            index=raw_idx,
+                            date=_date_str(df.loc[raw_idx, "date"]),
+                            pivot_type="L",
+                            pivot_price=price,
+                            prominence_pct=prominence,
+                            source_window=2 * self.EXTREMA_RADIUS + 1,
+                        )
+                    )
+
+        merged = self._merge_pivots(candidates)
+        merged = self._append_recent_endpoint_pivots(df, merged, self.EXTREMA_RADIUS)
+        return self._merge_pivots(merged)
+
+    def _prior_run_up_pct(self, df: pd.DataFrame, start_idx: int) -> float | None:
+        if start_idx <= 5:
+            return None
+        left = max(0, start_idx - 120)
+        prior_window = df.iloc[left:start_idx]
+        if prior_window.empty:
+            return None
+        prior_low = _safe_float(prior_window["low"].min())
+        start_high = _safe_float(df.loc[start_idx, "high"])
+        ret_63d = None
+        if start_idx >= 63:
+            base_close = _safe_float(df.loc[start_idx - 63, "close"])
+            start_close = _safe_float(df.loc[start_idx, "close"])
+            if base_close and start_close and base_close > 0:
+                ret_63d = (start_close / base_close) - 1.0
+        run_up = None
+        if prior_low and start_high and prior_low > 0:
+            run_up = (start_high / prior_low) - 1.0
+        if run_up is None:
+            return ret_63d
+        if ret_63d is None:
+            return run_up
+        return max(run_up, ret_63d)
+
+    def _recent_tightness_pct(self, df: pd.DataFrame, pivot_price: float, bars: int = 5) -> float | None:
+        if df.empty or pivot_price <= 0:
+            return None
+        tail = df.tail(min(bars, len(df)))
+        if tail.empty:
+            return None
+        return (float(tail["high"].max()) - float(tail["low"].min())) / pivot_price
+
+    def _volume_base(self, row: pd.Series) -> float:
+        for column in ("vol_ma50", "vol_ma20", "vol_ma10", "volume"):
+            value = _safe_float(row.get(column))
+            if value and value > 0:
+                return value
+        return 1.0
+
+    def _check_breakout_last_rows(
+        self,
+        df: pd.DataFrame,
+        pivot_price: float | None,
+        invalidation_price: float | None,
+        last_n: int = 5,
+    ) -> dict[str, Any]:
+        empty_result = {
+            "breakout_found": False,
+            "valid_recent": False,
+            "breakout_date": None,
+            "breakout_price": None,
+            "breakout_volume": None,
+            "volume_multiple": None,
+            "volume_score": 0.0,
+            "extended": False,
+        }
+        if pivot_price is None or pivot_price <= 0 or df.empty:
+            return empty_result
+
+        tail = df.tail(min(last_n, len(df))).copy()
+        if tail.empty:
+            return empty_result
+
+        base_volume = tail.apply(self._volume_base, axis=1)
+        price_pass = tail["close"] >= pivot_price * (1.0 + self.BREAKOUT_EPS)
+        aggressive_pass = (tail["high"] >= pivot_price * (1.0 + self.BREAKOUT_EPS)) & (tail["close"] >= pivot_price)
+        volume_pass = tail["volume"] >= self.BREAKOUT_VOL_MULT * base_volume
+        hits = tail[(price_pass | aggressive_pass) & volume_pass]
+        if hits.empty:
+            return empty_result
+
+        breakout_idx = int(hits.index[0])
+        breakout_row = df.loc[breakout_idx]
+        breakout_volume = _safe_float(breakout_row["volume"])
+        base_vol = self._volume_base(breakout_row)
+        volume_multiple = breakout_volume / base_vol if breakout_volume is not None and base_vol > 0 else None
+
+        post_breakout = df.iloc[breakout_idx:]
+        latest_close = float(df["close"].iloc[-1])
+        highest_after_breakout = float(post_breakout["high"].max()) if not post_breakout.empty else latest_close
+        pullback_pct = (
+            (highest_after_breakout - latest_close) / highest_after_breakout
+            if highest_after_breakout > 0
+            else 0.0
+        )
+        held_above_pivot = latest_close >= pivot_price * 0.97
+        not_failed = invalidation_price is None or latest_close >= invalidation_price * 0.98
+        valid_recent = held_above_pivot and pullback_pct <= 0.08 and not_failed
+
+        return {
+            "breakout_found": True,
+            "valid_recent": valid_recent,
+            "breakout_date": _date_str(breakout_row["date"]),
+            "breakout_price": _safe_float(breakout_row["close"]),
+            "breakout_volume": breakout_volume,
+            "volume_multiple": volume_multiple,
+            "volume_score": self._range_score(volume_multiple, 1.4, 3.5, 1.0, 5.0),
+            "extended": latest_close >= pivot_price * 1.10,
+        }
+
+    def _confidence_level(self, confidence: float) -> str:
         if confidence >= self.HIGH_CONFIDENCE_THRESHOLD:
-            return 'High'
-        elif confidence >= self.DETECTION_THRESHOLD:
-            return 'Medium'
-        elif confidence >= 0.4:
-            return 'Low'
-        elif confidence == 0.0:
-            return 'Low'  # 0.0인 경우 "low"로 변경
-        else:
-            return 'None'
+            return "High"
+        if confidence >= self.DETECTION_THRESHOLD:
+            return "Medium"
+        if confidence >= 0.4:
+            return "Low"
+        return "None"
+
+    def _state_bucket(self, detail: str) -> str:
+        if detail.startswith("BREAKOUT"):
+            return "BROKEOUT_RECENT"
+        if detail.startswith("COMPLETED") or detail.startswith("READY"):
+            return "COMPLETED"
+        if detail.startswith("FORMING"):
+            return "FORMING"
+        if detail.startswith("FAILED"):
+            return "FAILED"
+        if detail.startswith("STALE"):
+            return "STALE"
+        return "NONE"
+
+    def _build_candidate(
+        self,
+        pattern_type: str,
+        state_detail: str,
+        confidence: float,
+        dimensional_scores: DimensionalScores,
+        *,
+        pattern_start: str | None,
+        pattern_end: str | None,
+        pivot_price: float | None,
+        invalidation_price: float | None,
+        breakout: dict[str, Any],
+        distance_to_pivot_pct: float | None,
+        metrics: dict[str, Any],
+        pivots: list[PivotPoint],
+    ) -> PatternCandidate:
+        state_bucket = self._state_bucket(state_detail)
+        detected = state_bucket not in {"FAILED", "NONE"} and confidence >= self.DETECTION_THRESHOLD
+        return PatternCandidate(
+            pattern_type=pattern_type,
+            state_detail=state_detail,
+            state_bucket=state_bucket,
+            detected=detected,
+            confidence=confidence,
+            confidence_level=self._confidence_level(confidence),
+            pattern_start=pattern_start,
+            pattern_end=pattern_end,
+            pivot_price=pivot_price,
+            invalidation_price=invalidation_price,
+            breakout_date=breakout.get("breakout_date"),
+            breakout_price=breakout.get("breakout_price"),
+            breakout_volume=breakout.get("breakout_volume"),
+            volume_multiple=breakout.get("volume_multiple"),
+            distance_to_pivot_pct=distance_to_pivot_pct,
+            extended=bool(breakout.get("extended", False)),
+            dimensional_scores=dimensional_scores.to_dict(),
+            metrics=metrics,
+            pivots=[pivot.to_dict() for pivot in pivots],
+        )
+
+    def _detect_vcp(self, df: pd.DataFrame, pivots: list[PivotPoint]) -> PatternCandidate | None:
+        if len(df) < 40 or len(pivots) < 5:
+            return None
+
+        candidates: list[PatternCandidate] = []
+        latest_idx = len(df) - 1
+        recent_pivots = [pivot for pivot in pivots if pivot.index >= max(0, latest_idx - 130)]
+        for end_pos, end_pivot in enumerate(recent_pivots):
+            if end_pivot.pivot_type != "H":
+                continue
+            for contraction_count in range(4, 1, -1):
+                start_pos = end_pos - contraction_count * 2
+                if start_pos < 0:
+                    continue
+                sequence = recent_pivots[start_pos : end_pos + 1]
+                if len(sequence) != 2 * contraction_count + 1:
+                    continue
+                expected_types = ["H" if idx % 2 == 0 else "L" for idx in range(len(sequence))]
+                if [pivot.pivot_type for pivot in sequence] != expected_types:
+                    continue
+
+                highs = sequence[0::2]
+                lows = sequence[1::2]
+                base_start_idx = highs[0].index
+                base_len = latest_idx - base_start_idx + 1
+                if base_len < 15 or base_len > 120:
+                    continue
+
+                contraction_bars = [low.index - highs[idx].index for idx, low in enumerate(lows)]
+                recovery_bars = [highs[idx + 1].index - low.index for idx, low in enumerate(lows)]
+                if min(contraction_bars) < 4 or min(recovery_bars) < 3:
+                    continue
+
+                depths = []
+                for idx, low in enumerate(lows):
+                    ref_high = highs[idx].pivot_price
+                    depth = (ref_high - low.pivot_price) / max(ref_high, 1e-9)
+                    depths.append(depth)
+                if depths[0] < 0.06 or depths[0] > 0.45 or max(depths) > 0.5:
+                    continue
+
+                decrease_checks = [
+                    depths[idx + 1] <= depths[idx] * 0.85 or depths[idx + 1] <= depths[idx] - 0.02
+                    for idx in range(len(depths) - 1)
+                ]
+                higher_lows = [
+                    lows[idx + 1].pivot_price >= lows[idx].pivot_price
+                    for idx in range(len(lows) - 1)
+                ]
+
+                latest_high_is_breakout = (
+                    len(highs) >= 3
+                    and highs[-1].pivot_price > highs[-2].pivot_price * (1.0 + self.BREAKOUT_EPS)
+                )
+                if latest_high_is_breakout:
+                    pivot_price = highs[-2].pivot_price
+                    resistance_highs = highs[-3:-1] if len(highs) >= 4 else [highs[-2]]
+                    structure_highs = resistance_highs
+                else:
+                    resistance_highs = highs[-2:]
+                    structure_highs = highs
+                    pivot_price = max(pivot.pivot_price for pivot in resistance_highs)
+                if not resistance_highs:
+                    continue
+                resistance_band_pct = (
+                    max(pivot.pivot_price for pivot in structure_highs) - min(pivot.pivot_price for pivot in structure_highs)
+                ) / max(pivot_price, 1e-9)
+                last_two_gap_pct = (
+                    abs(resistance_highs[-1].pivot_price - resistance_highs[-2].pivot_price) / max(pivot_price, 1e-9)
+                    if len(resistance_highs) >= 2
+                    else 0.0
+                )
+                if resistance_band_pct > 0.1:
+                    continue
+
+                base_window = df.iloc[base_start_idx : latest_idx + 1]
+                first_ten = base_window.head(min(10, len(base_window)))
+                first_half = base_window.head(max(5, len(base_window) // 2))
+                last_ten = base_window.tail(min(10, len(base_window)))
+                first_range = _series_median(first_ten["range_pct"])
+                last_range = _series_median(last_ten["range_pct"])
+                range_ratio = last_range / first_range if first_range and first_range > 0 else None
+                first_natr = _series_median(first_ten["natr10"])
+                last_natr = _series_median(last_ten["natr10"])
+                natr_ratio = last_natr / first_natr if first_natr and first_natr > 0 else None
+                first_vol = _series_median(first_half["volume"])
+                last_vol = _series_median(last_ten["volume"])
+                volume_ratio = last_vol / first_vol if first_vol and first_vol > 0 else None
+                tightness_pct = self._recent_tightness_pct(df, pivot_price, bars=5)
+                prior_run_up_pct = self._prior_run_up_pct(df, base_start_idx)
+                latest_close = float(df["close"].iloc[-1])
+                invalidation_price = lows[-1].pivot_price
+                distance_to_pivot_pct = (latest_close / pivot_price) - 1.0 if pivot_price > 0 else None
+                breakout = self._check_breakout_last_rows(df, pivot_price, invalidation_price, last_n=5)
+
+                technical_quality = np.mean(
+                    [
+                        self._range_score(depths[0], 0.08, 0.35, 0.05, 0.45),
+                        self._inverse_score(depths[-1], 0.12, 0.18),
+                        np.mean(decrease_checks) if decrease_checks else 0.0,
+                        np.mean(higher_lows) if higher_lows else 0.5,
+                        self._inverse_score(resistance_band_pct, 0.06, 0.10),
+                        self._inverse_score(last_two_gap_pct, 0.03, 0.06),
+                    ]
+                )
+                volume_confirmation = np.mean(
+                    [
+                        self._inverse_score(volume_ratio, 0.8, 1.05),
+                        self._inverse_score(natr_ratio, 0.8, 1.05),
+                        self._inverse_score(range_ratio, 0.8, 1.05),
+                        breakout.get("volume_score", 0.0)
+                        if breakout.get("breakout_found")
+                        else self._inverse_score(volume_ratio, 0.8, 1.05),
+                    ]
+                )
+                temporal_validity = np.mean(
+                    [
+                        self._range_score(base_len, 20, 80, 15, 120),
+                        np.mean([self._range_score(bars, 5, 25, 4, 35) for bars in contraction_bars + recovery_bars]),
+                        self._inverse_score(tightness_pct, 0.08, 0.12),
+                    ]
+                )
+                market_context = np.mean(
+                    [
+                        self._range_score(prior_run_up_pct, 0.25, 1.0, 0.12, 1.5),
+                        1.0 if pd.notna(df["sma50"].iloc[-1]) and latest_close >= float(df["sma50"].iloc[-1]) else 0.3,
+                        1.0
+                        if pd.notna(df["rolling_high_252"].iloc[-1])
+                        and latest_close >= float(df["rolling_high_252"].iloc[-1]) * 0.75
+                        else 0.4,
+                    ]
+                )
+                dimensional_scores = DimensionalScores(
+                    technical_quality=self._normalize_score(float(technical_quality)),
+                    volume_confirmation=self._normalize_score(float(volume_confirmation)),
+                    temporal_validity=self._normalize_score(float(temporal_validity)),
+                    market_context=self._normalize_score(float(market_context)),
+                )
+                score_dict = dimensional_scores.to_dict()
+                confidence = self._normalize_score(
+                    sum(score_dict[dimension] * weight for dimension, weight in self.DIMENSION_WEIGHTS.items())
+                )
+
+                structure_complete = (
+                    all(decrease_checks)
+                    and depths[-1] <= 0.14
+                    and last_two_gap_pct <= 0.03
+                    and resistance_band_pct <= 0.06
+                    and (tightness_pct is not None and tightness_pct <= 0.08)
+                    and (natr_ratio is not None and natr_ratio <= 1.0)
+                )
+
+                if breakout.get("valid_recent"):
+                    state_detail = "BREAKOUT_VCP_RECENT"
+                elif latest_close < invalidation_price * 0.98:
+                    state_detail = "FAILED_VCP"
+                elif structure_complete:
+                    state_detail = "COMPLETED_VCP"
+                else:
+                    state_detail = "FORMING_VCP"
+
+                metrics = {
+                    "contractions": contraction_count,
+                    "depths_pct": [round(depth, 4) for depth in depths],
+                    "contraction_bars": [int(bars) for bars in contraction_bars],
+                    "recovery_bars": [int(bars) for bars in recovery_bars],
+                    "prior_run_up_pct": _safe_float(prior_run_up_pct),
+                    "resistance_band_pct": _safe_float(resistance_band_pct),
+                    "last_two_high_gap_pct": _safe_float(last_two_gap_pct),
+                    "higher_lows_ratio": round(float(np.mean(higher_lows)), 4) if higher_lows else None,
+                    "tightness_pct": _safe_float(tightness_pct),
+                    "volume_ratio_last10_vs_first_half": _safe_float(volume_ratio),
+                    "natr_ratio_last10_vs_first10": _safe_float(natr_ratio),
+                    "range_ratio_last10_vs_first10": _safe_float(range_ratio),
+                }
+                candidates.append(
+                    self._build_candidate(
+                        "VCP",
+                        state_detail,
+                        confidence,
+                        dimensional_scores,
+                        pattern_start=_date_str(df.loc[base_start_idx, "date"]),
+                        pattern_end=_date_str(df.loc[latest_idx, "date"]),
+                        pivot_price=pivot_price,
+                        invalidation_price=invalidation_price,
+                        breakout=breakout,
+                        distance_to_pivot_pct=distance_to_pivot_pct,
+                        metrics=metrics,
+                        pivots=sequence,
+                    )
+                )
+
+        if not candidates:
+            return None
+        return max(candidates, key=lambda candidate: (candidate.detected, candidate.confidence))
+
+    def _detect_cup_handle(self, df: pd.DataFrame, pivots: list[PivotPoint]) -> PatternCandidate | None:
+        if len(df) < 60:
+            return None
+
+        latest_idx = len(df) - 1
+        high_pivots = [
+            pivot
+            for pivot in pivots
+            if pivot.pivot_type == "H" and pivot.index >= max(0, latest_idx - 180)
+        ]
+        recent_low_pivots = [
+            pivot
+            for pivot in pivots
+            if pivot.pivot_type == "L" and pivot.index >= max(0, latest_idx - 35)
+        ]
+        known_high_indexes = {pivot.index for pivot in high_pivots}
+        for low_pivot in recent_low_pivots:
+            pre_low_window = df.iloc[max(0, low_pivot.index - 25) : low_pivot.index]
+            if len(pre_low_window) < 5:
+                continue
+            rim_idx = int(pre_low_window["high"].idxmax())
+            if rim_idx in known_high_indexes:
+                continue
+            rim_price = float(df.loc[rim_idx, "high"])
+            prominence = (rim_price - float(pre_low_window["low"].min())) / max(rim_price, 1e-9)
+            if prominence < max(0.03, self._prominence_floor(df, rim_idx) * 0.75):
+                continue
+            high_pivots.append(
+                PivotPoint(
+                    index=rim_idx,
+                    date=_date_str(df.loc[rim_idx, "date"]),
+                    pivot_type="H",
+                    pivot_price=rim_price,
+                    prominence_pct=prominence,
+                    source_window=0,
+                )
+            )
+            known_high_indexes.add(rim_idx)
+
+        high_pivots = sorted(high_pivots, key=lambda pivot: pivot.index)
+        if len(high_pivots) < 2:
+            return None
+
+        candidates: list[PatternCandidate] = []
+        for left_pos, left_rim in enumerate(high_pivots[:-1]):
+            for right_rim in high_pivots[left_pos + 1 :]:
+                cup_len = right_rim.index - left_rim.index
+                if cup_len < 30 or cup_len > 160:
+                    continue
+                if latest_idx - right_rim.index > 25:
+                    continue
+
+                cup_window = df.iloc[left_rim.index : right_rim.index + 1]
+                if cup_window.empty:
+                    continue
+
+                bottom_idx = int(cup_window["low"].idxmin())
+                if bottom_idx - left_rim.index < 5 or right_rim.index - bottom_idx < 5:
+                    continue
+
+                bottom_price = float(df.loc[bottom_idx, "low"])
+                rim_level = max(left_rim.pivot_price, right_rim.pivot_price)
+                rim_diff_pct = abs(left_rim.pivot_price - right_rim.pivot_price) / max(rim_level, 1e-9)
+                cup_depth_pct = (rim_level - bottom_price) / max(rim_level, 1e-9)
+                if cup_depth_pct < 0.08 or cup_depth_pct > 0.45 or rim_diff_pct > 0.08:
+                    continue
+
+                bottom_threshold = bottom_price + (rim_level - bottom_price) * 0.25
+                bottom_zone_width = int((cup_window["close"] <= bottom_threshold).sum())
+                left_width = bottom_idx - left_rim.index
+                right_width = right_rim.index - bottom_idx
+                balance_ratio = min(left_width, right_width) / max(left_width, right_width)
+                recovery_ratio = right_rim.pivot_price / max(left_rim.pivot_price, 1e-9)
+
+                after_bottom = df.iloc[bottom_idx + 1 : bottom_idx + 4]
+                v_shape_recovery = None
+                if not after_bottom.empty:
+                    recovery_high = float(after_bottom["high"].max())
+                    v_shape_recovery = (recovery_high - bottom_price) / max(rim_level - bottom_price, 1e-9)
+
+                post_rim = df.iloc[right_rim.index + 1 : min(len(df), right_rim.index + 21)]
+                state_detail = "FORMING_CUP" if recovery_ratio < 0.93 else "FORMING_HANDLE"
+                handle_slice = post_rim.head(0)
+                price_only_break_idx = None
+                if recovery_ratio >= 0.93 and not post_rim.empty:
+                    price_only_break = post_rim[
+                        (post_rim["close"] >= right_rim.pivot_price * (1.0 + self.BREAKOUT_EPS))
+                        | (
+                            (post_rim["high"] >= right_rim.pivot_price * (1.0 + self.BREAKOUT_EPS))
+                            & (post_rim["close"] >= right_rim.pivot_price)
+                        )
+                    ]
+                    if not price_only_break.empty:
+                        price_only_break_idx = int(price_only_break.index[0])
+                        handle_slice = df.iloc[right_rim.index + 1 : price_only_break_idx]
+                    else:
+                        handle_slice = post_rim
+
+                handle_len = len(handle_slice)
+                handle_low_price = None
+                handle_depth_pct = None
+                handle_volume_ratio = None
+                handle_upper_half = None
+                handle_vs_advance = None
+                pivot_price = right_rim.pivot_price
+                invalidation_price = bottom_price
+                breakout_context = {
+                    "breakout_found": False,
+                    "valid_recent": False,
+                    "breakout_date": None,
+                    "breakout_price": None,
+                    "breakout_volume": None,
+                    "volume_multiple": None,
+                    "volume_score": 0.0,
+                    "extended": False,
+                }
+
+                if handle_len > 0:
+                    pivot_window_end = handle_slice.index[-1] + 1
+                    pivot_window = df.iloc[right_rim.index:pivot_window_end]
+                    pivot_price = float(pivot_window["high"].max()) if not pivot_window.empty else right_rim.pivot_price
+                    handle_low_price = float(handle_slice["low"].min())
+                    invalidation_price = handle_low_price
+                    handle_depth_pct = (pivot_price - handle_low_price) / max(pivot_price, 1e-9)
+                    handle_upper_half = handle_low_price >= (bottom_price + rim_level) / 2.0
+                    advance = max(right_rim.pivot_price - bottom_price, 1e-9)
+                    handle_vs_advance = (pivot_price - handle_low_price) / advance
+
+                    right_side_window = df.iloc[max(bottom_idx, right_rim.index - 15) : right_rim.index + 1]
+                    right_side_volume = _series_median(right_side_window["volume"]) if not right_side_window.empty else None
+                    handle_volume = _series_median(handle_slice["volume"])
+                    handle_volume_ratio = (
+                        handle_volume / right_side_volume
+                        if handle_volume is not None and right_side_volume and right_side_volume > 0
+                        else None
+                    )
+
+                    handle_complete = (
+                        5 <= handle_len <= 20
+                        and handle_depth_pct <= 0.12
+                        and handle_vs_advance <= 0.35
+                        and bool(handle_upper_half)
+                    )
+                    breakout_context = self._check_breakout_last_rows(df, pivot_price, invalidation_price, last_n=5)
+                    if breakout_context.get("valid_recent") and handle_complete:
+                        state_detail = "BREAKOUT_CWH_RECENT"
+                    elif float(df["close"].iloc[-1]) < invalidation_price * 0.98:
+                        state_detail = "FAILED_CWH"
+                    elif handle_complete:
+                        state_detail = "COMPLETED_CWH"
+                    else:
+                        state_detail = "FORMING_HANDLE"
+                elif recovery_ratio >= 0.93:
+                    state_detail = "FORMING_HANDLE"
+
+                prior_run_up_pct = self._prior_run_up_pct(df, left_rim.index)
+                latest_close = float(df["close"].iloc[-1])
+                distance_to_pivot_pct = (latest_close / pivot_price) - 1.0 if pivot_price > 0 else None
+
+                technical_quality = np.mean(
+                    [
+                        self._range_score(cup_depth_pct, 0.12, 0.35, 0.08, 0.45),
+                        self._inverse_score(rim_diff_pct, 0.05, 0.08),
+                        self._ratio_score(recovery_ratio, 0.95, 0.85),
+                        self._ratio_score(balance_ratio, 0.5, 0.25),
+                        self._ratio_score(float(bottom_zone_width) / max(float(cup_len), 1.0), 0.1, 0.04),
+                        self._inverse_score(v_shape_recovery, 0.45, 0.75) if v_shape_recovery is not None else 0.5,
+                        self._inverse_score(handle_depth_pct, 0.10, 0.16) if handle_depth_pct is not None else 0.35,
+                    ]
+                )
+                right_side_volume_ratio = None
+                if not post_rim.empty:
+                    cup_volume = _series_median(cup_window["volume"])
+                    post_volume = _series_median(post_rim["volume"])
+                    if cup_volume and cup_volume > 0 and post_volume is not None:
+                        right_side_volume_ratio = post_volume / cup_volume
+                volume_confirmation = np.mean(
+                    [
+                        self._inverse_score(handle_volume_ratio, 0.9, 1.15) if handle_volume_ratio is not None else 0.4,
+                        breakout_context.get("volume_score", 0.0)
+                        if breakout_context.get("breakout_found")
+                        else self._inverse_score(handle_volume_ratio, 0.9, 1.15) if handle_volume_ratio is not None else 0.4,
+                        self._inverse_score(right_side_volume_ratio, 0.95, 1.2)
+                        if right_side_volume_ratio is not None
+                        else 0.4,
+                    ]
+                )
+                temporal_validity = np.mean(
+                    [
+                        self._range_score(cup_len, 35, 130, 30, 160),
+                        self._range_score(handle_len, 5, 20, 3, 25) if handle_len > 0 else 0.35,
+                        self._ratio_score(balance_ratio, 0.5, 0.25),
+                    ]
+                )
+                market_context = np.mean(
+                    [
+                        self._range_score(prior_run_up_pct, 0.25, 1.0, 0.12, 1.5),
+                        1.0 if pd.notna(df["sma50"].iloc[-1]) and latest_close >= float(df["sma50"].iloc[-1]) else 0.3,
+                        1.0
+                        if pd.notna(df["rolling_high_252"].iloc[-1])
+                        and latest_close >= float(df["rolling_high_252"].iloc[-1]) * 0.75
+                        else 0.4,
+                    ]
+                )
+                dimensional_scores = DimensionalScores(
+                    technical_quality=self._normalize_score(float(technical_quality)),
+                    volume_confirmation=self._normalize_score(float(volume_confirmation)),
+                    temporal_validity=self._normalize_score(float(temporal_validity)),
+                    market_context=self._normalize_score(float(market_context)),
+                )
+                score_dict = dimensional_scores.to_dict()
+                confidence = self._normalize_score(
+                    sum(score_dict[dimension] * weight for dimension, weight in self.DIMENSION_WEIGHTS.items())
+                )
+
+                metrics = {
+                    "cup_len": int(cup_len),
+                    "cup_depth_pct": _safe_float(cup_depth_pct),
+                    "rim_diff_pct": _safe_float(rim_diff_pct),
+                    "recovery_ratio": _safe_float(recovery_ratio),
+                    "balance_ratio": _safe_float(balance_ratio),
+                    "bottom_zone_width": int(bottom_zone_width),
+                    "bottom_zone_ratio": _safe_float(float(bottom_zone_width) / max(float(cup_len), 1.0)),
+                    "v_shape_recovery_ratio": _safe_float(v_shape_recovery),
+                    "handle_len": int(handle_len),
+                    "handle_depth_pct": _safe_float(handle_depth_pct),
+                    "handle_volume_ratio": _safe_float(handle_volume_ratio),
+                    "handle_upper_half": handle_upper_half,
+                    "handle_vs_cup_advance": _safe_float(handle_vs_advance),
+                    "prior_run_up_pct": _safe_float(prior_run_up_pct),
+                    "price_only_break_index": price_only_break_idx,
+                }
+                pivots_used = [
+                    left_rim,
+                    PivotPoint(
+                        index=bottom_idx,
+                        date=_date_str(df.loc[bottom_idx, "date"]),
+                        pivot_type="L",
+                        pivot_price=bottom_price,
+                        prominence_pct=cup_depth_pct,
+                        source_window=0,
+                    ),
+                    right_rim,
+                ]
+                candidates.append(
+                    self._build_candidate(
+                        "CUP_HANDLE",
+                        state_detail,
+                        confidence,
+                        dimensional_scores,
+                        pattern_start=_date_str(df.loc[left_rim.index, "date"]),
+                        pattern_end=_date_str(df.loc[latest_idx, "date"]),
+                        pivot_price=pivot_price,
+                        invalidation_price=invalidation_price,
+                        breakout=breakout_context,
+                        distance_to_pivot_pct=distance_to_pivot_pct,
+                        metrics=metrics,
+                        pivots=pivots_used,
+                    )
+                )
+
+        if not candidates:
+            return None
+        return max(candidates, key=lambda candidate: (candidate.detected, candidate.confidence))
+
+    def analyze_patterns_enhanced(self, symbol: str, stock_data: pd.DataFrame) -> dict[str, dict[str, Any]]:
+        try:
+            df = self._prepare_ohlcv(stock_data)
+            if df.empty or len(df) < 40:
+                return {
+                    "vcp": self._empty_pattern_output("VCP"),
+                    "cup_handle": self._empty_pattern_output("CUP_HANDLE"),
+                }
+
+            pivots = self._extract_pivots(df)
+            vcp_candidate = self._detect_vcp(df, pivots)
+            cup_candidate = self._detect_cup_handle(df, pivots)
+
+            return {
+                "vcp": vcp_candidate.to_output() if vcp_candidate else self._empty_pattern_output("VCP"),
+                "cup_handle": cup_candidate.to_output() if cup_candidate else self._empty_pattern_output("CUP_HANDLE"),
+            }
+        except Exception:
+            logger.exception("%s: pattern analysis failed", symbol)
+            return {
+                "vcp": self._empty_pattern_output("VCP"),
+                "cup_handle": self._empty_pattern_output("CUP_HANDLE"),
+            }

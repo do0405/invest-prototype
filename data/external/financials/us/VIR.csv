@@ -1,0 +1,2 @@
+symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
+VIR,VIR,[],False,0,0,False,False,98192.30769230769,4.407332998493219,True,False,False,True,False,False,73.68963044237806,16.088014407234272,0,0,2026-03-13T01:31:33.572453+00:00

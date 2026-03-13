@@ -36,7 +36,7 @@ def clean_tickers(tickers):
         if not ticker or ticker.isspace():
             continue
         if not all(c.isalnum() or c in '.-$^' for c in ticker):
-            log_msg = f"⚠️ 비정상적인 티커 제외: {ticker}"
+            log_msg = f"WARNING abnormal ticker excluded: {ticker}"
             reasons = []
             if '<' in ticker or '>' in ticker:
                 reasons.append("HTML 태그 포함")
@@ -58,10 +58,10 @@ def clean_tickers(tickers):
                 reasons.append("JS 주석 포함")
             if not reasons:
                 reasons.append("비정상 문자 포함")
-            print(f"{log_msg} - 이유: {', '.join(reasons)}")
+            print(f"{log_msg} - reason: {', '.join(reasons)}")
             continue
         if len(ticker) > 8:
-            print(f"⚠️ 너무 긴 티커 제외 ({len(ticker)}자): {ticker}")
+            print(f"WARNING overlong ticker excluded ({len(ticker)} chars): {ticker}")
             continue
         filtered.append(ticker)
     cleaned = filtered
@@ -69,13 +69,13 @@ def clean_tickers(tickers):
     filtered = []
     for ticker in cleaned:
         if '<' in ticker or '>' in ticker:
-            print(f"⚠️ HTML 태그가 포함된 티커 제외: {ticker}")
+            print(f"WARNING HTML-like ticker excluded: {ticker}")
             continue
         if '=' in ticker or '(' in ticker or ')' in ticker or '.className' in ticker or 'RegExp' in ticker:
-            print(f"⚠️ JavaScript 코드로 추정되는 티커 제외: {ticker}")
+            print(f"WARNING JavaScript-like ticker excluded: {ticker}")
             continue
         if ticker.strip().startswith('//') or ticker.strip().startswith('/*') or ticker.strip().endswith('*/'):
-            print(f"⚠️ JavaScript 주석으로 추정되는 티커 제외: {ticker}")
+            print(f"WARNING JavaScript-comment-like ticker excluded: {ticker}")
             continue
         filtered.append(ticker)
     filtered = list(set(filtered))
