@@ -29,7 +29,7 @@ def _build_frame(
 
 
 def _synthetic_vcp_frame() -> pd.DataFrame:
-    pretrend = np.linspace(50.0, 88.0, 55)
+    pretrend = np.linspace(50.0, 88.0, 170)
     x = np.arange(50)
     key_x = np.array([0, 4, 9, 14, 19, 24, 29, 34, 39, 44, 49])
     key_y = np.array([90.0, 100.0, 82.0, 98.0, 89.0, 99.0, 94.0, 100.0, 98.8, 100.1, 104.0])
@@ -60,7 +60,7 @@ def _synthetic_vcp_frame() -> pd.DataFrame:
 
 
 def _synthetic_cup_handle_frame() -> pd.DataFrame:
-    pretrend = np.linspace(35.0, 76.0, 45)
+    pretrend = np.linspace(35.0, 76.0, 150)
     t = np.linspace(-1.0, 1.0, 65)
     cup = 82.0 - 16.0 * (1.0 - np.square(t))
     handle = np.array([80.4, 80.0, 79.6, 79.2, 78.9, 79.1, 79.4, 79.8, 80.1, 80.5])
@@ -111,3 +111,14 @@ def test_detects_structural_cup_handle_breakout_recent() -> None:
     assert cup_handle["breakout_date"] is not None
     assert cup_handle["metrics"]["cup_len"] >= 30
     assert cup_handle["metrics"]["handle_len"] >= 5
+
+
+def test_pattern_analyzer_requires_prd_minimum_bar_count() -> None:
+    analyzer = EnhancedPatternAnalyzer()
+    closes = np.linspace(20.0, 40.0, 180)
+    volumes = np.full(180, 1_500_000.0)
+    spreads = np.full(180, 0.02)
+    patterns = analyzer.analyze_patterns_enhanced("SHORT", _build_frame(closes, volumes, spreads))
+
+    assert patterns["vcp"]["detected"] is False
+    assert patterns["cup_handle"]["detected"] is False

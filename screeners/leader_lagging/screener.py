@@ -8,9 +8,19 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from utils.indicator_helpers import (
+    normalize_indicator_frame,
+    rolling_atr as _helper_rolling_atr,
+    rolling_average_volume,
+    rolling_max,
+    rolling_min,
+    rolling_sma,
+    rolling_traded_value,
+    traded_value_series,
+)
 from utils.actual_data_calibration import bounded_quantile_value
 from utils.io_utils import ensure_dir
-from utils.market_data_contract import load_benchmark_data, load_local_ohlcv_frame
+from utils.market_data_contract import PricePolicy, load_benchmark_data, load_local_ohlcv_frame
 from utils.market_runtime import (
     ensure_market_dirs,
     get_benchmark_candidates,
@@ -21,6 +31,7 @@ from utils.market_runtime import (
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
+from utils.typing_utils import frame_keyed_records, row_to_record, series_to_str_text_dict
 
 
 def _safe_float(value: Any) -> float | None:
@@ -91,6 +102,12 @@ def _round_or_none(value: float | None, digits: int = 2) -> float | None:
     return round(float(value), digits)
 
 
+def _safe_divide(numerator: float | None, denominator: float | None) -> float | None:
+    if numerator is None or denominator is None or denominator == 0:
+        return None
+    return numerator / denominator
+
+
 def _coalesce(value: float | None, default: float) -> float:
     return default if value is None else float(value)
 
@@ -159,17 +176,14 @@ def _percentile_series(series: pd.Series) -> pd.Series:
     return numeric.rank(pct=True, method="average").fillna(0.5) * 100.0
 
 
+def _numeric_frame_column(frame: pd.DataFrame, column: str) -> pd.Series:
+    if column in frame.columns:
+        return pd.to_numeric(frame[column], errors="coerce")
+    return pd.Series(np.nan, index=frame.index, dtype=float)
+
+
 def _rolling_atr(frame: pd.DataFrame, window: int) -> pd.Series:
-    prev_close = frame["adj_close"].shift(1)
-    tr = pd.concat(
-        [
-            frame["high"] - frame["low"],
-            (frame["high"] - prev_close).abs(),
-            (frame["low"] - prev_close).abs(),
-        ],
-        axis=1,
-    ).max(axis=1)
-    return tr.rolling(window, min_periods=max(5, window // 3)).mean()
+    return _helper_rolling_atr(frame, window, close_col="adj_close", min_periods=max(5, window // 3))
 
 
 @dataclass(frozen=True)
@@ -246,36 +260,12 @@ class LeaderLaggingAnalyzer:
         }
 
     def normalize_daily_frame(self, frame: pd.DataFrame) -> pd.DataFrame:
-        if frame is None or frame.empty:
-            return pd.DataFrame(columns=["date", "open", "high", "low", "close", "adj_close", "volume"])
-
-        daily = frame.copy()
-        rename_map: dict[str, str] = {}
-        for column in daily.columns:
-            lowered = str(column).strip().lower()
-            if lowered in {"date", "open", "high", "low", "close", "adj_close", "volume"}:
-                rename_map[column] = lowered
-        daily = daily.rename(columns=rename_map)
-
-        if "date" not in daily.columns:
-            daily = daily.reset_index()
-            daily = daily.rename(columns={daily.columns[0]: "date"})
-        if "adj_close" not in daily.columns:
-            daily["adj_close"] = daily.get("close")
-        for column in ("open", "high", "low", "close", "adj_close"):
-            if column not in daily.columns:
-                daily[column] = daily.get("close")
-        if "volume" not in daily.columns:
-            daily["volume"] = 0.0
-
-        daily["date"] = pd.to_datetime(daily["date"], errors="coerce")
-        for column in ("open", "high", "low", "close", "adj_close", "volume"):
-            daily[column] = pd.to_numeric(daily[column], errors="coerce")
-
-        daily = daily.dropna(subset=["date", "close", "adj_close"]).copy()
+        daily = normalize_indicator_frame(frame, price_policy=PricePolicy.SPLIT_ADJUSTED)
         if daily.empty:
             return pd.DataFrame(columns=["date", "open", "high", "low", "close", "adj_close", "volume"])
-        return daily.sort_values("date").reset_index(drop=True)
+        # Keep the existing analyzer logic on a single, split-adjusted technical close.
+        daily["adj_close"] = pd.to_numeric(daily["close"], errors="coerce")
+        return daily
 
     def _align_relative_strength(self, daily: pd.DataFrame, benchmark_daily: pd.DataFrame) -> pd.DataFrame:
         benchmark = benchmark_daily[["date", "adj_close"]].rename(columns={"adj_close": "benchmark_adj_close"}).copy()
@@ -298,9 +288,44 @@ class LeaderLaggingAnalyzer:
             return None
         start = _safe_float(series.iloc[start_idx])
         end = _safe_float(series.iloc[end_idx])
-        if start in {None, 0} or end is None:
+        if start is None or start == 0 or end is None:
             return None
-        return (end / start) - 1.0
+        ratio = _safe_divide(end, start)
+        if ratio is None:
+            return None
+        return ratio - 1.0
+
+    def _benchmark_relative_weighted_rs(
+        self,
+        stock_series: pd.Series,
+        benchmark_series: pd.Series,
+        *,
+        end_offset: int = 0,
+    ) -> float | None:
+        stock_components = [
+            (self._compute_subperiod_return(stock_series, end_offset, 63), 0.40),
+            (self._compute_subperiod_return(stock_series, end_offset, 126), 0.20),
+            (self._compute_subperiod_return(stock_series, end_offset, 189), 0.20),
+            (self._compute_subperiod_return(stock_series, end_offset, 252), 0.20),
+        ]
+        benchmark_components = [
+            (self._compute_subperiod_return(benchmark_series, end_offset, 63), 0.40),
+            (self._compute_subperiod_return(benchmark_series, end_offset, 126), 0.20),
+            (self._compute_subperiod_return(benchmark_series, end_offset, 189), 0.20),
+            (self._compute_subperiod_return(benchmark_series, end_offset, 252), 0.20),
+        ]
+        if not any(value is not None for value, _ in stock_components):
+            return None
+        if not any(value is not None for value, _ in benchmark_components):
+            return None
+
+        # Use excess weighted return instead of dividing by benchmark return so
+        # down or flat benchmark windows do not invert relative-strength order.
+        weighted_stock = _weighted_mean(stock_components)
+        weighted_benchmark = _weighted_mean(benchmark_components)
+        if weighted_stock is None or weighted_benchmark is None:
+            return None
+        return (weighted_stock - weighted_benchmark) * 100.0
 
     def _estimate_structure(self, daily: pd.DataFrame) -> dict[str, float | None]:
         if len(daily) < 60:
@@ -318,8 +343,9 @@ class LeaderLaggingAnalyzer:
         atr20 = _safe_float(_rolling_atr(daily, 20).iloc[-1])
         atr60 = _safe_float(_rolling_atr(daily, 60).iloc[-1])
         volatility_contraction = None
-        if atr20 is not None and atr60 not in {None, 0}:
-            volatility_contraction = 1.0 - min(atr20 / atr60, 2.0)
+        atr_ratio = _safe_divide(atr20, atr60)
+        if atr_ratio is not None:
+            volatility_contraction = 1.0 - min(atr_ratio, 2.0)
 
         best_length = None
         best_score = -1.0
@@ -329,11 +355,14 @@ class LeaderLaggingAnalyzer:
             window = daily.iloc[-length:].copy()
             base_high = _safe_float(window["high"].max())
             base_low = _safe_float(window["low"].min())
-            if base_high in {None, 0} or base_low is None or base_high <= base_low:
+            if base_high is None or base_high == 0 or base_low is None or base_high <= base_low:
                 continue
             depth = (base_high - base_low) / base_high
             tightness = 1.0 - depth
-            close_pos = (_safe_float(window["adj_close"].iloc[-1]) - base_low) / max(base_high - base_low, 1e-9)
+            close_last = _safe_float(window["adj_close"].iloc[-1])
+            if close_last is None:
+                continue
+            close_pos = (close_last - base_low) / max(base_high - base_low, 1e-9)
             score = (
                 (_score_inverse(depth, 0.15, 0.40) * 0.45)
                 + (_score_ratio(close_pos, 0.70, 0.30) * 0.30)
@@ -345,22 +374,26 @@ class LeaderLaggingAnalyzer:
                 best_high = base_high
                 best_tightness = tightness
 
-        range_10 = ((daily["high"] - daily["low"]) / daily["adj_close"].replace(0, np.nan)).tail(10).mean()
-        range_40 = ((daily["high"] - daily["low"]) / daily["adj_close"].replace(0, np.nan)).tail(40).mean()
+        range_10 = _safe_float((((daily["high"] - daily["low"]) / daily["adj_close"].replace(0, np.nan)).tail(10).mean()))
+        range_40 = _safe_float((((daily["high"] - daily["low"]) / daily["adj_close"].replace(0, np.nan)).tail(40).mean()))
         range_compression = None
-        if pd.notna(range_10) and pd.notna(range_40) and range_40 not in {0, None}:
-            range_compression = 1.0 - min(float(range_10 / range_40), 2.0)
+        range_ratio = _safe_divide(range_10, range_40)
+        if range_ratio is not None:
+            range_compression = 1.0 - min(range_ratio, 2.0)
 
         recent_high = _safe_float(daily["high"].tail(30).max())
         close = _safe_float(daily["adj_close"].iloc[-1])
         pivot_proximity = None
-        if recent_high not in {None, 0} and close is not None:
-            pivot_proximity = 1.0 - min(abs((close / recent_high) - 1.0) / 0.10, 1.0)
+        if recent_high is not None and recent_high != 0 and close is not None:
+            close_to_recent_high = _safe_divide(close, recent_high)
+            if close_to_recent_high is not None:
+                pivot_proximity = 1.0 - min(abs(close_to_recent_high - 1.0) / 0.10, 1.0)
 
         breakout_volume_expansion = None
-        avg_volume_20 = _safe_float(daily["volume"].rolling(20, min_periods=5).mean().iloc[-1])
-        if avg_volume_20 not in {None, 0}:
-            breakout_volume_expansion = (_safe_float(daily["volume"].iloc[-1]) or 0.0) / avg_volume_20
+        avg_volume_20 = _safe_float(rolling_average_volume(daily, 20, min_periods=5).iloc[-1])
+        latest_volume = _safe_float(daily["volume"].iloc[-1])
+        if latest_volume is not None and avg_volume_20 is not None and avg_volume_20 != 0:
+            breakout_volume_expansion = latest_volume / avg_volume_20
 
         structure_quality_score = _weighted_mean(
             [
@@ -402,20 +435,20 @@ class LeaderLaggingAnalyzer:
             }
 
         aligned = self._align_relative_strength(daily, benchmark)
-        aligned["ma50"] = aligned["adj_close"].rolling(50, min_periods=20).mean()
-        aligned["ma150"] = aligned["adj_close"].rolling(150, min_periods=60).mean()
-        aligned["ma200"] = aligned["adj_close"].rolling(200, min_periods=80).mean()
+        aligned["ma50"] = rolling_sma(aligned["adj_close"], 50, min_periods=20)
+        aligned["ma150"] = rolling_sma(aligned["adj_close"], 150, min_periods=60)
+        aligned["ma200"] = rolling_sma(aligned["adj_close"], 200, min_periods=80)
         aligned["atr20"] = _rolling_atr(aligned, 20)
         aligned["atr60"] = _rolling_atr(aligned, 60)
-        aligned["adv20"] = aligned["volume"].rolling(20, min_periods=5).mean()
-        aligned["adv50"] = aligned["volume"].rolling(50, min_periods=10).mean()
-        aligned["traded_value"] = aligned["adj_close"] * aligned["volume"]
-        aligned["traded_value_20d"] = aligned["traded_value"].rolling(20, min_periods=5).mean()
-        aligned["traded_value_50d"] = aligned["traded_value"].rolling(50, min_periods=10).mean()
+        aligned["adv20"] = rolling_average_volume(aligned, 20, min_periods=5)
+        aligned["adv50"] = rolling_average_volume(aligned, 50, min_periods=10)
+        aligned["traded_value"] = traded_value_series(aligned, close_col="adj_close")
+        aligned["traded_value_20d"] = rolling_traded_value(aligned, 20, close_col="adj_close", min_periods=5)
+        aligned["traded_value_50d"] = rolling_traded_value(aligned, 50, close_col="adj_close", min_periods=10)
         aligned["daily_return"] = aligned["adj_close"].pct_change()
-        aligned["rs_line_sma252"] = aligned["rs_line"].rolling(252, min_periods=80).mean()
-        aligned["hhv_252"] = aligned["adj_close"].rolling(252, min_periods=60).max()
-        aligned["llv_252"] = aligned["adj_close"].rolling(252, min_periods=60).min()
+        aligned["rs_line_sma252"] = rolling_sma(aligned["rs_line"], 252, min_periods=80)
+        aligned["hhv_252"] = rolling_max(aligned["adj_close"], 252, min_periods=60)
+        aligned["llv_252"] = rolling_min(aligned["adj_close"], 252, min_periods=60)
 
         latest = aligned.iloc[-1]
         close = _safe_float(latest["adj_close"])
@@ -430,45 +463,43 @@ class LeaderLaggingAnalyzer:
         rs_line_20d_slope = self._compute_subperiod_return(rs_line, 0, 20)
         mansfield_rs = None
         rs_line_sma252 = _safe_float(latest["rs_line_sma252"])
-        if rs_line_last is not None and rs_line_sma252 not in {None, 0}:
-            mansfield_rs = 100.0 * ((rs_line_last / rs_line_sma252) - 1.0)
+        rs_line_relative = _safe_divide(rs_line_last, rs_line_sma252)
+        if rs_line_relative is not None:
+            mansfield_rs = 100.0 * (rs_line_relative - 1.0)
 
         mansfield_series = 100.0 * (rs_line / aligned["rs_line_sma252"].replace(0, np.nan) - 1.0)
         mansfield_rs_slope = self._compute_subperiod_return(mansfield_series.ffill(), 0, 20)
-        weighted_rs_raw = _weighted_mean(
-            [
-                (self._compute_subperiod_return(aligned["adj_close"], 0, 63), 0.40),
-                (self._compute_subperiod_return(aligned["adj_close"], 63, 63), 0.20),
-                (self._compute_subperiod_return(aligned["adj_close"], 126, 63), 0.20),
-                (self._compute_subperiod_return(aligned["adj_close"], 189, 63), 0.20),
-            ]
+        weighted_rs_raw = self._benchmark_relative_weighted_rs(
+            aligned["adj_close"],
+            aligned["benchmark_adj_close"],
+            end_offset=0,
         )
-        weighted_rs_prev_raw = _weighted_mean(
-            [
-                (self._compute_subperiod_return(aligned["adj_close"], 63, 63), 0.40),
-                (self._compute_subperiod_return(aligned["adj_close"], 126, 63), 0.20),
-                (self._compute_subperiod_return(aligned["adj_close"], 189, 63), 0.20),
-                (self._compute_subperiod_return(aligned["adj_close"], 252, 63), 0.20),
-            ]
+        weighted_rs_prev_raw = self._benchmark_relative_weighted_rs(
+            aligned["adj_close"],
+            aligned["benchmark_adj_close"],
+            end_offset=63,
         )
         mom_12_1 = None
         if len(aligned) > 273:
             start = _safe_float(aligned["adj_close"].iloc[-273])
             end = _safe_float(aligned["adj_close"].iloc[-22])
-            if start not in {None, 0} and end is not None:
-                mom_12_1 = (end / start) - 1.0
+            mom_ratio = _safe_divide(end, start)
+            if mom_ratio is not None:
+                mom_12_1 = mom_ratio - 1.0
 
         rs_line_distance_to_high = None
         rs_250_high = _safe_float(rs_line.tail(250).max())
-        if rs_line_last is not None and rs_250_high not in {None, 0}:
-            rs_line_distance_to_high = 1.0 - (rs_line_last / rs_250_high)
+        rs_line_high_ratio = _safe_divide(rs_line_last, rs_250_high)
+        if rs_line_high_ratio is not None:
+            rs_line_distance_to_high = 1.0 - rs_line_high_ratio
         price_250_high = _safe_float(aligned["adj_close"].tail(250).max())
         rs_line_65d_high_flag = bool(rs_line_last is not None and rs_line_last >= (_safe_float(rs_line.tail(65).max()) or 0.0))
         rs_line_250d_high_flag = bool(rs_line_last is not None and rs_line_last >= (rs_250_high or 0.0))
         rs_new_high_before_price_flag = bool(
             rs_line_250d_high_flag
             and close is not None
-            and price_250_high not in {None, 0}
+            and price_250_high is not None
+            and price_250_high != 0
             and close < price_250_high
         )
 
@@ -476,16 +507,25 @@ class LeaderLaggingAnalyzer:
         llv_252 = _safe_float(latest["llv_252"]) or _safe_float(aligned["adj_close"].min())
         distance_to_52w_high = None
         distance_from_52w_low = None
-        if close is not None and hhv_252 not in {None, 0}:
-            distance_to_52w_high = 1.0 - (close / hhv_252)
-        if close is not None and llv_252 not in {None, 0}:
-            distance_from_52w_low = (close / llv_252) - 1.0
+        high_ratio = _safe_divide(close, hhv_252)
+        if high_ratio is not None:
+            distance_to_52w_high = 1.0 - high_ratio
+        low_ratio = _safe_divide(close, llv_252)
+        if low_ratio is not None:
+            distance_from_52w_low = low_ratio - 1.0
 
         ma200_slope_20d = None
         if len(aligned) >= 221:
             prev_ma200 = _safe_float(aligned["ma200"].iloc[-21])
-            if prev_ma200 not in {None, 0} and ma200 is not None:
-                ma200_slope_20d = (ma200 / prev_ma200) - 1.0
+            ma200_ratio = _safe_divide(ma200, prev_ma200)
+            if ma200_ratio is not None:
+                ma200_slope_20d = ma200_ratio - 1.0
+
+        distance_from_ma50 = None
+        if close is not None and ma50 is not None and ma50 != 0:
+            close_to_ma50 = _safe_divide(close, ma50)
+            if close_to_ma50 is not None:
+                distance_from_ma50 = abs(close_to_ma50 - 1.0)
 
         trend_integrity_score = _weighted_mean(
             [
@@ -495,11 +535,7 @@ class LeaderLaggingAnalyzer:
                 ((_score_ratio(ma200_slope_20d, 0.01, -0.01) * 100.0), 0.20),
                 (
                     (
-                        _score_inverse(
-                            abs((close / ma50) - 1.0) if close is not None and ma50 not in {None, 0} else None,
-                            0.12,
-                            0.30,
-                        )
+                        _score_inverse(distance_from_ma50, 0.12, 0.30)
                         * 100.0
                     ),
                     0.20,
@@ -521,8 +557,9 @@ class LeaderLaggingAnalyzer:
         )
         rvol = None
         adv50 = _safe_float(latest["adv50"])
-        if adv50 not in {None, 0}:
-            rvol = (_safe_float(latest["volume"]) or 0.0) / adv50
+        latest_volume = _safe_float(latest["volume"])
+        if latest_volume is not None and adv50 is not None and adv50 != 0:
+            rvol = latest_volume / adv50
         traded_value = _safe_float(latest["traded_value"])
         illiq = None
         recent_illiq = (aligned["daily_return"].abs() / aligned["traded_value"].replace(0, np.nan)).tail(20)
@@ -535,8 +572,9 @@ class LeaderLaggingAnalyzer:
             prev_close = _safe_float(aligned["adj_close"].iloc[-2])
             open_price = _safe_float(aligned["open"].iloc[-1])
             gap_pct = None
-            if open_price is not None and prev_close not in {None, 0}:
-                gap_pct = (open_price / prev_close) - 1.0
+            gap_ratio = _safe_divide(open_price, prev_close)
+            if gap_ratio is not None:
+                gap_pct = gap_ratio - 1.0
                 event_gap_up_flag = gap_pct >= 0.05
             event_proxy_score = _weighted_mean(
                 [
@@ -548,6 +586,7 @@ class LeaderLaggingAnalyzer:
 
         sector = str(metadata.get("sector") or "").strip()
         industry = str(metadata.get("industry") or "").strip()
+        atr20_ratio = _safe_divide(atr20, close)
         return {
             "symbol": str(symbol).upper(),
             "market": profile.market_code,
@@ -583,7 +622,7 @@ class LeaderLaggingAnalyzer:
             "traded_value": traded_value,
             "traded_value_20d": traded_value_20d,
             "traded_value_50d": _safe_float(latest["traded_value_50d"]),
-            "atr20_pct": ((atr20 / close) * 100.0) if atr20 is not None and close not in {None, 0} else None,
+            "atr20_pct": (atr20_ratio * 100.0) if atr20_ratio is not None else None,
             "rvol": rvol,
             "up_volume_ratio": up_volume_ratio,
             "distribution_day_count_20d": distribution_day_count_20d,
@@ -642,12 +681,12 @@ class LeaderLaggingAnalyzer:
             "structure_quality_score",
             "event_proxy_score",
         ):
-            table[column] = pd.to_numeric(table.get(column), errors="coerce")
+            table[column] = _numeric_frame_column(table, column)
 
         table["rs_rank"] = _percentile_series(table["weighted_rs_raw"])
         table["prev_rs_rank"] = _percentile_series(table["weighted_rs_prev_raw"])
         rank_delta = table["rs_rank"] - table["prev_rs_rank"]
-        raw_delta = (table["weighted_rs_raw"].fillna(0.0) - table["weighted_rs_prev_raw"].fillna(0.0)) * 100.0
+        raw_delta = table["weighted_rs_raw"].fillna(0.0) - table["weighted_rs_prev_raw"].fillna(0.0)
         table["delta_rs_rank_qoq"] = np.where(rank_delta.abs() >= 0.5, rank_delta, raw_delta)
         table["rs_rank_score"] = table["rs_rank"]
         table["traded_value_score"] = _zscore_to_percent(_winsorized_zscore(table["traded_value_20d"]), higher_is_better=True)
@@ -766,16 +805,17 @@ class LeaderLaggingAnalyzer:
 
         trend_score = 50.0
         if not benchmark.empty and len(benchmark) >= 220:
-            benchmark["ma50"] = benchmark["adj_close"].rolling(50, min_periods=20).mean()
-            benchmark["ma200"] = benchmark["adj_close"].rolling(200, min_periods=80).mean()
+            benchmark["ma50"] = rolling_sma(benchmark["adj_close"], 50, min_periods=20)
+            benchmark["ma200"] = rolling_sma(benchmark["adj_close"], 200, min_periods=80)
             close = _safe_float(benchmark["adj_close"].iloc[-1])
             ma50 = _safe_float(benchmark["ma50"].iloc[-1])
             ma200 = _safe_float(benchmark["ma200"].iloc[-1])
             slope200 = None
             if len(benchmark) >= 221:
                 prev_ma200 = _safe_float(benchmark["ma200"].iloc[-21])
-                if prev_ma200 not in {None, 0} and ma200 is not None:
-                    slope200 = (ma200 / prev_ma200) - 1.0
+                slope_ratio = _safe_divide(ma200, prev_ma200)
+                if slope_ratio is not None:
+                    slope200 = slope_ratio - 1.0
             trend_score = _weighted_mean(
                 [
                     (100.0 if close is not None and ma50 is not None and close > ma50 else 0.0, 0.30),
@@ -1166,28 +1206,39 @@ class LeaderLaggingAnalyzer:
         breadth_context_score = 100.0 if market_context.regime_state == "Risk-On" else 65.0 if market_context.regime_state == "Neutral" else 35.0
         leader_rows: list[dict[str, Any]] = []
         for _, row in table.iterrows():
-            row_dict = row.to_dict()
+            row_dict = row_to_record(row)
             reasons: list[str] = []
             warnings: list[str] = []
+            ma50_value = _safe_float(row.get("ma50"))
+            ma150_value = _safe_float(row.get("ma150"))
+            ma200_value = _safe_float(row.get("ma200"))
+            ma200_slope_value = _safe_float(row.get("ma200_slope_20d"))
+            rs_rank_value = _safe_float(row.get("rs_rank")) or 0.0
+            industry_rs_pct_value = _safe_float(row.get("industry_rs_pct")) or 0.0
+            distance_to_high_value = _coalesce(_safe_float(row.get("distance_to_52w_high")), 1.0)
+            distance_from_low_value = _safe_float(row.get("distance_from_52w_low")) or 0.0
+            traded_value_20d_value = _safe_float(row.get("traded_value_20d")) or 0.0
+            illiq_score_value = _safe_float(row.get("illiq_score")) or 0.0
+            mansfield_rs_value = _safe_float(row.get("mansfield_rs")) or -1.0
 
             hard_gate = all(
                 [
                     bool(row.get("close_gt_50")),
-                    _safe_float(row.get("ma50")) is not None and _safe_float(row.get("ma150")) is not None and (_safe_float(row.get("ma50")) > _safe_float(row.get("ma150"))),
-                    _safe_float(row.get("ma150")) is not None and _safe_float(row.get("ma200")) is not None and (_safe_float(row.get("ma150")) > _safe_float(row.get("ma200"))),
-                    (_safe_float(row.get("ma200_slope_20d")) or -1.0) > 0,
-                    (_safe_float(row.get("rs_rank")) or 0.0) >= calibration_map["leader_rs_rank_min"],
-                    (_safe_float(row.get("industry_rs_pct")) or 0.0) >= calibration_map["leader_group_rs_min"],
-                    _coalesce(_safe_float(row.get("distance_to_52w_high")), 1.0) <= calibration_map["leader_distance_to_high_max"],
-                    (_safe_float(row.get("distance_from_52w_low")) or 0.0) >= calibration_map["leader_distance_from_low_min"],
-                    (_safe_float(row.get("traded_value_20d")) or 0.0) >= self.market_profile(row.get("market", "us")).traded_value_floor,
-                    (_safe_float(row.get("illiq_score")) or 0.0) >= 20.0,
-                    (_safe_float(row.get("mansfield_rs")) or -1.0) > 0.0,
+                    ma50_value is not None and ma150_value is not None and ma50_value > ma150_value,
+                    ma150_value is not None and ma200_value is not None and ma150_value > ma200_value,
+                    (ma200_slope_value or -1.0) > 0,
+                    rs_rank_value >= calibration_map["leader_rs_rank_min"],
+                    industry_rs_pct_value >= calibration_map["leader_group_rs_min"],
+                    distance_to_high_value <= calibration_map["leader_distance_to_high_max"],
+                    distance_from_low_value >= calibration_map["leader_distance_from_low_min"],
+                    traded_value_20d_value >= self.market_profile(row.get("market", "us")).traded_value_floor,
+                    illiq_score_value >= 20.0,
+                    mansfield_rs_value > 0.0,
                 ]
             )
             tier1_boosts = sum(
                 [
-                    (_safe_float(row.get("rs_rank")) or 0.0) >= 92.0,
+                    rs_rank_value >= 92.0,
                     bool(row.get("rs_line_250d_high_flag")),
                     bool(row.get("rs_new_high_before_price_flag")),
                     (_safe_float(row.get("rvol")) or 0.0) >= 1.5,
@@ -1239,7 +1290,7 @@ class LeaderLaggingAnalyzer:
                     "rs_line_20d_slope": _round_or_none(_safe_float(row.get("rs_line_20d_slope"))),
                     "rs_new_high_before_price_flag": bool(row.get("rs_new_high_before_price_flag")),
                     "distance_to_52w_high": _round_or_none(_coalesce(_safe_float(row.get("distance_to_52w_high")), 0.0) * 100.0),
-                    "group_rank": int(row.get("group_rank")) if pd.notna(row.get("group_rank")) else None,
+                    "group_rank": int(group_rank) if (group_rank := _safe_float(row.get("group_rank"))) is not None else None,
                     "top_reason_1": reasons[0] if reasons else "",
                     "top_reason_2": reasons[1] if len(reasons) > 1 else "",
                     "reason_codes": _unique(reasons),
@@ -1341,11 +1392,15 @@ class LeaderLaggingAnalyzer:
                 corr = self._rolling_return_correlation(candidate_frame, leader_frame)
                 corr_score = _score_ratio(corr, 0.70, 0.20) * 100.0
                 pair_link_score = self._pair_link_score(candidate, leader, corr_score)
-                leader_gap_20d = (_safe_float(leader.get("ret_20d")) or 0.0) - (_safe_float(candidate.get("ret_20d")) or 0.0)
-                leader_gap_60d = (_safe_float(leader.get("ret_60d")) or 0.0) - (_safe_float(candidate.get("ret_60d")) or 0.0)
+                leader_ret_20d = _safe_float(leader.get("ret_20d")) or 0.0
+                candidate_ret_20d = _safe_float(candidate.get("ret_20d")) or 0.0
+                leader_ret_60d = _safe_float(leader.get("ret_60d")) or 0.0
+                candidate_ret_60d = _safe_float(candidate.get("ret_60d")) or 0.0
+                leader_gap_20d = leader_ret_20d - candidate_ret_20d
+                leader_gap_60d = leader_ret_60d - candidate_ret_60d
                 propagation_ratio_20d = None
-                if (_safe_float(leader.get("ret_20d")) or 0.0) > 0:
-                    propagation_ratio_20d = (_safe_float(candidate.get("ret_20d")) or 0.0) / (_safe_float(leader.get("ret_20d")) or 1.0)
+                if leader_ret_20d > 0:
+                    propagation_ratio_20d = candidate_ret_20d / leader_ret_20d
                 underreaction_score = _weighted_mean(
                     [
                         ((_score_range(leader_gap_20d, 0.05, 0.25, 0.0, 0.40) * 100.0), 0.35),
@@ -1400,34 +1455,38 @@ class LeaderLaggingAnalyzer:
             if best_payload is None:
                 continue
 
+            candidate_industry_rs_pct = _safe_float(candidate.get("industry_rs_pct")) or 0.0
+            candidate_distance_to_high = _coalesce(_safe_float(candidate.get("distance_to_52w_high")), 1.0)
+            candidate_rs_rank = _safe_float(candidate.get("rs_rank")) or 0.0
+            candidate_delta_rs_rank = _safe_float(candidate.get("delta_rs_rank_qoq")) or -999.0
+            candidate_traded_value_20d = _safe_float(candidate.get("traded_value_20d")) or 0.0
+            candidate_ma200_slope_20d = _safe_float(candidate.get("ma200_slope_20d")) or -1.0
+            candidate_illiq_score = _safe_float(candidate.get("illiq_score")) or 0.0
+            best_leader_gap_60d = _safe_float(best_payload.get("leader_gap_60d")) or 0.0
+            best_pair_link_score = _safe_float(best_payload.get("pair_link_score")) or 0.0
+
             hard_precondition = all(
                 [
-                    (_safe_float(candidate.get("industry_rs_pct")) or 0.0) >= calibration_map["follower_group_rs_min"],
+                    candidate_industry_rs_pct >= calibration_map["follower_group_rs_min"],
                     bool(candidate.get("close_gt_50")),
-                    _coalesce(_safe_float(candidate.get("distance_to_52w_high")), 1.0) <= calibration_map["follower_distance_to_high_max"],
-                    calibration_map["follower_rs_rank_min"] <= (_safe_float(candidate.get("rs_rank")) or 0.0) < calibration_map["follower_rs_rank_max"],
-                    (
-                        (_safe_float(candidate.get("delta_rs_rank_qoq")) or -999.0) > 0.0
-                        or (
-                            (_safe_float(candidate.get("rs_line_20d_slope")) or -1.0) > 0.0
-                            and (_safe_float(candidate.get("mansfield_rs_slope")) or -1.0) > 0.0
-                        )
-                    ),
-                    (_safe_float(candidate.get("traded_value_20d")) or 0.0) >= self.market_profile(candidate.get("market", "us")).traded_value_floor,
+                    candidate_distance_to_high <= calibration_map["follower_distance_to_high_max"],
+                    calibration_map["follower_rs_rank_min"] <= candidate_rs_rank < calibration_map["follower_rs_rank_max"],
+                    candidate_delta_rs_rank > 0.0,
+                    candidate_traded_value_20d >= self.market_profile(candidate.get("market", "us")).traded_value_floor,
                 ]
             )
             hygiene_pass = all(
                 [
-                    bool(candidate.get("close_gt_200")) or (_safe_float(candidate.get("ma200_slope_20d")) or -1.0) > 0.0,
-                    _coalesce(_safe_float(candidate.get("distance_to_52w_high")), 1.0) <= calibration_map["follower_hygiene_distance_to_high_max"],
-                    (_safe_float(candidate.get("illiq_score")) or 0.0) >= 20.0,
-                    (_safe_float(best_payload.get("leader_gap_60d")) or 0.0) <= calibration_map["follower_leader_gap_60d_max"],
+                    bool(candidate.get("close_gt_200")) or candidate_ma200_slope_20d > 0.0,
+                    candidate_distance_to_high <= calibration_map["follower_hygiene_distance_to_high_max"],
+                    candidate_illiq_score >= 20.0,
+                    best_leader_gap_60d <= calibration_map["follower_leader_gap_60d_max"],
                 ]
             )
 
             reasons: list[str] = []
             warnings: list[str] = []
-            if (_safe_float(best_payload.get("pair_link_score")) or 0.0) >= calibration_map["follower_pair_link_min"]:
+            if best_pair_link_score >= calibration_map["follower_pair_link_min"]:
                 reasons.append("STRONG_PAIR_LINK")
             if (_safe_float(best_payload.get("underreaction_score")) or 0.0) >= calibration_map["follower_underreaction_min"]:
                 reasons.append("CATCH_UP_POTENTIAL")
@@ -1452,8 +1511,8 @@ class LeaderLaggingAnalyzer:
                 "delta_rs_rank_qoq": _round_or_none(_safe_float(candidate.get("delta_rs_rank_qoq"))),
                 "rs_line_20d_slope": _round_or_none(_safe_float(candidate.get("rs_line_20d_slope"))),
                 "mansfield_rs_slope": _round_or_none(_safe_float(candidate.get("mansfield_rs_slope"))),
-                "leader_gap_20d": _round_or_none(_safe_float(best_payload.get("leader_gap_20d")) * 100.0 if best_payload.get("leader_gap_20d") is not None else None),
-                "leader_gap_60d": _round_or_none(_safe_float(best_payload.get("leader_gap_60d")) * 100.0 if best_payload.get("leader_gap_60d") is not None else None),
+                "leader_gap_20d": _round_or_none((leader_gap_20d * 100.0) if (leader_gap_20d := _safe_float(best_payload.get("leader_gap_20d"))) is not None else None),
+                "leader_gap_60d": _round_or_none((leader_gap_60d * 100.0) if (leader_gap_60d := _safe_float(best_payload.get("leader_gap_60d"))) is not None else None),
                 "propagation_ratio_20d": _round_or_none(_safe_float(best_payload.get("propagation_ratio_20d"))),
                 "top_reason_1": reasons[0] if reasons else "",
                 "top_reason_2": reasons[1] if len(reasons) > 1 else "",
@@ -1489,7 +1548,7 @@ class LeaderLaggingAnalyzer:
         pairs = pd.DataFrame(pair_rows)
         if not followers.empty:
             followers, calibrated = self._assign_follower_labels(followers, calibration=calibration_map)
-            label_map = followers.set_index("symbol")["label"].to_dict()
+            label_map = series_to_str_text_dict(followers.set_index("symbol")["label"])
             if not pairs.empty:
                 pairs["label"] = pairs["follower_symbol"].map(label_map).fillna("")
             followers = followers.sort_values(["follower_score", "pair_link_score"], ascending=[False, False]).reset_index(drop=True)
@@ -1516,10 +1575,7 @@ class LeaderLaggingScreener:
         if frame.empty or "symbol" not in frame.columns:
             return {}
         frame["symbol"] = frame["symbol"].astype(str).str.upper()
-        return {
-            row["symbol"]: row.dropna().to_dict()
-            for _, row in frame.iterrows()
-        }
+        return frame_keyed_records(frame, key_column="symbol", uppercase_keys=True, drop_na=True)
 
     def _load_frames(self) -> dict[str, pd.DataFrame]:
         data_dir = get_market_data_dir(self.market)
@@ -1540,7 +1596,7 @@ class LeaderLaggingScreener:
                         f"processed={index}/{len(candidate_files)}, loaded={len(frames)}"
                     )
                 continue
-            frame = load_local_ohlcv_frame(self.market, symbol)
+            frame = load_local_ohlcv_frame(self.market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
             if not frame.empty:
                 frames[symbol] = frame
             if is_progress_tick(index, len(candidate_files), interval):
@@ -1613,6 +1669,7 @@ class LeaderLaggingScreener:
             self.market,
             get_benchmark_candidates(self.market),
             allow_yfinance_fallback=True,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
         )
         benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(self.market)
         benchmark_daily = self.analyzer.normalize_daily_frame(benchmark_daily)
@@ -1738,10 +1795,9 @@ class LeaderLaggingScreener:
             sort=False,
         ) if not leaders.empty or not followers.empty else pd.DataFrame()
         if not pattern_included_candidates.empty:
-            pattern_included_candidates["_sort_score"] = (
-                pd.to_numeric(pattern_included_candidates.get("leader_score"), errors="coerce")
-                .fillna(pd.to_numeric(pattern_included_candidates.get("follower_score"), errors="coerce"))
-            )
+            leader_scores = _numeric_frame_column(pattern_included_candidates, "leader_score")
+            follower_scores = _numeric_frame_column(pattern_included_candidates, "follower_score")
+            pattern_included_candidates["_sort_score"] = leader_scores.fillna(follower_scores)
             pattern_included_candidates = pattern_included_candidates.sort_values(
                 ["phase_bucket", "_sort_score", "symbol"],
                 ascending=[True, False, True],

@@ -1,0 +1,2 @@
+symbol,provider_symbol,error_details,has_error,cached_at
+12210,,"[""yahooquery_fetch_failed:12210.KS:Failed to perform, curl: (7) Failed to connect to finance.yahoo.com port 443 aft"", ""yahooquery_fetch_failed:12210.KQ:Failed to perform, curl: (7) Failed to connect to finance.yahoo.com port 443 aft""]",True,2026-03-14T07:25:21.708834+00:00

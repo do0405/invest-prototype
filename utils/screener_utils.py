@@ -5,18 +5,22 @@
 새로운 티커 추적, JSON/CSV 저장 등의 공통 기능 제공
 """
 
-import os
 import json
-import pandas as pd
-import numpy as np
+import os
 from datetime import datetime
-from typing import Dict, List, Any, Optional
-from utils import ensure_dir
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+import pandas as pd
 import glob
 import re
 
+from utils.io_utils import ensure_dir
+from utils.typing_utils import Record
 
-def convert_numpy_types(obj):
+
+def convert_numpy_types(obj: Any) -> Any:
     """numpy 타입과 pandas Timestamp를 JSON 직렬화 가능한 Python native 타입으로 변환"""
     if isinstance(obj, np.integer):
         return int(obj)
@@ -37,7 +41,7 @@ def convert_numpy_types(obj):
     return obj
 
 
-def find_latest_file(directory: str, prefix: str, extension: str) -> Optional[str]:
+def find_latest_file(directory: str, prefix: str, extension: str) -> str | None:
     """
     디렉토리에서 특정 접두사를 가진 가장 최신 파일을 찾기
     시간 정보가 제거된 파일명도 처리
@@ -71,7 +75,7 @@ def find_latest_file(directory: str, prefix: str, extension: str) -> Optional[st
     return latest_file
 
 
-def read_csv_flexible(file_path: str, required_columns: List[str] = None) -> Optional[pd.DataFrame]:
+def read_csv_flexible(file_path: str, required_columns: list[str] | None = None) -> pd.DataFrame | None:
     """
     CSV 파일을 유연하게 읽기 - 컬럼명 변화에 대응
     
@@ -135,146 +139,73 @@ def read_csv_flexible(file_path: str, required_columns: List[str] = None) -> Opt
         return None
 
 
-def save_screening_results(results: List[Dict[str, Any]], 
-                          output_dir: str, 
-                          filename_prefix: str,
-                          include_timestamp: bool = False,  # 기본값을 False로 변경
-                          incremental_update: bool = True) -> Dict[str, str]:
-    """
-    스크리닝 결과를 JSON과 CSV 형태로 저장 (증분 업데이트 지원)
-    
-    Args:
-        results: 저장할 결과 리스트
-        output_dir: 출력 디렉토리
-        filename_prefix: 파일명 접두사
-        include_timestamp: 타임스탬프 포함 여부 (날짜만 포함)
-        incremental_update: 증분 업데이트 여부
-    
-    Returns:
-        저장된 파일 경로들 (csv_path, json_path)
-    """
+def _write_records_with_optional_snapshot(records: list[Record], output_dir: str, filename_prefix: str, *, include_snapshot: bool = False) -> dict[str, str]:
     ensure_dir(output_dir)
-    
-    # 파일명 생성 (시간 정보 없이)
-    if include_timestamp:
-        timestamp = datetime.now().strftime('%Y%m%d')
-        base_filename = f"{filename_prefix}_{timestamp}"
-    else:
-        base_filename = filename_prefix
-    
-    csv_path = os.path.join(output_dir, f"{base_filename}.csv")
-    json_path = os.path.join(output_dir, f"{base_filename}.json")
-    
-    # 증분 업데이트 시 기존 파일 찾기
-    if incremental_update and not os.path.exists(csv_path):
-        existing_csv = find_latest_file(output_dir, filename_prefix, 'csv')
-        if existing_csv:
-            csv_path = existing_csv
-        existing_json = find_latest_file(output_dir, filename_prefix, 'json')
-        if existing_json:
-            json_path = existing_json
-    
-    if len(results) > 0:
-        new_df = pd.DataFrame(results)
-        
-        # 증분 업데이트 처리
-        if incremental_update and os.path.exists(csv_path):
-            try:
-                existing_df = read_csv_flexible(csv_path)
-                if existing_df is None:
-                    raise Exception("파일 읽기 실패")
-                
-                # 기본 키 컬럼 확인 (symbol 또는 첫 번째 컬럼)
-                key_col = 'symbol' if 'symbol' in new_df.columns else new_df.columns[0]
-                
-                if key_col in existing_df.columns:
-                    # 기존 데이터에서 새 데이터와 중복되는 항목 제거
-                    existing_df = existing_df[~existing_df[key_col].isin(new_df[key_col])]
-                    
-                    # 기존 데이터와 새 데이터 병합 (빈 데이터프레임 처리)
-                    if existing_df.empty and not new_df.empty:
-                        combined_df = new_df.copy()
-                    elif not existing_df.empty and new_df.empty:
-                        combined_df = existing_df.copy()
-                    elif not existing_df.empty and not new_df.empty:
-                        combined_df = pd.concat([existing_df, new_df], ignore_index=True)
-                    else:
-                        combined_df = pd.DataFrame()
-                    
-                    # 정렬 유지 (기존 파일의 정렬 방식 확인)
-                    if len(existing_df) > 1:
-                        # 첫 번째 정렬 가능한 컬럼으로 정렬 방향 확인
-                        sort_col = None
-                        for col in combined_df.columns:
-                            if combined_df[col].dtype in ['int64', 'float64', 'datetime64[ns]'] or col == key_col:
-                                sort_col = col
-                                break
-                        
-                        if sort_col:
-                            # 기존 데이터의 정렬 방향 확인
-                            if len(existing_df) >= 2:
-                                is_ascending = existing_df[sort_col].iloc[0] <= existing_df[sort_col].iloc[1]
-                                combined_df = combined_df.sort_values(sort_col, ascending=is_ascending)
-                    
-                    final_df = combined_df
-                    print(f"🔄 증분 업데이트: 기존 {len(existing_df)}개 + 신규 {len(new_df)}개 = 총 {len(final_df)}개")
-                else:
-                    final_df = new_df
-                    print(f"⚠️ 키 컬럼 '{key_col}' 불일치, 전체 교체: {len(new_df)}개")
-            except Exception as e:
-                print(f"⚠️ 기존 파일 읽기 실패 ({e}), 전체 교체: {len(new_df)}개")
-                final_df = new_df
-        else:
-            final_df = new_df
-            print(f"✅ 신규 저장: {len(new_df)}개 종목")
-        
-        # CSV 저장
-        final_df.to_csv(csv_path, index=False, encoding='utf-8-sig')
-        
-        # JSON 저장 (numpy 타입 변환)
-        if incremental_update and os.path.exists(json_path):
-            try:
-                with open(json_path, 'r', encoding='utf-8') as f:
-                    existing_json = json.load(f)
-                
-                # JSON도 동일하게 증분 업데이트
-                key_col = 'symbol' if 'symbol' in results[0] else list(results[0].keys())[0]
-                existing_keys = {item.get(key_col) for item in existing_json if key_col in item}
-                new_items = [item for item in results if item.get(key_col) not in existing_keys]
-                
-                # 기존 항목에서 업데이트된 항목 제거
-                updated_existing = [item for item in existing_json 
-                                  if item.get(key_col) not in {r.get(key_col) for r in results}]
-                
-                combined_json = updated_existing + convert_numpy_types(results)
-            except Exception:
-                combined_json = convert_numpy_types(results)
-        else:
-            combined_json = convert_numpy_types(results)
-        
-        with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump(combined_json, f, ensure_ascii=False, indent=2)
-        
-        print(f"   📄 CSV: {csv_path}")
-        print(f"   📄 JSON: {json_path}")
-    else:
-        # 빈 결과 파일 생성
-        pd.DataFrame().to_csv(csv_path, index=False)
-        with open(json_path, 'w', encoding='utf-8') as f:
-            json.dump([], f)
-        
-        print(f"⚠️  빈 결과 파일 생성: {csv_path}")
-    
-    return {
-        'csv_path': csv_path,
-        'json_path': json_path
+    payload = convert_numpy_types(records)
+    frame = pd.DataFrame(records)
+
+    latest_csv_path = os.path.join(output_dir, f"{filename_prefix}.csv")
+    latest_json_path = os.path.join(output_dir, f"{filename_prefix}.json")
+
+    frame.to_csv(latest_csv_path, index=False, encoding="utf-8-sig")
+    with open(latest_json_path, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, ensure_ascii=False, indent=2)
+
+    paths: dict[str, str] = {
+        "csv_path": latest_csv_path,
+        "json_path": latest_json_path,
     }
 
+    if include_snapshot:
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        snapshot_csv_path = os.path.join(output_dir, f"{filename_prefix}_{timestamp}.csv")
+        snapshot_json_path = os.path.join(output_dir, f"{filename_prefix}_{timestamp}.json")
+        frame.to_csv(snapshot_csv_path, index=False, encoding="utf-8-sig")
+        with open(snapshot_json_path, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, ensure_ascii=False, indent=2)
+        paths["snapshot_csv_path"] = snapshot_csv_path
+        paths["snapshot_json_path"] = snapshot_json_path
 
-def track_new_tickers(current_results: List[Dict[str, Any]], 
-                     tracker_file: str,
-                     symbol_key: str = 'symbol',
-                     retention_days: int = 14) -> List[Dict[str, Any]]:
+    return paths
+
+
+def save_screening_results(
+    results: list[Record],
+    output_dir: str,
+    filename_prefix: str,
+    include_timestamp: bool = False,
+    incremental_update: bool = True,
+) -> dict[str, str]:
+    """
+    Save screening results as latest JSON/CSV, with optional per-run snapshots.
+
+    `incremental_update` is kept for backward compatibility; the latest files now
+    always reflect the current run, while timestamped snapshot files preserve
+    historical outputs when requested.
+    """
+    _ = incremental_update
+    paths = _write_records_with_optional_snapshot(
+        results,
+        output_dir,
+        filename_prefix,
+        include_snapshot=include_timestamp,
+    )
+
+    print(f"[Results] Saved latest output: rows={len(results)}, prefix={filename_prefix}")
+    print(f"   latest CSV: {paths['csv_path']}")
+    print(f"   latest JSON: {paths['json_path']}")
+    if paths.get("snapshot_csv_path"):
+        print(f"   snapshot CSV: {paths['snapshot_csv_path']}")
+        print(f"   snapshot JSON: {paths['snapshot_json_path']}")
+
+    return paths
+
+def track_new_tickers(
+    current_results: list[Record],
+    tracker_file: str,
+    symbol_key: str = 'symbol',
+    retention_days: int = 14,
+) -> list[Record]:
     """
     새로운 티커를 추적하고 관리
     
@@ -353,10 +284,12 @@ def track_new_tickers(current_results: List[Dict[str, Any]],
         return []
 
 
-def create_screener_summary(screener_name: str, 
-                          total_candidates: int,
-                          new_tickers: int,
-                          results_paths: Dict[str, str]) -> Dict[str, Any]:
+def create_screener_summary(
+    screener_name: str,
+    total_candidates: int,
+    new_tickers: int,
+    results_paths: dict[str, str],
+) -> dict[str, Any]:
     """
     스크리너 실행 요약 정보 생성
     

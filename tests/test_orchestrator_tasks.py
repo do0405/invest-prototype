@@ -3,11 +3,14 @@ from __future__ import annotations
 import sys
 import types
 
+import data_collectors
+
 from orchestrator import tasks
 
 
-def test_collect_data_main_runs_ohlcv_before_metadata(monkeypatch):
+def test_collect_data_main_runs_ohlcv_before_metadata_and_applies_handoffs(monkeypatch):
     calls: list[tuple[str, object]] = []
+    handoffs: list[str] = []
 
     fake_data_collector = types.ModuleType("data_collector")
 
@@ -17,6 +20,7 @@ def test_collect_data_main_runs_ohlcv_before_metadata(monkeypatch):
     fake_data_collector.collect_data = _fake_collect_data
 
     monkeypatch.setitem(sys.modules, "data_collector", fake_data_collector)
+    monkeypatch.setattr(tasks, "wait_for_yahoo_phase_handoff", lambda label: handoffs.append(label))
     monkeypatch.setattr(
         tasks,
         "run_stock_metadata_collection",
@@ -36,11 +40,13 @@ def test_collect_data_main_runs_ohlcv_before_metadata(monkeypatch):
         ("us_metadata", None),
         ("kr_metadata", None),
     ]
+    assert handoffs == ["US OHLCV", "KR OHLCV", "US stock metadata", "KR stock metadata"]
 
 
 def test_run_kr_ohlcv_collection_defaults_to_include_etn(monkeypatch):
     observed: dict[str, object] = {}
     fake_module = types.ModuleType("data_collectors.kr_ohlcv_collector")
+    fake_module.KR_OHLCV_DEFAULT_LOOKBACK_DAYS = 520
 
     def _fake_collect_kr_ohlcv_csv(**kwargs):  # noqa: ANN202
         observed.update(kwargs)
@@ -48,8 +54,39 @@ def test_run_kr_ohlcv_collection_defaults_to_include_etn(monkeypatch):
 
     fake_module.collect_kr_ohlcv_csv = _fake_collect_kr_ohlcv_csv
     monkeypatch.setitem(sys.modules, "data_collectors.kr_ohlcv_collector", fake_module)
+    monkeypatch.setattr(data_collectors, "kr_ohlcv_collector", fake_module, raising=False)
 
     summary = tasks.run_kr_ohlcv_collection()
 
     assert summary["saved"] == 1
+    assert observed["days"] == 520
     assert observed["include_etn"] is True
+
+
+def test_run_all_screening_processes_applies_yahoo_handoffs_before_financial_steps(monkeypatch):
+    calls: list[tuple[str, str]] = []
+    handoffs: list[str] = []
+
+    monkeypatch.setattr(tasks, "wait_for_yahoo_phase_handoff", lambda label: handoffs.append(label))
+    monkeypatch.setattr(tasks, "run_markminervini_screening", lambda *, market="us": calls.append((market, "technical")))
+    monkeypatch.setattr(tasks, "run_advanced_financial_screening", lambda *, market="us", skip_data=False: calls.append((market, "financial")))
+    monkeypatch.setattr(tasks, "run_integrated_screening", lambda *, market="us": calls.append((market, "integrated")))
+    monkeypatch.setattr(tasks, "run_new_ticker_tracking", lambda *, market="us": calls.append((market, "tracking")))
+    monkeypatch.setattr(tasks, "run_weinstein_stage2_screening", lambda *, market="us": calls.append((market, "weinstein")))
+    monkeypatch.setattr(tasks, "run_leader_lagging_screening", lambda *, market="us": calls.append((market, "leader")))
+    monkeypatch.setattr(tasks, "run_qullamaggie_strategy_task", lambda *, skip_data=False, market="us": calls.append((market, "qullamaggie")))
+    monkeypatch.setattr(tasks, "run_tradingview_preset_screeners", lambda *, market="us": calls.append((market, "tradingview")))
+
+    tasks.run_all_screening_processes(markets=["us"])
+
+    assert calls == [
+        ("us", "technical"),
+        ("us", "financial"),
+        ("us", "integrated"),
+        ("us", "tracking"),
+        ("us", "weinstein"),
+        ("us", "leader"),
+        ("us", "qullamaggie"),
+        ("us", "tradingview"),
+    ]
+    assert handoffs == ["Advanced financial", "Qullamaggie"]

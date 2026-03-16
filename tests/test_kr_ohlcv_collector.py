@@ -18,6 +18,22 @@ def test_normalize_kr_ohlcv_frame_with_korean_headers():
     )
 
     frame = _normalize_kr_ohlcv_frame(raw, ticker="005930")
-    assert list(frame.columns) == ["date", "symbol", "open", "high", "low", "close", "volume"]
+    assert list(frame.columns) == [
+        "date",
+        "symbol",
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "adj_close",
+        "dividends",
+        "stock_splits",
+        "split_factor",
+    ]
     assert frame.iloc[-1]["symbol"] == "005930"
     assert float(frame.iloc[-1]["close"]) == 11.5
+    assert float(frame.iloc[-1]["adj_close"]) == 11.5
+    assert float(frame.iloc[-1]["dividends"]) == 0.0
+    assert float(frame.iloc[-1]["stock_splits"]) == 0.0
+    assert float(frame.iloc[-1]["split_factor"]) == 1.0

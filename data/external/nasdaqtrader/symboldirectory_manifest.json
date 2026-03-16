@@ -1,0 +1,16 @@
+{
+  "outputs": {
+    "amex_symbols.csv": 278,
+    "bats_symbols.csv": 1219,
+    "broad_us_seed.csv": 11268,
+    "iex_symbols.csv": 0,
+    "nasdaq_symbols.csv": 4733,
+    "nyse_arca_symbols.csv": 2594,
+    "nyse_symbols.csv": 2444
+  },
+  "sources": {
+    "nasdaqlisted": "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
+    "otherlisted": "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt"
+  },
+  "synced_at": "2026-03-14T20:29:54Z"
+}

@@ -48,7 +48,7 @@ def test_run_tradingview_preset_screeners_uses_market_specific_presets(monkeypat
     monkeypatch.setattr(tradingview_screener, "ensure_market_dirs", lambda market: None)
     monkeypatch.setattr(tradingview_screener, "get_tradingview_results_dir", lambda market: str(output_root / market))
     monkeypatch.setattr(tradingview_screener, "get_market_data_dir", lambda market: str(data_root / market))
-    monkeypatch.setattr(tradingview_screener, "load_local_ohlcv_frame", lambda market, symbol: _daily_frame())
+    monkeypatch.setattr(tradingview_screener, "load_local_ohlcv_frame", lambda market, symbol, **kwargs: _daily_frame())
 
     for market in ("us", "kr"):
         market_dir = data_root / market

@@ -6,7 +6,8 @@ from typing import Any
 import pandas as pd
 
 from utils import ensure_dir
-from utils.market_data_contract import load_benchmark_data, load_local_ohlcv_frame
+from utils.indicator_helpers import rolling_max, rolling_min, rolling_sma, rolling_traded_value_median
+from utils.market_data_contract import PricePolicy, load_benchmark_data, load_local_ohlcv_frame
 from utils.market_runtime import (
     ensure_market_dirs,
     get_benchmark_candidates,
@@ -19,43 +20,65 @@ from utils.market_runtime import (
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
 from utils.relative_strength import calculate_rs_score
+from utils.typing_utils import to_float_or_none
 
 
 def _build_empty_result() -> dict[str, Any]:
-    return {**{f"cond{i}": False for i in range(1, 8)}, "met_count": 0}
+    return {
+        **{f"cond{i}": False for i in range(1, 9)},
+        "bars": 0,
+        "tv_median20": None,
+        "distance_to_52w_high": None,
+        "met_count": 0,
+    }
 
 
 def calculate_trend_template(frame: pd.DataFrame) -> dict[str, Any]:
-    if frame is None or frame.empty or len(frame) < 200:
+    if frame is None or frame.empty or len(frame) < 220:
         return _build_empty_result()
 
     df = frame.copy().sort_values("date").reset_index(drop=True)
     for column in ("open", "high", "low", "close", "volume"):
         df[column] = pd.to_numeric(df[column], errors="coerce")
     df = df.dropna(subset=["close", "high", "low"])
-    if len(df) < 200:
+    if len(df) < 220:
         return _build_empty_result()
 
-    df["ma50"] = df["close"].rolling(window=50).mean()
-    df["ma150"] = df["close"].rolling(window=150).mean()
-    df["ma200"] = df["close"].rolling(window=200).mean()
-    df["high_52w"] = df["high"].rolling(window=252, min_periods=200).max()
-    df["low_52w"] = df["low"].rolling(window=252, min_periods=200).min()
+    df["ma50"] = rolling_sma(df["close"], 50)
+    df["ma150"] = rolling_sma(df["close"], 150)
+    df["ma200"] = rolling_sma(df["close"], 200)
+    df["high_52w"] = rolling_max(df["high"], 252, min_periods=200)
+    df["low_52w"] = rolling_min(df["low"], 252, min_periods=200)
+    df["tv_median20"] = rolling_traded_value_median(df, 20, min_periods=10)
 
     latest = df.iloc[-1]
-    ma150_60d_ago = df["ma150"].iloc[-60] if len(df) >= 210 else pd.NA
-    ma200_20d_ago = df["ma200"].iloc[-20] if len(df) >= 220 else pd.NA
+    close = to_float_or_none(latest.get("close"))
+    ma50 = to_float_or_none(latest.get("ma50"))
+    ma150 = to_float_or_none(latest.get("ma150"))
+    ma200 = to_float_or_none(latest.get("ma200"))
+    high_52w = to_float_or_none(latest.get("high_52w"))
+    low_52w = to_float_or_none(latest.get("low_52w"))
+    tv_median20 = to_float_or_none(latest.get("tv_median20"))
+    ma150_60d_ago = to_float_or_none(df["ma150"].iloc[-60]) if len(df) >= 210 else None
+    ma200_20d_ago = to_float_or_none(df["ma200"].iloc[-20]) if len(df) >= 220 else None
+    distance_to_52w_high = None
+    if close is not None and high_52w is not None and high_52w != 0:
+        distance_to_52w_high = 1.0 - (close / high_52w)
 
     result = {
-        "cond1": bool(pd.notna(latest["ma150"]) and pd.notna(latest["ma200"]) and latest["close"] > latest["ma150"] > latest["ma200"]),
-        "cond2": bool(pd.notna(ma150_60d_ago) and pd.notna(latest["ma150"]) and latest["ma150"] > ma150_60d_ago),
-        "cond3": bool(pd.notna(ma200_20d_ago) and pd.notna(latest["ma200"]) and latest["ma200"] > ma200_20d_ago),
-        "cond4": bool(pd.notna(latest["ma50"]) and latest["close"] > latest["ma50"]),
-        "cond5": bool(pd.notna(latest["low_52w"]) and latest["close"] >= latest["low_52w"] * 1.3),
-        "cond6": bool(pd.notna(latest["high_52w"]) and latest["close"] >= latest["high_52w"] * 0.75),
-        "cond7": bool(pd.notna(latest["ma50"]) and pd.notna(latest["ma150"]) and latest["ma50"] > latest["ma150"]),
+        "cond1": bool(close is not None and ma150 is not None and ma200 is not None and close > ma150 > ma200),
+        "cond2": bool(ma150_60d_ago is not None and ma150 is not None and ma150 > ma150_60d_ago),
+        "cond3": bool(ma200_20d_ago is not None and ma200 is not None and ma200 > ma200_20d_ago),
+        "cond4": bool(close is not None and ma50 is not None and close > ma50),
+        "cond5": bool(close is not None and low_52w is not None and close >= low_52w * 1.25),
+        "cond6": bool(close is not None and high_52w is not None and close >= high_52w * 0.75),
+        "cond7": bool(ma50 is not None and ma150 is not None and ma50 > ma150),
+        "cond8": False,
+        "bars": int(len(df)),
+        "tv_median20": tv_median20,
+        "distance_to_52w_high": distance_to_52w_high,
     }
-    result["met_count"] = int(sum(int(result[key]) for key in result if key.startswith("cond")))
+    result["met_count"] = int(sum(int(result[key]) for key in [f"cond{i}" for i in range(1, 8)]))
     return result
 
 
@@ -79,6 +102,7 @@ def _resolve_rs_scores(market: str, symbols: list[str]) -> tuple[pd.Series, str]
         market,
         get_benchmark_candidates(market),
         allow_yfinance_fallback=True,
+        price_policy=PricePolicy.SPLIT_ADJUSTED,
     )
     benchmark_name = benchmark_symbol or get_primary_benchmark_symbol(market)
     all_frames: list[pd.DataFrame] = []
@@ -89,7 +113,7 @@ def _resolve_rs_scores(market: str, symbols: list[str]) -> tuple[pd.Series, str]
         all_frames.append(benchmark_payload)
 
     for symbol in symbols:
-        frame = load_local_ohlcv_frame(market, symbol)
+        frame = load_local_ohlcv_frame(market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
         if frame.empty or len(frame) < 126:
             continue
         payload = frame.loc[:, ["date", "symbol", "close"]].copy()
@@ -138,8 +162,8 @@ def run_market_screening(market: str = "us") -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
     interval = progress_interval(len(symbols), target_updates=8, min_interval=50)
     for index, symbol in enumerate(symbols, start=1):
-        frame = load_local_ohlcv_frame(normalized_market, symbol)
-        if frame.empty or len(frame) < 200:
+        frame = load_local_ohlcv_frame(normalized_market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
+        if frame.empty or len(frame) < 220:
             if is_progress_tick(index, len(symbols), interval):
                 print(
                     f"[MarkMinervini] Technical progress ({normalized_market}) - "
@@ -175,12 +199,19 @@ def run_market_screening(market: str = "us") -> pd.DataFrame:
     rs_dict = {str(index).upper(): float(value) for index, value in rs_scores.items()}
     result_df["rs_score"] = result_df["symbol"].map(rs_dict).fillna(0.0)
     result_df["rs_benchmark"] = benchmark_symbol
-    result_df["cond8"] = result_df["rs_score"] >= 85.0
+    result_df["cond8"] = result_df["rs_score"] >= 70.0
+    result_df["recommended_rs_pass"] = result_df["cond8"]
+    distance_to_high_series = (
+        pd.to_numeric(result_df["distance_to_52w_high"], errors="coerce")
+        if "distance_to_52w_high" in result_df.columns
+        else pd.Series(1.0, index=result_df.index, dtype=float)
+    )
+    result_df["recommended_distance_to_high_pass"] = distance_to_high_series.fillna(1.0) <= 0.15
 
-    condition_cols = [f"cond{i}" for i in range(1, 9)]
-    result_df["met_count"] = result_df[condition_cols].astype(int).sum(axis=1)
+    mandatory_condition_cols = [f"cond{i}" for i in range(1, 8)]
+    result_df["met_count"] = result_df[mandatory_condition_cols].astype(int).sum(axis=1)
 
-    filtered_df = result_df[result_df[condition_cols].all(axis=1)].copy()
+    filtered_df = result_df[result_df[mandatory_condition_cols].all(axis=1)].copy()
     filtered_df = filtered_df.sort_values(by="rs_score", ascending=False).reset_index(drop=True)
 
     filtered_df.to_csv(results_path, index=False)

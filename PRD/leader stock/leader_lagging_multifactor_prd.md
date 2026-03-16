@@ -30,6 +30,13 @@
 - MVP는 `조정 OHLCV + 벤치마크 시계열 + 최소한의 종목 메타데이터`만 있으면 돌아가야 한다.
 - 재무, 실적, 뉴스, 산업분류, 공급망은 있으면 좋지만, 없다고 제품이 멈추면 안 된다.
 
+### 3.1.1 가격 정책과 단위 정의
+
+- 기본 가격 입력은 `split-adjusted OHLC`다.
+- `Adj Close` 기반 back-adjusted/total-return 계열은 opt-in 정책으로만 사용한다.
+- `delta_rs_rank_qoq`는 `% 변화율`이 아니라 `RS rank point delta`를 기본 단위로 한다.
+- 동률 또는 rank noise 구간에서만 `weighted_rs_raw`의 point delta를 fallback으로 사용한다.
+
 ### 3.2 RS는 필수 feature지만 단독 엔진은 아니다
 
 - RS/RS Line은 반드시 포함한다.
@@ -350,12 +357,22 @@ RS_Line_t = AdjClose_stock_t / AdjClose_benchmark_t
 기본안은 12개월을 4개 분기로 나눠 최근 분기에 더 큰 가중치를 준다.
 
 ```text
-Weighted_RS = 0.40 * R_0_3M
-            + 0.20 * R_3_6M
-            + 0.20 * R_6_9M
-            + 0.20 * R_9_12M
+StockWeightedReturn =
+    0.40 * ReturnStock_3M
+  + 0.20 * ReturnStock_6M
+  + 0.20 * ReturnStock_9M
+  + 0.20 * ReturnStock_12M
 
-RS_Rank = PercentileRank(Weighted_RS within universe)
+BenchmarkWeightedReturn =
+    0.40 * ReturnBenchmark_3M
+  + 0.20 * ReturnBenchmark_6M
+  + 0.20 * ReturnBenchmark_9M
+  + 0.20 * ReturnBenchmark_12M
+
+BenchmarkRelativeWeightedRS =
+    (StockWeightedReturn / BenchmarkWeightedReturn) * 100
+
+RS_Rank = PercentileRank(BenchmarkRelativeWeightedRS within universe)
 ```
 
 ### 14.3 12-1 Momentum

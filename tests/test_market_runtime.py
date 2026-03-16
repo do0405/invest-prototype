@@ -3,7 +3,6 @@ from __future__ import annotations
 from utils.market_runtime import (
     get_leader_lagging_results_dir,
     get_markminervini_with_rs_path,
-    get_momentum_signals_results_dir,
     get_primary_benchmark_symbol,
     get_stock_metadata_path,
     get_tradingview_results_dir,
@@ -19,12 +18,6 @@ def test_market_result_paths_are_separated():
     assert "results" in us_rs and "results" in kr_rs
     assert "/us/" in us_rs.replace("\\", "/")
     assert "/kr/" in kr_rs.replace("\\", "/")
-
-    us_momentum = get_momentum_signals_results_dir("us")
-    kr_momentum = get_momentum_signals_results_dir("kr")
-    assert us_momentum != kr_momentum
-    assert "/us/" in us_momentum.replace("\\", "/")
-    assert "/kr/" in kr_momentum.replace("\\", "/")
 
     us_weinstein = get_weinstein_stage2_results_dir("us")
     kr_weinstein = get_weinstein_stage2_results_dir("kr")

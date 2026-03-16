@@ -7,7 +7,7 @@ from typing import Any
 
 import pandas as pd
 
-from utils.market_data_contract import load_benchmark_data, load_local_ohlcv_frame
+from utils.market_data_contract import PricePolicy, load_benchmark_data, load_local_ohlcv_frame
 from utils.market_runtime import (
     ensure_market_dirs,
     get_benchmark_candidates,
@@ -20,6 +20,7 @@ from utils.market_runtime import (
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
 from utils.screener_utils import create_screener_summary, save_screening_results, track_new_tickers
+from utils.typing_utils import frame_keyed_records, row_to_record
 
 from .core import MarketRegime, QullamaggieAnalyzer, _safe_bool, _safe_float
 from .earnings_data_collector import EarningsDataCollector
@@ -49,10 +50,7 @@ def _load_metadata_map(market: str) -> dict[str, dict[str, Any]]:
     if frame.empty or "symbol" not in frame.columns:
         return {}
     frame["symbol"] = frame["symbol"].astype(str).str.upper()
-    return {
-        row["symbol"]: row.dropna().to_dict()
-        for _, row in frame.iterrows()
-    }
+    return frame_keyed_records(frame, key_column="symbol", uppercase_keys=True, drop_na=True)
 
 
 def _feature_to_snapshot(feature_row: dict[str, Any], regime: MarketRegime, market: str, *, stage: str) -> dict[str, Any]:
@@ -134,12 +132,25 @@ def _feature_to_patternless_pool_row(feature_row: dict[str, Any], regime: Market
     }
 
 
+def _to_pre_pattern_quant_financial_row(candidate: dict[str, Any]) -> dict[str, Any]:
+    patternless = {
+        key: value
+        for key, value in candidate.items()
+        if not str(key).startswith("vcp_") and not str(key).startswith("cup_handle_")
+    }
+    patternless["screening_stage"] = "PRE_PATTERN_QUANT_FINANCIAL"
+    patternless.setdefault("pattern_filter_applied", False)
+    return patternless
+
+
 def _write_records(results_dir: str, stem: str, records: list[dict[str, Any]]) -> None:
-    frame = pd.DataFrame(records)
-    csv_path = os.path.join(results_dir, f"{stem}.csv")
-    json_path = os.path.join(results_dir, f"{stem}.json")
-    frame.to_csv(csv_path, index=False)
-    frame.to_json(json_path, orient="records", indent=2, force_ascii=False)
+    save_screening_results(
+        results=records,
+        output_dir=results_dir,
+        filename_prefix=stem,
+        include_timestamp=True,
+        incremental_update=True,
+    )
 
 
 def _build_context(
@@ -161,15 +172,13 @@ def _build_context(
             market=market,
             calibration=calibration,
         )
-    feature_map = {
-        row["symbol"]: row.to_dict()
-        for _, row in feature_table.iterrows()
-    } if not feature_table.empty else {}
+    feature_map = frame_keyed_records(feature_table, key_column="symbol", uppercase_keys=True) if not feature_table.empty else {}
 
     benchmark_symbol, benchmark_daily = load_benchmark_data(
         market,
         get_benchmark_candidates(market),
         allow_yfinance_fallback=True,
+        price_policy=PricePolicy.SPLIT_ADJUSTED,
     )
     benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(market)
     regime = _ANALYZER.compute_market_regime(
@@ -260,7 +269,7 @@ class QullamaggieScreener:
             return frames
 
         def _load(symbol: str) -> tuple[str, pd.DataFrame]:
-            return symbol, load_local_ohlcv_frame(self.market, symbol)
+            return symbol, load_local_ohlcv_frame(self.market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
 
         max_workers = min(8, max(1, len(symbols)))
         print(
@@ -311,6 +320,7 @@ class QullamaggieScreener:
             "episode_pivot": [],
             "parabolic_short": [],
             "all_candidates": [],
+            "pre_pattern_quant_financial": [],
             "pattern_excluded_pool": [],
             "pattern_included_candidates": [],
             "universe_list": [],
@@ -382,16 +392,21 @@ class QullamaggieScreener:
             reverse=True,
         )
 
+        results["pre_pattern_quant_financial"] = [
+            _to_pre_pattern_quant_financial_row(row)
+            for row in results["all_candidates"]
+        ]
+
         if not feature_table.empty:
             universe_rows = [
-                _feature_to_snapshot(row.to_dict(), regime, self.market, stage="UNIVERSE")
+                _feature_to_snapshot(row_to_record(row), regime, self.market, stage="UNIVERSE")
                 for _, row in feature_table.sort_values(["a_pp_score", "focus_seed_score"], ascending=[False, False]).iterrows()
-                if bool(row.get("breakout_universe_pass") or row.get("ep_universe_pass") or (_safe_float(row.get("a_pp_score")) or 0.0) >= 60.0)
+                if bool(row.get("breakout_universe_pass") or row.get("ep_universe_pass"))
             ]
             patternless_rows = [
-                _feature_to_patternless_pool_row(row.to_dict(), regime, self.market)
+                _feature_to_patternless_pool_row(row_to_record(row), regime, self.market)
                 for _, row in feature_table.sort_values(["a_pp_score", "focus_seed_score"], ascending=[False, False]).iterrows()
-                if bool(row.get("breakout_universe_pass") or row.get("ep_universe_pass") or (_safe_float(row.get("a_pp_score")) or 0.0) >= 60.0)
+                if bool(row.get("breakout_universe_pass") or row.get("ep_universe_pass"))
             ]
             results["universe_list"] = universe_rows[:600]
             results["pattern_excluded_pool"] = patternless_rows[:600]
@@ -448,6 +463,7 @@ class QullamaggieScreener:
         persist_result("parabolic_short", "parabolic_short_results", "new_parabolic_short_tickers.csv")
 
         _write_records(self.results_dir, "candidate_snapshots", results.get("all_candidates", []))
+        _write_records(self.results_dir, "pre_pattern_quant_financial_candidates", results.get("pre_pattern_quant_financial", []))
         _write_records(self.results_dir, "pattern_excluded_pool", results.get("pattern_excluded_pool", []))
         _write_records(self.results_dir, "pattern_included_candidates", results.get("pattern_included_candidates", []))
         _write_records(self.results_dir, "universe_list", results.get("universe_list", []))
@@ -464,6 +480,7 @@ class QullamaggieScreener:
                 "episode_pivot": len(results.get("episode_pivot", [])),
                 "parabolic_short": len(results.get("parabolic_short", [])),
                 "universe": len(results.get("universe_list", [])),
+                "pre_pattern_quant_financial": len(results.get("pre_pattern_quant_financial", [])),
                 "pattern_excluded_pool": len(results.get("pattern_excluded_pool", [])),
                 "pattern_included_candidates": len(results.get("pattern_included_candidates", [])),
                 "daily_focus": len(results.get("daily_focus", [])),

@@ -27,13 +27,19 @@ from utils.market_runtime import (
     iter_provider_symbols,
     market_key,
 )
+from utils.typing_utils import frame_keyed_records, is_na_like, row_to_record
 from utils.yfinance_runtime import bootstrap_yfinance_cache
+from utils.yahoo_throttle import extend_yahoo_cooldown, wait_for_yahoo_request_slot
 
 
 logger = logging.getLogger(__name__)
 
-METADATA_BATCH_SIZE = 250
+METADATA_BATCH_SIZE = 50
+METADATA_BATCH_PAUSE_SECONDS = 15.0
+METADATA_MAX_WORKERS = 1
 METADATA_PROGRESS_HEARTBEAT_SECONDS = 15.0
+METADATA_RATE_LIMIT_COOLDOWN_SECONDS = 45.0
+METADATA_MIN_REQUEST_DELAY_SECONDS = 1.0
 
 METADATA_COLUMNS: tuple[str, ...] = (
     "symbol",
@@ -44,16 +50,22 @@ METADATA_COLUMNS: tuple[str, ...] = (
     "industry",
     "pe_ratio",
     "revenue_growth",
+    "earnings_growth",
+    "return_on_equity",
     "market_cap",
     "shares_outstanding",
+    "fetch_status",
+    "source",
+    "last_attempted_at",
 )
 
 _MEANINGFUL_KEYS: tuple[str, ...] = (
     "exchange",
     "sector",
     "industry",
-    "pe_ratio",
     "revenue_growth",
+    "earnings_growth",
+    "return_on_equity",
     "market_cap",
     "shares_outstanding",
 )
@@ -91,8 +103,13 @@ def _blank_record(symbol: str, market: str, provider_symbol: str | None = None) 
         "industry": "",
         "pe_ratio": None,
         "revenue_growth": None,
+        "earnings_growth": None,
+        "return_on_equity": None,
         "market_cap": None,
         "shares_outstanding": None,
+        "fetch_status": "pending",
+        "source": "",
+        "last_attempted_at": "",
     }
 
 
@@ -106,24 +123,100 @@ def _clean_text(value: Any) -> str:
 
 
 def _clean_number(value: Any) -> float | int | None:
-    if value is None:
+    if value is None or is_na_like(value):
         return None
-    try:
-        if pd.isna(value):
-            return None
-    except Exception:
-        pass
 
     try:
         numeric = float(value)
     except Exception:
         return None
 
-    if pd.isna(numeric):
+    if is_na_like(numeric):
         return None
     if numeric.is_integer():
         return int(numeric)
     return numeric
+
+
+def _clean_ratio(value: Any) -> float | None:
+    numeric = _clean_number(value)
+    if numeric is None:
+        return None
+    return float(numeric)
+
+
+def _clean_growth_percent(value: Any) -> float | None:
+    numeric = _clean_ratio(value)
+    if numeric is None:
+        return None
+    return float(numeric) * 100.0
+
+
+def _combine_source_labels(existing: Any, new: Any) -> str:
+    labels: list[str] = []
+    for raw in (existing, new):
+        text = _clean_text(raw)
+        if not text:
+            continue
+        for part in text.split("+"):
+            item = _clean_text(part)
+            if item and item not in labels:
+                labels.append(item)
+    return "+".join(labels)
+
+
+def _has_identity_metadata(record: dict[str, object]) -> bool:
+    return any(_clean_text(record.get(key)) for key in ("exchange", "sector", "industry"))
+
+
+def _has_descriptive_identity_metadata(record: dict[str, object]) -> bool:
+    return any(_clean_text(record.get(key)) for key in ("sector", "industry"))
+
+
+def _has_core_metric_metadata(record: dict[str, object]) -> bool:
+    for key in ("market_cap", "shares_outstanding", "revenue_growth", "earnings_growth", "return_on_equity"):
+        value = record.get(key)
+        if is_na_like(value):
+            continue
+        if value is not None:
+            return True
+    return False
+
+
+def _is_metadata_complete(record: dict[str, object]) -> bool:
+    return _has_identity_metadata(record) and _has_core_metric_metadata(record)
+
+
+def _is_yfinance_candidate_sufficient(record: dict[str, object]) -> bool:
+    return _has_descriptive_identity_metadata(record) and _has_core_metric_metadata(record)
+
+
+def _mark_record(
+    record: dict[str, object],
+    *,
+    status: str | None = None,
+    source: str | None = None,
+    attempted_at: str | None = None,
+) -> dict[str, object]:
+    updated = dict(record)
+    if status:
+        updated["fetch_status"] = str(status).strip().lower()
+    if source:
+        updated["source"] = _combine_source_labels(updated.get("source"), source)
+    if attempted_at:
+        updated["last_attempted_at"] = str(attempted_at)
+    return updated
+
+
+def _is_retryable_metadata_record(record: dict[str, object]) -> bool:
+    status = _clean_text(record.get("fetch_status")).lower()
+    if status == "complete":
+        return False
+    if status == "not_found":
+        return False
+    if status in {"partial_fast_info", "rate_limited", "failed", "pending", ""}:
+        return True
+    return not _is_metadata_complete(record)
 
 
 def _has_meaningful_metadata(record: dict[str, object]) -> bool:
@@ -133,8 +226,26 @@ def _has_meaningful_metadata(record: dict[str, object]) -> bool:
             if value.strip():
                 return True
             continue
+        if is_na_like(value):
+            continue
         if value is not None:
             return True
+    return False
+
+
+def _should_preserve_cached_metadata(base: dict[str, object], update: dict[str, object]) -> bool:
+    base_status = _clean_text(base.get("fetch_status")).lower()
+    update_status = _clean_text(update.get("fetch_status")).lower()
+
+    if _has_meaningful_metadata(base) and not _has_meaningful_metadata(update):
+        return True
+
+    if _is_metadata_complete(base) and update_status in {"partial_fast_info", "rate_limited", "failed", "pending", ""}:
+        return True
+
+    if base_status == "not_found" and update_status in {"rate_limited", "failed", "pending", ""}:
+        return not _has_meaningful_metadata(update)
+
     return False
 
 
@@ -146,13 +257,12 @@ def _merge_records(base: dict[str, object], update: dict[str, object]) -> dict[s
             if value:
                 merged[key] = value
             continue
-        if key in {"exchange", "sector", "industry"}:
+        if key in {"exchange", "sector", "industry", "provider_symbol", "fetch_status", "last_attempted_at"}:
             if _clean_text(value):
                 merged[key] = _clean_text(value)
             continue
-        if key == "provider_symbol":
-            if _clean_text(value):
-                merged[key] = _clean_text(value)
+        if key == "source":
+            merged[key] = _combine_source_labels(merged.get(key), value)
             continue
         if value is not None:
             merged[key] = value
@@ -167,16 +277,23 @@ def _normalize_metadata_frame(frame: pd.DataFrame | None, market: str) -> pd.Dat
     normalized = frame.copy()
     for column in METADATA_COLUMNS:
         if column not in normalized.columns:
-            normalized[column] = None if column not in {"symbol", "market", "provider_symbol", "exchange", "sector", "industry"} else ""
+            normalized[column] = None if column not in {"symbol", "market", "provider_symbol", "exchange", "sector", "industry", "fetch_status", "source", "last_attempted_at"} else ""
 
     normalized["symbol"] = normalized["symbol"].map(_clean_text).str.upper()
     normalized["market"] = normalized["market"].map(_clean_text).str.lower()
     normalized.loc[normalized["market"] == "", "market"] = normalized_market
 
-    for text_column in ("provider_symbol", "exchange", "sector", "industry"):
+    for text_column in ("provider_symbol", "exchange", "sector", "industry", "fetch_status", "source", "last_attempted_at"):
         normalized[text_column] = normalized[text_column].map(_clean_text)
 
-    for numeric_column in ("pe_ratio", "revenue_growth", "market_cap", "shares_outstanding"):
+    for numeric_column in (
+        "pe_ratio",
+        "revenue_growth",
+        "earnings_growth",
+        "return_on_equity",
+        "market_cap",
+        "shares_outstanding",
+    ):
         normalized[numeric_column] = pd.to_numeric(normalized[numeric_column], errors="coerce")
 
     normalized = normalized[list(METADATA_COLUMNS)]
@@ -213,30 +330,73 @@ def _is_definitive_not_found(message: str | None) -> bool:
     )
 
 
-def _fetch_yfinance_info_quietly(provider_symbol: str) -> tuple[dict[str, Any], bool]:
+def _is_rate_limited_message(message: str | None) -> bool:
+    normalized = str(message or "").strip().lower()
+    if not normalized:
+        return False
+    return any(
+        token in normalized
+        for token in (
+            "too many requests",
+            "rate limited",
+            "rate limit",
+            "429",
+            "try after a while",
+        )
+    )
+
+
+def _fetch_yfinance_info_quietly(provider_symbol: str) -> tuple[dict[str, Any], dict[str, Any], bool, bool]:
     sink = io.StringIO()
+    info: dict[str, Any] = {}
+    fast_info: dict[str, Any] = {}
+    definitive_missing = False
+    rate_limited = False
     try:
         with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
             ticker = yf.Ticker(provider_symbol)
-            info = ticker.info or {}
-        noisy_output = sink.getvalue()
-        return info if isinstance(info, dict) else {}, _is_definitive_not_found(noisy_output)
+            try:
+                info_raw = ticker.info or {}
+                info = info_raw if isinstance(info_raw, dict) else {}
+            except Exception as exc:
+                definitive_missing = definitive_missing or _is_definitive_not_found(str(exc))
+                rate_limited = rate_limited or _is_rate_limited_message(str(exc))
+            try:
+                fast_info_raw = ticker.fast_info
+                fast_info = dict(fast_info_raw) if fast_info_raw is not None else {}
+            except Exception as exc:
+                definitive_missing = definitive_missing or _is_definitive_not_found(str(exc))
+                rate_limited = rate_limited or _is_rate_limited_message(str(exc))
     except Exception as exc:
-        noisy_output = sink.getvalue()
-        return {}, _is_definitive_not_found(f"{exc}\n{noisy_output}")
+        definitive_missing = definitive_missing or _is_definitive_not_found(str(exc))
+        rate_limited = rate_limited or _is_rate_limited_message(str(exc))
 
-
-def _record_from_yfinance(symbol: str, market: str, provider_symbol: str, info: dict[str, Any]) -> dict[str, object]:
+    noisy_output = sink.getvalue()
+    definitive_missing = definitive_missing or _is_definitive_not_found(noisy_output)
+    rate_limited = rate_limited or _is_rate_limited_message(noisy_output)
+    return info, fast_info, definitive_missing, rate_limited
+def _record_from_yfinance(
+    symbol: str,
+    market: str,
+    provider_symbol: str,
+    info: dict[str, Any],
+    fast_info: dict[str, Any] | None = None,
+) -> dict[str, object]:
+    fast_info = fast_info if isinstance(fast_info, dict) else {}
     record = _blank_record(symbol, market, provider_symbol=provider_symbol)
     record.update(
         {
-            "exchange": _clean_text(info.get("exchange") or info.get("fullExchangeName")),
+            "exchange": _clean_text(info.get("exchange") or info.get("fullExchangeName") or fast_info.get("exchange")),
             "sector": _clean_text(info.get("sector")),
             "industry": _clean_text(info.get("industry")),
             "pe_ratio": _clean_number(info.get("trailingPE")),
-            "revenue_growth": _clean_number(info.get("revenueGrowth")),
-            "market_cap": _clean_number(info.get("marketCap")),
-            "shares_outstanding": _clean_number(info.get("sharesOutstanding")),
+            "revenue_growth": _clean_growth_percent(info.get("revenueGrowth")),
+            "earnings_growth": _clean_growth_percent(
+                info.get("earningsQuarterlyGrowth") or info.get("earningsGrowth")
+            ),
+            "return_on_equity": _clean_ratio(info.get("returnOnEquity")),
+            "market_cap": _clean_number(info.get("marketCap") or fast_info.get("marketCap")),
+            "shares_outstanding": _clean_number(info.get("sharesOutstanding") or fast_info.get("shares")),
         }
     )
     return record
@@ -252,12 +412,12 @@ def fetch_metadata_yahooquery(
     record = _blank_record(symbol, market, provider_symbol=provider_symbol)
     try:
         ticker = Ticker(provider_symbol)
-        if delay > 0:
-            time.sleep(delay)
+        wait_for_yahoo_request_slot(f"{market_key(market).upper()} metadata", min_interval=max(float(delay), METADATA_MIN_REQUEST_DELAY_SECONDS))
 
         summary = _pick_provider_payload(ticker.summary_detail, provider_symbol)
         key_stats = _pick_provider_payload(ticker.key_stats, provider_symbol)
         profile = _pick_provider_payload(ticker.summary_profile, provider_symbol)
+        financial_data = _pick_provider_payload(getattr(ticker, "financial_data", {}), provider_symbol)
 
         record.update(
             {
@@ -265,7 +425,13 @@ def fetch_metadata_yahooquery(
                 "sector": _clean_text(profile.get("sector")),
                 "industry": _clean_text(profile.get("industry")),
                 "pe_ratio": _clean_number(summary.get("trailingPE")),
-                "revenue_growth": _clean_number(key_stats.get("revenueQuarterlyGrowth")),
+                "revenue_growth": _clean_growth_percent(
+                    key_stats.get("revenueQuarterlyGrowth") or financial_data.get("revenueGrowth")
+                ),
+                "earnings_growth": _clean_growth_percent(
+                    financial_data.get("earningsGrowth") or key_stats.get("earningsQuarterlyGrowth")
+                ),
+                "return_on_equity": _clean_ratio(financial_data.get("returnOnEquity")),
                 "market_cap": _clean_number(summary.get("marketCap") or key_stats.get("marketCap")),
                 "shares_outstanding": _clean_number(
                     key_stats.get("sharesOutstanding") or summary.get("sharesOutstanding")
@@ -386,55 +552,96 @@ def fetch_metadata(
     symbol_key = str(symbol or "").strip().upper()
     normalized_market = market_key(market)
     retries = max(1, int(max_retries))
-    best_record = _blank_record(symbol_key, normalized_market)
+    request_delay = max(float(delay), METADATA_MIN_REQUEST_DELAY_SECONDS)
+    phase_label = f"{normalized_market.upper()} metadata"
+    best_record = _mark_record(_blank_record(symbol_key, normalized_market), status="failed")
 
     for provider_symbol in iter_provider_symbols(symbol_key, normalized_market):
-        provider_best = _blank_record(symbol_key, normalized_market, provider_symbol=provider_symbol)
+        provider_best = _mark_record(
+            _blank_record(symbol_key, normalized_market, provider_symbol=provider_symbol),
+            status="failed",
+        )
 
         for attempt in range(retries):
-            candidate = _blank_record(symbol_key, normalized_market, provider_symbol=provider_symbol)
+            attempted_at = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
+            candidate = _mark_record(
+                _blank_record(symbol_key, normalized_market, provider_symbol=provider_symbol),
+                status="failed",
+                attempted_at=attempted_at,
+            )
             definitive_missing = False
 
             try:
-                if delay > 0:
-                    time.sleep(delay)
-                info, yfinance_missing = _fetch_yfinance_info_quietly(provider_symbol)
-                candidate = _merge_records(candidate, _record_from_yfinance(symbol_key, normalized_market, provider_symbol, info))
+                wait_for_yahoo_request_slot(phase_label, min_interval=request_delay)
+                info, fast_info, yfinance_missing, yfinance_rate_limited = _fetch_yfinance_info_quietly(provider_symbol)
+                candidate = _merge_records(
+                    candidate,
+                    _record_from_yfinance(symbol_key, normalized_market, provider_symbol, info, fast_info),
+                )
+                candidate = _mark_record(candidate, source="yfinance", attempted_at=attempted_at)
                 definitive_missing = definitive_missing or yfinance_missing
+
+                if yfinance_rate_limited:
+                    provider_best = _merge_records(provider_best, candidate)
+                    status = "partial_fast_info" if _has_meaningful_metadata(provider_best) else "rate_limited"
+                    provider_best = _mark_record(provider_best, status=status, source="yfinance", attempted_at=attempted_at)
+                    cooldown = METADATA_RATE_LIMIT_COOLDOWN_SECONDS
+                    extend_yahoo_cooldown(phase_label, cooldown)
+                    if attempt < retries - 1:
+                        continue
+                    break
+
+                if _is_yfinance_candidate_sufficient(candidate):
+                    return _mark_record(candidate, status="complete", source="yfinance", attempted_at=attempted_at)
             except Exception as exc:
-                logger.debug("metadata_yfinance_failed symbol=%s provider=%s error=%s", symbol_key, provider_symbol, str(exc)[:120])
+                logger.debug(
+                    "metadata_yfinance_failed symbol=%s provider=%s error=%s",
+                    symbol_key,
+                    provider_symbol,
+                    str(exc)[:120],
+                )
                 definitive_missing = definitive_missing or _is_definitive_not_found(str(exc))
 
             yahooquery_record, yahooquery_missing = fetch_metadata_yahooquery(
                 symbol_key,
                 provider_symbol,
                 market=normalized_market,
-                delay=max(1.0, float(delay)),
+                delay=request_delay,
             )
             candidate = _merge_records(candidate, yahooquery_record)
+            candidate = _mark_record(candidate, source="yahooquery", attempted_at=attempted_at)
             definitive_missing = definitive_missing or yahooquery_missing
 
-            if _has_meaningful_metadata(candidate):
-                return candidate
+            if _is_metadata_complete(candidate):
+                return _mark_record(candidate, status="complete", attempted_at=attempted_at)
 
             provider_best = _merge_records(provider_best, candidate)
             if definitive_missing:
+                provider_best = _mark_record(provider_best, status="not_found", attempted_at=attempted_at)
                 break
-            if attempt < (retries - 1) and delay > 0:
-                time.sleep(delay)
+            if _has_meaningful_metadata(provider_best):
+                provider_best = _mark_record(provider_best, status="partial_fast_info", attempted_at=attempted_at)
+            else:
+                provider_best = _mark_record(provider_best, status="failed", attempted_at=attempted_at)
 
         best_record = _merge_records(best_record, provider_best)
-        if _has_meaningful_metadata(best_record):
-            return best_record
+        best_status = _clean_text(best_record.get("fetch_status")).lower()
+        if _is_metadata_complete(best_record) and best_status not in {"partial_fast_info", "rate_limited"}:
+            return _mark_record(best_record, status="complete")
 
-    return best_record
+    final_status = _clean_text(best_record.get("fetch_status")).lower()
+    if _is_metadata_complete(best_record) and final_status not in {"partial_fast_info", "rate_limited"}:
+        return _mark_record(best_record, status="complete")
+    if _has_meaningful_metadata(best_record):
+        return _mark_record(best_record, status=final_status or "partial_fast_info")
+    return _mark_record(best_record, status=_clean_text(best_record.get("fetch_status")) or "failed")
 
 
 def collect_stock_metadata(
     symbols: List[str],
     *,
     market: str = "us",
-    max_workers: int = 8,
+    max_workers: int = METADATA_MAX_WORKERS,
     max_retries: int = YAHOO_FINANCE_MAX_RETRIES,
     delay: float = YAHOO_FINANCE_DELAY,
 ) -> pd.DataFrame:
@@ -449,6 +656,19 @@ def collect_stock_metadata(
     if normalized_market == "kr":
         prefilled_records = _prefetch_kr_listing_metadata(requested_symbols)
         if prefilled_records:
+            normalized_prefill: dict[str, dict[str, object]] = {}
+            for symbol in requested_symbols:
+                prefilled = prefilled_records.get(symbol)
+                if not prefilled:
+                    continue
+                status = "complete" if _is_metadata_complete(prefilled) else "partial_fast_info"
+                normalized_prefill[symbol] = _mark_record(
+                    prefilled,
+                    status=status,
+                    source="fdr_listing_prefill",
+                    attempted_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                )
+            prefilled_records = normalized_prefill
             records.extend(prefilled_records.values())
             symbols_to_fetch = [
                 symbol for symbol in requested_symbols
@@ -531,6 +751,7 @@ def _list_us_symbols() -> list[str]:
         data_dir=DATA_DIR,
         us_data_dir=get_market_data_dir("us"),
         stock_metadata_path=get_stock_metadata_path("us"),
+        progress=_emit_progress,
     )
 
 
@@ -564,6 +785,17 @@ def load_cached_metadata(
         return None
 
     try:
+        raw_frame = pd.read_csv(metadata_path)
+        required_columns = {"earnings_growth", "return_on_equity", "fetch_status", "source", "last_attempted_at"}
+        if not required_columns.issubset(set(raw_frame.columns)):
+            logger.info(
+                "metadata cache schema outdated: market=%s path=%s missing=%s",
+                market_key(market),
+                metadata_path,
+                ",".join(sorted(required_columns.difference(set(raw_frame.columns)))),
+            )
+            return None
+
         file_age = time.time() - os.path.getmtime(metadata_path)
         if file_age > max_age_days * 24 * 3600:
             if not allow_stale:
@@ -571,38 +803,53 @@ def load_cached_metadata(
                 return None
             logger.info("metadata cache stale but reused: market=%s path=%s", market_key(market), metadata_path)
 
-        return _normalize_metadata_frame(pd.read_csv(metadata_path), market)
+        return _normalize_metadata_frame(raw_frame, market)
     except Exception as exc:
         logger.warning("metadata cache load failed: market=%s path=%s error=%s", market_key(market), metadata_path, exc)
         return None
 
 
 def get_missing_symbols(cached_df: Optional[pd.DataFrame], all_symbols: List[str]) -> List[str]:
-    if cached_df is None or cached_df.empty:
-        return all_symbols
-    symbol_lookup = {
-        str(row.get("symbol") or "").strip().upper(): row.to_dict()
-        for _, row in cached_df.iterrows()
-    }
-    missing: list[str] = []
-    for symbol in all_symbols:
-        record = symbol_lookup.get(str(symbol or "").strip().upper())
-        if not record or not _has_meaningful_metadata(record):
-            missing.append(symbol)
-    return missing
+    _ = cached_df
+    return list(all_symbols)
 
 
 def merge_metadata(cached_df: Optional[pd.DataFrame], new_df: pd.DataFrame, *, market: str) -> pd.DataFrame:
     normalized_market = market_key(market)
+    if (cached_df is None or cached_df.empty) and (new_df is None or new_df.empty):
+        return pd.DataFrame(columns=METADATA_COLUMNS)
     if cached_df is None or cached_df.empty:
         return _normalize_metadata_frame(new_df, normalized_market)
+    if new_df is None or new_df.empty:
+        return _normalize_metadata_frame(cached_df, normalized_market)
 
-    new_symbols = set(new_df["symbol"].astype(str).str.upper().tolist()) if not new_df.empty else set()
-    filtered_cached = cached_df[~cached_df["symbol"].astype(str).str.upper().isin(new_symbols)]
-    frames = [frame for frame in (filtered_cached, new_df) if frame is not None and not frame.empty]
-    if not frames:
-        return pd.DataFrame(columns=METADATA_COLUMNS)
-    return _normalize_metadata_frame(pd.concat(frames, ignore_index=True), normalized_market)
+    merged_by_symbol: dict[str, dict[str, object]] = {
+        symbol: record
+        for symbol, record in frame_keyed_records(
+            cached_df,
+            key_column="symbol",
+            uppercase_keys=True,
+        ).items()
+    }
+
+    for _, row in new_df.iterrows():
+        symbol_key = str(row.get("symbol") or "").strip().upper()
+        if not symbol_key:
+            continue
+        update_record = row_to_record(row)
+        base_record = merged_by_symbol.get(symbol_key)
+        if not base_record:
+            merged_by_symbol[symbol_key] = update_record
+            continue
+
+        merged_record = _merge_records(base_record, update_record)
+        if _should_preserve_cached_metadata(base_record, update_record):
+            preserved_status = _clean_text(base_record.get("fetch_status")).lower()
+            if preserved_status:
+                merged_record["fetch_status"] = preserved_status
+        merged_by_symbol[symbol_key] = merged_record
+
+    return _normalize_metadata_frame(pd.DataFrame(list(merged_by_symbol.values())), normalized_market)
 
 
 def main(*, market: str = "us") -> pd.DataFrame:
@@ -656,6 +903,11 @@ def main(*, market: str = "us") -> pd.DataFrame:
             f"[Metadata] Checkpoint saved ({normalized_market}) - "
             f"processed={processed}/{len(missing_symbols)}, total_rows={len(final_df)}, path={metadata_path}"
         )
+        if batch_index < len(batches):
+            _emit_progress(
+                f"[Throttle] Metadata batch pause ({normalized_market}) - wait={METADATA_BATCH_PAUSE_SECONDS:.1f}s"
+            )
+            time.sleep(METADATA_BATCH_PAUSE_SECONDS)
 
     _emit_progress(
         f"[Metadata] Saved ({normalized_market}) - total={len(final_df)}, path={metadata_path}"

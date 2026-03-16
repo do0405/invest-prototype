@@ -1,0 +1,2 @@
+symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
+SLDB,SLDB,[],False,-14.285714285714285,36.64596273291926,False,False,0,0,False,False,False,False,False,False,-15.947315096251266,-29.872415768369525,0,0,2026-03-13T22:31:19.058182+00:00

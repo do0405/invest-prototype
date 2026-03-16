@@ -38,6 +38,13 @@
 
 ### 2.1 원칙 1: OHLCV-first
 
+### 2.1.1 가격 시계열 정책
+
+- 기본 기술 시계열은 `split-adjusted OHLC`다.
+- dividend를 포함한 `Adj Close` back-adjusted 시계열은 기본값이 아니라 별도 정책으로만 사용한다.
+- split 근거가 없는 캐시는 `raw`로 계산하되, source metadata를 남겨 false precision을 피한다.
+- `EMA`와 `SMA`는 공용 helper를 쓰더라도 서로 다른 지표로 유지한다.
+
 가장 중요한 입력은 KR/US 종목의 OHLCV다. 시스템은 최소한 일봉 OHLCV만으로도 다음을 생성할 수 있어야 한다.
 
 - 시장 레짐 기본 판정

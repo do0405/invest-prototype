@@ -2,10 +2,22 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Sequence, cast
 
 import numpy as np
 import pandas as pd
+
+from utils.indicator_helpers import (
+    normalize_indicator_frame,
+    rolling_atr,
+    rolling_average_volume,
+    rolling_max,
+    rolling_min,
+    rolling_sma,
+    rolling_traded_value,
+    rolling_traded_value_median,
+)
+from utils.market_data_contract import PricePolicy
 
 logger = logging.getLogger(__name__)
 
@@ -20,6 +32,27 @@ def _safe_float(value: Any) -> float | None:
     if np.isnan(casted) or np.isinf(casted):
         return None
     return casted
+
+
+def _safe_divide(numerator: float | None, denominator: float | None) -> float | None:
+    if numerator is None or denominator is None or denominator == 0:
+        return None
+    return numerator / denominator
+
+
+def _frame_value_as_float(frame: pd.DataFrame, index: Any, column: str) -> float | None:
+    try:
+        value = frame.at[index, column]
+    except Exception:
+        return None
+    return _safe_float(value)
+
+
+def _mean_score(values: Sequence[float | bool | None], *, default: float = 0.0) -> float:
+    active = [float(value) for value in values if value is not None]
+    if not active:
+        return default
+    return float(np.mean(active))
 
 
 def _series_median(series: pd.Series) -> float | None:
@@ -122,6 +155,7 @@ class EnhancedPatternAnalyzer:
     """Rule-based pattern analyzer rebuilt around structural pivot logic."""
 
     def __init__(self) -> None:
+        self.MIN_PATTERN_BARS = 220
         self.DETECTION_THRESHOLD = 0.58
         self.HIGH_CONFIDENCE_THRESHOLD = 0.8
         self.DIMENSION_WEIGHTS = {
@@ -149,66 +183,87 @@ class EnhancedPatternAnalyzer:
         if stock_data is None or stock_data.empty:
             return pd.DataFrame()
 
-        df = stock_data.copy()
-        rename_map: dict[str, str] = {}
-        for column in df.columns:
-            lowered = str(column).strip().lower()
-            if lowered in {"date", "open", "high", "low", "close", "volume"}:
-                rename_map[column] = lowered
-        df = df.rename(columns=rename_map)
-
-        if "date" not in df.columns:
-            if isinstance(df.index, pd.DatetimeIndex):
-                df = df.reset_index().rename(columns={df.index.name or "index": "date"})
-            else:
-                df = df.reset_index()
-                df = df.rename(columns={df.columns[0]: "date"})
-
-        required = ("open", "high", "low", "close", "volume")
-        for column in required:
-            if column not in df.columns:
-                if column == "volume":
-                    df[column] = 0.0
-                elif "close" in df.columns:
-                    df[column] = df["close"]
-                else:
-                    df[column] = 0.0
-
-        df["date"] = pd.to_datetime(df["date"], errors="coerce", utc=True)
-        for column in required:
-            df[column] = pd.to_numeric(df[column], errors="coerce")
-
-        df = df.dropna(subset=["date", "open", "high", "low", "close"]).copy()
+        df = normalize_indicator_frame(
+            stock_data,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
+            utc_dates=True,
+        )
         if df.empty:
             return df
 
-        df = df.sort_values("date").reset_index(drop=True)
-        prev_close = df["close"].shift(1)
-        tr_components = pd.concat(
-            [
-                df["high"] - df["low"],
-                (df["high"] - prev_close).abs(),
-                (df["low"] - prev_close).abs(),
-            ],
-            axis=1,
-        )
-        df["tr"] = tr_components.max(axis=1)
-        df["atr14"] = df["tr"].rolling(14, min_periods=3).mean()
-        df["atr20"] = df["tr"].rolling(20, min_periods=5).mean()
-        df["natr10"] = df["tr"].rolling(10, min_periods=3).mean() / df["close"].replace(0, np.nan)
+        df["tr"] = rolling_atr(df, 1, min_periods=1)
+        df["atr14"] = rolling_atr(df, 14, min_periods=3)
+        df["atr20"] = rolling_atr(df, 20, min_periods=5)
+        df["natr10"] = rolling_atr(df, 10, min_periods=3) / df["close"].replace(0, np.nan)
         df["natr20"] = df["atr20"] / df["close"].replace(0, np.nan)
         df["range_pct"] = (df["high"] - df["low"]) / df["close"].replace(0, np.nan)
-        df["vol_ma10"] = df["volume"].rolling(10, min_periods=3).mean()
-        df["vol_ma20"] = df["volume"].rolling(20, min_periods=5).mean()
-        df["vol_ma50"] = df["volume"].rolling(50, min_periods=10).mean()
-        df["sma20"] = df["close"].rolling(20, min_periods=5).mean()
-        df["sma50"] = df["close"].rolling(50, min_periods=10).mean()
-        df["sma150"] = df["close"].rolling(150, min_periods=30).mean()
-        df["sma200"] = df["close"].rolling(200, min_periods=50).mean()
-        df["rolling_high_252"] = df["high"].rolling(252, min_periods=30).max()
-        df["rolling_low_252"] = df["low"].rolling(252, min_periods=30).min()
+        df["vol_ma10"] = rolling_average_volume(df, 10, min_periods=3)
+        df["vol_ma20"] = rolling_average_volume(df, 20, min_periods=5)
+        df["vol_ma50"] = rolling_average_volume(df, 50, min_periods=10)
+        df["sma20"] = rolling_sma(df["close"], 20, min_periods=5)
+        df["sma50"] = rolling_sma(df["close"], 50, min_periods=10)
+        df["sma150"] = rolling_sma(df["close"], 150, min_periods=30)
+        df["sma200"] = rolling_sma(df["close"], 200, min_periods=50)
+        df["rolling_high_252"] = rolling_max(df["high"], 252, min_periods=30)
+        df["rolling_low_252"] = rolling_min(df["low"], 252, min_periods=30)
+        df["traded_value"] = rolling_traded_value(df, 1, min_periods=1)
+        df["tv_ma20"] = rolling_traded_value(df, 20, min_periods=10)
+        df["tv_median20"] = rolling_traded_value_median(df, 20, min_periods=10)
         df["smoothed_close"] = df["close"].rolling(5, center=True, min_periods=1).mean()
         return df
+
+    def evaluate_prerequisites(self, stock_data: pd.DataFrame) -> dict[str, Any]:
+        df = self._prepare_ohlcv(stock_data)
+        if df.empty:
+            return {
+                "bars": 0,
+                "tv_median20": None,
+                "recent_data_quality_pass": False,
+                "trend_template_lite_pass": False,
+            }
+
+        latest = df.iloc[-1]
+        recent_window = df.tail(min(60, len(df))).copy()
+        recent_data_quality_pass = bool(
+            not recent_window.empty
+            and pd.to_numeric(recent_window["volume"], errors="coerce").fillna(0.0).gt(0).all()
+        )
+        close = _safe_float(latest.get("close"))
+        sma50 = _safe_float(latest.get("sma50"))
+        sma150 = _safe_float(latest.get("sma150"))
+        sma200 = _safe_float(latest.get("sma200"))
+        prev_sma200 = _safe_float(df["sma200"].iloc[-21]) if len(df) >= 220 else None
+        rolling_high_252 = _safe_float(latest.get("rolling_high_252"))
+        rolling_low_252 = _safe_float(latest.get("rolling_low_252"))
+        has_52w_bounds = (
+            rolling_high_252 is not None
+            and rolling_high_252 != 0
+            and rolling_low_252 is not None
+            and rolling_low_252 != 0
+        )
+        trend_template_lite_pass = bool(
+            close is not None
+            and sma50 is not None
+            and sma150 is not None
+            and sma200 is not None
+            and close > sma50
+            and close > sma150
+            and close > sma200
+            and sma50 > sma150 >= sma200
+            and prev_sma200 is not None
+            and sma200 > prev_sma200
+            and has_52w_bounds
+            and rolling_high_252 is not None
+            and rolling_low_252 is not None
+            and close >= rolling_high_252 * 0.75
+            and close >= rolling_low_252 * 1.25
+        )
+        return {
+            "bars": int(len(df)),
+            "tv_median20": _safe_float(latest.get("tv_median20")),
+            "recent_data_quality_pass": recent_data_quality_pass,
+            "trend_template_lite_pass": trend_template_lite_pass,
+        }
 
     def _normalize_score(self, score: float) -> float:
         if np.isnan(score) or np.isinf(score):
@@ -360,8 +415,11 @@ class EnhancedPatternAnalyzer:
 
             if center > np.nanmax(left) and center >= np.nanmax(right):
                 raw_idx = int(local_window["high"].idxmax())
-                price = float(df.loc[raw_idx, "high"])
-                prominence = (price - float(local_window["low"].min())) / max(price, 1e-9)
+                price = _frame_value_as_float(df, raw_idx, "high")
+                low_min = _safe_float(local_window["low"].min())
+                prominence = _safe_divide((price - low_min) if price is not None and low_min is not None else None, price)
+                if price is None or prominence is None:
+                    continue
                 if prominence >= self._prominence_floor(df, raw_idx):
                     candidates.append(
                         PivotPoint(
@@ -376,8 +434,11 @@ class EnhancedPatternAnalyzer:
 
             if center < np.nanmin(left) and center <= np.nanmin(right):
                 raw_idx = int(local_window["low"].idxmin())
-                price = float(df.loc[raw_idx, "low"])
-                prominence = (float(local_window["high"].max()) - price) / max(float(local_window["high"].max()), 1e-9)
+                price = _frame_value_as_float(df, raw_idx, "low")
+                high_max = _safe_float(local_window["high"].max())
+                prominence = _safe_divide((high_max - price) if price is not None and high_max is not None else None, high_max)
+                if price is None or prominence is None:
+                    continue
                 if prominence >= self._prominence_floor(df, raw_idx):
                     candidates.append(
                         PivotPoint(
@@ -466,10 +527,10 @@ class EnhancedPatternAnalyzer:
             return empty_result
 
         breakout_idx = int(hits.index[0])
-        breakout_row = df.loc[breakout_idx]
+        breakout_row = cast(pd.Series, df.loc[breakout_idx])
         breakout_volume = _safe_float(breakout_row["volume"])
         base_vol = self._volume_base(breakout_row)
-        volume_multiple = breakout_volume / base_vol if breakout_volume is not None and base_vol > 0 else None
+        volume_multiple = _safe_divide(breakout_volume, base_vol)
 
         post_breakout = df.iloc[breakout_idx:]
         latest_close = float(df["close"].iloc[-1])
@@ -637,13 +698,13 @@ class EnhancedPatternAnalyzer:
                 last_ten = base_window.tail(min(10, len(base_window)))
                 first_range = _series_median(first_ten["range_pct"])
                 last_range = _series_median(last_ten["range_pct"])
-                range_ratio = last_range / first_range if first_range and first_range > 0 else None
+                range_ratio = _safe_divide(last_range, first_range) if first_range is not None and first_range > 0 else None
                 first_natr = _series_median(first_ten["natr10"])
                 last_natr = _series_median(last_ten["natr10"])
-                natr_ratio = last_natr / first_natr if first_natr and first_natr > 0 else None
+                natr_ratio = _safe_divide(last_natr, first_natr) if first_natr is not None and first_natr > 0 else None
                 first_vol = _series_median(first_half["volume"])
                 last_vol = _series_median(last_ten["volume"])
-                volume_ratio = last_vol / first_vol if first_vol and first_vol > 0 else None
+                volume_ratio = _safe_divide(last_vol, first_vol) if first_vol is not None and first_vol > 0 else None
                 tightness_pct = self._recent_tightness_pct(df, pivot_price, bars=5)
                 prior_run_up_pct = self._prior_run_up_pct(df, base_start_idx)
                 latest_close = float(df["close"].iloc[-1])
@@ -651,41 +712,40 @@ class EnhancedPatternAnalyzer:
                 distance_to_pivot_pct = (latest_close / pivot_price) - 1.0 if pivot_price > 0 else None
                 breakout = self._check_breakout_last_rows(df, pivot_price, invalidation_price, last_n=5)
 
-                technical_quality = np.mean(
+                technical_quality = _mean_score(
                     [
                         self._range_score(depths[0], 0.08, 0.35, 0.05, 0.45),
                         self._inverse_score(depths[-1], 0.12, 0.18),
-                        np.mean(decrease_checks) if decrease_checks else 0.0,
-                        np.mean(higher_lows) if higher_lows else 0.5,
+                        _mean_score(decrease_checks, default=0.0),
+                        _mean_score(higher_lows, default=0.5),
                         self._inverse_score(resistance_band_pct, 0.06, 0.10),
                         self._inverse_score(last_two_gap_pct, 0.03, 0.06),
                     ]
                 )
-                volume_confirmation = np.mean(
+                breakout_volume_score = _safe_float(breakout.get("volume_score")) if breakout.get("breakout_found") else None
+                volume_confirmation = _mean_score(
                     [
                         self._inverse_score(volume_ratio, 0.8, 1.05),
                         self._inverse_score(natr_ratio, 0.8, 1.05),
                         self._inverse_score(range_ratio, 0.8, 1.05),
-                        breakout.get("volume_score", 0.0)
-                        if breakout.get("breakout_found")
-                        else self._inverse_score(volume_ratio, 0.8, 1.05),
+                        breakout_volume_score if breakout_volume_score is not None else self._inverse_score(volume_ratio, 0.8, 1.05),
                     ]
                 )
-                temporal_validity = np.mean(
+                contraction_scores = [self._range_score(bars, 5, 25, 4, 35) for bars in contraction_bars + recovery_bars]
+                temporal_validity = _mean_score(
                     [
                         self._range_score(base_len, 20, 80, 15, 120),
-                        np.mean([self._range_score(bars, 5, 25, 4, 35) for bars in contraction_bars + recovery_bars]),
+                        _mean_score(contraction_scores),
                         self._inverse_score(tightness_pct, 0.08, 0.12),
                     ]
                 )
-                market_context = np.mean(
+                sma50_last = _safe_float(df["sma50"].iloc[-1])
+                rolling_high_252_last = _safe_float(df["rolling_high_252"].iloc[-1])
+                market_context = _mean_score(
                     [
                         self._range_score(prior_run_up_pct, 0.25, 1.0, 0.12, 1.5),
-                        1.0 if pd.notna(df["sma50"].iloc[-1]) and latest_close >= float(df["sma50"].iloc[-1]) else 0.3,
-                        1.0
-                        if pd.notna(df["rolling_high_252"].iloc[-1])
-                        and latest_close >= float(df["rolling_high_252"].iloc[-1]) * 0.75
-                        else 0.4,
+                        1.0 if sma50_last is not None and latest_close >= sma50_last else 0.3,
+                        1.0 if rolling_high_252_last is not None and latest_close >= rolling_high_252_last * 0.75 else 0.4,
                     ]
                 )
                 dimensional_scores = DimensionalScores(
@@ -775,8 +835,11 @@ class EnhancedPatternAnalyzer:
             rim_idx = int(pre_low_window["high"].idxmax())
             if rim_idx in known_high_indexes:
                 continue
-            rim_price = float(df.loc[rim_idx, "high"])
-            prominence = (rim_price - float(pre_low_window["low"].min())) / max(rim_price, 1e-9)
+            rim_price = _frame_value_as_float(df, rim_idx, "high")
+            low_min = _safe_float(pre_low_window["low"].min())
+            prominence = _safe_divide((rim_price - low_min) if rim_price is not None and low_min is not None else None, rim_price)
+            if rim_price is None or prominence is None:
+                continue
             if prominence < max(0.03, self._prominence_floor(df, rim_idx) * 0.75):
                 continue
             high_pivots.append(
@@ -812,7 +875,9 @@ class EnhancedPatternAnalyzer:
                 if bottom_idx - left_rim.index < 5 or right_rim.index - bottom_idx < 5:
                     continue
 
-                bottom_price = float(df.loc[bottom_idx, "low"])
+                bottom_price = _frame_value_as_float(df, bottom_idx, "low")
+                if bottom_price is None:
+                    continue
                 rim_level = max(left_rim.pivot_price, right_rim.pivot_price)
                 rim_diff_pct = abs(left_rim.pivot_price - right_rim.pivot_price) / max(rim_level, 1e-9)
                 cup_depth_pct = (rim_level - bottom_price) / max(rim_level, 1e-9)
@@ -946,14 +1011,13 @@ class EnhancedPatternAnalyzer:
                         self._ratio_score(balance_ratio, 0.5, 0.25),
                     ]
                 )
-                market_context = np.mean(
+                sma50_last = _safe_float(df["sma50"].iloc[-1])
+                rolling_high_252_last = _safe_float(df["rolling_high_252"].iloc[-1])
+                market_context = _mean_score(
                     [
                         self._range_score(prior_run_up_pct, 0.25, 1.0, 0.12, 1.5),
-                        1.0 if pd.notna(df["sma50"].iloc[-1]) and latest_close >= float(df["sma50"].iloc[-1]) else 0.3,
-                        1.0
-                        if pd.notna(df["rolling_high_252"].iloc[-1])
-                        and latest_close >= float(df["rolling_high_252"].iloc[-1]) * 0.75
-                        else 0.4,
+                        1.0 if sma50_last is not None and latest_close >= sma50_last else 0.3,
+                        1.0 if rolling_high_252_last is not None and latest_close >= rolling_high_252_last * 0.75 else 0.4,
                     ]
                 )
                 dimensional_scores = DimensionalScores(
@@ -1020,7 +1084,7 @@ class EnhancedPatternAnalyzer:
     def analyze_patterns_enhanced(self, symbol: str, stock_data: pd.DataFrame) -> dict[str, dict[str, Any]]:
         try:
             df = self._prepare_ohlcv(stock_data)
-            if df.empty or len(df) < 40:
+            if df.empty or len(df) < self.MIN_PATTERN_BARS:
                 return {
                     "vcp": self._empty_pattern_output("VCP"),
                     "cup_handle": self._empty_pattern_output("CUP_HANDLE"),

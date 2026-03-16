@@ -31,6 +31,13 @@
 4. 다만 이 입력 제약 때문에 Stage Analysis의 원형을 훼손하면 안 되므로, 필요한 경우 가격 히스토리/벤치마크/섹터/재무/이벤트 데이터는 별도 수집할 수 있어야 한다.
 5. 입력 제약이 있어도 시스템은 hard fail보다 `bootstrap mode`로 graceful degrade 해야 한다.
 
+### 2.1 가격 시계열 정책
+
+- Weinstein 계열 추세/정렬 계산의 기본 입력은 `split-adjusted OHLC`다.
+- `split-adjusted`는 split factor가 명시적으로 있을 때만 사용한다.
+- split 근거가 없는 종목은 `raw` 시계열로 계산하되, source flag를 남겨 결과 해석에서 구분한다.
+- `Adj Close` 기반 total-return 시계열은 Stage Analysis 기본 추세선의 기본 입력으로 사용하지 않는다.
+
 ## 3. 소스 통합 원칙
 
 ### 3.1 허용 소스
@@ -74,6 +81,7 @@ Weinstein 계보 자료에는 아래 두 종류가 섞여 있다.
 5. 개별 종목보다 먼저 전체 시장과 섹터/그룹 상태를 봐야 한다.
 6. 시장이 Stage 4에 가까우면 좋은 패턴도 실패 확률이 높아진다.
 7. 같은 Stage 2라도 `얼마나 최근에 돌파했는가`가 실전 우선순위를 크게 바꾼다.
+8. 실전 적용에서는 `30주선`이 중심축이지만, `10주/50일`과 `40주/200일` 정렬도 추세 확인용 보조 하드 필터로 함께 보는 편이 원전 계보 자료와 더 가깝다.
 
 따라서 정량 스크리너도 아래 파이프라인을 따라야 한다.
 
@@ -320,6 +328,12 @@ session_count = count(rows)
 - `STAGE_3`
 - `STAGE_4`
 
+해석 원칙:
+
+- `STAGE_2`는 `rising 30-week 위에서 진행 중인 일반적인 advance`를 뜻한다.
+- `STAGE_2B`는 `기존 Stage 2 advance 내부의 continuation-specific state`를 뜻한다.
+- 즉 `STAGE_2B`는 아무 상승 추세가 아니라 `orderly consolidation / pullback / re-breakout`이 관찰되는 경우에만 부여한다.
+
 ### 11.4 타이밍 상태
 
 - `BASE`
@@ -517,7 +531,11 @@ Stage1 if all:
 Stage2A if all:
     current_close > base_high * (1 + breakout_buffer)
     current_close > MA30W
+    current_close > MA40W or daily_close > MA200D
+    current_close > MA10W or daily_close > MA50D
+    MA10W > MA30W >= MA40W when all are available
     slope(MA30W, 4w) >= 0
+    slope(MA40W, 4w) >= 0 when MA40W is available
     weekly_volume_ratio >= 2.0
     RS condition passes
 ```
@@ -526,10 +544,16 @@ Stage2A if all:
 
 ```text
 Stage2 if:
-    close > MA30W and slope(MA30W, 8w) > 0
+    close > MA30W
+    and close > MA40W when MA40W exists
+    and slope(MA30W, 8w) > 0
 
 Stage2B if:
-    Stage2 == True and stage2_duration_weeks >= 39
+    Stage2 == True
+    and (
+        continuation_breakout_detected == True
+        or continuation_setup_pass == True
+    )
 
 Stage3 if:
     abs(slope(MA30W, 8w)) <= flat_threshold
@@ -538,6 +562,21 @@ Stage3 if:
 Stage4 if:
     close < MA30W and slope(MA30W, 8w) < 0
 ```
+
+여기서 `continuation_setup_pass`는 아래를 만족하는 `짧은 continuation base`를 뜻한다.
+
+```text
+continuation_setup_pass if all:
+    prior_uptrend_exists
+    prior_uptrend was above rising MA30W
+    continuation_base_duration_weeks in [4, 16]
+    continuation_base_width is moderate
+    continuation_base holds rising MA30W or prior breakout area
+    continuation_base shows range/volume contraction
+    net_progress_within_base is limited
+```
+
+즉 `STAGE_2B`는 `generic Stage 2 advance`가 아니라, TraderLion / NextBigTrade 계열 자료에서 말하는 `orderly continuation state`를 가리킨다.
 
 ## 16. Base Detection and Resistance Engine
 
@@ -631,6 +670,9 @@ valid_breakout if all:
     prior_stage == STAGE_1
     close > base_high * (1 + breakout_buffer)
     close > MA30W
+    close > MA40W or daily_close > MA200D
+    close > MA10W or daily_close > MA50D
+    MA10W > MA30W >= MA40W when all are available
     slope(MA30W, 4w) >= 0
     weekly_volume_ratio >= 2.0
     RS condition passes
@@ -642,9 +684,9 @@ valid_breakout if all:
 ```text
 if valid_breakout and breakout_age_weeks == 0:
     timing_state = BREAKOUT_WEEK
-elif valid_breakout and breakout_age_weeks == 1:
+elif valid_breakout and breakout_age_weeks == 1 and post_breakout_higher_highs_lows == True:
     timing_state = FRESH_STAGE2_W1
-elif valid_breakout and breakout_age_weeks == 2:
+elif valid_breakout and breakout_age_weeks == 2 and post_breakout_higher_highs_lows == True:
     timing_state = FRESH_STAGE2_W2
 elif valid_breakout and breakout_age_weeks >= 3:
     timing_state = TOO_LATE_FOR_PRIMARY
@@ -661,7 +703,28 @@ RETEST_B if all:
     weekly_close >= breakout_level
     RS condition still passes
     MA30W condition still passes
+    retest_volume < breakout_week_volume or retest_volume_ratio << breakout_week_volume_ratio
 ```
+
+### 18.3A continuation breakout 보조 라벨
+
+continuation breakout은 primary output에 섞지 않지만, 아래 조건을 만족하면 `breakout_type = CONTINUATION_BREAKOUT`로 별도 기록한다.
+
+```text
+continuation_breakout if all:
+    prior_uptrend_exists
+    prior_uptrend was above rising MA30W
+    continuation_base_duration_weeks in [4, 16]
+    continuation_base holds MA30W / prior breakout area
+    continuation_base shows lower-volume pullback or volume dry-up
+    continuation_base net progress is limited
+    current_breakout satisfies valid_breakout
+```
+
+설명:
+
+- 이는 `그냥 오래 오른 종목`이 아니라 `정리 후 다시 나가는 자리`를 구분하기 위한 보조 라벨이다.
+- 따라서 `STAGE_2B`와 `CONTINUATION_BREAKOUT`는 둘 다 continuation 계열이지만, `primary timing output`보다 우선순위가 낮다.
 
 ### 18.4 실패 조건
 

@@ -9,8 +9,9 @@ import numpy as np
 import pandas as pd
 
 from utils.actual_data_calibration import bounded_quantile_value
+from utils.indicator_helpers import normalize_indicator_frame, rolling_sma
 from utils.io_utils import ensure_dir
-from utils.market_data_contract import load_benchmark_data, load_local_ohlcv_frame
+from utils.market_data_contract import PricePolicy, load_benchmark_data, load_local_ohlcv_frame
 from utils.market_runtime import (
     ensure_market_dirs,
     get_benchmark_candidates,
@@ -22,6 +23,7 @@ from utils.market_runtime import (
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
+from utils.typing_utils import is_na_like, series_to_str_text_dict, series_value_counts_to_int_dict, to_float_or_none
 
 
 def _safe_float(value: Any) -> float | None:
@@ -44,7 +46,7 @@ def _clamp(value: float, low: float = 0.0, high: float = 1.0) -> float:
 
 def _date_str(value: Any) -> str | None:
     ts = pd.to_datetime(value, errors="coerce")
-    if pd.isna(ts):
+    if is_na_like(ts):
         return None
     return ts.strftime("%Y-%m-%d")
 
@@ -138,10 +140,29 @@ class BreakoutSignal:
     breakout_level: float
     breakout_age_weeks: int
     breakout_close: float
+    breakout_week_volume: float | None
     weekly_volume_ratio: float | None
     base_window: BaseWindow
     resistance_pass: bool
     resistance_confidence: str
+    breakout_type: str
+    volume_reference: str
+    continuation_setup_pass: bool = False
+    continuation_quality_score: float | None = None
+    continuation_lifecycle_state: str | None = None
+    continuation_volume_dryup_ratio: float | None = None
+
+
+@dataclass(frozen=True)
+class ContinuationSetup:
+    base_window: BaseWindow
+    prior_run_pct: float | None
+    support_hold_ratio: float
+    volume_dryup_ratio: float | None
+    quality_score: float
+    lifecycle_weeks_above_ma30: int
+    lifecycle_state: str
+    breakout_ready: bool
 
 
 class WeinsteinStage2Analyzer:
@@ -151,36 +172,11 @@ class WeinsteinStage2Analyzer:
     TURNING_UP_THRESHOLD = -0.0005
     PRE_STAGE2_MAX_PCT = 5.0
     RETEST_MAX_AGE = 8
+    CONTINUATION_MIN_WEEKS = 4
+    CONTINUATION_MAX_WEEKS = 16
 
     def _normalize_daily_frame(self, frame: pd.DataFrame) -> pd.DataFrame:
-        if frame is None or frame.empty:
-            return pd.DataFrame(columns=["date", "open", "high", "low", "close", "volume"])
-
-        df = frame.copy()
-        rename_map: dict[str, str] = {}
-        for column in df.columns:
-            lowered = str(column).strip().lower()
-            if lowered in {"date", "open", "high", "low", "close", "volume"}:
-                rename_map[column] = lowered
-        df = df.rename(columns=rename_map)
-
-        if "date" not in df.columns:
-            if isinstance(df.index, pd.DatetimeIndex):
-                df = df.reset_index().rename(columns={df.index.name or "index": "date"})
-            else:
-                df = df.reset_index().rename(columns={df.columns[0]: "date"})
-
-        for column in ("open", "high", "low", "close", "volume"):
-            if column not in df.columns:
-                df[column] = 0.0 if column == "volume" else df.get("close", 0.0)
-
-        df["date"] = pd.to_datetime(df["date"], errors="coerce")
-        for column in ("open", "high", "low", "close", "volume"):
-            df[column] = pd.to_numeric(df[column], errors="coerce")
-        df = df.dropna(subset=["date", "open", "high", "low", "close"]).copy()
-        if df.empty:
-            return df
-        return df.sort_values("date").reset_index(drop=True)
+        return normalize_indicator_frame(frame, price_policy=PricePolicy.SPLIT_ADJUSTED)
 
     def build_weekly_bars(self, frame: pd.DataFrame) -> pd.DataFrame:
         daily = self._normalize_daily_frame(frame)
@@ -208,7 +204,9 @@ class WeinsteinStage2Analyzer:
             return weekly
 
         weekly["range_pct"] = (weekly["high"] - weekly["low"]) / weekly["close"].replace(0, np.nan)
-        weekly["ma30w"] = weekly["close"].rolling(30, min_periods=10).mean()
+        weekly["ma10w"] = rolling_sma(weekly["close"], 10, min_periods=4)
+        weekly["ma30w"] = rolling_sma(weekly["close"], 30, min_periods=10)
+        weekly["ma40w"] = rolling_sma(weekly["close"], 40, min_periods=12)
         weekly["volume_avg_prev_4w"] = weekly["volume"].shift(1).rolling(4, min_periods=1).mean()
         weekly["volume_avg_prev_10w"] = weekly["volume"].shift(1).rolling(10, min_periods=2).mean()
         weekly["volume_avg_prev_52w"] = weekly["volume"].shift(1).rolling(52, min_periods=8).mean()
@@ -218,10 +216,7 @@ class WeinsteinStage2Analyzer:
             ("volume_avg_prev_52w", "volume_ratio_52w"),
         ):
             weekly[ratio_col] = weekly["volume"] / weekly[column].replace(0, np.nan)
-        weekly["weekly_volume_ratio"] = weekly[["volume_ratio_4w", "volume_ratio_10w", "volume_ratio_52w"]].max(
-            axis=1,
-            skipna=True,
-        )
+        weekly["weekly_volume_ratio"] = weekly["volume_ratio_4w"]
         return weekly.reset_index(drop=True)
 
     def _determine_mode(self, weekly: pd.DataFrame, benchmark_weekly: pd.DataFrame) -> tuple[str, list[str], int]:
@@ -310,6 +305,189 @@ class WeinsteinStage2Analyzer:
         changes = int((sign != sign.shift(1)).sum())
         return changes >= 4
 
+    def _daily_trend_snapshot(self, daily: pd.DataFrame) -> dict[str, float | bool | None]:
+        if daily.empty:
+            return {
+                "daily_close": None,
+                "ma50d": None,
+                "ma200d": None,
+                "ma50d_slope_20d": None,
+                "ma200d_slope_20d": None,
+                "close_gt_ma50d": False,
+                "close_gt_ma200d": False,
+                "ma50d_gt_ma200d": False,
+            }
+
+        ma50d_series = rolling_sma(daily["close"], 50, min_periods=20)
+        ma200d_series = rolling_sma(daily["close"], 200, min_periods=80)
+        daily_close = _safe_float(daily["close"].iloc[-1])
+        ma50d = _safe_float(ma50d_series.iloc[-1])
+        ma200d = _safe_float(ma200d_series.iloc[-1])
+        return {
+            "daily_close": daily_close,
+            "ma50d": ma50d,
+            "ma200d": ma200d,
+            "ma50d_slope_20d": _pct_slope(ma50d_series, len(daily) - 1, 20),
+            "ma200d_slope_20d": _pct_slope(ma200d_series, len(daily) - 1, 20),
+            "close_gt_ma50d": bool(daily_close is not None and ma50d is not None and daily_close > ma50d),
+            "close_gt_ma200d": bool(daily_close is not None and ma200d is not None and daily_close > ma200d),
+            "ma50d_gt_ma200d": bool(ma50d is not None and ma200d is not None and ma50d > ma200d),
+        }
+
+    def _weekly_alignment_snapshot(self, weekly: pd.DataFrame, idx: int) -> dict[str, float | bool | None]:
+        if weekly.empty or idx < 0 or idx >= len(weekly):
+            return {
+                "close": None,
+                "ma10w": None,
+                "ma30w": None,
+                "ma40w": None,
+                "ma30w_slope_4w": None,
+                "ma40w_slope_4w": None,
+                "close_gt_ma10w": False,
+                "close_gt_ma30w": False,
+                "close_gt_ma40w": False,
+                "ma10w_gt_ma30w": False,
+                "ma30w_gt_ma40w": False,
+            }
+
+        close = _safe_float(weekly.loc[idx, "close"])
+        ma10w = _safe_float(weekly.loc[idx, "ma10w"]) if "ma10w" in weekly.columns else None
+        ma30w = _safe_float(weekly.loc[idx, "ma30w"]) if "ma30w" in weekly.columns else None
+        ma40w = _safe_float(weekly.loc[idx, "ma40w"]) if "ma40w" in weekly.columns else None
+        return {
+            "close": close,
+            "ma10w": ma10w,
+            "ma30w": ma30w,
+            "ma40w": ma40w,
+            "ma30w_slope_4w": _pct_slope(weekly["ma30w"], idx, 4) if "ma30w" in weekly.columns else None,
+            "ma40w_slope_4w": _pct_slope(weekly["ma40w"], idx, 4) if "ma40w" in weekly.columns else None,
+            "close_gt_ma10w": bool(close is not None and ma10w is not None and close > ma10w),
+            "close_gt_ma30w": bool(close is not None and ma30w is not None and close > ma30w),
+            "close_gt_ma40w": bool(close is not None and ma40w is not None and close > ma40w),
+            "ma10w_gt_ma30w": bool(ma10w is not None and ma30w is not None and ma10w > ma30w),
+            "ma30w_gt_ma40w": bool(ma30w is not None and ma40w is not None and ma30w >= ma40w),
+        }
+
+    def _trend_alignment_pass(self, weekly: pd.DataFrame, idx: int) -> bool:
+        alignment = self._weekly_alignment_snapshot(weekly, idx)
+        ma30w = _safe_float(alignment.get("ma30w"))
+        if ma30w is None or not bool(alignment.get("close_gt_ma30w")):
+            return False
+
+        ma30w_slope_4w = _safe_float(alignment.get("ma30w_slope_4w"))
+        if ma30w_slope_4w is None or ma30w_slope_4w < 0:
+            return False
+
+        ma40w = _safe_float(alignment.get("ma40w"))
+        if ma40w is not None and not bool(alignment.get("close_gt_ma40w")):
+            return False
+
+        ma40w_slope_4w = _safe_float(alignment.get("ma40w_slope_4w"))
+        if ma40w is not None and ma40w_slope_4w is not None and ma40w_slope_4w < 0:
+            return False
+
+        ma10w = _safe_float(alignment.get("ma10w"))
+        if ma10w is not None and not bool(alignment.get("close_gt_ma10w")):
+            return False
+
+        if ma10w is not None and ma30w is not None and not bool(alignment.get("ma10w_gt_ma30w")):
+            return False
+
+        if ma40w is not None and ma30w is not None and not bool(alignment.get("ma30w_gt_ma40w")):
+            return False
+
+        return True
+
+    def _classify_breakout_type(self, weekly: pd.DataFrame, base_window: BaseWindow) -> str:
+        prior_end = base_window.start_idx - 1
+        if prior_end < 8:
+            return "STAGE2_BREAKOUT"
+
+        prior_start = max(0, prior_end - 7)
+        prior_window = weekly.iloc[prior_start : prior_end + 1].copy()
+        if prior_window.empty:
+            return "STAGE2_BREAKOUT"
+
+        prior_close_start = _safe_float(prior_window["close"].iloc[0])
+        prior_close_end = _safe_float(prior_window["close"].iloc[-1])
+        ma30w_last = _safe_float(prior_window["ma30w"].iloc[-1]) if "ma30w" in prior_window.columns else None
+        ma40w_last = _safe_float(prior_window["ma40w"].iloc[-1]) if "ma40w" in prior_window.columns else None
+        slope4 = _pct_slope(prior_window["ma30w"], len(prior_window) - 1, 4) if "ma30w" in prior_window.columns else None
+        prior_run = None
+        if prior_close_start not in {None, 0} and prior_close_end is not None:
+            prior_run = (prior_close_end / prior_close_start) - 1.0
+
+        if (
+            prior_run is not None
+            and prior_run >= 0.12
+            and ma30w_last is not None
+            and prior_close_end > ma30w_last
+            and (ma40w_last is None or ma30w_last >= ma40w_last)
+            and (slope4 is None or slope4 > 0)
+        ):
+            return "CONTINUATION_BREAKOUT"
+        return "STAGE2_BREAKOUT"
+
+    def _post_breakout_structure_pass(self, weekly: pd.DataFrame, breakout_signal: BreakoutSignal, latest_idx: int) -> bool:
+        if latest_idx <= breakout_signal.breakout_idx:
+            return True
+        post = weekly.iloc[breakout_signal.breakout_idx : latest_idx + 1].copy()
+        if len(post) <= 1:
+            return True
+        highs = pd.to_numeric(post["high"], errors="coerce")
+        lows = pd.to_numeric(post["low"], errors="coerce")
+        for position in range(1, len(post)):
+            prev_high = _safe_float(highs.iloc[position - 1])
+            curr_high = _safe_float(highs.iloc[position])
+            prev_low = _safe_float(lows.iloc[position - 1])
+            curr_low = _safe_float(lows.iloc[position])
+            if prev_high is None or curr_high is None or prev_low is None or curr_low is None:
+                return False
+            if curr_high < prev_high * (1.0 - self.SMALL_BAND):
+                return False
+            if curr_low < prev_low * (1.0 - self.SMALL_BAND):
+                return False
+        return True
+
+    def _lighter_volume_retest(
+        self,
+        weekly: pd.DataFrame,
+        latest_idx: int,
+        breakout_signal: BreakoutSignal,
+    ) -> bool:
+        if latest_idx <= breakout_signal.breakout_idx:
+            return False
+        current_volume = _safe_float(weekly.loc[latest_idx, "volume"])
+        breakout_week_volume = breakout_signal.breakout_week_volume
+        current_ratio = _safe_float(weekly.loc[latest_idx, "weekly_volume_ratio"])
+        if current_volume is None or breakout_week_volume in {None, 0}:
+            return False
+        lighter_absolute = current_volume <= breakout_week_volume * 0.9
+        lighter_relative = (
+            current_ratio is not None
+            and breakout_signal.weekly_volume_ratio is not None
+            and current_ratio <= max(1.2, breakout_signal.weekly_volume_ratio * 0.75)
+        )
+        return bool(lighter_absolute or lighter_relative)
+
+    def _resolve_weekly_volume_ratio(self, weekly: pd.DataFrame, idx: int, mode: str) -> tuple[float | None, str]:
+        preferred = [
+            ("volume_ratio_4w", "4w"),
+            ("volume_ratio_10w", "10w"),
+        ]
+        if mode == "FULL_FIDELITY_MODE":
+            preferred.append(("volume_ratio_52w", "52w"))
+        else:
+            preferred.append(("volume_ratio_52w", "52w_proxy"))
+
+        for column, label in preferred:
+            if column not in weekly.columns:
+                continue
+            value = _safe_float(weekly.loc[idx, column])
+            if value is not None:
+                return value, label
+        return None, "missing"
+
     def _find_best_base(self, weekly: pd.DataFrame, end_idx: int, mode: str) -> BaseWindow | None:
         if weekly.empty or end_idx < 19:
             return None
@@ -388,6 +566,199 @@ class WeinsteinStage2Analyzer:
             return None
         return max(candidates, key=lambda item: item.quality_score)
 
+    def _volume_dryup_ratio(self, weekly: pd.DataFrame, start_idx: int, end_idx: int) -> float | None:
+        if weekly.empty or start_idx < 0 or end_idx < start_idx:
+            return None
+        base_window = weekly.iloc[start_idx : end_idx + 1]
+        reference_start = max(0, start_idx - max(8, end_idx - start_idx + 1))
+        reference_window = weekly.iloc[reference_start:start_idx]
+        if reference_window.empty:
+            return None
+        base_volume = _safe_float(pd.to_numeric(base_window["volume"], errors="coerce").median())
+        reference_volume = _safe_float(pd.to_numeric(reference_window["volume"], errors="coerce").median())
+        if base_volume is None or reference_volume in {None, 0}:
+            return None
+        return base_volume / reference_volume
+
+    def _consecutive_weeks_above_ma30(self, weekly: pd.DataFrame, end_idx: int) -> int:
+        if weekly.empty or end_idx < 0:
+            return 0
+        count = 0
+        for idx in range(end_idx, -1, -1):
+            close = _safe_float(weekly.loc[idx, "close"])
+            ma30w = _safe_float(weekly.loc[idx, "ma30w"])
+            if close is None or ma30w is None or close <= ma30w:
+                break
+            count += 1
+        return count
+
+    def _find_continuation_base(self, weekly: pd.DataFrame, end_idx: int) -> BaseWindow | None:
+        if weekly.empty or end_idx < (self.CONTINUATION_MIN_WEEKS + 6):
+            return None
+
+        candidates: list[BaseWindow] = []
+        max_duration = min(self.CONTINUATION_MAX_WEEKS, end_idx + 1)
+        slope4 = _pct_slope(weekly["ma30w"], end_idx, 4)
+        if slope4 is None or slope4 <= 0:
+            return None
+
+        for duration in range(self.CONTINUATION_MIN_WEEKS, max_duration + 1):
+            start_idx = end_idx - duration + 1
+            if start_idx < 0:
+                continue
+            window = weekly.iloc[start_idx : end_idx + 1].copy()
+            prior_start = max(0, start_idx - max(8, duration))
+            prior_window = weekly.iloc[prior_start:start_idx].copy()
+            if len(prior_window) < max(4, duration // 2):
+                continue
+            if window["ma30w"].notna().sum() < max(3, duration // 2):
+                continue
+
+            base_high = _safe_float(window["high"].max())
+            base_low = _safe_float(window["low"].min())
+            if base_high is None or base_low is None or base_low <= 0 or base_high <= base_low:
+                continue
+            width_pct = (base_high - base_low) / base_low
+            if width_pct > 0.30 or width_pct < 0.03:
+                continue
+
+            prior_close_start = _safe_float(prior_window["close"].iloc[0])
+            prior_close_end = _safe_float(prior_window["close"].iloc[-1])
+            if prior_close_start in {None, 0} or prior_close_end is None:
+                continue
+            prior_run_pct = (prior_close_end / prior_close_start) - 1.0
+            if prior_run_pct < 0.12:
+                continue
+
+            ma30_support = window["ma30w"].replace(0, np.nan)
+            support_hold_ratio = float(
+                (
+                    (window["low"] >= ma30_support * 0.97)
+                    | (window["close"] >= ma30_support)
+                ).mean()
+            )
+            if support_hold_ratio < 0.60:
+                continue
+
+            close_position = (float(window["close"].iloc[-1]) - base_low) / max(base_high - base_low, 1e-9)
+            if close_position < 0.45:
+                continue
+            first_close = _safe_float(window["close"].iloc[0])
+            last_close = _safe_float(window["close"].iloc[-1])
+            net_progress_pct = None
+            if first_close not in {None, 0} and last_close is not None:
+                net_progress_pct = abs((last_close / first_close) - 1.0)
+            if net_progress_pct is None or net_progress_pct > 0.10:
+                continue
+
+            first_ranges = window["range_pct"].head(max(2, duration // 2)).dropna()
+            last_ranges = window["range_pct"].tail(max(2, duration // 2)).dropna()
+            contraction_ratio = None
+            if not first_ranges.empty and not last_ranges.empty and float(first_ranges.median()) > 0:
+                contraction_ratio = float(last_ranges.median() / first_ranges.median())
+
+            dryup_ratio = self._volume_dryup_ratio(weekly, start_idx, end_idx)
+            quality_score = float(
+                np.mean(
+                    [
+                        _score_ratio(prior_run_pct, 0.20, 0.08),
+                        _score_inverse(width_pct, 0.18, 0.32),
+                        _score_ratio(support_hold_ratio, 0.85, 0.55),
+                        _score_inverse(dryup_ratio, 0.85, 1.15),
+                        _score_inverse(contraction_ratio, 0.95, 1.25),
+                        _score_inverse(net_progress_pct, 0.05, 0.14),
+                        _score_ratio(close_position, 0.65, 0.40),
+                    ]
+                )
+            )
+            if quality_score < 0.58:
+                continue
+
+            candidates.append(
+                BaseWindow(
+                    start_idx=start_idx,
+                    end_idx=end_idx,
+                    start_date=_date_str(window["bar_end_date"].iloc[0]),
+                    end_date=_date_str(window["bar_end_date"].iloc[-1]),
+                    base_high=base_high,
+                    base_low=base_low,
+                    duration_weeks=duration,
+                    width_pct=width_pct,
+                    around_ma_ratio=support_hold_ratio,
+                    contraction_ratio=contraction_ratio,
+                    close_position=close_position,
+                    quality_score=quality_score,
+                )
+            )
+
+        if not candidates:
+            return None
+        return max(candidates, key=lambda item: item.quality_score)
+
+    def _evaluate_continuation_setup(
+        self,
+        weekly: pd.DataFrame,
+        base_window: BaseWindow | None,
+    ) -> ContinuationSetup | None:
+        if base_window is None or weekly.empty:
+            return None
+
+        prior_start = max(0, base_window.start_idx - max(8, base_window.duration_weeks))
+        prior_window = weekly.iloc[prior_start : base_window.start_idx].copy()
+        if prior_window.empty:
+            return None
+
+        prior_close_start = _safe_float(prior_window["close"].iloc[0])
+        prior_close_end = _safe_float(prior_window["close"].iloc[-1])
+        prior_run_pct = None
+        if prior_close_start not in {None, 0} and prior_close_end is not None:
+            prior_run_pct = (prior_close_end / prior_close_start) - 1.0
+
+        window = weekly.iloc[base_window.start_idx : base_window.end_idx + 1].copy()
+        ma30_support = window["ma30w"].replace(0, np.nan)
+        support_hold_ratio = float(
+            (
+                (window["low"] >= ma30_support * 0.97)
+                | (window["close"] >= ma30_support)
+            ).mean()
+        )
+        volume_dryup_ratio = self._volume_dryup_ratio(weekly, base_window.start_idx, base_window.end_idx)
+        lifecycle_weeks = self._consecutive_weeks_above_ma30(weekly, base_window.start_idx - 1)
+        if lifecycle_weeks <= 26:
+            lifecycle_state = "EARLY"
+        elif lifecycle_weeks <= 52:
+            lifecycle_state = "MID"
+        else:
+            lifecycle_state = "LATE"
+
+        quality_score = float(
+            np.mean(
+                [
+                    base_window.quality_score,
+                    _score_ratio(prior_run_pct, 0.20, 0.08),
+                    _score_ratio(support_hold_ratio, 0.85, 0.55),
+                    _score_inverse(volume_dryup_ratio, 0.85, 1.15),
+                ]
+            )
+        )
+        breakout_ready = bool(
+            (prior_run_pct is not None and prior_run_pct >= 0.12)
+            and base_window.duration_weeks <= self.CONTINUATION_MAX_WEEKS
+            and support_hold_ratio >= 0.65
+            and base_window.close_position >= 0.55
+            and (volume_dryup_ratio is None or volume_dryup_ratio <= 1.08)
+        )
+        return ContinuationSetup(
+            base_window=base_window,
+            prior_run_pct=prior_run_pct,
+            support_hold_ratio=support_hold_ratio,
+            volume_dryup_ratio=volume_dryup_ratio,
+            quality_score=quality_score,
+            lifecycle_weeks_above_ma30=lifecycle_weeks,
+            lifecycle_state=lifecycle_state,
+            breakout_ready=breakout_ready,
+        )
+
     def _rs_pass(self, weekly: pd.DataFrame, idx: int) -> tuple[bool, float]:
         mrs = _safe_float(weekly.loc[idx, "mrs"]) if idx in weekly.index else None
         rp_ma52_slope = _safe_float(weekly.loc[idx, "rp_ma52_slope"]) if idx in weekly.index else None
@@ -407,48 +778,98 @@ class WeinsteinStage2Analyzer:
         if weekly.empty or len(weekly) < 24:
             return None
         latest_idx = len(weekly) - 1
-        earliest_idx = max(20, latest_idx - 8)
+        earliest_idx = max(10, latest_idx - 8)
         first_valid: BreakoutSignal | None = None
         for idx in range(earliest_idx, latest_idx + 1):
-            base_window = self._find_best_base(weekly, idx - 1, mode)
-            if base_window is None:
-                continue
-
             close = float(weekly.loc[idx, "close"])
-            ma30w = _safe_float(weekly.loc[idx, "ma30w"])
-            slope4 = _safe_float(_pct_slope(weekly["ma30w"], idx, 4))
-            weekly_volume_ratio = _safe_float(weekly.loc[idx, "weekly_volume_ratio"])
+            weekly_alignment_pass = self._trend_alignment_pass(weekly, idx)
+            weekly_volume_ratio, volume_reference = self._resolve_weekly_volume_ratio(weekly, idx, mode)
+            breakout_week_volume = _safe_float(weekly.loc[idx, "volume"])
             rs_pass, _ = self._rs_pass(weekly, idx)
-            overhead_reference, resistance_confidence, _, _ = self._compute_overhead_reference(weekly, idx - 1, mode)
-            resistance_pass = (
-                overhead_reference is None
-                or base_window.base_high >= overhead_reference * 0.95
-                or close >= overhead_reference * (1.0 + self.BREAKOUT_BUFFER)
-            )
-
             if not (
-                close > base_window.base_high * (1.0 + self.BREAKOUT_BUFFER)
-                and ma30w is not None
-                and close > ma30w
-                and slope4 is not None
-                and slope4 >= 0
+                weekly_alignment_pass
                 and weekly_volume_ratio is not None
                 and weekly_volume_ratio >= 2.0
                 and rs_pass
-                and (resistance_pass or mode == "BOOTSTRAP_MODE")
             ):
                 continue
 
-            breakout_signal = BreakoutSignal(
-                breakout_idx=idx,
-                breakout_date=_date_str(weekly.loc[idx, "bar_end_date"]),
-                breakout_level=base_window.base_high,
-                breakout_age_weeks=latest_idx - idx,
-                breakout_close=close,
-                weekly_volume_ratio=weekly_volume_ratio,
-                base_window=base_window,
-                resistance_pass=resistance_pass,
-                resistance_confidence=resistance_confidence,
+            breakout_candidates: list[BreakoutSignal] = []
+
+            continuation_base = self._find_continuation_base(weekly, idx - 1)
+            continuation_setup = self._evaluate_continuation_setup(weekly, continuation_base)
+            if (
+                continuation_base is not None
+                and continuation_setup is not None
+                and continuation_setup.breakout_ready
+                and close > continuation_base.base_high * (1.0 + self.BREAKOUT_BUFFER)
+            ):
+                overhead_reference, resistance_confidence, _, _ = self._compute_overhead_reference(weekly, idx - 1, mode)
+                resistance_pass = (
+                    overhead_reference is None
+                    or continuation_base.base_high >= overhead_reference * 0.95
+                    or close >= overhead_reference * (1.0 + self.BREAKOUT_BUFFER)
+                )
+                if resistance_pass or mode == "BOOTSTRAP_MODE":
+                    breakout_candidates.append(
+                        BreakoutSignal(
+                            breakout_idx=idx,
+                            breakout_date=_date_str(weekly.loc[idx, "bar_end_date"]),
+                            breakout_level=continuation_base.base_high,
+                            breakout_age_weeks=latest_idx - idx,
+                            breakout_close=close,
+                            breakout_week_volume=breakout_week_volume,
+                            weekly_volume_ratio=weekly_volume_ratio,
+                            base_window=continuation_base,
+                            resistance_pass=resistance_pass,
+                            resistance_confidence=resistance_confidence,
+                            breakout_type="CONTINUATION_BREAKOUT",
+                            volume_reference=volume_reference,
+                            continuation_setup_pass=True,
+                            continuation_quality_score=continuation_setup.quality_score,
+                            continuation_lifecycle_state=continuation_setup.lifecycle_state,
+                            continuation_volume_dryup_ratio=continuation_setup.volume_dryup_ratio,
+                        )
+                    )
+
+            stage1_base = self._find_best_base(weekly, idx - 1, mode)
+            if stage1_base is not None and close > stage1_base.base_high * (1.0 + self.BREAKOUT_BUFFER):
+                overhead_reference, resistance_confidence, _, _ = self._compute_overhead_reference(weekly, idx - 1, mode)
+                resistance_pass = (
+                    overhead_reference is None
+                    or stage1_base.base_high >= overhead_reference * 0.95
+                    or close >= overhead_reference * (1.0 + self.BREAKOUT_BUFFER)
+                )
+                breakout_type = self._classify_breakout_type(weekly, stage1_base)
+                if breakout_type == "STAGE2_BREAKOUT" and (resistance_pass or mode == "BOOTSTRAP_MODE"):
+                    breakout_candidates.append(
+                        BreakoutSignal(
+                            breakout_idx=idx,
+                            breakout_date=_date_str(weekly.loc[idx, "bar_end_date"]),
+                            breakout_level=stage1_base.base_high,
+                            breakout_age_weeks=latest_idx - idx,
+                            breakout_close=close,
+                            breakout_week_volume=breakout_week_volume,
+                            weekly_volume_ratio=weekly_volume_ratio,
+                            base_window=stage1_base,
+                            resistance_pass=resistance_pass,
+                            resistance_confidence=resistance_confidence,
+                            breakout_type="STAGE2_BREAKOUT",
+                            volume_reference=volume_reference,
+                        )
+                    )
+
+            if not breakout_candidates:
+                continue
+
+            breakout_signal = max(
+                breakout_candidates,
+                key=lambda item: (
+                    item.breakout_type == "CONTINUATION_BREAKOUT",
+                    item.continuation_quality_score or 0.0,
+                    item.base_window.quality_score,
+                    item.breakout_level,
+                ),
             )
             if first_valid is None:
                 first_valid = breakout_signal
@@ -460,9 +881,12 @@ class WeinsteinStage2Analyzer:
         latest_idx: int,
         latest_base: BaseWindow | None,
         breakout_signal: BreakoutSignal | None,
+        continuation_setup: ContinuationSetup | None,
     ) -> str:
         close = float(weekly.loc[latest_idx, "close"])
         ma30w = _safe_float(weekly.loc[latest_idx, "ma30w"])
+        ma40w = _safe_float(weekly.loc[latest_idx, "ma40w"]) if "ma40w" in weekly.columns else None
+        ma10w = _safe_float(weekly.loc[latest_idx, "ma10w"]) if "ma10w" in weekly.columns else None
         slope4 = _pct_slope(weekly["ma30w"], latest_idx, 4)
         slope8 = _pct_slope(weekly["ma30w"], latest_idx, 8)
         if (
@@ -470,9 +894,10 @@ class WeinsteinStage2Analyzer:
             and breakout_signal.breakout_age_weeks <= 8
             and ma30w is not None
             and close > ma30w
+            and (ma40w is None or close > ma40w)
             and close >= breakout_signal.breakout_level
         ):
-            if breakout_signal.breakout_age_weeks >= 39:
+            if breakout_signal.breakout_type == "CONTINUATION_BREAKOUT":
                 return "STAGE_2B"
             return "STAGE_2A"
         if (
@@ -482,9 +907,18 @@ class WeinsteinStage2Analyzer:
             and abs(slope8) <= max(self.FLAT_THRESHOLD * 2.0, 0.005)
         ):
             return "STAGE_1"
-        if ma30w is not None and close < ma30w and slope8 is not None and slope8 < -self.FLAT_THRESHOLD:
+        if ma30w is not None and close < ma30w and (ma40w is None or close < ma40w) and slope8 is not None and slope8 < -self.FLAT_THRESHOLD:
             return "STAGE_4"
-        if ma30w is not None and close > ma30w and slope8 is not None and slope8 > 0:
+        if (
+            ma30w is not None
+            and close > ma30w
+            and (ma40w is None or close > ma40w)
+            and slope8 is not None
+            and slope8 > 0
+            and (ma10w is None or close > ma10w)
+        ):
+            if continuation_setup is not None and continuation_setup.breakout_ready:
+                return "STAGE_2B"
             return "STAGE_2"
         if slope8 is not None and abs(slope8) <= self.FLAT_THRESHOLD and self._price_crosses_ma_frequently(weekly, latest_idx):
             return "STAGE_3"
@@ -535,6 +969,7 @@ class WeinsteinStage2Analyzer:
         daily = self._normalize_daily_frame(daily_frame)
         weekly = self.build_weekly_bars(daily)
         benchmark_weekly = self.build_weekly_bars(benchmark_daily)
+        daily_trend = self._daily_trend_snapshot(daily)
 
         default_group = group_context or GroupContext(
             group_name=sector or "Unknown",
@@ -568,13 +1003,20 @@ class WeinsteinStage2Analyzer:
                 "percent_to_stage2": None,
                 "breakout_age_weeks": None,
                 "weekly_close": None,
+                "daily_close": None,
+                "ma10w": None,
                 "ma30w": None,
+                "ma40w": None,
+                "ma50d": None,
+                "ma200d": None,
                 "ma30w_slope_4w": None,
+                "ma40w_slope_4w": None,
                 "rp": None,
                 "mrs": None,
                 "rs_proxy": None,
                 "rp_ma52_slope": None,
                 "weekly_volume_ratio": None,
+                "weekly_volume_reference": None,
                 "overhead_reference": None,
                 "resistance_confidence": "LOW",
                 "breadth150_market": market_context.breadth150_market,
@@ -591,8 +1033,20 @@ class WeinsteinStage2Analyzer:
                 "base_quality_score": None,
                 "group_name": default_group.group_name,
                 "retest_signal": False,
+                "retest_volume_lighter": False,
                 "breakout_level": None,
                 "breakout_date": None,
+                "breakout_type": None,
+                "continuation_setup_pass": False,
+                "continuation_quality_score": None,
+                "continuation_lifecycle_state": None,
+                "continuation_volume_dryup_ratio": None,
+                "breakout_structure_pass": False,
+                "close_gt_ma10w": False,
+                "close_gt_ma40w": False,
+                "close_gt_ma50d": False,
+                "close_gt_ma200d": False,
+                "ma50d_gt_ma200d": False,
                 "bar_end_date": None,
             }
 
@@ -608,16 +1062,27 @@ class WeinsteinStage2Analyzer:
         latest_base = self._find_best_base(weekly, latest_idx, mode)
         breakout_signal = self._detect_recent_breakout(weekly, mode)
         active_base = breakout_signal.base_window if breakout_signal is not None else latest_base
-        stock_stage = self._determine_stock_stage(weekly, latest_idx, latest_base, breakout_signal)
+        current_continuation_base = self._find_continuation_base(weekly, latest_idx)
+        current_continuation_setup = self._evaluate_continuation_setup(weekly, current_continuation_base)
+        stock_stage = self._determine_stock_stage(
+            weekly,
+            latest_idx,
+            latest_base,
+            breakout_signal,
+            current_continuation_setup,
+        )
 
         latest_close = float(weekly.loc[latest_idx, "close"])
+        ma10w = _safe_float(weekly.loc[latest_idx, "ma10w"]) if "ma10w" in weekly.columns else None
         ma30w = _safe_float(weekly.loc[latest_idx, "ma30w"])
+        ma40w = _safe_float(weekly.loc[latest_idx, "ma40w"]) if "ma40w" in weekly.columns else None
         ma30w_slope_4w = _pct_slope(weekly["ma30w"], latest_idx, 4)
+        ma40w_slope_4w = _pct_slope(weekly["ma40w"], latest_idx, 4) if "ma40w" in weekly.columns else None
         rp = _safe_float(weekly.loc[latest_idx, "rp"])
         mrs = _safe_float(weekly.loc[latest_idx, "mrs"])
         rs_proxy = _safe_float(weekly.loc[latest_idx, "rs_proxy"])
         rp_ma52_slope = _safe_float(weekly.loc[latest_idx, "rp_ma52_slope"])
-        current_volume_ratio = _safe_float(weekly.loc[latest_idx, "weekly_volume_ratio"])
+        current_volume_ratio, current_volume_reference = self._resolve_weekly_volume_ratio(weekly, latest_idx, mode)
         overhead_reference, resistance_confidence, resistance_flags, resistance_penalty = self._compute_overhead_reference(
             weekly,
             latest_idx,
@@ -644,6 +1109,18 @@ class WeinsteinStage2Analyzer:
         timing_state = "EXCLUDE"
         breakout_age_weeks = breakout_signal.breakout_age_weeks if breakout_signal is not None else None
         retest_signal = False
+        retest_volume_lighter = False
+        breakout_structure_pass = False if breakout_signal is None else self._post_breakout_structure_pass(weekly, breakout_signal, latest_idx)
+        daily_close = _safe_float(daily_trend.get("daily_close"))
+        ma50d = _safe_float(daily_trend.get("ma50d"))
+        ma200d = _safe_float(daily_trend.get("ma200d"))
+        close_gt_ma50d = bool(daily_trend.get("close_gt_ma50d"))
+        close_gt_ma200d = bool(daily_trend.get("close_gt_ma200d"))
+        ma50d_gt_ma200d = bool(daily_trend.get("ma50d_gt_ma200d"))
+        close_gt_ma10w = bool(ma10w is not None and latest_close > ma10w)
+        close_gt_ma40w = bool(ma40w is not None and latest_close > ma40w)
+        weekly_trend_ok = self._trend_alignment_pass(weekly, latest_idx)
+        daily_trend_ok = ((ma50d is None and ma200d is None) or (close_gt_ma50d and close_gt_ma200d and ma50d_gt_ma200d))
 
         if market_context.market_state == "MARKET_STAGE4_RISK":
             timing_state = "EXCLUDE"
@@ -656,6 +1133,7 @@ class WeinsteinStage2Analyzer:
                     timing_state = "FAIL"
                     rejection_reason = "lost_breakout_level"
                 else:
+                    retest_volume_lighter = self._lighter_volume_retest(weekly, latest_idx, breakout_signal)
                     retest_signal = (
                         breakout_age_weeks is not None
                         and 1 <= breakout_age_weeks <= self.RETEST_MAX_AGE
@@ -664,21 +1142,25 @@ class WeinsteinStage2Analyzer:
                         and rs_pass
                         and ma30w is not None
                         and latest_close >= ma30w
+                        and retest_volume_lighter
                     )
                     if group_is_weak:
                         timing_state = "EXCLUDE"
                         rejection_reason = "group_weak"
+                    elif not weekly_trend_ok or not daily_trend_ok:
+                        timing_state = "EXCLUDE"
+                        rejection_reason = "trend_alignment_failed"
                     elif breakout_age_weeks == 0:
                         timing_state = "BREAKOUT_WEEK"
-                    elif breakout_age_weeks == 1:
+                    elif breakout_age_weeks == 1 and breakout_structure_pass:
                         timing_state = "FRESH_STAGE2_W1"
-                    elif breakout_age_weeks == 2:
+                    elif breakout_age_weeks == 2 and breakout_structure_pass:
                         timing_state = "FRESH_STAGE2_W2"
                     elif retest_signal:
                         timing_state = "RETEST_B"
                     else:
                         timing_state = "TOO_LATE_FOR_PRIMARY"
-                        rejection_reason = "breakout_age_ge_3"
+                        rejection_reason = "breakout_follow_through_missing" if breakout_age_weeks in {1, 2} else "breakout_age_ge_3"
             elif (
                 active_base is not None
                 and stock_stage == "STAGE_1"
@@ -690,6 +1172,8 @@ class WeinsteinStage2Analyzer:
                 and (ma30w_slope_4w is None or ma30w_slope_4w >= self.TURNING_UP_THRESHOLD)
                 and rs_pass
                 and not group_is_weak
+                and weekly_trend_ok
+                and daily_trend_ok
             ):
                 if percent_to_stage2 <= 1.0:
                     timing_state = "PRE_STAGE2_HIGH"
@@ -741,13 +1225,20 @@ class WeinsteinStage2Analyzer:
             "percent_to_stage2": _safe_float(percent_to_stage2),
             "breakout_age_weeks": breakout_age_weeks,
             "weekly_close": latest_close,
+            "daily_close": daily_close,
+            "ma10w": _safe_float(ma10w),
             "ma30w": _safe_float(ma30w),
+            "ma40w": _safe_float(ma40w),
+            "ma50d": ma50d,
+            "ma200d": ma200d,
             "ma30w_slope_4w": _safe_float(ma30w_slope_4w),
+            "ma40w_slope_4w": _safe_float(ma40w_slope_4w),
             "rp": rp,
             "mrs": mrs,
             "rs_proxy": rs_proxy,
             "rp_ma52_slope": rp_ma52_slope,
             "weekly_volume_ratio": current_volume_ratio,
+            "weekly_volume_reference": breakout_signal.volume_reference if breakout_signal is not None else current_volume_reference,
             "overhead_reference": overhead_reference,
             "resistance_confidence": breakout_signal.resistance_confidence if breakout_signal is not None else resistance_confidence,
             "breadth150_market": market_context.breadth150_market,
@@ -764,8 +1255,35 @@ class WeinsteinStage2Analyzer:
             "base_quality_score": _safe_float(base_quality_score),
             "group_name": default_group.group_name,
             "retest_signal": retest_signal,
+            "retest_volume_lighter": retest_volume_lighter,
             "breakout_level": breakout_signal.breakout_level if breakout_signal is not None else None,
             "breakout_date": breakout_signal.breakout_date if breakout_signal is not None else None,
+            "breakout_type": breakout_signal.breakout_type if breakout_signal is not None else None,
+            "continuation_setup_pass": bool(
+                (breakout_signal is not None and breakout_signal.continuation_setup_pass)
+                or (current_continuation_setup is not None and current_continuation_setup.breakout_ready)
+            ),
+            "continuation_quality_score": (
+                _safe_float(breakout_signal.continuation_quality_score) if breakout_signal is not None else None
+            ) or (
+                _safe_float(current_continuation_setup.quality_score) if current_continuation_setup is not None else None
+            ),
+            "continuation_lifecycle_state": (
+                breakout_signal.continuation_lifecycle_state
+                if breakout_signal is not None and breakout_signal.continuation_lifecycle_state
+                else (current_continuation_setup.lifecycle_state if current_continuation_setup is not None else None)
+            ),
+            "continuation_volume_dryup_ratio": (
+                _safe_float(breakout_signal.continuation_volume_dryup_ratio) if breakout_signal is not None else None
+            ) or (
+                _safe_float(current_continuation_setup.volume_dryup_ratio) if current_continuation_setup is not None else None
+            ),
+            "breakout_structure_pass": breakout_structure_pass,
+            "close_gt_ma10w": close_gt_ma10w,
+            "close_gt_ma40w": close_gt_ma40w,
+            "close_gt_ma50d": close_gt_ma50d,
+            "close_gt_ma200d": close_gt_ma200d,
+            "ma50d_gt_ma200d": ma50d_gt_ma200d,
             "bar_end_date": _date_str(weekly.loc[latest_idx, "bar_end_date"]),
         }
 
@@ -783,9 +1301,9 @@ class WeinsteinStage2Analyzer:
             daily = self._normalize_daily_frame(frame)
             if daily.empty or len(daily) < 150:
                 continue
-            ma150 = daily["close"].rolling(150, min_periods=50).mean().iloc[-1]
-            close = daily["close"].iloc[-1]
-            if pd.notna(ma150):
+            ma150 = to_float_or_none(rolling_sma(daily["close"], 150, min_periods=50).iloc[-1])
+            close = to_float_or_none(daily["close"].iloc[-1])
+            if ma150 is not None and close is not None:
                 above_flags.append(bool(close > ma150))
         breadth150_market = float(np.mean(above_flags) * 100.0) if above_flags else None
         if breadth150_market is None:
@@ -868,11 +1386,12 @@ class WeinsteinStage2Analyzer:
                 if daily.empty or len(daily) < 60:
                     continue
                 if len(daily) >= 150:
-                    ma150 = daily["close"].rolling(150, min_periods=50).mean().iloc[-1]
-                    if pd.notna(ma150):
-                        above_flags.append(bool(daily["close"].iloc[-1] > ma150))
-                base_close = float(daily["close"].iloc[0])
-                if base_close <= 0:
+                    ma150 = to_float_or_none(rolling_sma(daily["close"], 150, min_periods=50).iloc[-1])
+                    latest_close = to_float_or_none(daily["close"].iloc[-1])
+                    if ma150 is not None and latest_close is not None:
+                        above_flags.append(bool(latest_close > ma150))
+                base_close = to_float_or_none(daily["close"].iloc[0])
+                if base_close is None or base_close <= 0:
                     continue
                 normalized = daily[["date", "close"]].copy()
                 normalized["close_norm"] = normalized["close"] / base_close
@@ -1070,7 +1589,7 @@ class WeinsteinStage2Screener:
                         f"processed={index}/{len(candidate_files)}, loaded={len(frames)}"
                     )
                 continue
-            frame = load_local_ohlcv_frame(self.market, symbol)
+            frame = load_local_ohlcv_frame(self.market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
             if not frame.empty:
                 frames[symbol] = frame
             if is_progress_tick(index, len(candidate_files), interval):
@@ -1143,9 +1662,9 @@ class WeinsteinStage2Screener:
 
     def run(self) -> pd.DataFrame:
         metadata = self._load_metadata()
-        exchange_map = metadata.set_index("symbol")["exchange"].to_dict() if "exchange" in metadata.columns else {}
-        sector_map = metadata.set_index("symbol")["sector"].to_dict() if "sector" in metadata.columns else {}
-        industry_map = metadata.set_index("symbol")["industry"].to_dict() if "industry" in metadata.columns else {}
+        exchange_map = series_to_str_text_dict(metadata.set_index("symbol")["exchange"]) if "exchange" in metadata.columns else {}
+        sector_map = series_to_str_text_dict(metadata.set_index("symbol")["sector"]) if "sector" in metadata.columns else {}
+        industry_map = series_to_str_text_dict(metadata.set_index("symbol")["industry"]) if "industry" in metadata.columns else {}
         print(
             f"[Weinstein] Metadata loaded ({self.market}) - "
             f"rows={len(metadata)}, has_exchange={'exchange' in metadata.columns}"
@@ -1157,6 +1676,7 @@ class WeinsteinStage2Screener:
             self.market,
             get_benchmark_candidates(self.market),
             allow_yfinance_fallback=True,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
         )
         benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(self.market)
         print(f"[Weinstein] Market context build started ({self.market}) - benchmark={benchmark_symbol}")
@@ -1247,7 +1767,7 @@ class WeinsteinStage2Screener:
             "assumption_flags": list(market_context.assumption_flags),
             "actual_data_calibration": actual_data_calibration,
             "symbol_count": int(len(results_df)),
-            "state_counts": results_df["timing_state"].value_counts(dropna=False).to_dict() if not results_df.empty else {},
+            "state_counts": series_value_counts_to_int_dict(results_df["timing_state"]) if not results_df.empty else {},
         }
         self._persist_outputs(results_df, group_rankings, market_summary, actual_data_calibration)
         print(

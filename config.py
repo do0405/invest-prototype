@@ -13,7 +13,6 @@ OPTION_RESULTS_DIR = os.path.join(RESULTS_DIR, "option")
 
 MARKMINERVINI_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, "markminervini")
 QULLAMAGGIE_RESULTS_DIR = os.path.join(SCREENER_RESULTS_DIR, "qullamaggie")
-MOMENTUM_SIGNALS_RESULTS_DIR = os.path.join(RESULTS_DIR, "momentum_signals")
 RANKING_RESULTS_DIR = os.path.join(RESULTS_DIR, "ranking")
 
 DATA_US_DIR = os.path.join(DATA_DIR, "us")
@@ -25,7 +24,6 @@ BACKUP_DIR = os.path.join(BASE_DIR, "backup")
 SCREENERS_DIR = os.path.join(BASE_DIR, "screeners")
 MARKMINERVINI_DIR = os.path.join(SCREENERS_DIR, "markminervini")
 QULLAMAGGIE_DIR = os.path.join(SCREENERS_DIR, "qullamaggie")
-MOMENTUM_SIGNALS_DIR = os.path.join(SCREENERS_DIR, "momentum_signals")
 
 US_WITH_RS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, "us_with_rs.csv")
 ADVANCED_FINANCIAL_RESULTS_PATH = os.path.join(MARKMINERVINI_RESULTS_DIR, "advanced_financial_results.csv")
@@ -47,16 +45,6 @@ OPTION_DATA_SOURCES = [
     "yfinance",
     "exclusion",
 ]
-
-MOMENTUM_SIGNALS_CRITERIA = {
-    "min_momentum_score": 10,
-    "min_core_signals": 4,
-    "rsi_uptrend": 50,
-    "adx_strong_trend": 25,
-    "volume_surge": 1.5,
-    "price_momentum": 5,
-    "ma_distance": 8,
-}
 
 FINANCIAL_CACHE_DIR = os.path.join(EXTERNAL_DATA_DIR, "financials", "us")
 EARNINGS_CACHE_DIR = os.path.join(EXTERNAL_DATA_DIR, "earnings", "us")

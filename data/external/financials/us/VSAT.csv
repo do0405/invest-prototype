@@ -1,2 +1,2 @@
 symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-VSAT,VSAT,[],False,200,48.011794378267325,True,False,1.4157331143236043,5.504816098388378,True,False,False,True,True,False,200,46.21013673819164,0,0,2026-03-13T01:18:14.261415+00:00
+VSAT,VSAT,[],False,200,48.011794378267325,True,False,1.4157331143236043,5.504816098388378,True,False,False,True,True,False,200,46.21013673819164,0,0,2026-03-14T05:02:20.815128+00:00

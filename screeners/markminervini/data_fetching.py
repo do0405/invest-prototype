@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import inspect
 import logging
+import os
 import time
 from typing import Any
 
@@ -14,6 +15,8 @@ from config import YAHOO_FINANCE_DELAY, YAHOO_FINANCE_MAX_RETRIES
 from utils.external_data_cache import load_csv_if_fresh, write_csv_atomic
 from utils.io_utils import safe_filename
 from utils.market_runtime import get_financial_cache_dir, iter_provider_symbols, market_key
+from utils.typing_utils import row_to_record
+from utils.yahoo_throttle import extend_yahoo_cooldown, wait_for_yahoo_request_slot
 from .financial_calculators import (
     calculate_eps_metrics,
     calculate_financial_ratios,
@@ -31,6 +34,8 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 _FINANCIAL_CACHE_DIR = get_financial_cache_dir("us")
+FINANCIAL_MIN_REQUEST_DELAY_SECONDS = 1.0
+FINANCIAL_RATE_LIMIT_COOLDOWN_SECONDS = 45.0
 
 
 def _cache_dir_for_market(market: str) -> str:
@@ -50,9 +55,42 @@ def _base_financial_payload(symbol: str) -> dict[str, Any]:
     return {
         "symbol": str(symbol or "").strip().upper(),
         "provider_symbol": None,
+        "fetch_status": "pending",
+        "unavailable_reason": None,
+        "source": "",
+        "cache_status": "",
         "error_details": [],
         "has_error": False,
     }
+
+
+def _combine_source_labels(existing: Any, new: Any) -> str:
+    labels: list[str] = []
+    for raw in (existing, new):
+        text = str(raw or "").strip()
+        if not text:
+            continue
+        for part in text.split("+"):
+            item = str(part or "").strip()
+            if item and item not in labels:
+                labels.append(item)
+    return "+".join(labels)
+
+
+def _set_financial_status(
+    payload: dict[str, Any],
+    *,
+    status: str,
+    source: str | None = None,
+    unavailable_reason: str | None = None,
+) -> None:
+    payload["fetch_status"] = str(status or "").strip().lower() or "pending"
+    if source:
+        payload["source"] = _combine_source_labels(payload.get("source"), source)
+    if payload["fetch_status"] == "complete":
+        payload["unavailable_reason"] = None
+    elif unavailable_reason is not None:
+        payload["unavailable_reason"] = str(unavailable_reason).strip() or None
 
 
 def _append_error(payload: dict[str, Any], message: str) -> None:
@@ -86,10 +124,14 @@ def _load_cached_hybrid_payload(symbol: str, market: str, max_age_seconds: int) 
     if cached is None or cached.empty:
         return None
 
-    row = cached.iloc[-1].to_dict()
+    row = row_to_record(cached.iloc[-1])
     row["symbol"] = str(symbol or "").strip().upper()
     row["error_details"] = _deserialize_error_details(row.get("error_details"))
     row["has_error"] = bool(row.get("has_error", False))
+    row["fetch_status"] = str(row.get("fetch_status") or ("complete" if _has_financial_metrics(row) else "failed")).strip().lower()
+    row["unavailable_reason"] = str(row.get("unavailable_reason") or "").strip() or None
+    row["source"] = str(row.get("source") or "").strip()
+    row["cache_status"] = str(row.get("cache_status") or "").strip()
     return row
 
 
@@ -101,8 +143,153 @@ def _save_cached_hybrid_payload(symbol: str, market: str, payload: dict[str, Any
     write_csv_atomic(pd.DataFrame([serializable]), _cache_path(symbol, market), index=False)
 
 
+def _load_cached_hybrid_payload_any_age(symbol: str, market: str) -> dict[str, Any] | None:
+    cache_file = _cache_path(symbol, market)
+    if not os.path.exists(cache_file):
+        return None
+    try:
+        cached = pd.read_csv(cache_file)
+    except Exception:
+        return None
+    if cached is None or cached.empty:
+        return None
+
+    row = row_to_record(cached.iloc[-1])
+    row["symbol"] = str(symbol or "").strip().upper()
+    row["error_details"] = _deserialize_error_details(row.get("error_details"))
+    row["has_error"] = bool(row.get("has_error", False))
+    row["fetch_status"] = str(row.get("fetch_status") or ("complete" if _has_financial_metrics(row) else "failed")).strip().lower()
+    row["unavailable_reason"] = str(row.get("unavailable_reason") or "").strip() or None
+    row["source"] = str(row.get("source") or "").strip()
+    row["cache_status"] = str(row.get("cache_status") or "").strip()
+    return row
+
+
+def _is_financial_rate_limit_error(message: Any) -> bool:
+    normalized = str(message or "").lower()
+    return (
+        "rate limit" in normalized
+        or "429" in normalized
+        or "too many requests" in normalized
+        or "try after a while" in normalized
+    )
+
+
+def _is_financial_unavailable_error(message: Any) -> bool:
+    normalized = str(message or "").lower()
+    keywords = (
+        "delisted",
+        "no timezone found",
+        "possibly delisted",
+        "quote not found",
+        "invalid ticker",
+        "symbol may be delisted",
+        "no price data found",
+        "no financial data",
+        "financial data unavailable",
+        "404",
+    )
+    return any(keyword in normalized for keyword in keywords)
+
+
+def _normalize_financial_unavailable_reason(error_msg: Any) -> str:
+    raw = str(error_msg or "").strip()
+    normalized = raw.lower()
+
+    if "no timezone found" in normalized:
+        return "possibly delisted; no timezone found"
+    if "no price data found" in normalized:
+        return "possibly delisted; no price data found"
+    if "symbol may be delisted" in normalized:
+        return "possibly delisted; symbol may be delisted"
+    if "quote not found" in normalized:
+        return "quote not found"
+    if "invalid ticker" in normalized:
+        return "invalid ticker"
+    if "404" in normalized or "not found" in normalized:
+        return "quote not found"
+    if "no financial data" in normalized or "financial data unavailable" in normalized:
+        return "financial data unavailable"
+
+    compact = " ".join(raw.split())
+    return compact[:120] if compact else "financial data unavailable"
+
+
+def _classify_financial_unavailable_reason(reason: str) -> str:
+    normalized = str(reason or "").strip().lower()
+    if normalized.startswith("possibly delisted;"):
+        return "soft"
+    if normalized in {"quote not found", "invalid ticker"}:
+        return "hard"
+    if "financial data unavailable" in normalized or "no financial data" in normalized:
+        return "soft"
+    if "delisted" in normalized:
+        return "hard"
+    return "soft"
+
+
+def _finalize_financial_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    finalized = dict(payload)
+    errors = _deserialize_error_details(finalized.get("error_details"))
+    status = str(finalized.get("fetch_status") or "pending").strip().lower()
+
+    if _has_financial_metrics(finalized):
+        finalized["fetch_status"] = "complete"
+        finalized["unavailable_reason"] = None
+        finalized["has_error"] = bool(errors)
+        return finalized
+
+    if status not in {"rate_limited", "soft_unavailable", "delisted", "failed"}:
+        unavailable_reason = None
+        unavailable_status = ""
+        for error_text in errors:
+            if _is_financial_rate_limit_error(error_text) or str(error_text).lower().startswith("rate_limited:"):
+                unavailable_status = "rate_limited"
+                unavailable_reason = "rate limited"
+                break
+            if _is_financial_unavailable_error(error_text):
+                unavailable_reason = _normalize_financial_unavailable_reason(error_text)
+                unavailable_status = (
+                    "soft_unavailable"
+                    if _classify_financial_unavailable_reason(unavailable_reason) == "soft"
+                    else "delisted"
+                )
+                break
+
+        if unavailable_status:
+            finalized["fetch_status"] = unavailable_status
+            finalized["unavailable_reason"] = unavailable_reason
+        elif not errors:
+            finalized["fetch_status"] = "soft_unavailable"
+            finalized["unavailable_reason"] = "financial data unavailable"
+        else:
+            finalized["fetch_status"] = "failed"
+            finalized["unavailable_reason"] = str(finalized.get("unavailable_reason") or "").strip() or None
+    else:
+        reason_text = str(finalized.get("unavailable_reason") or "").strip()
+        if not reason_text:
+            if status == "rate_limited":
+                reason_text = "rate limited"
+            elif status == "soft_unavailable":
+                reason_text = "financial data unavailable"
+        finalized["unavailable_reason"] = reason_text or None
+
+    finalized["has_error"] = finalized["fetch_status"] != "complete" or bool(errors)
+    return finalized
+
+
 def _has_financial_metrics(payload: dict[str, Any]) -> bool:
-    reserved = {"symbol", "provider_symbol", "error_details", "has_error", "cached_at"}
+    reserved = {
+        "symbol",
+        "provider_symbol",
+        "fetch_status",
+        "unavailable_reason",
+        "source",
+        "cache_status",
+        "error_details",
+        "has_error",
+        "cached_at",
+    }
     for key, value in payload.items():
         if key in reserved:
             continue
@@ -115,9 +302,8 @@ def _has_financial_metrics(payload: dict[str, Any]) -> bool:
 
 
 def _collect_yfinance_metrics(provider_symbol: str, payload: dict[str, Any], delay: float) -> bool:
+    wait_for_yahoo_request_slot("MarkMinervini financials", min_interval=max(float(delay), FINANCIAL_MIN_REQUEST_DELAY_SECONDS))
     ticker = yf.Ticker(provider_symbol)
-    if delay > 0:
-        time.sleep(delay)
 
     income_quarterly = ticker.quarterly_financials
     income_annual = ticker.financials
@@ -134,6 +320,7 @@ def _collect_yfinance_metrics(provider_symbol: str, payload: dict[str, Any], del
         return False
 
     payload["provider_symbol"] = provider_symbol
+    _set_financial_status(payload, status="complete", source="yfinance")
     eps_metrics = calculate_eps_metrics(income_quarterly, income_annual)
     revenue_metrics = calculate_revenue_metrics(income_quarterly, income_annual)
     margin_metrics = calculate_margin_metrics(income_quarterly, income_annual)
@@ -142,7 +329,8 @@ def _collect_yfinance_metrics(provider_symbol: str, payload: dict[str, Any], del
     return True
 
 
-def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any]) -> bool:
+def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any], delay: float) -> bool:
+    wait_for_yahoo_request_slot("MarkMinervini financials", min_interval=max(float(delay), FINANCIAL_MIN_REQUEST_DELAY_SECONDS))
     ticker = Ticker(provider_symbol)
     income_stmt_q = ticker.income_statement(frequency="quarterly")
     income_stmt_a = ticker.income_statement(frequency="annual")
@@ -151,6 +339,7 @@ def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any]) -
 
     if isinstance(income_stmt_q, pd.DataFrame) and not income_stmt_q.empty:
         payload["provider_symbol"] = provider_symbol
+        payload["source"] = _combine_source_labels(payload.get("source"), "yahooquery")
         updated = True
         if "TotalRevenue" in income_stmt_q.columns:
             revenue_data = income_stmt_q["TotalRevenue"].dropna()
@@ -175,6 +364,7 @@ def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any]) -
 
     if isinstance(balance_sheet, pd.DataFrame) and not balance_sheet.empty:
         payload["provider_symbol"] = provider_symbol
+        payload["source"] = _combine_source_labels(payload.get("source"), "yahooquery")
         updated = True
         if (
             "StockholdersEquity" in balance_sheet.columns
@@ -195,6 +385,8 @@ def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any]) -
             if len(debt) > 0 and len(equity) > 0 and equity.iloc[0] != 0:
                 payload["debt_to_equity"] = debt.iloc[0] / equity.iloc[0]
 
+    if updated:
+        _set_financial_status(payload, status="complete", source="yahooquery")
     return updated
 
 
@@ -212,6 +404,7 @@ def _collect_symbol_metrics(
 
     for attempt in range(retries):
         payload = _base_financial_payload(symbol_key)
+        rate_limited = False
 
         for provider_symbol in provider_symbols:
             provider_payload = dict(payload)
@@ -219,30 +412,91 @@ def _collect_symbol_metrics(
             if mode in {"yfinance", "hybrid"}:
                 try:
                     if _collect_yfinance_metrics(provider_symbol, provider_payload, delay=delay):
-                        provider_payload["has_error"] = bool(provider_payload.get("error_details"))
-                        return provider_payload
+                        return _finalize_financial_payload(provider_payload)
                 except Exception as exc:
-                    _append_error(provider_payload, f"yfinance_fetch_failed:{provider_symbol}:{str(exc)[:80]}")
+                    error_text = str(exc)
+                    if _is_financial_rate_limit_error(error_text):
+                        cooldown = FINANCIAL_RATE_LIMIT_COOLDOWN_SECONDS
+                        extend_yahoo_cooldown("MarkMinervini financials", cooldown)
+                        _append_error(provider_payload, f"rate_limited:{provider_symbol}:{error_text[:80]}")
+                        _set_financial_status(
+                            provider_payload,
+                            status="rate_limited",
+                            source="yfinance",
+                            unavailable_reason="rate limited",
+                        )
+                        rate_limited = True
+                    elif _is_financial_unavailable_error(error_text):
+                        unavailable_reason = _normalize_financial_unavailable_reason(error_text)
+                        _append_error(provider_payload, f"unavailable:{provider_symbol}:{unavailable_reason}")
+                        _set_financial_status(
+                            provider_payload,
+                            status=(
+                                "soft_unavailable"
+                                if _classify_financial_unavailable_reason(unavailable_reason) == "soft"
+                                else "delisted"
+                            ),
+                            source="yfinance",
+                            unavailable_reason=unavailable_reason,
+                        )
+                    else:
+                        _append_error(provider_payload, f"yfinance_fetch_failed:{provider_symbol}:{error_text[:80]}")
+                        _set_financial_status(provider_payload, status="failed", source="yfinance")
+
+                if rate_limited:
+                    last_payload = _finalize_financial_payload(provider_payload)
+                    break
 
             if mode in {"yahooquery", "hybrid"}:
                 try:
-                    if _collect_yahooquery_metrics(provider_symbol, provider_payload):
-                        provider_payload["has_error"] = bool(provider_payload.get("error_details"))
-                        return provider_payload
+                    if _collect_yahooquery_metrics(provider_symbol, provider_payload, delay=delay):
+                        return _finalize_financial_payload(provider_payload)
                 except Exception as exc:
-                    _append_error(provider_payload, f"yahooquery_fetch_failed:{provider_symbol}:{str(exc)[:80]}")
+                    error_text = str(exc)
+                    if _is_financial_rate_limit_error(error_text):
+                        cooldown = FINANCIAL_RATE_LIMIT_COOLDOWN_SECONDS
+                        extend_yahoo_cooldown("MarkMinervini financials", cooldown)
+                        _append_error(provider_payload, f"rate_limited:{provider_symbol}:{error_text[:80]}")
+                        _set_financial_status(
+                            provider_payload,
+                            status="rate_limited",
+                            source="yahooquery",
+                            unavailable_reason="rate limited",
+                        )
+                        rate_limited = True
+                    elif _is_financial_unavailable_error(error_text):
+                        unavailable_reason = _normalize_financial_unavailable_reason(error_text)
+                        _append_error(provider_payload, f"unavailable:{provider_symbol}:{unavailable_reason}")
+                        _set_financial_status(
+                            provider_payload,
+                            status=(
+                                "soft_unavailable"
+                                if _classify_financial_unavailable_reason(unavailable_reason) == "soft"
+                                else "delisted"
+                            ),
+                            source="yahooquery",
+                            unavailable_reason=unavailable_reason,
+                        )
+                    else:
+                        _append_error(provider_payload, f"yahooquery_fetch_failed:{provider_symbol}:{error_text[:80]}")
+                        _set_financial_status(provider_payload, status="failed", source="yahooquery")
 
-            last_payload = provider_payload
+                if rate_limited:
+                    last_payload = _finalize_financial_payload(provider_payload)
+                    break
+
+            last_payload = _finalize_financial_payload(provider_payload)
 
         if _has_financial_metrics(last_payload):
-            last_payload["has_error"] = bool(last_payload.get("error_details"))
-            return last_payload
+            return _finalize_financial_payload(last_payload)
+
+        if rate_limited:
+            continue
 
         if attempt < (retries - 1) and delay > 0:
-            time.sleep(delay)
+            time.sleep(min(delay, 1.0))
 
-    last_payload["has_error"] = bool(last_payload.get("error_details"))
-    return last_payload
+    return _finalize_financial_payload(last_payload)
 
 
 def _collect_financial_data(
@@ -266,13 +520,9 @@ def _collect_financial_data(
             continue
         print(f"processing {index + 1}/{total} - {normalized_market}:{symbol_key}")
 
-        cached_payload = None
+        stale_cached_payload = None
         if use_cache and mode == "hybrid":
-            cached_payload = _load_cached_hybrid_payload(symbol_key, normalized_market, max_age_seconds=cache_max_age_seconds)
-
-        if cached_payload is not None:
-            rows.append(cached_payload)
-            continue
+            stale_cached_payload = _load_cached_hybrid_payload_any_age(symbol_key, normalized_market)
 
         collect_params = inspect.signature(_collect_symbol_metrics).parameters
         if "market" in collect_params:
@@ -290,6 +540,19 @@ def _collect_financial_data(
                 max_retries=max_retries,
                 delay=delay,
             )
+
+        if (
+            stale_cached_payload is not None
+            and not _has_financial_metrics(payload)
+            and any(_is_financial_rate_limit_error(item) for item in _deserialize_error_details(payload.get("error_details")))
+        ):
+            stale_payload = dict(stale_cached_payload)
+            _append_error(stale_payload, "stale_cache_reused_after_rate_limit")
+            stale_payload["cache_status"] = "stale_reused_after_rate_limit"
+            stale_payload["source"] = _combine_source_labels(stale_payload.get("source"), "cache")
+            stale_payload["has_error"] = True
+            rows.append(stale_payload)
+            continue
 
         if mode == "hybrid":
             try:

@@ -10,9 +10,9 @@
     "setup_grade":"Watch",
     "a_pp_score":84.62,
     "setup_score":80.52,
-    "final_priority_score":80.88,
+    "final_priority_score":81.22,
     "regime_state":"RISK_ON",
-    "regime_score":66.5,
+    "regime_score":68.75,
     "reason_codes":[
       "TOP_RS_3M",
       "NEAR_52W_HIGH",
@@ -36,7 +36,7 @@
     "scores":{
       "a_pp_score":84.62,
       "setup_score":80.52,
-      "final_priority_score":80.88,
+      "final_priority_score":81.22,
       "data_confidence_score":30.0
     }
   }

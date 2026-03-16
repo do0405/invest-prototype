@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Optional
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Optional
 
 import pandas as pd
 import yfinance as yf
 
 from utils.actual_data_calibration import bounded_quantile_value
+from utils.indicator_helpers import normalize_indicator_frame
 from utils.io_utils import safe_filename
-from utils.market_data_contract import normalize_ohlcv_frame
+from utils.market_data_contract import PricePolicy, normalize_ohlcv_frame
 from utils.market_runtime import (
     ensure_market_dirs,
     get_markminervini_advanced_financial_results_path,
@@ -26,6 +29,39 @@ from .enhanced_pattern_analyzer import EnhancedPatternAnalyzer
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+def _safe_float(value: Any) -> float | None:
+    if value is None:
+        return None
+    try:
+        casted = float(value)
+    except (TypeError, ValueError):
+        return None
+    if pd.isna(casted):
+        return None
+    return casted
+
+
+def _numeric_frame_series(
+    frame: pd.DataFrame,
+    primary: str,
+    fallback: str | None = None,
+    *,
+    fill_value: float | None = None,
+) -> pd.Series:
+    if primary in frame.columns:
+        source = frame[primary]
+    elif fallback is not None and fallback in frame.columns:
+        source = frame[fallback]
+    else:
+        default_value = fill_value if fill_value is not None else float("nan")
+        return pd.Series(default_value, index=frame.index, dtype=float)
+
+    numeric = pd.to_numeric(source, errors="coerce")
+    if fill_value is not None:
+        numeric = numeric.fillna(fill_value)
+    return numeric
+
+
 class IntegratedScreener:
     def __init__(self, market: str = "us"):
         self.market = market_key(market)
@@ -38,6 +74,8 @@ class IntegratedScreener:
         self.pattern_results_json = self.pattern_results_csv.replace(".csv", ".json")
         self.patternless_results_csv = os.path.join(self.results_dir, "integrated_without_patterns.csv")
         self.patternless_results_json = self.patternless_results_csv.replace(".csv", ".json")
+        self.pre_pattern_quant_financial_csv = os.path.join(self.results_dir, "pre_pattern_quant_financial_candidates.csv")
+        self.pre_pattern_quant_financial_json = self.pre_pattern_quant_financial_csv.replace(".csv", ".json")
         self.pattern_enriched_csv = os.path.join(self.results_dir, "integrated_with_patterns.csv")
         self.pattern_enriched_json = self.pattern_enriched_csv.replace(".csv", ".json")
         self.pattern_actionable_csv = os.path.join(self.results_dir, "integrated_actionable_patterns.csv")
@@ -46,9 +84,18 @@ class IntegratedScreener:
         self.pattern_analyzer = EnhancedPatternAnalyzer()
 
     @staticmethod
-    def _write_frame(frame: pd.DataFrame, csv_path: str, json_path: str) -> None:
+    def _write_frame(frame: pd.DataFrame, csv_path: str, json_path: str, *, include_snapshot: bool = True) -> None:
         frame.to_csv(csv_path, index=False)
         frame.to_json(json_path, orient="records", indent=2, force_ascii=False)
+
+        if include_snapshot:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+            csv_target = Path(csv_path)
+            json_target = Path(json_path)
+            snapshot_csv_path = csv_target.with_name(f"{csv_target.stem}_{timestamp}{csv_target.suffix}")
+            snapshot_json_path = json_target.with_name(f"{json_target.stem}_{timestamp}{json_target.suffix}")
+            frame.to_csv(snapshot_csv_path, index=False)
+            frame.to_json(snapshot_json_path, orient="records", indent=2, force_ascii=False)
 
     @staticmethod
     def _pattern_stage_summary(row: pd.Series) -> str:
@@ -72,10 +119,12 @@ class IntegratedScreener:
         if frame.empty:
             return frame
         annotated = frame.copy()
-        annotated["has_forming_pattern"] = annotated[["vcp_state_bucket", "cup_handle_state_bucket"]].eq("FORMING").any(axis=1)
-        annotated["has_completed_pattern"] = annotated[["vcp_state_bucket", "cup_handle_state_bucket"]].eq("COMPLETED").any(axis=1)
-        annotated["has_recent_breakout_pattern"] = annotated[["vcp_state_bucket", "cup_handle_state_bucket"]].eq("BROKEOUT_RECENT").any(axis=1)
-        annotated["has_failed_pattern"] = annotated[["vcp_state_bucket", "cup_handle_state_bucket"]].eq("FAILED").any(axis=1)
+        vcp_bucket = annotated["vcp_state_bucket"].fillna("").astype(str)
+        cup_handle_bucket = annotated["cup_handle_state_bucket"].fillna("").astype(str)
+        annotated["has_forming_pattern"] = (vcp_bucket == "FORMING") | (cup_handle_bucket == "FORMING")
+        annotated["has_completed_pattern"] = (vcp_bucket == "COMPLETED") | (cup_handle_bucket == "COMPLETED")
+        annotated["has_recent_breakout_pattern"] = (vcp_bucket == "BROKEOUT_RECENT") | (cup_handle_bucket == "BROKEOUT_RECENT")
+        annotated["has_failed_pattern"] = (vcp_bucket == "FAILED") | (cup_handle_bucket == "FAILED")
         annotated["pattern_included"] = (
             annotated["has_forming_pattern"]
             | annotated["has_completed_pattern"]
@@ -93,10 +142,166 @@ class IntegratedScreener:
             return pd.Series(100.0, index=series.index, dtype=float)
         return numeric.rank(pct=True, method="average").fillna(0.5) * 100.0
 
+    @staticmethod
+    def _score_ratio(value: float | None, good_min: float, bad_min: float) -> float:
+        if value is None:
+            return 0.0
+        if value >= good_min:
+            return 1.0
+        if value <= bad_min:
+            return 0.0
+        return float((value - bad_min) / max(good_min - bad_min, 1e-9))
+
+    @staticmethod
+    def _score_inverse(value: float | None, good_max: float, bad_max: float) -> float:
+        if value is None:
+            return 0.0
+        if value <= good_max:
+            return 1.0
+        if value >= bad_max:
+            return 0.0
+        return float((bad_max - value) / max(bad_max - good_max, 1e-9))
+
+    @staticmethod
+    def _weighted_score(pairs: list[tuple[float | None, float]]) -> float:
+        total = 0.0
+        weight_sum = 0.0
+        for value, weight in pairs:
+            if value is None:
+                continue
+            total += float(value) * float(weight)
+            weight_sum += float(weight)
+        if weight_sum <= 0:
+            return 0.0
+        return total / weight_sum
+
+    @staticmethod
+    def _pattern_payload(row: pd.Series, prefix: str) -> tuple[dict[str, Any], dict[str, Any]]:
+        dims = row.get(f"{prefix}_dimensional_scores")
+        metrics = row.get(f"{prefix}_metrics")
+        return (
+            dims if isinstance(dims, dict) else {},
+            metrics if isinstance(metrics, dict) else {},
+        )
+
+    def _best_pattern_prefix(self, row: pd.Series) -> str:
+        vcp_conf = _safe_float(row.get("vcp_confidence")) or 0.0
+        cup_conf = _safe_float(row.get("cup_handle_confidence")) or 0.0
+        return "cup_handle" if cup_conf > vcp_conf else "vcp"
+
+    def _compute_pattern_priority_components(self, row: pd.Series) -> dict[str, float]:
+        prefix = self._best_pattern_prefix(row)
+        dimensional_scores, metrics = self._pattern_payload(row, prefix)
+        max_confidence = _safe_float(row.get("max_pattern_confidence")) or 0.0
+        technical_quality = _safe_float(dimensional_scores.get("technical_quality"))
+        volume_confirmation = _safe_float(dimensional_scores.get("volume_confirmation"))
+        temporal_validity = _safe_float(dimensional_scores.get("temporal_validity"))
+        distance_to_pivot_pct = _safe_float(row.get(f"{prefix}_distance_to_pivot_pct"))
+        stage_score_map = {
+            "RECENT_BREAKOUT": 100.0,
+            "COMPLETED": 88.0,
+            "FORMING": 76.0,
+            "STALE": 25.0,
+            "FAILED": 0.0,
+            "NONE": 0.0,
+        }
+        stage_score = stage_score_map.get(str(row.get("pattern_stage_summary") or "NONE"), 0.0)
+
+        trend_template_score = min(max((_safe_float(row.get("met_count")) or 0.0) / 7.0, 0.0), 1.0) * 100.0
+        rs_score = min(max(_safe_float(row.get("rs_score")) or 0.0, 0.0), 100.0)
+        distance_to_52w_high_score = self._score_inverse(_safe_float(row.get("distance_to_52w_high")), 0.15, 0.35) * 100.0
+        liquidity_score = _safe_float(row.get("tv_median20_pctile")) or 0.0
+        leader_score_raw = self._weighted_score(
+            [
+                (trend_template_score, 0.35),
+                (rs_score, 0.35),
+                (distance_to_52w_high_score, 0.15),
+                (liquidity_score, 0.15),
+            ]
+        )
+
+        pattern_quality_raw = 0.0
+        tightness_raw = 0.0
+        breakout_readiness_raw = 0.0
+        if bool(row.get("pattern_included", False)):
+            fallback_quality = max_confidence * 100.0
+            pattern_quality_raw = self._weighted_score(
+                [
+                    (((technical_quality if technical_quality is not None else max_confidence) * 100.0), 0.70),
+                    (((temporal_validity if temporal_validity is not None else max_confidence) * 100.0), 0.30),
+                ]
+            )
+
+            tightness_components: list[float] = []
+            if volume_confirmation is not None:
+                tightness_components.append(volume_confirmation * 100.0)
+            tightness_pct = _safe_float(metrics.get("tightness_pct"))
+            if tightness_pct is not None:
+                tightness_components.append(self._score_inverse(tightness_pct, 0.05, 0.12) * 100.0)
+            range_ratio = _safe_float(metrics.get("range_ratio_last10_vs_first10"))
+            if range_ratio is not None:
+                tightness_components.append(self._score_inverse(range_ratio, 0.75, 1.10) * 100.0)
+            natr_ratio = _safe_float(metrics.get("natr_ratio_last10_vs_first10"))
+            if natr_ratio is not None:
+                tightness_components.append(self._score_inverse(natr_ratio, 0.75, 1.10) * 100.0)
+            handle_depth_pct = _safe_float(metrics.get("handle_depth_pct"))
+            if handle_depth_pct is not None:
+                tightness_components.append(self._score_inverse(handle_depth_pct, 0.10, 0.16) * 100.0)
+            handle_volume_ratio = _safe_float(metrics.get("handle_volume_ratio"))
+            if handle_volume_ratio is not None:
+                tightness_components.append(self._score_inverse(handle_volume_ratio, 0.90, 1.15) * 100.0)
+            if not tightness_components:
+                tightness_components.append(fallback_quality)
+            tightness_raw = float(sum(tightness_components) / len(tightness_components))
+
+            pivot_proximity_score = 0.0
+            if distance_to_pivot_pct is not None:
+                if distance_to_pivot_pct <= 0:
+                    pivot_proximity_score = self._score_inverse(abs(distance_to_pivot_pct), 0.02, 0.18) * 100.0
+                else:
+                    pivot_proximity_score = self._score_inverse(distance_to_pivot_pct, 0.05, 0.20) * 100.0
+            breakout_readiness_raw = self._weighted_score(
+                [
+                    (stage_score, 0.45),
+                    (pivot_proximity_score, 0.35),
+                    (max_confidence * 100.0, 0.20),
+                ]
+            )
+
+        leader_score = round(leader_score_raw * 0.25, 2)
+        pattern_quality_score = round(pattern_quality_raw * 0.35, 2)
+        tightness_dryup_score = round(tightness_raw * 0.20, 2)
+        breakout_readiness_score = round(breakout_readiness_raw * 0.20, 2)
+        final_score = round(
+            leader_score + pattern_quality_score + tightness_dryup_score + breakout_readiness_score,
+            2,
+        )
+        return {
+            "leader_score_component": leader_score,
+            "pattern_quality_score_component": pattern_quality_score,
+            "tightness_dryup_score_component": tightness_dryup_score,
+            "breakout_readiness_score_component": breakout_readiness_score,
+            "actual_data_pattern_priority_score": final_score,
+        }
+
+    @staticmethod
+    def _pattern_pre_gate(prerequisites: dict[str, Any], market_threshold: float | None) -> tuple[bool, str]:
+        bars = int(prerequisites.get("bars") or 0)
+        tv_median20 = _safe_float(prerequisites.get("tv_median20"))
+        if bars < 220:
+            return False, "insufficient_bars"
+        if not bool(prerequisites.get("recent_data_quality_pass")):
+            return False, "recent_data_quality_failed"
+        if not bool(prerequisites.get("trend_template_lite_pass")):
+            return False, "trend_template_lite_failed"
+        if tv_median20 is None or market_threshold is None or tv_median20 < market_threshold:
+            return False, "liquidity_below_market_threshold"
+        return True, "passed"
+
     def _apply_actual_data_pattern_ranking(self, frame: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, float]]:
         defaults = {
             "actionable_min_total_met_count": 6.0,
-            "actionable_min_rs_score": 85.0,
+            "actionable_min_rs_score": 70.0,
             "actionable_min_confidence": 0.55,
             "actionable_min_priority_score": 72.0,
         }
@@ -106,27 +311,16 @@ class IntegratedScreener:
         ranked = frame.copy()
         ranked["max_pattern_confidence"] = ranked[["vcp_confidence", "cup_handle_confidence"]].max(axis=1).fillna(0.0)
         ranked["pattern_count"] = ranked[["vcp_detected", "cup_handle_detected"]].fillna(False).sum(axis=1)
-        ranked["total_met_count_pctile"] = self._percentile_score(ranked["total_met_count"])
-        ranked["rs_score_pctile"] = self._percentile_score(ranked["rs_score"])
-        ranked["pattern_confidence_pctile"] = self._percentile_score(ranked["max_pattern_confidence"])
-        stage_score_map = {
-            "RECENT_BREAKOUT": 100.0,
-            "FORMING": 82.0,
-            "COMPLETED": 68.0,
-            "STALE": 45.0,
-            "FAILED": 0.0,
-            "NONE": 25.0,
-        }
-        ranked["pattern_stage_score"] = ranked["pattern_stage_summary"].map(stage_score_map).fillna(25.0)
-        ranked["actual_data_pattern_priority_score"] = (
-            (0.25 * ranked["total_met_count_pctile"])
-            + (0.25 * ranked["rs_score_pctile"])
-            + (0.20 * ranked["pattern_confidence_pctile"])
-            + (0.20 * ranked["pattern_stage_score"])
-            + (0.10 * (ranked["pattern_count"].clip(lower=0, upper=2) / 2.0 * 100.0))
+        ranked["tv_median20_pctile"] = self._percentile_score(ranked["tv_median20"])
+        component_frame = ranked.apply(
+            lambda row: pd.Series(self._compute_pattern_priority_components(row)),
+            axis=1,
         )
+        ranked = pd.concat([ranked, component_frame], axis=1)
 
-        pattern_included = ranked[ranked["pattern_included"].fillna(False)].copy()
+        pattern_included = ranked[
+            ranked["pattern_included"].fillna(False) & ranked["pattern_pre_gate_pass"].fillna(False)
+        ].copy()
         defaults["actionable_min_total_met_count"] = bounded_quantile_value(
             ranked["total_met_count"],
             0.70,
@@ -139,7 +333,7 @@ class IntegratedScreener:
             0.70,
             defaults["actionable_min_rs_score"],
             lower=70.0,
-            upper=98.0,
+            upper=95.0,
         )
         defaults["actionable_min_confidence"] = bounded_quantile_value(
             pattern_included["max_pattern_confidence"] if not pattern_included.empty else ranked["max_pattern_confidence"],
@@ -158,7 +352,8 @@ class IntegratedScreener:
         )
 
         ranked["actionable_pattern_pass"] = (
-            ranked["pattern_included"].fillna(False)
+            ranked["pattern_pre_gate_pass"].fillna(False)
+            & ranked["pattern_included"].fillna(False)
             & (pd.to_numeric(ranked["total_met_count"], errors="coerce").fillna(0.0) >= defaults["actionable_min_total_met_count"])
             & (pd.to_numeric(ranked["rs_score"], errors="coerce").fillna(0.0) >= defaults["actionable_min_rs_score"])
             & (pd.to_numeric(ranked["max_pattern_confidence"], errors="coerce").fillna(0.0) >= defaults["actionable_min_confidence"])
@@ -187,7 +382,7 @@ class IntegratedScreener:
                 frame = pd.read_csv(path)
             except Exception:
                 continue
-            normalized = normalize_ohlcv_frame(frame, symbol_key)
+            normalized = normalize_ohlcv_frame(frame, symbol_key, price_policy=PricePolicy.SPLIT_ADJUSTED)
             if not normalized.empty:
                 return normalized
         return pd.DataFrame()
@@ -198,15 +393,24 @@ class IntegratedScreener:
             return
         os.makedirs(self._local_market_data_dir(), exist_ok=True)
         output_path = self._local_ohlcv_candidates(symbol_key)[1]
-        cache_frame = frame.rename(
-            columns={
-                "open": "Open",
-                "high": "High",
-                "low": "Low",
-                "close": "Close",
-                "volume": "Volume",
+        dividends = _numeric_frame_series(frame, "dividends", fill_value=0.0)
+        stock_splits = _numeric_frame_series(frame, "stock_splits", fill_value=0.0)
+        split_factor = _numeric_frame_series(frame, "split_factor", fill_value=1.0)
+        cache_frame = pd.DataFrame(
+            {
+                "date": frame["date"],
+                "Open": _numeric_frame_series(frame, "raw_open", "open"),
+                "High": _numeric_frame_series(frame, "raw_high", "high"),
+                "Low": _numeric_frame_series(frame, "raw_low", "low"),
+                "Close": _numeric_frame_series(frame, "raw_close", "close"),
+                "Adj Close": _numeric_frame_series(frame, "adj_close", "close"),
+                "Volume": _numeric_frame_series(frame, "volume"),
+                "Dividends": dividends,
+                "Stock Splits": stock_splits,
+                "Split Factor": split_factor,
+                "symbol": symbol_key,
             }
-        )[["date", "Open", "High", "Low", "Close", "Volume", "symbol"]]
+        )
         cache_frame.to_csv(output_path, index=False)
 
     def _download_ohlcv(self, symbol: str, days: int) -> pd.DataFrame:
@@ -219,13 +423,16 @@ class IntegratedScreener:
                     period=f"{period_days}d",
                     interval="1d",
                     auto_adjust=False,
+                    actions=True,
                     progress=False,
                 )
             except Exception:
                 continue
+            if not isinstance(frame, pd.DataFrame) or frame.empty:
+                continue
             if isinstance(frame.columns, pd.MultiIndex):
                 frame.columns = frame.columns.get_level_values(0)
-            normalized = normalize_ohlcv_frame(frame, symbol_key)
+            normalized = normalize_ohlcv_frame(frame, symbol_key, price_policy=PricePolicy.SPLIT_ADJUSTED)
             if normalized.empty:
                 continue
             self._write_local_ohlcv(symbol_key, normalized)
@@ -259,6 +466,7 @@ class IntegratedScreener:
         merged = merged.sort_values(["total_met_count", "rs_score"], ascending=[False, False]).reset_index(drop=True)
         self._write_frame(merged, self.integrated_path, self.integrated_path.replace(".csv", ".json"))
         self._write_frame(merged, self.patternless_results_csv, self.patternless_results_json)
+        self._write_frame(merged, self.pre_pattern_quant_financial_csv, self.pre_pattern_quant_financial_json)
         return merged
 
     def fetch_ohlcv_data(self, symbol: str, days: int = 365) -> pd.DataFrame:
@@ -268,14 +476,26 @@ class IntegratedScreener:
         if frame.empty:
             return pd.DataFrame()
 
-        normalized = frame.rename(
+        normalized = normalize_indicator_frame(
+            frame,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
+            utc_dates=True,
+        ).rename(
             columns={
                 "date": "Date",
                 "open": "Open",
                 "high": "High",
                 "low": "Low",
                 "close": "Close",
+                "adj_close": "Adj Close",
                 "volume": "Volume",
+                "raw_open": "Raw Open",
+                "raw_high": "Raw High",
+                "raw_low": "Raw Low",
+                "raw_close": "Raw Close",
+                "stock_splits": "Stock Splits",
+                "dividends": "Dividends",
+                "split_factor": "Split Factor",
             }
         ).copy()
         normalized["Date"] = pd.to_datetime(normalized["Date"], errors="coerce", utc=True)
@@ -292,12 +512,14 @@ class IntegratedScreener:
             empty = pd.DataFrame()
             self._write_frame(empty, self.pattern_results_csv, self.pattern_results_json)
             self._write_frame(empty, self.patternless_results_csv, self.patternless_results_json)
+            self._write_frame(empty, self.pre_pattern_quant_financial_csv, self.pre_pattern_quant_financial_json)
             self._write_frame(empty, self.pattern_enriched_csv, self.pattern_enriched_json)
             self._write_frame(empty, self.pattern_actionable_csv, self.pattern_actionable_json)
             return empty
 
         target_df = merged.head(max_symbols) if max_symbols else merged
         pattern_rows: list[dict[str, object]] = []
+        prepared_targets: list[dict[str, Any]] = []
         total_targets = len(target_df)
         print(f"[Integrated] Pattern analysis started ({self.market}) - targets={total_targets}")
         interval = progress_interval(total_targets, target_updates=8, min_interval=25)
@@ -308,7 +530,7 @@ class IntegratedScreener:
                     print(
                         f"[Integrated] Pattern analysis progress ({self.market}) - "
                         f"processed={index}/{total_targets}, detected={len(pattern_rows)}"
-                    )
+                )
                 continue
             stock_df = self.fetch_ohlcv_data(symbol)
             if stock_df.empty:
@@ -316,16 +538,65 @@ class IntegratedScreener:
                     print(
                         f"[Integrated] Pattern analysis progress ({self.market}) - "
                         f"processed={index}/{total_targets}, detected={len(pattern_rows)}"
-                    )
+                )
                 continue
 
-            patterns = self.pattern_analyzer.analyze_patterns_enhanced(symbol, stock_df)
+            prepared_targets.append(
+                {
+                    "row": row,
+                    "symbol": symbol,
+                    "stock_df": stock_df,
+                    "prerequisites": self.pattern_analyzer.evaluate_prerequisites(stock_df),
+                }
+            )
+            if is_progress_tick(index, total_targets, interval):
+                print(
+                    f"[Integrated] Pattern analysis progress ({self.market}) - "
+                    f"processed={index}/{total_targets}, prepared={len(prepared_targets)}"
+                )
+
+        eligible_liquidity = pd.Series(
+            [
+                item["prerequisites"]["tv_median20"]
+                for item in prepared_targets
+                if int(item["prerequisites"].get("bars") or 0) >= 220
+                and bool(item["prerequisites"].get("recent_data_quality_pass"))
+                and bool(item["prerequisites"].get("trend_template_lite_pass"))
+                and item["prerequisites"].get("tv_median20") is not None
+            ],
+            dtype=float,
+        )
+        pattern_market_threshold = (
+            float(eligible_liquidity.quantile(0.40))
+            if not eligible_liquidity.dropna().empty
+            else None
+        )
+
+        for prepared in prepared_targets:
+            row = prepared["row"]
+            symbol = prepared["symbol"]
+            prerequisites = prepared["prerequisites"]
+            pattern_pre_gate_pass, pattern_pre_gate_reason = self._pattern_pre_gate(prerequisites, pattern_market_threshold)
+            if pattern_pre_gate_pass:
+                patterns = self.pattern_analyzer.analyze_patterns_enhanced(symbol, prepared["stock_df"])
+            else:
+                patterns = {
+                    "vcp": self.pattern_analyzer._empty_pattern_output("VCP"),
+                    "cup_handle": self.pattern_analyzer._empty_pattern_output("CUP_HANDLE"),
+                }
             vcp = patterns.get("vcp", {})
             cup_handle = patterns.get("cup_handle", {})
             pattern_rows.append(
                 {
                     **row,
                     "market": self.market,
+                    "bars": int(prerequisites.get("bars") or 0),
+                    "tv_median20": _safe_float(prerequisites.get("tv_median20")),
+                    "recent_data_quality_pass": bool(prerequisites.get("recent_data_quality_pass")),
+                    "trend_template_lite_pass": bool(prerequisites.get("trend_template_lite_pass")),
+                    "pattern_pre_gate_pass": pattern_pre_gate_pass,
+                    "pattern_pre_gate_reason": pattern_pre_gate_reason,
+                    "pattern_market_threshold": pattern_market_threshold,
                     "vcp_detected": bool(vcp.get("detected", False)),
                     "vcp_confidence": float(vcp.get("confidence", 0.0) or 0.0),
                     "vcp_confidence_level": vcp.get("confidence_level"),
@@ -364,11 +635,6 @@ class IntegratedScreener:
                     "cup_handle_pivots": cup_handle.get("pivots", []),
                 }
             )
-            if is_progress_tick(index, total_targets, interval):
-                print(
-                    f"[Integrated] Pattern analysis progress ({self.market}) - "
-                    f"processed={index}/{total_targets}, detected={len(pattern_rows)}"
-                )
 
         pattern_df = pd.DataFrame(pattern_rows)
         actual_data_calibration: dict[str, float] = {}

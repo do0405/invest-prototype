@@ -229,18 +229,28 @@ RS_Line_t = Close_stock_t / Close_benchmark_t
 IBD 스타일 구현을 참고한 실무용 RS Score는 아래처럼 둔다.
 
 ```text
-Raw_RS = 0.40 * Return_3M
-       + 0.20 * Return_6M
-       + 0.20 * Return_9M
-       + 0.20 * Return_12M
+StockWeightedReturn =
+    0.40 * ReturnStock_3M
+  + 0.20 * ReturnStock_6M
+  + 0.20 * ReturnStock_9M
+  + 0.20 * ReturnStock_12M
 
-RS_Percentile = PercentileRank(Raw_RS within universe)
+BenchmarkWeightedReturn =
+    0.40 * ReturnBenchmark_3M
+  + 0.20 * ReturnBenchmark_6M
+  + 0.20 * ReturnBenchmark_9M
+  + 0.20 * ReturnBenchmark_12M
+
+BenchmarkRelativeWeightedRS =
+    (StockWeightedReturn / BenchmarkWeightedReturn) * 100
+
+RS_Percentile = PercentileRank(BenchmarkRelativeWeightedRS within universe)
 ```
 
 설명:
 
-- 최근 분기에 40% 가중치를 주는 방식은 IBD 스타일 오픈소스 구현과 일치한다.
-- 실전에서는 `3M, 6M, 12M` 3축만 써도 되지만, PRD 기준 기본안은 위 4분기 가중식이 가장 직관적이다.
+- 최근 분기에 40% 가중치를 주는 방식은 IBD 스타일 운영 관행과 일치한다.
+- RS Percentile은 절대 수익률이 아니라 `benchmark-relative weighted return`의 백분위다.
 
 ### 9.3 RS Line 상태 변수
 

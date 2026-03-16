@@ -2,11 +2,20 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, TypeAlias
 
 import pandas as pd
 
-from utils.market_data_contract import load_local_ohlcv_frame
+from utils.indicator_helpers import (
+    adr_percent as _helper_adr_percent,
+    atr_percent as _helper_atr_percent,
+    average_traded_value as _helper_average_traded_value,
+    ema_last as _helper_ema_last,
+    pct_change_over_period as _helper_pct_change_over_period,
+    relative_volume as _helper_relative_volume,
+    rolling_average_volume as _helper_rolling_average_volume,
+)
+from utils.market_data_contract import PricePolicy, load_local_ohlcv_frame
 from utils.market_runtime import (
     ensure_market_dirs,
     get_market_data_dir,
@@ -16,6 +25,11 @@ from utils.market_runtime import (
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
+from utils.typing_utils import series_to_str_float_dict, series_to_str_text_dict
+
+
+MetricValue: TypeAlias = float | str | bool | None
+MetricRow: TypeAlias = dict[str, MetricValue]
 
 
 @dataclass(frozen=True)
@@ -24,7 +38,7 @@ class PresetDefinition:
     label: str
     market: str
     sorter: str
-    predicate: Callable[[dict[str, float | str | bool | None]], bool]
+    predicate: Callable[[MetricRow], bool]
 
 
 def _load_market_metadata_frame(market: str) -> pd.DataFrame:
@@ -47,80 +61,71 @@ def _load_market_metadata_frame(market: str) -> pd.DataFrame:
 def _load_market_cap_map(metadata_frame: pd.DataFrame) -> dict[str, float]:
     if metadata_frame.empty or "market_cap" not in metadata_frame.columns:
         return {}
-    return metadata_frame.set_index("symbol")["market_cap"].dropna().to_dict()
+    return series_to_str_float_dict(metadata_frame.set_index("symbol")["market_cap"])
 
 
 def _load_text_metadata_map(metadata_frame: pd.DataFrame, column: str) -> dict[str, str]:
     if metadata_frame.empty or column not in metadata_frame.columns:
         return {}
-    return metadata_frame.set_index("symbol")[column].fillna("").astype(str).to_dict()
+    return series_to_str_text_dict(metadata_frame.set_index("symbol")[column])
 
 
 def _load_numeric_metadata_map(metadata_frame: pd.DataFrame, column: str) -> dict[str, float]:
     if metadata_frame.empty or column not in metadata_frame.columns:
         return {}
-    return metadata_frame.set_index("symbol")[column].dropna().to_dict()
+    return series_to_str_float_dict(metadata_frame.set_index("symbol")[column])
+
+
+def _metric_row_from_series(row: pd.Series) -> MetricRow:
+    payload: MetricRow = {}
+    for key, value in row.items():
+        key_text = str(key)
+        if isinstance(value, (str, bool)):
+            payload[key_text] = value
+            continue
+        if value is None or pd.isna(value):
+            payload[key_text] = None
+            continue
+        try:
+            payload[key_text] = float(value)
+        except (TypeError, ValueError):
+            payload[key_text] = str(value)
+    return payload
+
+
+def _as_float(value: object) -> float | None:
+    if isinstance(value, bool) or value is None:
+        return None
+    if isinstance(value, (float, int)):
+        return float(value)
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def _ema(series: pd.Series, length: int) -> float | None:
-    if len(series) < length:
-        return None
-    return float(series.ewm(span=length, adjust=False).mean().iloc[-1])
+    return _helper_ema_last(series, length)
 
 
 def _atr_percent(frame: pd.DataFrame, length: int = 14) -> float | None:
-    if len(frame) < length + 1:
-        return None
-    df = frame.copy()
-    prev_close = df["close"].shift(1)
-    tr = pd.concat(
-        [
-            (df["high"] - df["low"]).abs(),
-            (df["high"] - prev_close).abs(),
-            (df["low"] - prev_close).abs(),
-        ],
-        axis=1,
-    ).max(axis=1)
-    atr = tr.rolling(window=length).mean().iloc[-1]
-    close = df["close"].iloc[-1]
-    if pd.isna(atr) or close == 0:
-        return None
-    return float((atr / close) * 100)
+    return _helper_atr_percent(frame, length=length)
 
 
 def _adr_percent(frame: pd.DataFrame, length: int = 20) -> float | None:
-    if len(frame) < length:
-        return None
-    adr = ((frame["high"] - frame["low"]) / frame["close"].replace({0: pd.NA}) * 100).rolling(window=length).mean().iloc[-1]
-    return None if pd.isna(adr) else float(adr)
+    return _helper_adr_percent(frame, length=length)
 
 
 def _pct_change(frame: pd.DataFrame, periods: int) -> float | None:
-    if len(frame) <= periods:
-        return None
-    start = frame["close"].iloc[-periods - 1]
-    end = frame["close"].iloc[-1]
-    if start == 0:
-        return None
-    return float((end / start - 1.0) * 100.0)
+    return _helper_pct_change_over_period(frame, periods)
 
 
 def _average_traded_value(frame: pd.DataFrame, window: int) -> float | None:
-    if len(frame) < window:
-        return None
-    typical_price = (frame["high"] + frame["low"] + frame["close"]) / 3.0
-    traded_value = typical_price * frame["volume"]
-    value = traded_value.rolling(window=window).mean().iloc[-1]
-    return None if pd.isna(value) else float(value)
+    return _helper_average_traded_value(frame, window)
 
 
 def _relative_volume(frame: pd.DataFrame, window: int = 20) -> float | None:
-    if len(frame) < window:
-        return None
-    average_volume = frame["volume"].rolling(window=window).mean().iloc[-1]
-    if pd.isna(average_volume) or average_volume == 0:
-        return None
-    return float(frame["volume"].iloc[-1] / average_volume)
+    return _helper_relative_volume(frame, window=window)
 
 
 def _breakout_strength(frame: pd.DataFrame) -> float | None:
@@ -173,7 +178,7 @@ def _build_metrics(
         "ema20": _ema(df["close"], 20),
         "ema50": _ema(df["close"], 50),
         "ema100": _ema(df["close"], 100),
-        "avg_volume_60d": float(df["volume"].rolling(window=60).mean().iloc[-1]) if len(df) >= 60 else None,
+        "avg_volume_60d": float(_helper_rolling_average_volume(df, 60).iloc[-1]) if len(df) >= 60 else None,
         "avg_traded_value_60d": _average_traded_value(df, 60),
         "avg_traded_value_30d": _average_traded_value(df, 30),
         "avg_traded_value_10d": _average_traded_value(df, 10),
@@ -191,20 +196,25 @@ def _build_metrics(
     return metrics
 
 
-def _gte(value: float | None, threshold: float) -> bool:
-    return value is not None and value >= threshold
+def _gte(value: MetricValue, threshold: object) -> bool:
+    numeric = _as_float(value)
+    threshold_value = _as_float(threshold) if not isinstance(threshold, (float, int)) else float(threshold)
+    return numeric is not None and threshold_value is not None and numeric >= threshold_value
 
 
-def _lte(left: float | None, right: float | None) -> bool:
-    return left is not None and right is not None and left <= right
+def _lte(left: MetricValue, right: MetricValue) -> bool:
+    left_value = _as_float(left)
+    right_value = _as_float(right)
+    return left_value is not None and right_value is not None and left_value <= right_value
 
 
-def _between(value: float | None, low: float | None = None, high: float | None = None) -> bool:
-    if value is None:
+def _between(value: MetricValue, low: float | None = None, high: float | None = None) -> bool:
+    numeric = _as_float(value)
+    if numeric is None:
         return False
-    if low is not None and value < low:
+    if low is not None and numeric < low:
         return False
-    if high is not None and value > high:
+    if high is not None and numeric > high:
         return False
     return True
 
@@ -429,7 +439,7 @@ def run_tradingview_preset_screeners(*, market: str = "us") -> dict[str, pd.Data
     metrics_rows: list[dict[str, float | str | bool | None]] = []
     interval = progress_interval(len(symbols), target_updates=8, min_interval=50)
     for index, symbol in enumerate(symbols, start=1):
-        frame = load_local_ohlcv_frame(normalized_market, symbol)
+        frame = load_local_ohlcv_frame(normalized_market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
         if frame.empty or len(frame) < 120:
             if is_progress_tick(index, len(symbols), interval):
                 print(
@@ -461,7 +471,7 @@ def run_tradingview_preset_screeners(*, market: str = "us") -> dict[str, pd.Data
         if metrics_df.empty:
             preset_df = pd.DataFrame()
         else:
-            preset_df = metrics_df[metrics_df.apply(lambda row: preset.predicate(row.to_dict()), axis=1)].copy()
+            preset_df = metrics_df[metrics_df.apply(lambda row: preset.predicate(_metric_row_from_series(row)), axis=1)].copy()
             if not preset_df.empty:
                 preset_df["preset"] = preset.key
                 preset_df["preset_label"] = preset.label

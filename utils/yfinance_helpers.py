@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import pandas as pd
 import yfinance as yf
+
+from .typing_utils import to_float_or_none
 
 __all__ = ["fetch_market_cap", "fetch_quarterly_eps_growth"]
 
@@ -32,10 +33,10 @@ def fetch_quarterly_eps_growth(symbol: str) -> float:
             
         net_income_row = q_income.loc["Net Income"]
         # Get the two most recent quarters
-        recent_earnings = net_income_row.iloc[0]  # Most recent quarter
-        prev_earnings = net_income_row.iloc[1]    # Previous quarter
+        recent_earnings = to_float_or_none(net_income_row.iloc[0])  # Most recent quarter
+        prev_earnings = to_float_or_none(net_income_row.iloc[1])    # Previous quarter
         
-        if prev_earnings == 0 or pd.isna(recent_earnings) or pd.isna(prev_earnings):
+        if recent_earnings is None or prev_earnings is None or prev_earnings == 0:
             return 0.0
         
         if prev_earnings > 0:

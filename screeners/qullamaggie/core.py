@@ -7,6 +7,17 @@ import numpy as np
 import pandas as pd
 
 from utils.actual_data_calibration import bounded_quantile_value
+from utils.indicator_helpers import (
+    normalize_indicator_frame,
+    rolling_atr as _helper_rolling_atr,
+    rolling_average_volume,
+    rolling_max,
+    rolling_min,
+    rolling_sma,
+    rolling_traded_value,
+)
+from utils.market_data_contract import PricePolicy
+from utils.typing_utils import row_to_record
 
 from .earnings_data_collector import EarningsDataCollector
 
@@ -90,6 +101,12 @@ def _round_or_none(value: float | None, digits: int = 2) -> float | None:
     return round(float(value), digits)
 
 
+def _safe_divide(numerator: float | None, denominator: float | None) -> float | None:
+    if numerator is None or denominator is None or denominator == 0:
+        return None
+    return numerator / denominator
+
+
 def _as_date_str(value: Any) -> str | None:
     ts = pd.to_datetime(value, errors="coerce")
     if pd.isna(ts):
@@ -111,16 +128,7 @@ def _percentile_series(series: pd.Series) -> pd.Series:
 
 
 def _rolling_atr(daily: pd.DataFrame, window: int) -> pd.Series:
-    prev_close = daily["close"].shift(1)
-    tr = pd.concat(
-        [
-            daily["high"] - daily["low"],
-            (daily["high"] - prev_close).abs(),
-            (daily["low"] - prev_close).abs(),
-        ],
-        axis=1,
-    ).max(axis=1)
-    return tr.rolling(window, min_periods=max(2, window // 3)).mean()
+    return _helper_rolling_atr(daily, window, min_periods=max(2, window // 3))
 
 
 @dataclass(frozen=True)
@@ -191,38 +199,7 @@ class QullamaggieAnalyzer:
         return self.MARKET_PROFILES.get(market_key, self.MARKET_PROFILES["us"])
 
     def normalize_daily_frame(self, frame: pd.DataFrame) -> pd.DataFrame:
-        if frame is None or frame.empty:
-            return pd.DataFrame(columns=["date", "open", "high", "low", "close", "volume"])
-
-        daily = frame.copy()
-        rename_map: dict[str, str] = {}
-        for column in daily.columns:
-            lowered = str(column).strip().lower()
-            if lowered in {"date", "open", "high", "low", "close", "volume"}:
-                rename_map[column] = lowered
-        daily = daily.rename(columns=rename_map)
-
-        if "date" not in daily.columns:
-            if isinstance(daily.index, pd.DatetimeIndex):
-                daily = daily.reset_index()
-                daily = daily.rename(columns={daily.columns[0]: "date"})
-            else:
-                daily = daily.reset_index(drop=False).rename(columns={daily.columns[0]: "date"})
-
-        for column in ("open", "high", "low", "close"):
-            if column not in daily.columns:
-                daily[column] = daily.get("close", np.nan)
-        if "volume" not in daily.columns:
-            daily["volume"] = 0.0
-
-        daily["date"] = pd.to_datetime(daily["date"], errors="coerce")
-        for column in ("open", "high", "low", "close", "volume"):
-            daily[column] = pd.to_numeric(daily[column], errors="coerce")
-
-        daily = daily.dropna(subset=["date", "open", "high", "low", "close"]).copy()
-        if daily.empty:
-            return pd.DataFrame(columns=["date", "open", "high", "low", "close", "volume"])
-        return daily.sort_values("date").reset_index(drop=True)
+        return normalize_indicator_frame(frame, price_policy=PricePolicy.SPLIT_ADJUSTED)
 
     def _higher_low_score(self, low_series: pd.Series) -> float:
         recent = pd.to_numeric(low_series, errors="coerce").dropna()
@@ -278,10 +255,11 @@ class QullamaggieAnalyzer:
             window = daily.iloc[-length:].copy()
             base_high = _safe_float(window["high"].max())
             base_low = _safe_float(window["low"].min())
-            if base_high is None or base_low is None or base_high <= 0 or base_high <= base_low:
+            latest_close = _safe_float(window["close"].iloc[-1])
+            if latest_close is None or base_high is None or base_low is None or base_high <= 0 or base_high <= base_low:
                 continue
             base_depth = (base_high - base_low) / base_high
-            close_pos = (_safe_float(window["close"].iloc[-1]) - base_low) / max(base_high - base_low, 1e-9)
+            close_pos = (latest_close - base_low) / max(base_high - base_low, 1e-9)
             daily_change = window["close"].pct_change().abs().rolling(5, min_periods=2).mean().iloc[-1]
             quiet_score = _score_inverse(_safe_float(daily_change), 0.01, 0.04) * 100.0
             depth_score = _score_inverse(base_depth, 0.16, 0.38) * 100.0
@@ -326,20 +304,20 @@ class QullamaggieAnalyzer:
                 "has_daily_bars": False,
             }
 
-        daily["sma10"] = daily["close"].rolling(10, min_periods=5).mean()
-        daily["sma20"] = daily["close"].rolling(20, min_periods=10).mean()
-        daily["sma50"] = daily["close"].rolling(50, min_periods=20).mean()
-        daily["sma200"] = daily["close"].rolling(200, min_periods=60).mean()
+        daily["sma10"] = rolling_sma(daily["close"], 10, min_periods=5)
+        daily["sma20"] = rolling_sma(daily["close"], 20, min_periods=10)
+        daily["sma50"] = rolling_sma(daily["close"], 50, min_periods=20)
+        daily["sma200"] = rolling_sma(daily["close"], 200, min_periods=60)
         daily["adr_pct"] = ((daily["high"] - daily["low"]) / daily["close"].replace(0, np.nan)) * 100.0
         daily["adr20_pct"] = daily["adr_pct"].rolling(20, min_periods=5).mean()
         daily["atr14"] = _rolling_atr(daily, 14)
         daily["atr20"] = _rolling_atr(daily, 20)
         daily["atr60"] = _rolling_atr(daily, 60)
         daily["atr10"] = _rolling_atr(daily, 10)
-        daily["adv20"] = daily["volume"].rolling(20, min_periods=5).mean()
-        daily["avg_turnover20"] = (daily["volume"] * daily["close"]).rolling(20, min_periods=5).mean()
-        daily["rolling_high_252"] = daily["high"].rolling(252, min_periods=60).max()
-        daily["rolling_low_252"] = daily["low"].rolling(252, min_periods=60).min()
+        daily["adv20"] = rolling_average_volume(daily, 20, min_periods=5)
+        daily["avg_turnover20"] = rolling_traded_value(daily, 20, min_periods=5)
+        daily["rolling_high_252"] = rolling_max(daily["high"], 252, min_periods=60)
+        daily["rolling_low_252"] = rolling_min(daily["low"], 252, min_periods=60)
         daily["dcr"] = (daily["close"] - daily["low"]) / (daily["high"] - daily["low"]).replace(0, np.nan)
 
         latest = daily.iloc[-1]
@@ -380,12 +358,11 @@ class QullamaggieAnalyzer:
         high_52w = _safe_float(latest["rolling_high_252"]) or _safe_float(daily["high"].max())
         low_52w = _safe_float(latest["rolling_low_252"]) or _safe_float(daily["low"].min())
         high_52w_proximity = None
-        if close is not None and high_52w is not None and high_52w > 0:
-            high_52w_proximity = close / high_52w
+        close_to_high_52w = _safe_divide(close, high_52w)
+        if close_to_high_52w is not None:
+            high_52w_proximity = close_to_high_52w
 
-        atr10_over_atr60 = None
-        if atr10 is not None and atr60 is not None and atr60 > 0:
-            atr10_over_atr60 = atr10 / atr60
+        atr10_over_atr60 = _safe_divide(atr10, atr60)
 
         higher_low_score = self._higher_low_score(daily["low"])
         ma_surf_score = self._ma_surf_score(close, sma10, sma20, sma50)
@@ -410,8 +387,9 @@ class QullamaggieAnalyzer:
 
         last_5_avg_vol = _safe_float(daily["volume"].tail(5).mean())
         volume_dry_up_score = 50.0
-        if last_5_avg_vol is not None and adv20 is not None and adv20 > 0:
-            volume_dry_up_score = _score_inverse(last_5_avg_vol / adv20, 0.65, 1.15) * 100.0
+        last_5_to_adv20 = _safe_divide(last_5_avg_vol, adv20)
+        if last_5_to_adv20 is not None:
+            volume_dry_up_score = _score_inverse(last_5_to_adv20, 0.65, 1.15) * 100.0
 
         pivot_price = base_high * 1.001 if base_high is not None else None
         stop_price = None
@@ -447,12 +425,11 @@ class QullamaggieAnalyzer:
         gap_pct = None
         if len(daily) >= 2 and open_price is not None:
             prev_close = _safe_float(daily["close"].iloc[-2])
-            if prev_close is not None and prev_close != 0:
-                gap_pct = (open_price / prev_close) - 1.0
+            gap_ratio = _safe_divide(open_price, prev_close)
+            if gap_ratio is not None:
+                gap_pct = gap_ratio - 1.0
 
-        rvol = None
-        if volume is not None and adv20 is not None and adv20 > 0:
-            rvol = volume / adv20
+        rvol = _safe_divide(volume, adv20)
 
         no_excessive_run = ret_3m is None or ret_3m < 1.0
         neglected_base_score = _weighted_mean(
@@ -462,6 +439,8 @@ class QullamaggieAnalyzer:
                 (compression_score, 0.25),
             ]
         )
+
+        atr20_ratio = _safe_divide(atr20, close)
 
         sector = str(base_metadata.get("sector") or "").strip()
         industry = str(base_metadata.get("industry") or base_metadata.get("industry_group") or "").strip()
@@ -490,8 +469,8 @@ class QullamaggieAnalyzer:
             "sma200": sma200,
             "adr20_pct": adr20_pct,
             "atr20": atr20,
-            "atr20_pct": ((atr20 / close) * 100.0) if atr20 is not None and close not in {None, 0} else None,
-            "natr20": ((atr20 / close) * 100.0) if atr20 is not None and close not in {None, 0} else None,
+            "atr20_pct": (atr20_ratio * 100.0) if atr20_ratio is not None else None,
+            "natr20": (atr20_ratio * 100.0) if atr20_ratio is not None else None,
             "dcr": dcr,
             "dcr_high_freq": float((daily["dcr"].tail(20) >= 0.60).mean()) if len(daily) >= 5 else 0.0,
             "ret_1d": ret_1d,
@@ -555,7 +534,10 @@ class QullamaggieAnalyzer:
             "readiness_score",
             "rvol",
         ):
-            table[column] = pd.to_numeric(table.get(column), errors="coerce")
+            if column in table.columns:
+                table[column] = pd.to_numeric(table[column], errors="coerce")
+            else:
+                table[column] = pd.Series(np.nan, index=table.index, dtype=float)
 
         table["ret_1m_pctile"] = _percentile_series(table["ret_1m"])
         table["ret_3m_pctile"] = _percentile_series(table["ret_3m"])
@@ -563,6 +545,58 @@ class QullamaggieAnalyzer:
         table["turnover20_pctile"] = _percentile_series(table["avg_turnover20"])
         table["adv20_pctile"] = _percentile_series(table["adv20"])
         table["high_proximity_score"] = table["high_52w_proximity"].apply(lambda value: _score_ratio(value, 0.95, 0.75) * 100.0)
+
+        def _fundamental_score_row(row: pd.Series) -> float:
+            earnings_growth = _safe_float(row.get("earnings_growth"))
+            revenue_growth = _safe_float(row.get("revenue_growth"))
+            return_on_equity = _safe_float(row.get("return_on_equity"))
+            market_cap = _safe_float(row.get("market_cap"))
+            market_cap_log = np.log10(max(market_cap, 1.0)) if market_cap is not None else None
+            return _weighted_mean(
+                [
+                    ((_score_ratio(earnings_growth, 25.0, 0.0) * 100.0) if earnings_growth is not None else 70.0, 0.35),
+                    ((_score_ratio(revenue_growth, 15.0, 0.0) * 100.0) if revenue_growth is not None else 70.0, 0.35),
+                    ((_score_ratio(return_on_equity, 0.15, 0.02) * 100.0) if return_on_equity is not None else 70.0, 0.15),
+                    ((_score_ratio(market_cap_log, 9.0, 7.0) * 100.0) if market_cap_log is not None else 70.0, 0.15),
+                ]
+            )
+
+        def _breakout_universe_pass_row(row: pd.Series) -> bool:
+            close_value = _safe_float(row.get("close")) or 0.0
+            adv20_value = _safe_float(row.get("adv20")) or 0.0
+            turnover20_value = _safe_float(row.get("avg_turnover20")) or 0.0
+            sma50_value = _safe_float(row.get("sma50"))
+            ret_1m_pctile = _safe_float(row.get("ret_1m_pctile")) or 0.0
+            ret_3m_pctile = _safe_float(row.get("ret_3m_pctile")) or 0.0
+            ret_6m_pctile = _safe_float(row.get("ret_6m_pctile")) or 0.0
+            high_52w_proximity = _safe_float(row.get("high_52w_proximity")) or 0.0
+
+            close_vs_sma50_ok = _safe_bool(row.get("close_gt_50dma"))
+            if not close_vs_sma50_ok and sma50_value is not None:
+                close_vs_sma50_ok = close_value >= (sma50_value * 0.98)
+
+            return bool(
+                close_value >= 5.0
+                and adv20_value >= 150_000.0
+                and turnover20_value > 0.0
+                and close_vs_sma50_ok
+                and ret_1m_pctile >= 65.0
+                and ret_3m_pctile >= 70.0
+                and ret_6m_pctile >= 65.0
+                and high_52w_proximity >= 0.85
+            )
+
+        def _ep_universe_pass_row(row: pd.Series) -> bool:
+            close_value = _safe_float(row.get("close")) or 0.0
+            adv20_value = _safe_float(row.get("adv20")) or 0.0
+            gap_pct = _safe_float(row.get("gap_pct")) or 0.0
+            rvol_value = _safe_float(row.get("rvol")) or 0.0
+            high_52w_proximity = _safe_float(row.get("high_52w_proximity")) or 0.0
+            return bool(
+                close_value >= 5.0
+                and adv20_value >= 150_000.0
+                and (gap_pct >= 0.05 or rvol_value >= 1.5 or high_52w_proximity >= 0.90)
+            )
 
         table["leadership_score"] = table.apply(
             lambda row: _weighted_mean(
@@ -631,17 +665,7 @@ class QullamaggieAnalyzer:
             table["sector_member_count"] = np.nan
 
         table["group_strength_score"] = table["group_strength_score"].fillna(70.0)
-        table["fundamental_score"] = table.apply(
-            lambda row: _weighted_mean(
-                [
-                    ((_score_ratio(_safe_float(row.get("earnings_growth")), 25.0, 0.0) * 100.0) if row.get("earnings_growth") is not None else 70.0, 0.35),
-                    ((_score_ratio(_safe_float(row.get("revenue_growth")), 15.0, 0.0) * 100.0) if row.get("revenue_growth") is not None else 70.0, 0.35),
-                    ((_score_ratio(_safe_float(row.get("return_on_equity")), 0.15, 0.02) * 100.0) if row.get("return_on_equity") is not None else 70.0, 0.15),
-                    ((_score_ratio(np.log10(max(_safe_float(row.get("market_cap")) or 0.0, 1.0)), 9.0, 7.0) * 100.0) if row.get("market_cap") is not None else 70.0, 0.15),
-                ]
-            ),
-            axis=1,
-        )
+        table["fundamental_score"] = table.apply(_fundamental_score_row, axis=1)
         table["a_pp_score"] = table.apply(
             lambda row: _weighted_mean(
                 [
@@ -667,32 +691,8 @@ class QullamaggieAnalyzer:
             ),
             axis=1,
         )
-        table["breakout_universe_pass"] = table.apply(
-            lambda row: bool(
-                (_safe_float(row.get("close")) or 0.0) >= 5.0
-                and (_safe_float(row.get("adv20")) or 0.0) >= 150_000.0
-                and (_safe_float(row.get("avg_turnover20")) or 0.0) > 0.0
-                and (
-                    _safe_bool(row.get("close_gt_50dma"))
-                    or ((_safe_float(row.get("close")) or 0.0) >= (_safe_float(row.get("sma50")) or 0.0) * 0.98)
-                )
-                and (_safe_float(row.get("ret_3m_pctile")) or 0.0) >= 70.0
-                and (_safe_float(row.get("high_52w_proximity")) or 0.0) >= 0.85
-            ),
-            axis=1,
-        )
-        table["ep_universe_pass"] = table.apply(
-            lambda row: bool(
-                (_safe_float(row.get("close")) or 0.0) >= 5.0
-                and (_safe_float(row.get("adv20")) or 0.0) >= 150_000.0
-                and (
-                    (_safe_float(row.get("gap_pct")) or 0.0) >= 0.05
-                    or (_safe_float(row.get("rvol")) or 0.0) >= 1.5
-                    or (_safe_float(row.get("high_52w_proximity")) or 0.0) >= 0.90
-                )
-            ),
-            axis=1,
-        )
+        table["breakout_universe_pass"] = table.apply(_breakout_universe_pass_row, axis=1)
+        table["ep_universe_pass"] = table.apply(_ep_universe_pass_row, axis=1)
         table["focus_seed_score"] = table.apply(
             lambda row: _weighted_mean(
                 [
@@ -712,7 +712,9 @@ class QullamaggieAnalyzer:
                 "price_floor": profile.price_floor,
                 "adv20_floor": profile.min_adv20,
                 "turnover20_floor": profile.min_turnover20,
+                "breakout_min_ret_1m_pctile": 65.0,
                 "breakout_min_ret_3m_pctile": 70.0,
+                "breakout_min_ret_6m_pctile": 65.0,
                 "breakout_min_high_52w_proximity": 0.85,
                 "breakout_min_compression_score": 65.0,
                 "breakout_min_prior_run_pct": 0.30,
@@ -769,11 +771,25 @@ class QullamaggieAnalyzer:
             upper=0.96,
             positive_only=True,
         )
+        breakout_min_ret_1m_pctile = bounded_quantile_value(
+            liquid["ret_1m_pctile"],
+            0.60,
+            65.0,
+            lower=55.0,
+            upper=88.0,
+        )
         breakout_min_ret_3m_pctile = bounded_quantile_value(
             liquid["ret_3m_pctile"],
             0.60,
             70.0,
             lower=60.0,
+            upper=88.0,
+        )
+        breakout_min_ret_6m_pctile = bounded_quantile_value(
+            liquid["ret_6m_pctile"],
+            0.60,
+            65.0,
+            lower=55.0,
             upper=88.0,
         )
         breakout_min_compression_score = bounded_quantile_value(
@@ -915,7 +931,9 @@ class QullamaggieAnalyzer:
             "price_floor": price_floor,
             "adv20_floor": adv20_floor,
             "turnover20_floor": turnover20_floor,
+            "breakout_min_ret_1m_pctile": breakout_min_ret_1m_pctile,
             "breakout_min_ret_3m_pctile": breakout_min_ret_3m_pctile,
+            "breakout_min_ret_6m_pctile": breakout_min_ret_6m_pctile,
             "breakout_min_high_52w_proximity": breakout_min_high_52w_proximity,
             "breakout_min_compression_score": breakout_min_compression_score,
             "breakout_min_prior_run_pct": breakout_min_prior_run_pct,
@@ -951,38 +969,58 @@ class QullamaggieAnalyzer:
         price_floor = _safe_float(calibration.get("price_floor")) or self.market_profile(market).price_floor
         adv20_floor = _safe_float(calibration.get("adv20_floor")) or self.market_profile(market).min_adv20
         turnover20_floor = _safe_float(calibration.get("turnover20_floor")) or self.market_profile(market).min_turnover20
+        breakout_min_ret_1m_pctile = _safe_float(calibration.get("breakout_min_ret_1m_pctile")) or 65.0
         breakout_min_ret_3m_pctile = _safe_float(calibration.get("breakout_min_ret_3m_pctile")) or 70.0
+        breakout_min_ret_6m_pctile = _safe_float(calibration.get("breakout_min_ret_6m_pctile")) or 65.0
         breakout_min_high_52w_proximity = _safe_float(calibration.get("breakout_min_high_52w_proximity")) or 0.85
         ep_min_gap_pct = _safe_float(calibration.get("ep_min_gap_pct")) or 0.10
         ep_watch_volume_min = _safe_float(calibration.get("ep_watch_volume_min")) or 2.0
 
-        table["breakout_universe_pass"] = table.apply(
-            lambda row: bool(
-                (_safe_float(row.get("close")) or 0.0) >= price_floor
-                and (_safe_float(row.get("adv20")) or 0.0) >= adv20_floor
-                and (_safe_float(row.get("avg_turnover20")) or 0.0) >= turnover20_floor
+        def _breakout_universe_pass_row(row: pd.Series) -> bool:
+            close_value = _safe_float(row.get("close")) or 0.0
+            adv20_value = _safe_float(row.get("adv20")) or 0.0
+            turnover20_value = _safe_float(row.get("avg_turnover20")) or 0.0
+            sma50_value = _safe_float(row.get("sma50"))
+            ret_1m_pctile = _safe_float(row.get("ret_1m_pctile")) or 0.0
+            ret_3m_pctile = _safe_float(row.get("ret_3m_pctile")) or 0.0
+            ret_6m_pctile = _safe_float(row.get("ret_6m_pctile")) or 0.0
+            high_52w_proximity = _safe_float(row.get("high_52w_proximity")) or 0.0
+
+            close_vs_sma50_ok = _safe_bool(row.get("close_gt_50dma"))
+            if not close_vs_sma50_ok and sma50_value is not None:
+                close_vs_sma50_ok = close_value >= (sma50_value * 0.98)
+
+            return bool(
+                close_value >= price_floor
+                and adv20_value >= adv20_floor
+                and turnover20_value >= turnover20_floor
+                and close_vs_sma50_ok
+                and ret_1m_pctile >= breakout_min_ret_1m_pctile
+                and ret_3m_pctile >= breakout_min_ret_3m_pctile
+                and ret_6m_pctile >= breakout_min_ret_6m_pctile
+                and high_52w_proximity >= breakout_min_high_52w_proximity
+            )
+
+        def _ep_universe_pass_row(row: pd.Series) -> bool:
+            close_value = _safe_float(row.get("close")) or 0.0
+            adv20_value = _safe_float(row.get("adv20")) or 0.0
+            turnover20_value = _safe_float(row.get("avg_turnover20")) or 0.0
+            gap_pct = _safe_float(row.get("gap_pct")) or 0.0
+            rvol_value = _safe_float(row.get("rvol")) or 0.0
+            high_52w_proximity = _safe_float(row.get("high_52w_proximity")) or 0.0
+            return bool(
+                close_value >= price_floor
+                and adv20_value >= adv20_floor
+                and turnover20_value >= turnover20_floor
                 and (
-                    _safe_bool(row.get("close_gt_50dma"))
-                    or ((_safe_float(row.get("close")) or 0.0) >= (_safe_float(row.get("sma50")) or 0.0) * 0.98)
+                    gap_pct >= ep_min_gap_pct * 0.6
+                    or rvol_value >= ep_watch_volume_min * 0.8
+                    or high_52w_proximity >= min(breakout_min_high_52w_proximity + 0.03, 0.97)
                 )
-                and (_safe_float(row.get("ret_3m_pctile")) or 0.0) >= breakout_min_ret_3m_pctile
-                and (_safe_float(row.get("high_52w_proximity")) or 0.0) >= breakout_min_high_52w_proximity
-            ),
-            axis=1,
-        )
-        table["ep_universe_pass"] = table.apply(
-            lambda row: bool(
-                (_safe_float(row.get("close")) or 0.0) >= price_floor
-                and (_safe_float(row.get("adv20")) or 0.0) >= adv20_floor
-                and (_safe_float(row.get("avg_turnover20")) or 0.0) >= turnover20_floor
-                and (
-                    (_safe_float(row.get("gap_pct")) or 0.0) >= ep_min_gap_pct * 0.6
-                    or (_safe_float(row.get("rvol")) or 0.0) >= ep_watch_volume_min * 0.8
-                    or (_safe_float(row.get("high_52w_proximity")) or 0.0) >= min(breakout_min_high_52w_proximity + 0.03, 0.97)
-                )
-            ),
-            axis=1,
-        )
+            )
+
+        table["breakout_universe_pass"] = table.apply(_breakout_universe_pass_row, axis=1)
+        table["ep_universe_pass"] = table.apply(_ep_universe_pass_row, axis=1)
         table.attrs["actual_data_calibration"] = dict(calibration)
         return table
 
@@ -1002,9 +1040,9 @@ class QullamaggieAnalyzer:
 
         market_trend_score = 50.0
         if not benchmark.empty and len(benchmark) >= 20:
-            benchmark["sma20"] = benchmark["close"].rolling(20, min_periods=10).mean()
-            benchmark["sma50"] = benchmark["close"].rolling(50, min_periods=20).mean()
-            benchmark["sma10"] = benchmark["close"].rolling(10, min_periods=5).mean()
+            benchmark["sma20"] = rolling_sma(benchmark["close"], 20, min_periods=10)
+            benchmark["sma50"] = rolling_sma(benchmark["close"], 50, min_periods=20)
+            benchmark["sma10"] = rolling_sma(benchmark["close"], 10, min_periods=5)
             benchmark_close = _safe_float(benchmark["close"].iloc[-1])
             sma20 = _safe_float(benchmark["sma20"].iloc[-1])
             sma50 = _safe_float(benchmark["sma50"].iloc[-1])
@@ -1012,8 +1050,9 @@ class QullamaggieAnalyzer:
             slope = None
             if len(benchmark) >= 30:
                 prev = _safe_float(benchmark["sma20"].iloc[-10])
-                if prev not in {None, 0} and sma20 is not None:
-                    slope = (sma20 / prev) - 1.0
+                slope_ratio = _safe_divide(sma20, prev)
+                if slope_ratio is not None:
+                    slope = slope_ratio - 1.0
             market_trend_score = _weighted_mean(
                 [
                     (100.0 if benchmark_close is not None and sma50 is not None and benchmark_close > sma50 else 0.0, 0.30),
@@ -1329,7 +1368,7 @@ class QullamaggieAnalyzer:
     ) -> dict[str, Any]:
         if feature_row is None:
             single = pd.DataFrame([self.compute_feature_row(symbol, market, daily_frame)])
-            feature_row = self.finalize_feature_table(single).iloc[0].to_dict()
+            feature_row = row_to_record(self.finalize_feature_table(single).iloc[0])
         else:
             feature_row = dict(feature_row)
 
@@ -1346,6 +1385,7 @@ class QullamaggieAnalyzer:
         breakout_volume_strong_min = _safe_float(calibration_map.get("breakout_volume_strong_min")) or breakout_volume_confirmation_min
         breakout_setup_pass_score = _safe_float(calibration_map.get("breakout_setup_pass_score")) or 70.0
         breakout_setup_five_star_score = _safe_float(calibration_map.get("breakout_setup_five_star_score")) or 90.0
+        universe_ready = _safe_bool(feature_row.get("breakout_universe_pass"))
 
         prior_run_pass = (_safe_float(feature_row.get("prior_run_pct")) or 0.0) >= (_safe_float(calibration_map.get("breakout_min_prior_run_pct")) or 0.30)
         base_length = _safe_float(feature_row.get("base_length"))
@@ -1405,14 +1445,16 @@ class QullamaggieAnalyzer:
 
         regime_supportive = regime_ctx.regime_state in {"RISK_ON", "RISK_ON_AGGRESSIVE"}
         five_star = bool(
-            stock_grade == "A++"
+            universe_ready
+            and stock_grade == "A++"
             and breakout_setup_score >= breakout_setup_five_star_score
             and risk_pass
             and regime_supportive
             and not too_extended
         )
         passed = bool(
-            prior_run_pass
+            universe_ready
+            and prior_run_pass
             and base_length_pass
             and compression_pass
             and high_proximity_pass
@@ -1424,7 +1466,7 @@ class QullamaggieAnalyzer:
             tier=tier,
             setup_family="BREAKOUT",
             passed=passed,
-            universe_ready=_safe_bool(feature_row.get("breakout_universe_pass")),
+            universe_ready=universe_ready,
         )
 
         reasons: list[str] = []
@@ -1450,6 +1492,8 @@ class QullamaggieAnalyzer:
             reasons.extend(["A_PP_LEADER", "OHLCV_VALIDATED"])
 
         fail_codes: list[str] = []
+        if not universe_ready:
+            fail_codes.append("OUTSIDE_BREAKOUT_UNIVERSE")
         if not prior_run_pass:
             fail_codes.append("PRIOR_RUN_TOO_WEAK")
         if not base_length_pass:
@@ -1477,6 +1521,8 @@ class QullamaggieAnalyzer:
         position_size_hint = self._position_size_hint(risk_unit_pct, regime_ctx.regime_state)
         target_price = (_safe_float(feature_row.get("pivot_price")) or 0.0) * 1.10
         entry_price = max(_safe_float(feature_row.get("close")) or 0.0, _safe_float(feature_row.get("pivot_price")) or 0.0)
+        stop_price = _safe_float(feature_row.get("stop_price"))
+        risk_reward_ratio = _round_or_none((target_price - entry_price) / max(entry_price - (stop_price or 0.0), 1e-9))
         return {
             "as_of_ts": feature_row.get("as_of_ts"),
             "symbol": str(symbol).upper(),
@@ -1498,11 +1544,11 @@ class QullamaggieAnalyzer:
             "data_flags": data_flags,
             "data_confidence_score": _round_or_none(data_confidence_score),
             "pivot_price": _round_or_none(_safe_float(feature_row.get("pivot_price"))),
-            "stop_price": _round_or_none(_safe_float(feature_row.get("stop_price"))),
+            "stop_price": _round_or_none(stop_price),
             "risk_unit_pct": _round_or_none(risk_unit_pct),
             "entry_timeframe": entry_timeframe,
             "suggested_entry": _round_or_none(entry_price),
-            "suggested_stop": _round_or_none(_safe_float(feature_row.get("stop_price"))),
+            "suggested_stop": _round_or_none(stop_price),
             "position_size_hint": _round_or_none(position_size_hint),
             "overnight_exposure_flag": "CAP_30_PCT" if (position_size_hint or 0.0) >= 20.0 else "NORMAL",
             "current_price": _round_or_none(_safe_float(feature_row.get("close"))),
@@ -1510,8 +1556,8 @@ class QullamaggieAnalyzer:
             "adr": _round_or_none(adr20_pct),
             "vcp_pattern": self.check_vcp_pattern(daily_frame, market=market, calibration=calibration_map, feature_row=feature_row),
             "breakout_level": _round_or_none(_safe_float(feature_row.get("pivot_price"))),
-            "stop_loss": _round_or_none(_safe_float(feature_row.get("stop_price"))),
-            "risk_reward_ratio": _round_or_none((target_price - entry_price) / max(entry_price - (_safe_float(feature_row.get("stop_price")) or 0.0), 1e-9)),
+            "stop_loss": _round_or_none(stop_price),
+            "risk_reward_ratio": risk_reward_ratio,
             "passed": passed,
             "scores": {
                 "a_pp_score": _round_or_none(a_pp_score),
@@ -1522,7 +1568,7 @@ class QullamaggieAnalyzer:
             "execution": {
                 "entry_timeframe": entry_timeframe,
                 "pivot_price": _round_or_none(_safe_float(feature_row.get("pivot_price"))),
-                "stop_price": _round_or_none(_safe_float(feature_row.get("stop_price"))),
+                "stop_price": _round_or_none(stop_price),
                 "risk_unit_pct": _round_or_none(risk_unit_pct),
             },
             "metrics": {
@@ -1552,7 +1598,7 @@ class QullamaggieAnalyzer:
     ) -> dict[str, Any]:
         if feature_row is None:
             single = pd.DataFrame([self.compute_feature_row(symbol, market, daily_frame)])
-            feature_row = self.finalize_feature_table(single).iloc[0].to_dict()
+            feature_row = row_to_record(self.finalize_feature_table(single).iloc[0])
         else:
             feature_row = dict(feature_row)
 
@@ -1560,18 +1606,6 @@ class QullamaggieAnalyzer:
         regime_ctx = regime or self._default_regime(market)
         profile = self.market_profile(market)
         calibration_map = dict(calibration or {})
-
-        if earnings_payload is None and enable_earnings_filter:
-            collector = earnings_collector or EarningsDataCollector(market=market)
-            earnings_payload = collector.get_earnings_surprise(symbol)
-
-        has_event_data = bool(earnings_payload)
-        has_estimate_data = bool(earnings_payload and earnings_payload.get("eps_estimate") is not None)
-        event_meets = bool(earnings_payload and earnings_payload.get("meets_criteria"))
-        eps_surprise_pct = _safe_float((earnings_payload or {}).get("eps_surprise_pct"))
-        revenue_surprise_pct = _safe_float((earnings_payload or {}).get("revenue_surprise_pct"))
-        yoy_eps_growth = _safe_float((earnings_payload or {}).get("yoy_eps_growth"))
-        yoy_revenue_growth = _safe_float((earnings_payload or {}).get("yoy_revenue_growth"))
 
         gap_pct = _safe_float(feature_row.get("gap_pct")) or 0.0
         volume_ratio = _safe_float(feature_row.get("rvol")) or 0.0
@@ -1592,6 +1626,36 @@ class QullamaggieAnalyzer:
         ep_min_neglected_base_score = _safe_float(calibration_map.get("ep_min_neglected_base_score")) or 55.0
         ep_setup_pass_score = _safe_float(calibration_map.get("ep_setup_pass_score")) or 70.0
         ep_setup_five_star_score = _safe_float(calibration_map.get("ep_setup_five_star_score")) or 90.0
+        universe_ready = _safe_bool(feature_row.get("ep_universe_pass"))
+
+        neglected_base_score = _safe_float(feature_row.get("neglected_base_score")) or 0.0
+        technical_event_prefilter = bool(
+            gap_pct >= ep_min_gap_pct
+            and volume_ratio >= ep_watch_volume_min
+            and dcr >= 0.65
+            and close >= open_price
+            and (_safe_bool(feature_row.get("no_excessive_run")) and neglected_base_score >= ep_min_neglected_base_score)
+        )
+        earnings_fetch_skipped = False
+        if earnings_payload is None and enable_earnings_filter and technical_event_prefilter:
+            collector = earnings_collector or EarningsDataCollector(market=market)
+            earnings_payload = collector.get_earnings_surprise(symbol)
+        elif earnings_payload is None and enable_earnings_filter:
+            earnings_fetch_skipped = True
+
+        earnings_payload_map = dict(earnings_payload or {})
+        earnings_fetch_status = str(earnings_payload_map.get("fetch_status") or "").strip().lower()
+        earnings_data_usable = bool(earnings_payload_map) and (
+            earnings_fetch_status in {"", "complete"}
+            or str(earnings_payload_map.get("data_quality") or "").strip().lower() == "stale_cache"
+        )
+        has_event_data = bool(earnings_data_usable)
+        has_estimate_data = bool(earnings_data_usable and earnings_payload_map.get("eps_estimate") is not None)
+        event_meets = bool(earnings_data_usable and earnings_payload_map.get("meets_criteria"))
+        eps_surprise_pct = _safe_float(earnings_payload_map.get("eps_surprise_pct")) if earnings_data_usable else None
+        revenue_surprise_pct = _safe_float(earnings_payload_map.get("revenue_surprise_pct")) if earnings_data_usable else None
+        yoy_eps_growth = _safe_float(earnings_payload_map.get("yoy_eps_growth")) if earnings_data_usable else None
+        yoy_revenue_growth = _safe_float(earnings_payload_map.get("yoy_revenue_growth")) if earnings_data_usable else None
 
         volume_shock_score = max(
             _score_ratio(volume_ratio, ep_core_volume_min, 1.0) * 100.0,
@@ -1599,7 +1663,7 @@ class QullamaggieAnalyzer:
         )
         event_intensity_score = 35.0
         earnings_quality_score = 35.0
-        if earnings_payload:
+        if earnings_data_usable:
             event_intensity_score = _weighted_mean(
                 [
                     (100.0 if event_meets else 55.0, 0.35),
@@ -1620,7 +1684,6 @@ class QullamaggieAnalyzer:
             event_intensity_score = 40.0
             earnings_quality_score = 40.0
 
-        neglected_base_score = _safe_float(feature_row.get("neglected_base_score")) or 0.0
         regime_alignment_score = self._regime_alignment_score(regime_ctx)
         ep_setup_score = _weighted_mean(
             [
@@ -1639,8 +1702,17 @@ class QullamaggieAnalyzer:
         ep_core = gap_pass and volume_pass_core and event_meets and neglected_base_pass
         ep_price_volume = gap_pass and volume_pass_watch and dcr >= 0.65 and close >= open_price and neglected_base_pass
         regime_supportive = regime_ctx.regime_state in {"RISK_ON", "RISK_ON_AGGRESSIVE"}
-        five_star = bool(ep_core and ep_setup_score >= ep_setup_five_star_score and stop_width_pass and regime_supportive)
-        passed = bool(ep_core or (ep_price_volume and ep_setup_score >= ep_setup_pass_score))
+        five_star = bool(
+            universe_ready
+            and ep_core
+            and ep_setup_score >= ep_setup_five_star_score
+            and stop_width_pass
+            and regime_supportive
+        )
+        passed = bool(
+            universe_ready
+            and (ep_core or (ep_price_volume and ep_setup_score >= ep_setup_pass_score))
+        )
         execution_quality_score = self._execution_quality(
             risk_unit_pct=risk_unit_pct,
             volatility_cap_pct=adr20_pct * 1.5,
@@ -1669,7 +1741,7 @@ class QullamaggieAnalyzer:
             tier=tier,
             setup_family="EP",
             passed=passed,
-            universe_ready=_safe_bool(feature_row.get("ep_universe_pass")),
+            universe_ready=universe_ready,
         )
 
         reasons: list[str] = []
@@ -1693,6 +1765,8 @@ class QullamaggieAnalyzer:
             reasons.extend(["PRICE_VOLUME_REVALUATION", "OHLCV_VALIDATED"])
 
         fail_codes: list[str] = []
+        if not universe_ready:
+            fail_codes.append("OUTSIDE_EP_UNIVERSE")
         if not gap_pass:
             fail_codes.append("NO_GAP_CONFIRMATION")
         if not volume_pass_watch:
@@ -1713,6 +1787,16 @@ class QullamaggieAnalyzer:
             has_estimate_data=has_estimate_data,
             needs_review=needs_review,
         )
+        if earnings_fetch_skipped:
+            data_flags.append("EVENT_FETCH_SKIPPED_TECHNICAL_PREFILTER")
+        elif earnings_fetch_status == "rate_limited":
+            data_flags.append("EARNINGS_RATE_LIMITED")
+        elif earnings_fetch_status == "soft_unavailable":
+            data_flags.append("EARNINGS_SOFT_UNAVAILABLE")
+        elif earnings_fetch_status == "delisted":
+            data_flags.append("EARNINGS_DELISTED")
+        elif earnings_fetch_status == "failed":
+            data_flags.append("EARNINGS_FETCH_FAILED")
         data_flags.append("EARNINGS_FILTER_ENABLED" if enable_earnings_filter else "EVENT_FILTER_DISABLED")
         data_flags = _unique(data_flags)
 
@@ -1756,6 +1840,8 @@ class QullamaggieAnalyzer:
             "volume_ratio": _round_or_none(volume_ratio),
             "ma50_relation": "Above" if _safe_bool(feature_row.get("close_gt_50dma")) else "Below",
             "earnings_surprise": bool(has_event_data) if enable_earnings_filter else None,
+            "earnings_fetch_status": earnings_fetch_status or ("complete" if earnings_data_usable else ""),
+            "earnings_unavailable_reason": earnings_payload_map.get("unavailable_reason"),
             "eps_surprise_pct": _round_or_none(eps_surprise_pct),
             "revenue_surprise_pct": _round_or_none(revenue_surprise_pct),
             "yoy_eps_growth": _round_or_none(yoy_eps_growth),
@@ -1797,7 +1883,7 @@ class QullamaggieAnalyzer:
     ) -> dict[str, Any]:
         if feature_row is None:
             single = pd.DataFrame([self.compute_feature_row(symbol, market, daily_frame)])
-            feature_row = self.finalize_feature_table(single).iloc[0].to_dict()
+            feature_row = row_to_record(self.finalize_feature_table(single).iloc[0])
         else:
             feature_row = dict(feature_row)
 
@@ -1819,8 +1905,11 @@ class QullamaggieAnalyzer:
             and latest["close"] < latest["open"]
         )
         deviation_from_sma20 = None
-        if _safe_float(feature_row.get("sma20")) not in {None, 0} and _safe_float(feature_row.get("close")) is not None:
-            deviation_from_sma20 = ((_safe_float(feature_row.get("close")) / _safe_float(feature_row.get("sma20"))) - 1.0) * 100.0
+        close_value = _safe_float(feature_row.get("close"))
+        sma20_value = _safe_float(feature_row.get("sma20"))
+        close_to_sma20 = _safe_divide(close_value, sma20_value)
+        if close_to_sma20 is not None:
+            deviation_from_sma20 = (close_to_sma20 - 1.0) * 100.0
 
         short_score = _weighted_mean(
             [

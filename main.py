@@ -56,7 +56,6 @@ def build_parser() -> argparse.ArgumentParser:
         choices=[
             "all",
             "screening",
-            "momentum",
             "leader",
             "qullamaggie",
             "kr-collect",
@@ -128,10 +127,6 @@ def main() -> None:
 
         if task == "screening":
             run_all_screening_processes(skip_data=args.skip_data, markets=markets)
-            return
-
-        if task == "momentum":
-            print("[Main] Momentum task is deprecated and no longer runs from orchestrator")
             return
 
         if task == "leader":

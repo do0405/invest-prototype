@@ -22,65 +22,77 @@ from utils.market_data_contract import (
     CANONICAL_OHLCV_COLUMNS,
     LEGACY_MOJIBAKE_ALIASES,
     OHLCV_COLUMN_ALIASES,
+    PricePolicy,
     normalize_ohlcv_columns,
+    normalize_ohlcv_frame,
 )
 from utils.market_runtime import get_stock_metadata_path, iter_provider_symbols
 from utils.ohlcv_progress import format_us_style_chunk_start, format_us_style_chunk_summary
 from utils.yfinance_runtime import bootstrap_yfinance_cache
+from utils.yahoo_throttle import extend_yahoo_cooldown, wait_for_yahoo_request_slot
 
 
 logger = logging.getLogger(__name__)
 
 CANONICAL_KR_OHLCV_COLUMNS = CANONICAL_OHLCV_COLUMNS
+KR_OHLCV_STORAGE_COLUMNS = (
+    *CANONICAL_KR_OHLCV_COLUMNS,
+    "adj_close",
+    "dividends",
+    "stock_splits",
+    "split_factor",
+)
 KR_OHLCV_COLUMN_ALIASES = {
     alias: canonical
     for canonical, aliases in OHLCV_COLUMN_ALIASES.items()
     for alias in aliases
 }
+KR_OHLCV_COLUMN_ALIASES.update(
+    {
+        "날짜": "date",
+        "일자": "date",
+        "시가": "open",
+        "고가": "high",
+        "저가": "low",
+        "종가": "close",
+        "거래량": "volume",
+    }
+)
 for canonical, aliases in LEGACY_MOJIBAKE_ALIASES.items():
     for alias in aliases:
         KR_OHLCV_COLUMN_ALIASES[alias] = canonical
 
-KR_OHLCV_CHUNK_SIZE = 30
-KR_OHLCV_CHUNK_PAUSE_SECONDS = 1.0
-KR_OHLCV_REQUEST_DELAY_SECONDS = 0.1
+KR_OHLCV_CHUNK_SIZE = 10
+KR_OHLCV_CHUNK_PAUSE_SECONDS = 4.0
+KR_OHLCV_REQUEST_DELAY_SECONDS = 0.50
 KR_OHLCV_MAX_RETRIES = 2
 KR_OHLCV_EMPTY_RETRY_DELAY_SECONDS = 1.0
-KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS = 10.0
+KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS = 45.0
+KR_OHLCV_REFRESH_OVERLAP_BARS = 2
+KR_OHLCV_TARGET_BARS = 330
+KR_OHLCV_DEFAULT_LOOKBACK_DAYS = 520
 
 
 def _normalize_kr_ohlcv_frame(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
     if df is None or df.empty:
-        return pd.DataFrame()
+        return pd.DataFrame(columns=list(KR_OHLCV_STORAGE_COLUMNS))
 
     frame = df.copy()
     frame = frame.rename(columns=KR_OHLCV_COLUMN_ALIASES)
     frame = normalize_ohlcv_columns(frame)
-    if "date" not in frame.columns:
-        frame = frame.reset_index()
-        if len(frame.columns) > 0:
-            frame = frame.rename(columns={frame.columns[0]: "date"})
-        frame = normalize_ohlcv_columns(frame)
-    if "date" not in frame.columns:
-        return pd.DataFrame(columns=list(CANONICAL_KR_OHLCV_COLUMNS))
     frame = frame.loc[:, ~frame.columns.duplicated()]
+    normalized = normalize_ohlcv_frame(frame, symbol=ticker, price_policy=PricePolicy.RAW)
+    if normalized.empty:
+        return pd.DataFrame(columns=list(KR_OHLCV_STORAGE_COLUMNS))
 
-    frame["date"] = pd.to_datetime(frame["date"], errors="coerce").dt.strftime("%Y-%m-%d")
-    frame["symbol"] = ticker
-
-    for col in ("open", "high", "low", "close", "volume"):
-        if col not in frame.columns:
-            frame[col] = 0
-
-    frame = frame[list(CANONICAL_KR_OHLCV_COLUMNS)]
-    frame = frame.dropna(subset=["date", "close"]).copy()
-
-    for col in ("open", "high", "low", "close", "volume"):
-        frame[col] = pd.to_numeric(frame[col], errors="coerce")
-
-    frame = frame.dropna(subset=["close"])
-    frame = frame.sort_values("date").reset_index(drop=True)
-    return frame
+    normalized["date"] = pd.to_datetime(normalized["date"], errors="coerce").dt.strftime("%Y-%m-%d")
+    normalized["adj_close"] = pd.to_numeric(normalized["adj_close"], errors="coerce").fillna(normalized["close"])
+    normalized["dividends"] = pd.to_numeric(normalized["dividends"], errors="coerce").fillna(0.0)
+    normalized["stock_splits"] = pd.to_numeric(normalized["stock_splits"], errors="coerce").fillna(0.0)
+    normalized["split_factor"] = pd.to_numeric(normalized["split_factor"], errors="coerce").fillna(1.0)
+    normalized = normalized.dropna(subset=["date", "close"]).copy()
+    normalized = normalized.sort_values("date").reset_index(drop=True)
+    return normalized[list(KR_OHLCV_STORAGE_COLUMNS)]
 
 
 def _resolve_market_day(day: datetime) -> datetime:
@@ -88,6 +100,26 @@ def _resolve_market_day(day: datetime) -> datetime:
     while current.weekday() >= 5:
         current -= timedelta(days=1)
     return current
+
+
+def _compute_kr_overlap_fetch_start(
+    existing_dates: pd.Series,
+    fallback_start_dt: datetime,
+    *,
+    overlap_bars: int = KR_OHLCV_REFRESH_OVERLAP_BARS,
+) -> tuple[datetime, Optional[pd.Timestamp], int]:
+    dates = pd.to_datetime(existing_dates, errors="coerce").dropna()
+    if dates.empty:
+        return fallback_start_dt, None, 0
+
+    unique_dates = sorted({value.normalize() for value in dates.tolist()})
+    if not unique_dates:
+        return fallback_start_dt, None, 0
+
+    last_date = unique_dates[-1]
+    overlap_count = max(1, min(int(overlap_bars), len(unique_dates)))
+    start_dt = unique_dates[-overlap_count].to_pydatetime()
+    return start_dt, last_date, overlap_count
 
 
 def _resolve_kr_universe(
@@ -164,7 +196,7 @@ def _fetch_kr_ohlcv_via_yfinance(
                     end=(end_dt + timedelta(days=1)).strftime("%Y-%m-%d"),
                     interval="1d",
                     auto_adjust=False,
-                    actions=False,
+                    actions=True,
                 )
         except Exception as exc:
             last_error = str(exc)
@@ -220,7 +252,7 @@ def _fetch_yfinance_index_ohlcv(
                 end=(end_dt + timedelta(days=1)).strftime("%Y-%m-%d"),
                 interval="1d",
                 auto_adjust=False,
-                actions=False,
+                actions=True,
             )
     except Exception:
         return pd.DataFrame()
@@ -266,15 +298,27 @@ def _read_existing_kr_ohlcv(path: str, ticker: str) -> Optional[pd.DataFrame]:
 
 def _trim_kr_ohlcv_window(frame: pd.DataFrame, start_dt: datetime) -> pd.DataFrame:
     if frame is None or frame.empty:
-        return pd.DataFrame(columns=list(CANONICAL_KR_OHLCV_COLUMNS))
+        return pd.DataFrame(columns=list(KR_OHLCV_STORAGE_COLUMNS))
 
     trimmed = frame.copy()
     trimmed["date"] = pd.to_datetime(trimmed["date"], errors="coerce")
     trimmed = trimmed.dropna(subset=["date"])
     trimmed = trimmed[trimmed["date"] >= pd.Timestamp(start_dt.date())].copy()
+    if len(trimmed) > KR_OHLCV_TARGET_BARS:
+        trimmed = trimmed.sort_values("date", ascending=False).head(KR_OHLCV_TARGET_BARS).copy()
     trimmed["date"] = trimmed["date"].dt.strftime("%Y-%m-%d")
     trimmed = trimmed.sort_values("date").reset_index(drop=True)
-    return trimmed[list(CANONICAL_KR_OHLCV_COLUMNS)]
+    for column in KR_OHLCV_STORAGE_COLUMNS:
+        if column not in trimmed.columns:
+            if column == "adj_close":
+                trimmed[column] = trimmed["close"]
+            elif column in {"dividends", "stock_splits"}:
+                trimmed[column] = 0.0
+            elif column == "split_factor":
+                trimmed[column] = 1.0
+            else:
+                trimmed[column] = pd.NA
+    return trimmed[list(KR_OHLCV_STORAGE_COLUMNS)]
 
 
 def _merge_kr_ohlcv_frames(existing: Optional[pd.DataFrame], new_frame: pd.DataFrame) -> pd.DataFrame:
@@ -296,7 +340,17 @@ def _merge_kr_ohlcv_frames(existing: Optional[pd.DataFrame], new_frame: pd.DataF
     merged = merged.sort_values("date").reset_index(drop=True)
     merged["date"] = merged["date"].dt.strftime("%Y-%m-%d")
     merged = merged.drop(columns=["date_key"], errors="ignore")
-    return merged[list(CANONICAL_KR_OHLCV_COLUMNS)]
+    for column in KR_OHLCV_STORAGE_COLUMNS:
+        if column not in merged.columns:
+            if column == "adj_close":
+                merged[column] = merged["close"]
+            elif column in {"dividends", "stock_splits"}:
+                merged[column] = 0.0
+            elif column == "split_factor":
+                merged[column] = 1.0
+            else:
+                merged[column] = pd.NA
+    return merged[list(KR_OHLCV_STORAGE_COLUMNS)]
 
 
 def _is_kr_rate_limit_error(message: str) -> bool:
@@ -369,7 +423,7 @@ def _format_kr_chunk_summary(chunk_num: int, total_chunks: int, statuses: List[s
 
 
 def collect_kr_ohlcv_csv(
-    days: int = 450,
+    days: int = KR_OHLCV_DEFAULT_LOOKBACK_DAYS,
     include_kosdaq: bool = True,
     include_etf: bool = True,
     include_etn: bool = True,
@@ -437,39 +491,56 @@ def collect_kr_ohlcv_csv(
         existing: Optional[pd.DataFrame] = None
         last_date: Optional[pd.Timestamp] = None
         fetch_start_dt = start_dt
+        overlap_count = 0
 
         if os.path.exists(out_path):
             try:
                 existing = _read_existing_kr_ohlcv(out_path, ticker=ticker)
                 if existing is None or existing.empty:
-                    print(f"[KR] 📊 빈 파일 감지, 새로 데이터 수집: {ticker}")
+                    print(f"[KR] Empty file detected, collecting fresh data: {ticker}")
                     existing = None
                 else:
                     existing["date"] = pd.to_datetime(existing["date"], errors="coerce")
                     existing = existing.dropna(subset=["date"]).sort_values("date").reset_index(drop=True)
                     if not existing.empty:
-                        last_date = existing["date"].max()
-                        fetch_start_dt = (last_date + timedelta(days=1)).to_pydatetime()
+                        cached_bar_count = int(existing["date"].dt.normalize().nunique())
+                        if cached_bar_count < KR_OHLCV_TARGET_BARS:
+                            fetch_start_dt = start_dt
+                            last_date = existing["date"].max()
+                            print(
+                                f"[KR] History backfill active: {ticker} - cached bars={cached_bar_count}, "
+                                f"refetching window from {fetch_start_dt.strftime('%Y-%m-%d')}"
+                            )
+                        else:
+                            fetch_start_dt, last_date, overlap_count = _compute_kr_overlap_fetch_start(
+                                existing["date"],
+                                start_dt,
+                            )
             except Exception as exc:
-                print(f"[KR] ⚠️ {ticker} 기존 파일 오류: {exc}")
+                print(f"[KR] Existing file read failed: {ticker} - {exc}")
                 existing = None
 
         if fetch_start_dt.date() > end_dt.date():
             last_date_str = last_date.strftime("%Y-%m-%d") if last_date is not None else end_dt.strftime("%Y-%m-%d")
-            print(f"[KR] ⏩ 최신 상태: {ticker} (마지막 데이터: {last_date_str})")
+            print(f"[KR] Latest status: {ticker} (last data: {last_date_str})")
             return "latest", None
 
+        if overlap_count > 0 and last_date is not None:
+            print(
+                f"[KR] Refresh overlap active: {ticker} - refetching last {overlap_count} stored bars "
+                f"from {fetch_start_dt.strftime('%Y-%m-%d')}"
+            )
+
         print(
-            f"[DEBUG] {ticker}: 수집 시작일 {fetch_start_dt.strftime('%Y-%m-%d')}, "
-            f"종료일 {end_dt.strftime('%Y-%m-%d')}"
+            f"[DEBUG] {ticker}: collection start {fetch_start_dt.strftime('%Y-%m-%d')}, "
+            f"end {end_dt.strftime('%Y-%m-%d')}"
         )
 
         saw_rate_limit = False
         last_error: Optional[str] = None
 
         for attempt in range(KR_OHLCV_MAX_RETRIES):
-            if KR_OHLCV_REQUEST_DELAY_SECONDS > 0:
-                time.sleep(KR_OHLCV_REQUEST_DELAY_SECONDS)
+            wait_for_yahoo_request_slot("KR OHLCV", min_interval=KR_OHLCV_REQUEST_DELAY_SECONDS)
 
             print(
                 f"[KR] 📊 데이터 요청 중: {ticker} "
@@ -507,14 +578,15 @@ def collect_kr_ohlcv_csv(
             last_error = fetch_error
             if fetch_error and _is_kr_rate_limit_error(fetch_error):
                 saw_rate_limit = True
-                wait = KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS * (attempt + 1)
+                wait = KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS
+                extend_yahoo_cooldown("KR OHLCV", wait)
                 print(
-                    f"[KR] 🚫 API 제한 도달: {ticker} - 잠시 후 다시 시도하세요"
+                    f"[KR] Rate limit detected: {ticker} - cooldown applied before retry"
                 )
                 if attempt < KR_OHLCV_MAX_RETRIES - 1:
                     print(
-                        f"[KR] ⚠️ {ticker} 빈 데이터 반환, 재시도 {attempt + 1}/{KR_OHLCV_MAX_RETRIES} "
-                        f"({wait:.0f}s 대기)"
+                        f"[KR] Retry scheduled after rate limit: {ticker} "
+                        f"({attempt + 1}/{KR_OHLCV_MAX_RETRIES}, wait={wait:.0f}s)"
                     )
                     time.sleep(wait)
                     continue
@@ -523,8 +595,8 @@ def collect_kr_ohlcv_csv(
             if attempt < KR_OHLCV_MAX_RETRIES - 1:
                 wait = KR_OHLCV_EMPTY_RETRY_DELAY_SECONDS * (attempt + 1)
                 print(
-                    f"[KR] ⚠️ {ticker} 빈 데이터 반환, 재시도 {attempt + 1}/{KR_OHLCV_MAX_RETRIES} "
-                    f"({wait:.0f}s 대기)"
+                    f"[KR] Empty response, retry scheduled: {ticker} "
+                    f"({attempt + 1}/{KR_OHLCV_MAX_RETRIES}, wait={wait:.0f}s)"
                 )
                 time.sleep(wait)
                 continue
@@ -553,7 +625,7 @@ def collect_kr_ohlcv_csv(
                 else:
                     print(f"[KR] 🚫 공급자 미지원/비활성 심볼: {ticker} - {reason}")
 
-                empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
+                empty_df = pd.DataFrame(columns=list(KR_OHLCV_STORAGE_COLUMNS))
                 empty_df.to_csv(out_path, index=False)
                 return "delisted", last_error
 

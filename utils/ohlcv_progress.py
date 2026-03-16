@@ -14,18 +14,18 @@ US_STYLE_STATUS_ORDER: tuple[str, ...] = (
 )
 
 US_STYLE_STATUS_LABELS: dict[str, str] = {
-    "saved": "저장",
-    "latest": "최신",
-    "kept_existing": "유지",
+    "saved": "saved",
+    "latest": "latest",
+    "kept_existing": "kept",
     "soft_unavailable": "soft",
-    "delisted": "상폐",
-    "rate_limited": "제한",
-    "failed": "실패",
+    "delisted": "delisted",
+    "rate_limited": "rate_limited",
+    "failed": "failed",
 }
 
 
 def format_us_style_chunk_start(chunk_num: int, total_chunks: int, chunk: list[str]) -> str:
-    return f"\n⏱️ Chunk {chunk_num}/{total_chunks} 시작 ({len(chunk)}개): {chunk}"
+    return f"\n[Chunk] Start {chunk_num}/{total_chunks} - size={len(chunk)} tickers={chunk}"
 
 
 def format_us_style_chunk_summary(
@@ -41,7 +41,4 @@ def format_us_style_chunk_summary(
         f"{status_labels[status]} {counter[status]}"
         for status in status_order
     )
-    return (
-        f"✅ 청크 {chunk_num}/{total_chunks} 완료: "
-        f"처리 {len(statuses)}개 | {metrics}"
-    )
+    return f"[Chunk] Done {chunk_num}/{total_chunks} - processed={len(statuses)} | {metrics}"

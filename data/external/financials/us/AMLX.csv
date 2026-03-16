@@ -1,2 +1,2 @@
 symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-AMLX,AMLX,[],False,19.56521739130435,-706.8493150684932,True,False,0,-77.05509131113013,False,False,False,False,False,False,17.028207417416695,-712.4150108583142,0,0,2026-03-13T01:21:29.033520+00:00
+AMLX,AMLX,[],False,18.91891891891892,0,False,False,0,-100.0,False,False,False,False,False,False,4.033618333042517,52.033684294250406,0,0,2026-03-14T05:05:30.142363+00:00

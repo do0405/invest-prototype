@@ -13,16 +13,22 @@ import pandas as pd
 import yfinance as yf
 import yfinance.shared as yf_shared
 from yfinance.exceptions import YFPricesMissingError, YFRateLimitError, YFTickerMissingError, YFTzMissingError
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pytz import timezone
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Set
 
-from data_collectors.symbol_universe import load_us_symbol_universe
+from data_collectors.symbol_universe import (
+    _is_us_collectable_symbol,
+    _read_symbol_from_existing_csv,
+    load_us_symbol_universe,
+    sync_official_us_symbol_directory,
+)
 from utils.console_runtime import bootstrap_windows_utf8
 from utils.ohlcv_progress import format_us_style_chunk_start, format_us_style_chunk_summary
 from utils.yfinance_runtime import bootstrap_yfinance_cache
+from utils.yahoo_throttle import extend_yahoo_cooldown, wait_for_yahoo_request_slot
 from utils import (
     ensure_dir, get_us_market_today, safe_filename
 )
@@ -48,13 +54,29 @@ US_ALWAYS_INCLUDE_SYMBOLS = {
     "^SKEW",
 }
 
-US_OHLCV_CHUNK_SIZE = 5
-US_OHLCV_CHUNK_PAUSE_SECONDS = 6.0
-US_OHLCV_MAX_WORKERS = 2
-US_OHLCV_REQUEST_DELAY_SECONDS = 0.75
+US_OHLCV_CHUNK_SIZE = 4
+US_OHLCV_CHUNK_PAUSE_SECONDS = 8.0
+US_OHLCV_MAX_WORKERS = 1
+US_OHLCV_REQUEST_DELAY_SECONDS = 1.25
 US_OHLCV_MAX_RETRIES = 2
 US_OHLCV_EMPTY_RETRY_DELAY_SECONDS = 3.0
-US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS = 30.0
+US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS = 45.0
+US_OHLCV_REFRESH_OVERLAP_BARS = 2
+US_OHLCV_TARGET_BARS = 330
+US_OHLCV_DEFAULT_LOOKBACK_DAYS = 520
+US_OHLCV_STORAGE_COLUMNS = [
+    "date",
+    "symbol",
+    "open",
+    "high",
+    "low",
+    "close",
+    "adj_close",
+    "volume",
+    "dividends",
+    "stock_splits",
+    "split_factor",
+]
 
 _us_rate_limit_lock = threading.Lock()
 _us_rate_limit_cooldown_until = 0.0
@@ -102,8 +124,12 @@ def _list_symbols_from_existing_us_csv() -> Set[str]:
     for name in os.listdir(DATA_US_DIR):
         if not name.endswith(".csv"):
             continue
-        symbol = os.path.splitext(name)[0].strip()
-        if symbol:
+        path = os.path.join(DATA_US_DIR, name)
+        base_name = os.path.splitext(name)[0].strip().upper()
+        symbol = base_name
+        if not _is_us_collectable_symbol(base_name) or base_name.endswith("_FILE"):
+            symbol = _read_symbol_from_existing_csv(path).strip().upper() or base_name
+        if symbol and _is_us_collectable_symbol(symbol):
             symbols.add(symbol)
     return symbols
 
@@ -144,12 +170,13 @@ def _read_symbols_from_csv(path: str) -> Set[str]:
     return symbols
 
 
-def _load_us_symbol_universe() -> Set[str]:
+def _load_us_symbol_universe(progress=None) -> Set[str]:
     return set(
         load_us_symbol_universe(
             data_dir=DATA_DIR,
             us_data_dir=DATA_US_DIR,
             stock_metadata_path=STOCK_METADATA_PATH,
+            progress=progress,
         )
     )
 
@@ -233,6 +260,30 @@ def _format_us_chunk_summary(chunk_num: int, total_chunks: int, statuses: list[s
     return format_us_style_chunk_summary(chunk_num, total_chunks, statuses)
 
 
+def _compute_us_overlap_start_date(
+    existing_dates: pd.Series,
+    fallback_start: date,
+    *,
+    overlap_bars: int = US_OHLCV_REFRESH_OVERLAP_BARS,
+) -> tuple[date, date | None, int]:
+    dates = pd.to_datetime(existing_dates, utc=True, errors="coerce").dropna()
+    if dates.empty:
+        return fallback_start, None, 0
+
+    unique_dates = sorted({value.date() for value in dates.tolist()})
+    if not unique_dates:
+        return fallback_start, None, 0
+
+    last_date = unique_dates[-1]
+    overlap_count = max(1, min(int(overlap_bars), len(unique_dates)))
+    start_date = unique_dates[-overlap_count]
+    return start_date, last_date, overlap_count
+
+
+def _default_us_fetch_start(today: date) -> date:
+    return today - timedelta(days=US_OHLCV_DEFAULT_LOOKBACK_DAYS)
+
+
 def _extend_us_rate_limit_cooldown(seconds: float) -> None:
     global _us_rate_limit_cooldown_until
 
@@ -244,6 +295,8 @@ def _extend_us_rate_limit_cooldown(seconds: float) -> None:
         if target > _us_rate_limit_cooldown_until:
             _us_rate_limit_cooldown_until = target
 
+    extend_yahoo_cooldown("US OHLCV", seconds)
+
 
 def _wait_for_us_rate_limit_cooldown() -> None:
     with _us_rate_limit_lock:
@@ -253,47 +306,54 @@ def _wait_for_us_rate_limit_cooldown() -> None:
         print(f"[US] cooldown applied: {remaining:.1f}s")
         time.sleep(remaining)
 
+    wait_for_yahoo_request_slot("US OHLCV", min_interval=US_OHLCV_REQUEST_DELAY_SECONDS)
+
 
 def _pop_yfinance_error(ticker: str) -> str | None:
     return yf_shared._ERRORS.pop(str(ticker).upper(), None)
 
 
 def update_symbol_list() -> Set[str]:
-    """새로운 종목 리스트 업데이트"""
-    print("\n🔄 종목 리스트 업데이트 시작...")
+    """Refresh the US symbol list from local files and seed sources."""
+    print("\n[US] Symbol list refresh started")
 
     existing_symbols = _list_symbols_from_existing_us_csv()
-    print(f"📊 기존 종목 수: {len(existing_symbols)}개")
+    print(f"[US] Existing symbol count: {len(existing_symbols)}")
+    print("[Universe] US symbol universe build started")
 
-    new_symbols = _load_us_symbol_universe()
+    try:
+        sync_official_us_symbol_directory(
+            data_dir=DATA_DIR,
+            progress=lambda message: print(message, flush=True),
+        )
+    except Exception as exc:
+        print(f"[Universe] Official seed sync skipped - reason={exc}")
 
-    # 기존에 없는 새로운 종목만 필터링
+    new_symbols = _load_us_symbol_universe(progress=lambda message: print(message, flush=True))
+
     truly_new_symbols = new_symbols - existing_symbols
 
     if truly_new_symbols:
-        print(f"🆕 새로 발견된 종목: {len(truly_new_symbols)}개")
-
-        # 새로운 종목들의 빈 CSV 파일 생성 (다음 수집 시 포함되도록)
+        print(f"[US] Newly discovered symbols: {len(truly_new_symbols)}")
         for symbol in sorted(truly_new_symbols):
             try:
                 safe_symbol = safe_filename(symbol)
                 csv_path = os.path.join(DATA_US_DIR, f"{safe_symbol}.csv")
                 if not os.path.exists(csv_path):
-                    # 빈 CSV 파일 생성 (헤더만)
-                    empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
+                    empty_df = pd.DataFrame(columns=US_OHLCV_STORAGE_COLUMNS)
                     empty_df.to_csv(csv_path, index=False)
-                    print(f"📝 새 종목 파일 생성: {symbol}")
+                    print(f"[US] Created placeholder CSV: {symbol}")
             except Exception as e:
-                print(f"⚠️ {symbol} 파일 생성 실패: {e}")
+                print(f"[US] Placeholder CSV creation failed: {symbol} - {e}")
     else:
-        print("✅ 새로운 종목이 없습니다.")
+        print("[US] No newly discovered symbols")
 
-    # 전체 종목 목록 반환
     all_symbols = existing_symbols.union(new_symbols)
-    print(f"📈 총 종목 수: {len(all_symbols)}개")
+    print(f"[Universe] US symbol universe ready - existing={len(existing_symbols)}, seed_total={len(new_symbols)}, final={len(all_symbols)}")
+    print(f"[US] Total symbol count: {len(all_symbols)}")
     return all_symbols
 
-# 미국 주식 단일 종목 데이터 가져오기
+
 def fetch_us_single(ticker, start, end):
     """yfinance API를 사용하여 단일 종목의 주가 데이터를 가져오는 함수
     
@@ -310,9 +370,8 @@ def fetch_us_single(ticker, start, end):
         bootstrap_yfinance_cache()
         _configure_yfinance_logger()
 
-        # 요청 전 짧은 대기 추가 (API 제한 방지)
+        # 공용 Yahoo throttle이 요청 간격을 보장한다.
         _wait_for_us_rate_limit_cooldown()
-        time.sleep(US_OHLCV_REQUEST_DELAY_SECONDS)
         
         # 타임아웃 설정 추가
         print(f"[US] 📊 데이터 요청 중: {ticker} ({start} ~ {end})")
@@ -321,7 +380,7 @@ def fetch_us_single(ticker, start, end):
         
         # 주가 데이터 가져오기
         df = ticker_obj.history(start=start, end=end, interval="1d",
-                               auto_adjust=False, actions=False, timeout=10)
+                               auto_adjust=False, actions=True, timeout=10)
 
         yf_error = _pop_yfinance_error(ticker)
         if yf_error:
@@ -335,7 +394,7 @@ def fetch_us_single(ticker, start, end):
         
         if df.empty:
             print(f"[US] ❌ 빈 데이터 반환됨: {ticker}")
-            return pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
+            return pd.DataFrame(columns=US_OHLCV_STORAGE_COLUMNS)
             
         print(f"[US] ✅ 데이터 수신 성공: {ticker} ({len(df)} 행)")
         df = df.rename_axis("date").reset_index()
@@ -374,10 +433,7 @@ def fetch_and_save_us_ohlcv_chunked(
 ):
     ensure_dir(save_dir)
     today = get_us_market_today()
-    
-    # 진행 상황 저장 파일
-    progress_file = os.path.join(DATA_DIR, "fetch_progress.txt")
-    
+
     # 총 청크 수 계산
     total_chunks = (len(tickers) + chunk_size - 1) // chunk_size
     if max_chunks is not None:
@@ -392,49 +448,65 @@ def fetch_and_save_us_ohlcv_chunked(
         # Windows 예약 파일명 처리
         safe_ticker = safe_filename(ticker)
         path = os.path.join(save_dir, f"{safe_ticker}.csv")
+        last_date = None
+        overlap_count = 0
         if os.path.exists(path):
             try:
                 existing = pd.read_csv(path)
-                existing["date"] = pd.to_datetime(existing["date"], utc=True)
                 if "date" not in existing.columns:
-                    raise ValueError("❌ 'date' 컬럼 없음")
+                    raise ValueError("missing 'date' column")
 
-                # 날짜 데이터를 UTC로 변환
-                existing["date"] = pd.to_datetime(existing["date"], utc=True)
+                existing["date"] = pd.to_datetime(existing["date"], utc=True, errors="coerce")
+                invalid_date_rows = int(existing["date"].isna().sum())
+                if invalid_date_rows > 0:
+                    print(f"[US] Dropping invalid cached date rows: {ticker} ({invalid_date_rows} rows)")
+                    existing = existing.dropna(subset=["date"]).reset_index(drop=True)
 
                 if len(existing) == 0:
-                    # 헤더만 존재하는 빈 파일의 경우 새로 수집
-                    print(f"[US] 📊 빈 파일 감지, 새로 데이터 수집: {ticker}")
+                    print(f"[US] Empty or invalid-dated file detected, collecting fresh data: {ticker}")
                     existing = None
-                    start_date = today - timedelta(days=450)
+                    start_date = _default_us_fetch_start(today)
                 else:
-                    # 날짜 컬럼이 UTC 시간대로 변환되었는지 확인
-                    if not isinstance(existing["date"].dtype, pd.DatetimeTZDtype):
-                        existing["date"] = pd.to_datetime(existing["date"], utc=True)
+                    existing = existing.sort_values("date", ascending=True).reset_index(drop=True)
 
-                    # 330 영업일 제한 적용 (데이터가 330일 이상인 경우 오래된 데이터 제거)
-                    if len(existing) > 330:
-                        print(f"[US] ✂️ {ticker}: 330 영업일 초과 데이터 정리 중 ({len(existing)} → 330)")
-                        existing = existing.sort_values("date", ascending=False).head(330).reset_index(drop=True)
-                        # 오래된 데이터가 위에 오도록 다시 정렬
+                    if len(existing) > US_OHLCV_TARGET_BARS:
+                        print(f"[US] Trim existing window: {ticker} ({len(existing)} -> {US_OHLCV_TARGET_BARS} rows)")
+                        existing = existing.sort_values("date", ascending=False).head(US_OHLCV_TARGET_BARS).reset_index(drop=True)
                         existing = existing.sort_values("date", ascending=True).reset_index(drop=True)
 
-                    last_date = existing["date"].dropna().max().date()
-                    start_date = last_date + timedelta(days=1)
+                    cached_bar_count = int(existing["date"].dt.normalize().nunique())
+                    if cached_bar_count < US_OHLCV_TARGET_BARS:
+                        start_date = _default_us_fetch_start(today)
+                        last_date = existing["date"].max().date()
+                        print(
+                            f"[US] History backfill active: {ticker} - cached bars={cached_bar_count}, "
+                            f"refetching window from {start_date.isoformat()}"
+                        )
+                    else:
+                        start_date, last_date, overlap_count = _compute_us_overlap_start_date(
+                            existing["date"],
+                            _default_us_fetch_start(today),
+                        )
             except Exception as e:
-                print(f"⚠️ {ticker} 기존 파일 오류: {e}")
+                print(f"[US] Existing file read failed: {ticker} - {e}")
                 existing = None
-                start_date = today - timedelta(days=450)
+                start_date = _default_us_fetch_start(today)
         else:
             existing = None
-            start_date = today - timedelta(days=450)
+            start_date = _default_us_fetch_start(today)
 
-        if start_date >= today:
-            print(f"[US] ⏩ 최신 상태: {ticker} (마지막 데이터: {last_date})")
+        if start_date > today:
+            last_date_str = last_date.isoformat() if last_date is not None else today.isoformat()
+            print(f"[US] Latest status: {ticker} (last data: {last_date_str})")
             return "latest"
 
-        print(f"[DEBUG] {ticker}: 수집 시작일 {start_date}, 종료일 {today}")
+        if overlap_count > 0 and last_date is not None:
+            print(
+                f"[US] Refresh overlap active: {ticker} - refetching last {overlap_count} stored bars "
+                f"from {start_date.isoformat()}"
+            )
 
+        print(f"[DEBUG] {ticker}: collection start {start_date}, end {today}")
         df_new = None
         saw_rate_limit = False
         for j in range(US_OHLCV_MAX_RETRIES):  # 재시도 횟수 감소
@@ -469,7 +541,7 @@ def fetch_and_save_us_ohlcv_chunked(
                     time.sleep(wait)
             except RateLimitError:
                 saw_rate_limit = True
-                wait = US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS * (j + 1)
+                wait = US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS
                 _extend_us_rate_limit_cooldown(wait)
                 print(
                     f"[US] 🚫 API 제한 응답: {ticker} | 재시도 {j+1}/{US_OHLCV_MAX_RETRIES} "
@@ -492,7 +564,7 @@ def fetch_and_save_us_ohlcv_chunked(
                 else:
                     print(f"[US] 🚫 공급자 미지원/비활성 심볼: {ticker} - {e.reason}")
 
-                empty_df = pd.DataFrame(columns=["date", "symbol", "open", "high", "low", "close", "volume"])
+                empty_df = pd.DataFrame(columns=US_OHLCV_STORAGE_COLUMNS)
                 empty_df.to_csv(path, index=False)
                 return "delisted"
             except Exception as e:
@@ -544,9 +616,9 @@ def fetch_and_save_us_ohlcv_chunked(
             df_combined.drop("date_str", axis=1, inplace=True)
             
             # 330 영업일 제한 적용 (데이터 병합 후 다시 확인)
-            if len(df_combined) > 330:
-                print(f"[US] ✂️ {ticker}: 병합 후 330 영업일 초과 데이터 정리 중 ({len(df_combined)} → 330)")
-                df_combined = df_combined.sort_values("date", ascending=False).head(330).reset_index(drop=True)
+            if len(df_combined) > US_OHLCV_TARGET_BARS:
+                print(f"[US] ✂️ {ticker}: 병합 후 {US_OHLCV_TARGET_BARS} 영업일 초과 데이터 정리 중 ({len(df_combined)} → {US_OHLCV_TARGET_BARS})")
+                df_combined = df_combined.sort_values("date", ascending=False).head(US_OHLCV_TARGET_BARS).reset_index(drop=True)
             
             # 최종 저장 전 오래된 데이터가 위에 오도록 정렬
             df_combined = df_combined.sort_values("date", ascending=True).reset_index(drop=True)
@@ -562,9 +634,9 @@ def fetch_and_save_us_ohlcv_chunked(
             return "saved"
         else:
             # 신규 데이터도 330 영업일 제한 적용
-            if len(df_new) > 330:
-                print(f"[US] ✂️ {ticker}: 신규 데이터 330 영업일 초과 정리 중 ({len(df_new)} → 330)")
-                df_new = df_new.sort_values("date", ascending=False).head(330).reset_index(drop=True)
+            if len(df_new) > US_OHLCV_TARGET_BARS:
+                print(f"[US] ✂️ {ticker}: 신규 데이터 {US_OHLCV_TARGET_BARS} 영업일 초과 정리 중 ({len(df_new)} → {US_OHLCV_TARGET_BARS})")
+                df_new = df_new.sort_values("date", ascending=False).head(US_OHLCV_TARGET_BARS).reset_index(drop=True)
             
             # 최종 저장 전 오래된 데이터가 위에 오도록 정렬
             df_new = df_new.sort_values("date", ascending=True).reset_index(drop=True)
@@ -588,11 +660,7 @@ def fetch_and_save_us_ohlcv_chunked(
         chunk = [t for t in chunk if isinstance(t, str) or (isinstance(t, (int, float)) and not pd.isna(t))]
         
         print(f"\n⏱️ Chunk {chunk_num + 1}/{total_chunks} 시작 ({len(chunk)}개): {chunk}")
-        
-        # 진행 상황 저장
-        with open(progress_file, 'w') as f:
-            f.write(str(chunk_num))
-        
+
         # 청크 내 티커 병렬 처리
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             # 병렬로 티커 처리 실행

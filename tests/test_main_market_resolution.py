@@ -3,6 +3,7 @@ from __future__ import annotations
 import sys
 
 import main as main_module
+import pytest
 from main import _resolve_markets_arg
 
 
@@ -32,17 +33,8 @@ def test_resolve_markets_arg_invalid_values_default_to_us():
     assert _resolve_markets_arg("jp,tw") == ["us"]
 
 
-def test_main_deprecated_momentum_task_exits_without_orchestrator_runtime(monkeypatch, capsys):
-    import orchestrator.tasks as tasks_module
-    import utils.file_cleanup as cleanup_module
-
+def test_main_removed_momentum_task_is_rejected_by_parser(monkeypatch):
     monkeypatch.setattr(sys, "argv", ["main.py", "--task", "momentum", "--market", "both"])
-    monkeypatch.setattr(tasks_module, "ensure_directories", lambda: None)
-    monkeypatch.setattr(tasks_module, "setup_scheduler", lambda: None)
-    monkeypatch.setattr(tasks_module, "run_scheduler", lambda: None)
-    monkeypatch.setattr(cleanup_module, "cleanup_old_timestamped_files", lambda **kwargs: {"deleted_count": 0})
-
-    main_module.main()
-
-    captured = capsys.readouterr()
-    assert "Momentum task is deprecated" in captured.out
+    with pytest.raises(SystemExit) as exc_info:
+        main_module.main()
+    assert exc_info.value.code == 2

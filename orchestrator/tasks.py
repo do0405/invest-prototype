@@ -10,6 +10,7 @@ from datetime import datetime
 from typing import Any, Callable, Optional
 
 from utils.market_runtime import ensure_market_dirs, market_key
+from utils.yahoo_throttle import wait_for_yahoo_phase_handoff
 
 __all__ = [
     "ensure_directories",
@@ -65,7 +66,7 @@ def _run_timed_step(
     return result
 
 
-def run_stock_metadata_collection(*, market: str = "us") -> None:
+def run_stock_metadata_collection(*, market: str = "us") -> Any:
     print(f"\n[Task] Stock metadata collection started ({market})")
     try:
         from data_collectors.stock_metadata_collector import main as collect_stock_metadata_main
@@ -73,9 +74,11 @@ def run_stock_metadata_collection(*, market: str = "us") -> None:
         result = collect_stock_metadata_main(market=market)
         row_count = len(result) if hasattr(result, "__len__") else 0
         print(f"[Task] Stock metadata collection completed ({market}) - rows={row_count}")
+        return result
     except Exception as exc:
         print(f"[Task] Stock metadata collection failed ({market}): {exc}")
         print(traceback.format_exc())
+        return None
 
 
 def ensure_directories() -> None:
@@ -96,20 +99,21 @@ def collect_data_main(
     try:
         from data_collector import collect_data
 
-        steps: list[tuple[str, object]] = []
+        steps: list[tuple[str, Callable[[], Any], bool]] = []
         if not skip_ohlcv:
             if not skip_us_ohlcv:
-                steps.append(("US OHLCV", lambda: collect_data(update_symbols=update_symbols)))
+                steps.append(("US OHLCV", lambda: collect_data(update_symbols=update_symbols), True))
             if include_kr:
-                steps.append(("KR OHLCV", lambda: run_kr_ohlcv_collection(include_etn=True)))
-        steps.append(("US stock metadata", lambda: run_stock_metadata_collection(market="us")))
+                steps.append(("KR OHLCV", lambda: run_kr_ohlcv_collection(include_etn=True), True))
+        steps.append(("US stock metadata", lambda: run_stock_metadata_collection(market="us"), True))
         if include_kr:
-            steps.append(("KR stock metadata", lambda: run_stock_metadata_collection(market="kr")))
+            steps.append(("KR stock metadata", lambda: run_stock_metadata_collection(market="kr"), True))
 
         total_steps = len(steps)
-        for index, (label, action) in enumerate(steps, start=1):
-            print(f"[Task] Step {index}/{total_steps} - {label}")
-            action()
+        for index, (label, action, yahoo_backed) in enumerate(steps, start=1):
+            if yahoo_backed:
+                wait_for_yahoo_phase_handoff(label)
+            _run_timed_step(index, total_steps, label, "pipeline", action)
 
         print("[Task] Data collection completed")
     except Exception as exc:
@@ -118,17 +122,21 @@ def collect_data_main(
 
 
 def run_kr_ohlcv_collection(
-    days: int = 450,
+    days: Optional[int] = None,
     include_kosdaq: bool = True,
     include_etf: bool = True,
     include_etn: bool = True,
     provider_mode: str = "yfinance_only",
 ) -> dict:
     try:
-        from data_collectors.kr_ohlcv_collector import collect_kr_ohlcv_csv
+        import data_collectors.kr_ohlcv_collector as kr_ohlcv_collector
 
-        summary = collect_kr_ohlcv_csv(
-            days=days,
+        effective_days = int(
+            kr_ohlcv_collector.KR_OHLCV_DEFAULT_LOOKBACK_DAYS if days is None else days
+        )
+
+        summary = kr_ohlcv_collector.collect_kr_ohlcv_csv(
+            days=effective_days,
             include_kosdaq=include_kosdaq,
             include_etf=include_etf,
             include_etn=include_etn,
@@ -261,6 +269,7 @@ def run_all_screening_processes(skip_data: bool = False, markets: Optional[list[
         for market in target_markets:
             print(f"\n[Task] Market pipeline started ({market})")
             _run_timed_step(1, 8, "Mark Minervini technical", market, lambda: run_markminervini_screening(market=market))
+            wait_for_yahoo_phase_handoff("Advanced financial")
             _run_timed_step(
                 2,
                 8,
@@ -272,6 +281,7 @@ def run_all_screening_processes(skip_data: bool = False, markets: Optional[list[
             _run_timed_step(4, 8, "New ticker tracking", market, lambda: run_new_ticker_tracking(market=market))
             _run_timed_step(5, 8, "Weinstein Stage 2", market, lambda: run_weinstein_stage2_screening(market=market))
             _run_timed_step(6, 8, "Leader / lagging", market, lambda: run_leader_lagging_screening(market=market))
+            wait_for_yahoo_phase_handoff("Qullamaggie")
             _run_timed_step(
                 7,
                 8,

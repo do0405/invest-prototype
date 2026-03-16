@@ -4,6 +4,7 @@ import json
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from screeners.leader_lagging import screener as leader_lagging_screener
 from screeners.leader_lagging.screener import LeaderLaggingAnalyzer, LeaderLaggingScreener
@@ -88,8 +89,8 @@ def _build_market_fixture() -> tuple[dict[str, pd.DataFrame], dict[str, dict[str
             _piecewise_linear([(40.0, 50.0, 210), (50.0, 58.0, 50)]),
             np.concatenate(
                 [
-                    np.linspace(58.0, 61.0, 40, endpoint=False),
-                    np.linspace(61.0, 65.0, 20),
+                    np.linspace(58.0, 62.0, 40, endpoint=False),
+                    np.linspace(62.0, 66.0, 20),
                 ]
             ),
         ]
@@ -163,6 +164,110 @@ def test_analyzer_detects_confirmed_leader_and_high_quality_follower() -> None:
     assert pair_row["leader_symbol"] == "LEAD"
     assert "WEAK1" not in set(followers["symbol"].astype(str))
     assert "WEAK2" not in set(followers["symbol"].astype(str))
+
+
+def test_weighted_rs_uses_benchmark_relative_ibd_formula() -> None:
+    frames, metadata_map, benchmark_daily = _build_market_fixture()
+    analyzer = LeaderLaggingAnalyzer()
+
+    feature_row = analyzer.compute_symbol_features(
+        symbol="LEAD",
+        market="us",
+        daily_frame=frames["LEAD"],
+        benchmark_daily=benchmark_daily,
+        metadata=metadata_map["LEAD"],
+    )
+
+    stock_close = pd.to_numeric(frames["LEAD"]["close"], errors="coerce").reset_index(drop=True)
+    benchmark_close = pd.to_numeric(benchmark_daily["close"], errors="coerce").reset_index(drop=True)
+
+    def _subperiod_return(series: pd.Series, end_offset: int, span: int) -> float | None:
+        if len(series) <= end_offset + span:
+            return None
+        end_idx = len(series) - 1 - end_offset
+        start_idx = end_idx - span
+        start = float(series.iloc[start_idx])
+        end = float(series.iloc[end_idx])
+        if start == 0:
+            return None
+        return (end / start) - 1.0
+
+    def _weighted_rs(end_offset: int) -> float:
+        stock_score = (
+            0.40 * _subperiod_return(stock_close, end_offset, 63)
+            + 0.20 * _subperiod_return(stock_close, end_offset, 126)
+            + 0.20 * _subperiod_return(stock_close, end_offset, 189)
+            + 0.20 * _subperiod_return(stock_close, end_offset, 252)
+        )
+        benchmark_score = (
+            0.40 * _subperiod_return(benchmark_close, end_offset, 63)
+            + 0.20 * _subperiod_return(benchmark_close, end_offset, 126)
+            + 0.20 * _subperiod_return(benchmark_close, end_offset, 189)
+            + 0.20 * _subperiod_return(benchmark_close, end_offset, 252)
+        )
+        return (stock_score - benchmark_score) * 100.0
+
+    assert feature_row["weighted_rs_raw"] == pytest.approx(_weighted_rs(0), rel=1e-9)
+    assert feature_row["weighted_rs_prev_raw"] == pytest.approx(_weighted_rs(63), rel=1e-9)
+
+
+def test_weighted_rs_preserves_order_when_benchmark_is_negative() -> None:
+    analyzer = LeaderLaggingAnalyzer()
+    benchmark = pd.Series(np.geomspace(100.0, 90.0, 320))
+    strong_stock = pd.Series(np.geomspace(100.0, 110.0, 320))
+    weak_stock = pd.Series(np.geomspace(100.0, 95.0, 320))
+
+    strong_score = analyzer._benchmark_relative_weighted_rs(strong_stock, benchmark)
+    weak_score = analyzer._benchmark_relative_weighted_rs(weak_stock, benchmark)
+
+    assert strong_score is not None
+    assert weak_score is not None
+    assert strong_score > weak_score
+    assert strong_score > 0.0
+
+
+def test_follower_requires_positive_delta_rs_rank_qoq_even_if_rs_slopes_are_positive() -> None:
+    frames, metadata_map, benchmark_daily = _build_market_fixture()
+    analyzer = LeaderLaggingAnalyzer()
+
+    feature_rows = [
+        analyzer.compute_symbol_features(
+            symbol=symbol,
+            market="us",
+            daily_frame=frame,
+            benchmark_daily=benchmark_daily,
+            metadata=metadata_map.get(symbol),
+        )
+        for symbol, frame in frames.items()
+    ]
+    feature_table = analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
+    feature_table.loc[feature_table["symbol"] == "FOLLOW", "delta_rs_rank_qoq"] = -3.0
+    feature_table.loc[feature_table["symbol"] == "FOLLOW", "rs_line_20d_slope"] = 0.08
+    feature_table.loc[feature_table["symbol"] == "FOLLOW", "mansfield_rs_slope"] = 0.09
+    group_table = analyzer.compute_group_table(feature_table)
+    market_context = analyzer.compute_market_context(
+        market="us",
+        benchmark_symbol="SPY",
+        benchmark_daily=benchmark_daily,
+        feature_table=feature_table,
+        group_table=group_table,
+    )
+    leaders = analyzer.analyze_leaders(
+        feature_table=feature_table,
+        group_table=group_table,
+        market_context=market_context,
+    )
+    followers, _ = analyzer.analyze_followers(
+        feature_table=feature_table,
+        leaders=leaders,
+        group_table=group_table,
+        market_context=market_context,
+        frames=frames,
+    )
+
+    follow_row = followers.loc[followers["symbol"] == "FOLLOW"].iloc[0].to_dict()
+    assert bool(follow_row["hard_precondition_pass"]) is False
+    assert follow_row["label"] == "Too Weak, Reject"
 
 
 def test_run_leader_lagging_screening_persists_outputs(monkeypatch) -> None:

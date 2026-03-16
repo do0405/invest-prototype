@@ -22,7 +22,7 @@ def _reset_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def test_earnings_collector_uses_disk_cache_before_external_fetch(monkeypatch):
+def test_earnings_collector_refreshes_even_when_disk_cache_exists(monkeypatch):
     cache_root = runtime_root("_test_runtime_earnings_cache_fresh")
     _reset_dir(cache_root)
     collector = EarningsDataCollector(cache_dir=str(cache_root), cache_duration=3600)
@@ -65,16 +65,52 @@ def test_earnings_collector_uses_disk_cache_before_external_fetch(monkeypatch):
         ]
     ).to_csv(cache_file, index=False)
 
-    def _fail_external(_symbol: str):
-        raise AssertionError("external call should not execute when fresh disk cache exists")
+    source_frame = pd.DataFrame(
+        [
+            {
+                "date": "2026-03-31",
+                "eps_actual": 2.6,
+                "eps_estimate": 2.2,
+                "revenue_actual": 120.0,
+                "revenue_estimate": 110.0,
+                "data_source": "yfinance_actual",
+            },
+            {
+                "date": "2025-12-31",
+                "eps_actual": 2.2,
+                "eps_estimate": 2.0,
+                "revenue_actual": 110.0,
+                "revenue_estimate": 100.0,
+                "data_source": "yfinance_actual",
+            },
+            {
+                "date": "2025-09-30",
+                "eps_actual": 1.9,
+                "eps_estimate": 1.8,
+                "revenue_actual": 100.0,
+                "revenue_estimate": 96.0,
+                "data_source": "yfinance_actual",
+            },
+            {
+                "date": "2025-06-30",
+                "eps_actual": 1.7,
+                "eps_estimate": 1.6,
+                "revenue_actual": 94.0,
+                "revenue_estimate": 90.0,
+                "data_source": "yfinance_actual",
+            },
+        ]
+    )
 
-    monkeypatch.setattr(collector, "_fetch_yahoo_fin_earnings", _fail_external)
-    monkeypatch.setattr(collector, "_fetch_yf_earnings", _fail_external)
+    monkeypatch.setattr(collector, "_fetch_yahoo_fin_earnings", lambda _symbol: None)
+    monkeypatch.setattr(collector, "_fetch_yf_earnings", lambda _symbol: source_frame.copy())
 
     payload = collector.get_earnings_surprise(symbol)
     assert payload is not None
-    assert payload.get("data_source") == "yahoo_fin_actual"
-    assert payload.get("eps_surprise_pct", 0) > 0
+    assert payload.get("data_source") == "yfinance_actual"
+    assert payload.get("fetch_status") == "complete"
+    cached = pd.read_csv(cache_file)
+    assert str(cached.iloc[0]["date"]) == "2026-03-31"
 
 
 def test_earnings_collector_writes_disk_cache_after_fetch(monkeypatch):
@@ -125,6 +161,7 @@ def test_earnings_collector_writes_disk_cache_after_fetch(monkeypatch):
 
     payload = collector.get_earnings_surprise(symbol)
     assert payload is not None
+    assert payload.get("fetch_status") == "complete"
 
     cache_file = Path(cache_root) / "MSFT.csv"
     assert cache_file.exists()
@@ -148,6 +185,7 @@ def test_calculate_surprise_does_not_invent_missing_revenue_values():
     payload = collector._calculate_surprise(source_frame)
     assert payload is not None
     assert payload["data_quality"] == "actual"
+    assert payload["fetch_status"] == "complete"
     assert payload["revenue_actual"] is None
     assert payload["revenue_estimate"] is None
     assert payload["revenue_surprise_pct"] is None
@@ -168,7 +206,7 @@ def test_qullamaggie_kr_defaults_to_earnings_filter(monkeypatch):
     )
 
     monkeypatch.setattr(qullamaggie_screener, "_load_market_symbols", lambda market: ["005930"])
-    monkeypatch.setattr(qullamaggie_screener, "load_local_ohlcv_frame", lambda market, symbol: sample_frame.copy())
+    monkeypatch.setattr(qullamaggie_screener, "load_local_ohlcv_frame", lambda market, symbol, **kwargs: sample_frame.copy())
     monkeypatch.setattr(
         qullamaggie_screener,
         "screen_episode_pivot_setup",
@@ -189,3 +227,100 @@ def test_qullamaggie_kr_defaults_to_earnings_filter(monkeypatch):
     assert captured["earnings_filter_enabled"] is True
     assert captured["market"] == "kr"
     assert len(result["episode_pivot"]) == 1
+
+
+def test_earnings_collector_reuses_stale_cache_after_rate_limit(monkeypatch):
+    cache_root = runtime_root("_test_runtime_earnings_cache_rate_limit")
+    _reset_dir(cache_root)
+    collector = EarningsDataCollector(cache_dir=str(cache_root), cache_duration=1)
+    symbol = "AAPL"
+
+    stale_frame = pd.DataFrame(
+        [
+            {
+                "date": "2025-12-31",
+                "eps_actual": 2.0,
+                "eps_estimate": 1.7,
+                "revenue_actual": 100.0,
+                "revenue_estimate": 90.0,
+                "data_source": "yfinance_actual",
+            },
+            {
+                "date": "2025-09-30",
+                "eps_actual": 1.8,
+                "eps_estimate": 1.6,
+                "revenue_actual": 95.0,
+                "revenue_estimate": 88.0,
+                "data_source": "yfinance_actual",
+            },
+            {
+                "date": "2025-06-30",
+                "eps_actual": 1.7,
+                "eps_estimate": 1.5,
+                "revenue_actual": 92.0,
+                "revenue_estimate": 86.0,
+                "data_source": "yfinance_actual",
+            },
+            {
+                "date": "2025-03-31",
+                "eps_actual": 1.5,
+                "eps_estimate": 1.4,
+                "revenue_actual": 85.0,
+                "revenue_estimate": 82.0,
+                "data_source": "yfinance_actual",
+            },
+        ]
+    )
+
+    cooldowns: list[float] = []
+
+    monkeypatch.setattr(type(collector), "_load_disk_cache", lambda self, _symbol, fresh_only: None if fresh_only else stale_frame.copy())
+    monkeypatch.setattr(type(collector), "_fetch_yahoo_fin_earnings", lambda self, _symbol: None)
+    monkeypatch.setattr(type(collector), "_fetch_yf_earnings", lambda self, _symbol: (_ for _ in ()).throw(RuntimeError("HTTP Error 429: Too Many Requests")))
+    import screeners.qullamaggie.earnings_data_collector as earnings_module
+    monkeypatch.setattr(earnings_module, "extend_yahoo_cooldown", lambda source, seconds: cooldowns.append(seconds))
+
+    payload = collector.get_earnings_surprise(symbol)
+
+    assert payload is not None
+    assert payload.get("data_source") == "yfinance_actual"
+    assert payload.get("data_quality") == "stale_cache"
+    assert payload.get("cache_fallback_status") == "rate_limited"
+    assert payload.get("fetch_status") == "complete"
+    assert cooldowns == []
+
+
+def test_earnings_collector_returns_rate_limited_status_without_cache(monkeypatch):
+    cache_root = runtime_root("_test_runtime_earnings_cache_rate_limit_no_cache")
+    _reset_dir(cache_root)
+    collector = EarningsDataCollector(cache_dir=str(cache_root), cache_duration=1)
+
+    monkeypatch.setattr(type(collector), "_fetch_yahoo_fin_earnings", lambda self, _symbol: (None, None, None))
+    monkeypatch.setattr(type(collector), "_fetch_yf_earnings", lambda self, _symbol: (None, "rate_limited", "rate limited"))
+
+    payload = collector.get_earnings_surprise("AAPL")
+
+    assert payload is not None
+    assert payload["fetch_status"] == "rate_limited"
+    assert payload["unavailable_reason"] == "rate limited"
+    assert payload["meets_criteria"] is False
+
+
+def test_earnings_collector_returns_soft_unavailable_status_without_cache(monkeypatch):
+    cache_root = runtime_root("_test_runtime_earnings_cache_unavailable_no_cache")
+    _reset_dir(cache_root)
+    collector = EarningsDataCollector(cache_dir=str(cache_root), cache_duration=1)
+
+    monkeypatch.setattr(type(collector), "_fetch_yahoo_fin_earnings", lambda self, _symbol: (None, None, None))
+    monkeypatch.setattr(
+        type(collector),
+        "_fetch_yf_earnings",
+        lambda self, _symbol: (None, "soft_unavailable", "earnings data unavailable"),
+    )
+
+    payload = collector.get_earnings_surprise("QQQ")
+
+    assert payload is not None
+    assert payload["fetch_status"] == "soft_unavailable"
+    assert payload["unavailable_reason"] == "earnings data unavailable"
+    assert payload["meets_criteria"] is False

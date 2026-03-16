@@ -82,10 +82,6 @@ def get_markminervini_previous_with_rs_path(market: str) -> str:
     return os.path.join(get_markminervini_results_dir(market), "previous_with_rs.csv")
 
 
-def get_momentum_signals_results_dir(market: str) -> str:
-    return os.path.join(get_market_results_root(market), "momentum_signals")
-
-
 def get_qullamaggie_results_dir(market: str) -> str:
     return os.path.join(get_market_screeners_root(market), "qullamaggie")
 
@@ -150,7 +146,6 @@ def ensure_market_dirs(market: str) -> None:
         get_market_results_root(market),
         get_market_screeners_root(market),
         get_markminervini_results_dir(market),
-        get_momentum_signals_results_dir(market),
         get_qullamaggie_results_dir(market),
         get_leader_lagging_results_dir(market),
         get_tradingview_results_dir(market),

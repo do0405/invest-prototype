@@ -17,6 +17,13 @@
 
 본 문서는 “원문 요약”보다 `핵심 알고리즘`, `데이터 설계`, `출력 계약`, `검증 절차`에 집중한다.
 
+### 1.1 가격 시계열 정책
+
+- 기본 기술 지표 입력은 `split-adjusted OHLC`다.
+- 단, `split-adjusted`는 `Stock Splits` 또는 동등한 split factor가 있을 때만 적용한다.
+- `Adj Close` 기반 back-adjusted/total-return 시계열은 `TOTAL_RETURN_ADJUSTED`로 별도 취급하며, split-only 시계열과 혼용하지 않는다.
+- split 근거가 없는 캐시는 `raw`로 남기고, source flag를 함께 기록한다.
+
 ## 2. 제품 목표
 
 ### 2.1 핵심 문제
@@ -204,13 +211,28 @@ MVP에서는 `market별 percentile gate`를 추천한다.
 
 기본식:
 
-`RS_raw = 0.4 * ret_63d + 0.3 * ret_126d + 0.3 * ret_252d`
+```text
+stock_weighted_return =
+    0.40 * ret_63d
+  + 0.20 * ret_126d
+  + 0.20 * ret_189d
+  + 0.20 * ret_252d
 
-`RS_percentile_market = pct_rank(RS_raw within same market)`
+benchmark_weighted_return =
+    0.40 * benchmark_ret_63d
+  + 0.20 * benchmark_ret_126d
+  + 0.20 * benchmark_ret_189d
+  + 0.20 * benchmark_ret_252d
+
+RS_weighted_benchmark_relative =
+    (stock_weighted_return / benchmark_weighted_return) * 100
+```
+
+`RS_percentile_market = pct_rank(RS_weighted_benchmark_relative within same market)`
 
 선택식:
 
-- `RS_percentile_global = pct_rank(RS_raw across all symbols)`
+- `RS_percentile_global = pct_rank(RS_weighted_benchmark_relative across all symbols)`
 
 ## 8. 공통 선행 필터
 

@@ -1,0 +1,25 @@
+{
+  "typeCheckingMode": "basic",
+  "pythonVersion": "3.13",
+  "useLibraryCodeForTypes": true,
+  "include": [
+    "main.py",
+    "config.py",
+    "data_collector.py",
+    "data_collectors",
+    "orchestrator",
+    "screeners",
+    "tests",
+    "utils"
+  ],
+  "exclude": [
+    ".git",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "__pycache__",
+    "backup",
+    "data",
+    "results"
+  ]
+}

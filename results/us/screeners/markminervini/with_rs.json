@@ -369,7 +369,7 @@
     "close":6.6799998283,
     "volume":9400.0,
     "date":"2026-03-11",
-    "rs_score":99.36,
+    "rs_score":99.37,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -386,7 +386,7 @@
     "close":15.5,
     "volume":4767500.0,
     "date":"2026-03-11",
-    "rs_score":99.35,
+    "rs_score":99.36,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -403,7 +403,7 @@
     "close":6.3200001717,
     "volume":2009800.0,
     "date":"2026-03-11",
-    "rs_score":99.34,
+    "rs_score":99.35,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -420,7 +420,7 @@
     "close":94.2900009155,
     "volume":16100.0,
     "date":"2026-03-11",
-    "rs_score":99.33,
+    "rs_score":99.34,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2295,23 +2295,6 @@
     "cond8":true
   },
   {
-    "symbol":"CNTB",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":3.0199999809,
-    "volume":241100.0,
-    "date":"2026-03-11",
-    "rs_score":96.49,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
     "symbol":"RLAY",
     "cond1":true,
     "cond2":true,
@@ -2324,7 +2307,7 @@
     "close":10.8000001907,
     "volume":7429900.0,
     "date":"2026-03-11",
-    "rs_score":96.43,
+    "rs_score":96.44,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2341,7 +2324,7 @@
     "close":55.3199996948,
     "volume":272700.0,
     "date":"2026-03-11",
-    "rs_score":96.4,
+    "rs_score":96.41,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2358,7 +2341,7 @@
     "close":57.4199981689,
     "volume":749300.0,
     "date":"2026-03-11",
-    "rs_score":96.39,
+    "rs_score":96.4,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2375,7 +2358,7 @@
     "close":30.0900001526,
     "volume":3193500.0,
     "date":"2026-03-11",
-    "rs_score":96.38,
+    "rs_score":96.39,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2392,7 +2375,7 @@
     "close":15.220000267,
     "volume":31827600.0,
     "date":"2026-03-11",
-    "rs_score":96.35,
+    "rs_score":96.36,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2409,7 +2392,7 @@
     "close":5.0199999809,
     "volume":4828800.0,
     "date":"2026-03-11",
-    "rs_score":96.33,
+    "rs_score":96.34,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2426,7 +2409,7 @@
     "close":3.3699998856,
     "volume":275800.0,
     "date":"2026-03-11",
-    "rs_score":96.3,
+    "rs_score":96.31,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2443,7 +2426,7 @@
     "close":472.8599853516,
     "volume":334800.0,
     "date":"2026-03-11",
-    "rs_score":96.29,
+    "rs_score":96.3,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2460,7 +2443,7 @@
     "close":1.7200000286,
     "volume":2421400.0,
     "date":"2026-03-11",
-    "rs_score":96.28,
+    "rs_score":96.29,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2477,7 +2460,7 @@
     "close":5.0300002098,
     "volume":104200.0,
     "date":"2026-03-11",
-    "rs_score":96.26,
+    "rs_score":96.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2494,7 +2477,7 @@
     "close":95.4400024414,
     "volume":938700.0,
     "date":"2026-03-11",
-    "rs_score":96.25,
+    "rs_score":96.26,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2511,7 +2494,7 @@
     "close":15.6999998093,
     "volume":3595200.0,
     "date":"2026-03-11",
-    "rs_score":96.24,
+    "rs_score":96.25,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2528,7 +2511,7 @@
     "close":9.9099998474,
     "volume":1439600.0,
     "date":"2026-03-11",
-    "rs_score":96.22,
+    "rs_score":96.23,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2545,7 +2528,7 @@
     "close":36.1990013123,
     "volume":800.0,
     "date":"2026-03-11",
-    "rs_score":96.21,
+    "rs_score":96.22,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2579,7 +2562,7 @@
     "close":15.720000267,
     "volume":1071800.0,
     "date":"2026-03-11",
-    "rs_score":96.2,
+    "rs_score":96.21,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2596,7 +2579,7 @@
     "close":19.8400001526,
     "volume":6088500.0,
     "date":"2026-03-11",
-    "rs_score":96.16,
+    "rs_score":96.17,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2613,7 +2596,7 @@
     "close":113.7099990845,
     "volume":1006000.0,
     "date":"2026-03-11",
-    "rs_score":96.15,
+    "rs_score":96.16,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2630,7 +2613,7 @@
     "close":45.0,
     "volume":0.0,
     "date":"2026-03-03",
-    "rs_score":96.14,
+    "rs_score":96.15,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2647,7 +2630,7 @@
     "close":2.4200000763,
     "volume":108600.0,
     "date":"2026-03-11",
-    "rs_score":96.13,
+    "rs_score":96.14,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2664,7 +2647,7 @@
     "close":12.7399997711,
     "volume":1128600.0,
     "date":"2026-03-11",
-    "rs_score":96.11,
+    "rs_score":96.12,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -2681,6 +2664,23 @@
     "close":11.8500003815,
     "volume":4723900.0,
     "date":"2026-03-11",
+    "rs_score":96.1,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
+    "symbol":"CNTB",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":2.7999999523,
+    "volume":54500.0,
+    "date":"2026-03-12",
     "rs_score":96.09,
     "rs_benchmark":"SPY",
     "cond8":true
@@ -3395,7 +3395,7 @@
     "close":7.5,
     "volume":1739700.0,
     "date":"2026-03-11",
-    "rs_score":95.24,
+    "rs_score":95.25,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3412,7 +3412,7 @@
     "close":4.0,
     "volume":31708300.0,
     "date":"2026-03-11",
-    "rs_score":95.22,
+    "rs_score":95.23,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3429,7 +3429,7 @@
     "close":43.9900016785,
     "volume":0.0,
     "date":"2025-07-22",
-    "rs_score":95.19,
+    "rs_score":95.2,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3446,7 +3446,7 @@
     "close":224.2700042725,
     "volume":1051000.0,
     "date":"2026-03-11",
-    "rs_score":95.18,
+    "rs_score":95.19,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3463,7 +3463,7 @@
     "close":106.2699966431,
     "volume":2225700.0,
     "date":"2026-03-11",
-    "rs_score":95.17,
+    "rs_score":95.18,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3480,7 +3480,7 @@
     "close":38.4000015259,
     "volume":1023800.0,
     "date":"2026-03-11",
-    "rs_score":95.15,
+    "rs_score":95.16,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3497,7 +3497,7 @@
     "close":14.6800003052,
     "volume":250700.0,
     "date":"2026-03-11",
-    "rs_score":95.14,
+    "rs_score":95.15,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3514,7 +3514,7 @@
     "close":55.9700012207,
     "volume":6829500.0,
     "date":"2026-03-11",
-    "rs_score":95.13,
+    "rs_score":95.14,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3531,7 +3531,7 @@
     "close":3.8699998856,
     "volume":0.0,
     "date":"2025-07-17",
-    "rs_score":95.12,
+    "rs_score":95.13,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3548,7 +3548,7 @@
     "close":70.4100036621,
     "volume":238800.0,
     "date":"2026-03-11",
-    "rs_score":95.11,
+    "rs_score":95.12,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3565,7 +3565,7 @@
     "close":881.1699829102,
     "volume":241600.0,
     "date":"2026-03-11",
-    "rs_score":95.09,
+    "rs_score":95.1,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3582,7 +3582,7 @@
     "close":18.4500007629,
     "volume":14304100.0,
     "date":"2026-03-11",
-    "rs_score":95.08,
+    "rs_score":95.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3599,7 +3599,7 @@
     "close":226.9499969482,
     "volume":55000.0,
     "date":"2026-03-11",
-    "rs_score":95.07,
+    "rs_score":95.08,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3616,7 +3616,7 @@
     "close":50.4500007629,
     "volume":40000.0,
     "date":"2026-03-11",
-    "rs_score":95.06,
+    "rs_score":95.07,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3633,7 +3633,7 @@
     "close":27.9699993134,
     "volume":12600.0,
     "date":"2026-03-11",
-    "rs_score":95.02,
+    "rs_score":95.03,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3650,7 +3650,7 @@
     "close":80.75,
     "volume":26500.0,
     "date":"2026-03-11",
-    "rs_score":95.01,
+    "rs_score":95.02,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3667,7 +3667,7 @@
     "close":0.7699999809,
     "volume":382600.0,
     "date":"2026-03-11",
-    "rs_score":94.99,
+    "rs_score":95.0,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3684,7 +3684,7 @@
     "close":64.6600036621,
     "volume":4031500.0,
     "date":"2026-03-11",
-    "rs_score":94.98,
+    "rs_score":94.99,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3701,7 +3701,7 @@
     "close":6.0999999046,
     "volume":733400.0,
     "date":"2026-03-11",
-    "rs_score":94.94,
+    "rs_score":94.95,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3718,7 +3718,7 @@
     "close":3.9300000668,
     "volume":561000.0,
     "date":"2026-03-11",
-    "rs_score":94.92,
+    "rs_score":94.93,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3735,7 +3735,7 @@
     "close":32.2299995422,
     "volume":1209900.0,
     "date":"2026-03-11",
-    "rs_score":94.88,
+    "rs_score":94.89,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3752,7 +3752,7 @@
     "close":56.3650016785,
     "volume":66400.0,
     "date":"2026-03-11",
-    "rs_score":94.87,
+    "rs_score":94.88,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3769,7 +3769,7 @@
     "close":420.6000061035,
     "volume":392100.0,
     "date":"2026-03-11",
-    "rs_score":94.86,
+    "rs_score":94.87,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3786,7 +3786,7 @@
     "close":30.3199996948,
     "volume":3209800.0,
     "date":"2026-03-11",
-    "rs_score":94.84,
+    "rs_score":94.85,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3803,7 +3803,7 @@
     "close":4.8400001526,
     "volume":854900.0,
     "date":"2025-08-19",
-    "rs_score":94.83,
+    "rs_score":94.84,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3820,7 +3820,7 @@
     "close":2.2899999619,
     "volume":17400.0,
     "date":"2026-03-11",
-    "rs_score":94.82,
+    "rs_score":94.83,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3837,7 +3837,7 @@
     "close":33.8899993896,
     "volume":623800.0,
     "date":"2026-03-11",
-    "rs_score":94.81,
+    "rs_score":94.82,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3854,7 +3854,7 @@
     "close":6.0300002098,
     "volume":1338900.0,
     "date":"2026-03-11",
-    "rs_score":94.79,
+    "rs_score":94.8,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3871,7 +3871,7 @@
     "close":34.3499984741,
     "volume":5555200.0,
     "date":"2026-03-11",
-    "rs_score":94.78,
+    "rs_score":94.79,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3888,7 +3888,7 @@
     "close":73.1900024414,
     "volume":469300.0,
     "date":"2026-03-11",
-    "rs_score":94.74,
+    "rs_score":94.75,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3905,7 +3905,7 @@
     "close":4.8400001526,
     "volume":20721700.0,
     "date":"2026-03-11",
-    "rs_score":94.73,
+    "rs_score":94.74,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3922,7 +3922,7 @@
     "close":4.1199998856,
     "volume":1028600.0,
     "date":"2026-03-11",
-    "rs_score":94.72,
+    "rs_score":94.73,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3939,7 +3939,7 @@
     "close":11.5,
     "volume":105500.0,
     "date":"2026-03-11",
-    "rs_score":94.7,
+    "rs_score":94.71,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3956,7 +3956,7 @@
     "close":66.3600006104,
     "volume":7218400.0,
     "date":"2026-03-11",
-    "rs_score":94.69,
+    "rs_score":94.7,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3973,7 +3973,7 @@
     "close":93.3799972534,
     "volume":717300.0,
     "date":"2026-03-11",
-    "rs_score":94.66,
+    "rs_score":94.67,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -3990,7 +3990,7 @@
     "close":16.9799995422,
     "volume":465000.0,
     "date":"2026-03-11",
-    "rs_score":94.63,
+    "rs_score":94.64,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4007,7 +4007,7 @@
     "close":41.5,
     "volume":571200.0,
     "date":"2026-03-11",
-    "rs_score":94.62,
+    "rs_score":94.63,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4024,6 +4024,23 @@
     "close":72.2799987793,
     "volume":57600.0,
     "date":"2026-03-11",
+    "rs_score":94.61,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
+    "symbol":"NBIS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":108.0400009155,
+    "volume":13302400.0,
+    "date":"2026-03-12",
     "rs_score":94.6,
     "rs_benchmark":"SPY",
     "cond8":true
@@ -4097,23 +4114,6 @@
     "cond8":true
   },
   {
-    "symbol":"CAMT",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":161.3500061035,
-    "volume":644800.0,
-    "date":"2026-03-11",
-    "rs_score":94.52,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
     "symbol":"EDRY",
     "cond1":true,
     "cond2":true,
@@ -4126,7 +4126,7 @@
     "close":21.2999992371,
     "volume":30600.0,
     "date":"2026-03-11",
-    "rs_score":94.5,
+    "rs_score":94.51,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4143,7 +4143,7 @@
     "close":29.0799999237,
     "volume":1392500.0,
     "date":"2026-03-11",
-    "rs_score":94.49,
+    "rs_score":94.5,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4160,7 +4160,7 @@
     "close":34.5200004578,
     "volume":2144600.0,
     "date":"2026-03-11",
-    "rs_score":94.47,
+    "rs_score":94.48,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4177,7 +4177,7 @@
     "close":37.1599998474,
     "volume":1217900.0,
     "date":"2026-03-11",
-    "rs_score":94.46,
+    "rs_score":94.47,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4194,7 +4194,7 @@
     "close":64.0800018311,
     "volume":699600.0,
     "date":"2026-03-11",
-    "rs_score":94.44,
+    "rs_score":94.45,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4211,7 +4211,7 @@
     "close":82.0800018311,
     "volume":17600.0,
     "date":"2026-03-11",
-    "rs_score":94.43,
+    "rs_score":94.44,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4228,7 +4228,7 @@
     "close":8.0500001907,
     "volume":17300.0,
     "date":"2026-03-11",
-    "rs_score":94.38,
+    "rs_score":94.39,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4245,7 +4245,7 @@
     "close":35.75,
     "volume":176100.0,
     "date":"2026-03-11",
-    "rs_score":94.37,
+    "rs_score":94.38,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4262,7 +4262,7 @@
     "close":13.8999996185,
     "volume":1300.0,
     "date":"2025-08-19",
-    "rs_score":94.36,
+    "rs_score":94.37,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4279,7 +4279,7 @@
     "close":14.4899997711,
     "volume":3726300.0,
     "date":"2026-03-11",
-    "rs_score":94.32,
+    "rs_score":94.33,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4296,7 +4296,7 @@
     "close":5.5500001907,
     "volume":7261300.0,
     "date":"2026-03-11",
-    "rs_score":94.28,
+    "rs_score":94.29,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4313,7 +4313,7 @@
     "close":351.0700073242,
     "volume":4506500.0,
     "date":"2026-03-11",
-    "rs_score":94.26,
+    "rs_score":94.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4330,7 +4330,7 @@
     "close":39.8199996948,
     "volume":28000.0,
     "date":"2026-03-11",
-    "rs_score":94.25,
+    "rs_score":94.26,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4347,7 +4347,7 @@
     "close":2.6300001144,
     "volume":2940100.0,
     "date":"2026-03-11",
-    "rs_score":94.24,
+    "rs_score":94.25,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4364,7 +4364,7 @@
     "close":67.0100021362,
     "volume":85900.0,
     "date":"2026-03-11",
-    "rs_score":94.22,
+    "rs_score":94.23,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4381,7 +4381,7 @@
     "close":21.8999996185,
     "volume":3769300.0,
     "date":"2026-03-11",
-    "rs_score":94.21,
+    "rs_score":94.22,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4398,7 +4398,7 @@
     "close":3.3900001049,
     "volume":0.0,
     "date":"2026-02-10",
-    "rs_score":94.2,
+    "rs_score":94.21,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4415,7 +4415,7 @@
     "close":102.5999984741,
     "volume":1674500.0,
     "date":"2026-03-11",
-    "rs_score":94.19,
+    "rs_score":94.2,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4432,7 +4432,7 @@
     "close":117.0400009155,
     "volume":621000.0,
     "date":"2026-03-11",
-    "rs_score":94.18,
+    "rs_score":94.19,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4449,7 +4449,7 @@
     "close":13.0900001526,
     "volume":2938800.0,
     "date":"2026-03-11",
-    "rs_score":94.15,
+    "rs_score":94.16,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4466,7 +4466,7 @@
     "close":13.4899997711,
     "volume":226000.0,
     "date":"2026-03-11",
-    "rs_score":94.14,
+    "rs_score":94.15,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4483,7 +4483,7 @@
     "close":84.0500030518,
     "volume":215600.0,
     "date":"2026-03-11",
-    "rs_score":94.13,
+    "rs_score":94.14,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4500,7 +4500,7 @@
     "close":85.3300018311,
     "volume":67400.0,
     "date":"2026-03-11",
-    "rs_score":94.12,
+    "rs_score":94.13,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4517,7 +4517,7 @@
     "close":96.9199981689,
     "volume":660300.0,
     "date":"2026-03-11",
-    "rs_score":94.1,
+    "rs_score":94.11,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4534,7 +4534,7 @@
     "close":57.3400001526,
     "volume":90500.0,
     "date":"2026-03-11",
-    "rs_score":94.08,
+    "rs_score":94.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4551,7 +4551,7 @@
     "close":78.7200012207,
     "volume":343500.0,
     "date":"2026-03-11",
-    "rs_score":94.07,
+    "rs_score":94.08,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4568,7 +4568,7 @@
     "close":8.3900003433,
     "volume":222700.0,
     "date":"2026-03-11",
-    "rs_score":94.05,
+    "rs_score":94.06,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4585,7 +4585,7 @@
     "close":2.6500000954,
     "volume":0.0,
     "date":"2026-01-28",
-    "rs_score":94.04,
+    "rs_score":94.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4602,7 +4602,7 @@
     "close":38.5600013733,
     "volume":1293300.0,
     "date":"2026-03-11",
-    "rs_score":94.02,
+    "rs_score":94.03,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4619,7 +4619,7 @@
     "close":17.1000003815,
     "volume":1311400.0,
     "date":"2026-03-11",
-    "rs_score":94.0,
+    "rs_score":94.01,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4636,7 +4636,7 @@
     "close":9.2899999619,
     "volume":1913400.0,
     "date":"2026-03-11",
-    "rs_score":93.98,
+    "rs_score":93.99,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4653,7 +4653,7 @@
     "close":68.6900024414,
     "volume":5530900.0,
     "date":"2026-03-11",
-    "rs_score":93.96,
+    "rs_score":93.97,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4670,7 +4670,7 @@
     "close":30.7689990997,
     "volume":87400.0,
     "date":"2026-03-11",
-    "rs_score":93.94,
+    "rs_score":93.95,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4687,7 +4687,7 @@
     "close":6.3099999428,
     "volume":28617500.0,
     "date":"2026-03-11",
-    "rs_score":93.93,
+    "rs_score":93.94,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4704,7 +4704,7 @@
     "close":43.6199989319,
     "volume":273100.0,
     "date":"2026-03-11",
-    "rs_score":93.91,
+    "rs_score":93.92,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4721,7 +4721,7 @@
     "close":10.0500001907,
     "volume":4296800.0,
     "date":"2026-03-11",
-    "rs_score":93.9,
+    "rs_score":93.91,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4738,7 +4738,7 @@
     "close":43.8199996948,
     "volume":603900.0,
     "date":"2026-03-11",
-    "rs_score":93.88,
+    "rs_score":93.89,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4755,7 +4755,7 @@
     "close":132.8500061035,
     "volume":25064500.0,
     "date":"2026-03-11",
-    "rs_score":93.85,
+    "rs_score":93.86,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4772,7 +4772,7 @@
     "close":116.6900024414,
     "volume":1630700.0,
     "date":"2026-03-11",
-    "rs_score":93.82,
+    "rs_score":93.83,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4789,7 +4789,7 @@
     "close":24.4200000763,
     "volume":1348600.0,
     "date":"2026-03-11",
-    "rs_score":93.81,
+    "rs_score":93.82,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4806,7 +4806,7 @@
     "close":303.7300109863,
     "volume":895300.0,
     "date":"2026-03-11",
-    "rs_score":93.79,
+    "rs_score":93.8,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4823,7 +4823,7 @@
     "close":12.6400003433,
     "volume":5061400.0,
     "date":"2026-03-11",
-    "rs_score":93.78,
+    "rs_score":93.79,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4840,7 +4840,7 @@
     "close":41.8800010681,
     "volume":1173300.0,
     "date":"2026-03-11",
-    "rs_score":93.77,
+    "rs_score":93.78,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4857,7 +4857,7 @@
     "close":47.9799995422,
     "volume":72159200.0,
     "date":"2026-03-11",
-    "rs_score":93.75,
+    "rs_score":93.76,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4874,7 +4874,7 @@
     "close":13.8240003586,
     "volume":18800.0,
     "date":"2026-03-11",
-    "rs_score":93.74,
+    "rs_score":93.75,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4891,7 +4891,7 @@
     "close":3.5499999523,
     "volume":2124200.0,
     "date":"2026-03-11",
-    "rs_score":93.72,
+    "rs_score":93.74,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4908,7 +4908,7 @@
     "close":94.75,
     "volume":15200.0,
     "date":"2026-03-11",
-    "rs_score":93.69,
+    "rs_score":93.72,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4925,24 +4925,7 @@
     "close":847.6500244141,
     "volume":1670300.0,
     "date":"2026-03-11",
-    "rs_score":93.68,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"RILYZ",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":16.2999992371,
-    "volume":19700.0,
-    "date":"2026-03-11",
-    "rs_score":93.67,
+    "rs_score":93.7,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4959,7 +4942,24 @@
     "close":5.1700000763,
     "volume":5920800.0,
     "date":"2026-03-11",
-    "rs_score":93.66,
+    "rs_score":93.69,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
+    "symbol":"RILYZ",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":16.2999992371,
+    "volume":19700.0,
+    "date":"2026-03-11",
+    "rs_score":93.69,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4976,7 +4976,7 @@
     "close":64.3799972534,
     "volume":3128400.0,
     "date":"2026-03-11",
-    "rs_score":93.65,
+    "rs_score":93.68,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -4993,7 +4993,7 @@
     "close":60.8300018311,
     "volume":6584900.0,
     "date":"2026-03-11",
-    "rs_score":93.64,
+    "rs_score":93.67,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5010,7 +5010,7 @@
     "close":3.8900001049,
     "volume":2023800.0,
     "date":"2026-03-11",
-    "rs_score":93.63,
+    "rs_score":93.66,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5027,7 +5027,7 @@
     "close":11.1300001144,
     "volume":0.0,
     "date":"2025-07-25",
-    "rs_score":93.62,
+    "rs_score":93.65,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5044,7 +5044,7 @@
     "close":48.9799995422,
     "volume":29100.0,
     "date":"2026-03-11",
-    "rs_score":93.61,
+    "rs_score":93.64,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5061,7 +5061,7 @@
     "close":47.4500007629,
     "volume":508600.0,
     "date":"2026-03-11",
-    "rs_score":93.6,
+    "rs_score":93.63,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5078,7 +5078,7 @@
     "close":192.0200042725,
     "volume":1505500.0,
     "date":"2026-03-11",
-    "rs_score":93.59,
+    "rs_score":93.62,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5095,7 +5095,7 @@
     "close":18.0499992371,
     "volume":109400.0,
     "date":"2026-03-11",
-    "rs_score":93.58,
+    "rs_score":93.61,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5112,7 +5112,7 @@
     "close":35.6599998474,
     "volume":303400.0,
     "date":"2026-03-11",
-    "rs_score":93.55,
+    "rs_score":93.58,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5129,7 +5129,24 @@
     "close":191.2200012207,
     "volume":584900.0,
     "date":"2025-08-19",
-    "rs_score":93.52,
+    "rs_score":93.55,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
+    "symbol":"CAMT",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":152.5500030518,
+    "volume":349700.0,
+    "date":"2026-03-12",
+    "rs_score":93.49,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5146,7 +5163,7 @@
     "close":43.5900001526,
     "volume":52400.0,
     "date":"2026-03-11",
-    "rs_score":93.46,
+    "rs_score":93.48,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5163,7 +5180,7 @@
     "close":14.9799995422,
     "volume":250500.0,
     "date":"2026-03-11",
-    "rs_score":93.44,
+    "rs_score":93.46,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5180,7 +5197,7 @@
     "close":14.3699998856,
     "volume":5274500.0,
     "date":"2026-03-11",
-    "rs_score":93.43,
+    "rs_score":93.45,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5197,7 +5214,7 @@
     "close":4.2600002289,
     "volume":2348000.0,
     "date":"2026-03-11",
-    "rs_score":93.41,
+    "rs_score":93.43,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5214,7 +5231,7 @@
     "close":5.2399997711,
     "volume":4303700.0,
     "date":"2026-03-11",
-    "rs_score":93.37,
+    "rs_score":93.39,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5231,7 +5248,7 @@
     "close":66.9100036621,
     "volume":250200.0,
     "date":"2026-03-11",
-    "rs_score":93.35,
+    "rs_score":93.37,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5248,7 +5265,7 @@
     "close":21.6399993896,
     "volume":0.0,
     "date":"2026-02-13",
-    "rs_score":93.34,
+    "rs_score":93.36,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5265,7 +5282,7 @@
     "close":17.5499992371,
     "volume":48200.0,
     "date":"2026-03-11",
-    "rs_score":93.33,
+    "rs_score":93.35,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5282,7 +5299,7 @@
     "close":25.3299999237,
     "volume":2102700.0,
     "date":"2026-03-11",
-    "rs_score":93.32,
+    "rs_score":93.34,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5299,7 +5316,7 @@
     "close":218.5399932861,
     "volume":730700.0,
     "date":"2026-03-11",
-    "rs_score":93.31,
+    "rs_score":93.33,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5316,7 +5333,7 @@
     "close":71.1200027466,
     "volume":1309800.0,
     "date":"2026-03-11",
-    "rs_score":93.29,
+    "rs_score":93.31,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5333,7 +5350,7 @@
     "close":200.6300048828,
     "volume":656700.0,
     "date":"2026-03-11",
-    "rs_score":93.27,
+    "rs_score":93.29,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5350,7 +5367,7 @@
     "close":31.9899997711,
     "volume":1006700.0,
     "date":"2026-03-11",
-    "rs_score":93.26,
+    "rs_score":93.28,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5367,7 +5384,7 @@
     "close":55.3499984741,
     "volume":2278600.0,
     "date":"2026-03-11",
-    "rs_score":93.25,
+    "rs_score":93.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5384,7 +5401,7 @@
     "close":4.2600002289,
     "volume":0.0,
     "date":"2025-05-30",
-    "rs_score":93.22,
+    "rs_score":93.24,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5401,7 +5418,7 @@
     "close":135.3600006104,
     "volume":4227800.0,
     "date":"2026-03-11",
-    "rs_score":93.21,
+    "rs_score":93.23,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5418,7 +5435,7 @@
     "close":43.0400009155,
     "volume":352100.0,
     "date":"2026-03-11",
-    "rs_score":93.19,
+    "rs_score":93.2,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5435,7 +5452,7 @@
     "close":9.2299995422,
     "volume":91400.0,
     "date":"2026-03-11",
-    "rs_score":93.15,
+    "rs_score":93.16,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5452,7 +5469,7 @@
     "close":16.0499992371,
     "volume":6832400.0,
     "date":"2026-03-11",
-    "rs_score":93.14,
+    "rs_score":93.15,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5469,7 +5486,7 @@
     "close":50.9199981689,
     "volume":67000.0,
     "date":"2026-03-11",
-    "rs_score":93.12,
+    "rs_score":93.13,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5486,7 +5503,7 @@
     "close":23.3099994659,
     "volume":1359150.0,
     "date":"2026-03-11",
-    "rs_score":93.1,
+    "rs_score":93.11,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5503,7 +5520,7 @@
     "close":3.0699999332,
     "volume":3553700.0,
     "date":"2026-03-11",
-    "rs_score":93.09,
+    "rs_score":93.1,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5520,7 +5537,7 @@
     "close":16.0200004578,
     "volume":166400.0,
     "date":"2026-03-11",
-    "rs_score":93.07,
+    "rs_score":93.08,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5537,7 +5554,7 @@
     "close":100.0999984741,
     "volume":68000.0,
     "date":"2026-03-11",
-    "rs_score":93.06,
+    "rs_score":93.07,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5554,7 +5571,7 @@
     "close":4.0999999046,
     "volume":23267700.0,
     "date":"2026-03-11",
-    "rs_score":93.05,
+    "rs_score":93.06,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5571,7 +5588,7 @@
     "close":115.3899993896,
     "volume":3444300.0,
     "date":"2026-03-11",
-    "rs_score":93.04,
+    "rs_score":93.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5588,7 +5605,7 @@
     "close":87.0100021362,
     "volume":268300.0,
     "date":"2026-03-11",
-    "rs_score":93.02,
+    "rs_score":93.03,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5605,7 +5622,7 @@
     "close":33.5,
     "volume":5138400.0,
     "date":"2026-03-11",
-    "rs_score":93.01,
+    "rs_score":93.02,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5622,7 +5639,7 @@
     "close":40.2999992371,
     "volume":2926300.0,
     "date":"2026-03-11",
-    "rs_score":92.98,
+    "rs_score":92.99,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5639,7 +5656,7 @@
     "close":4.8800001144,
     "volume":1270700.0,
     "date":"2026-03-11",
-    "rs_score":92.96,
+    "rs_score":92.97,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5656,7 +5673,7 @@
     "close":77.8399963379,
     "volume":628500.0,
     "date":"2026-03-11",
-    "rs_score":92.95,
+    "rs_score":92.96,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5673,7 +5690,7 @@
     "close":55.5600013733,
     "volume":4777000.0,
     "date":"2026-03-11",
-    "rs_score":92.93,
+    "rs_score":92.94,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5690,7 +5707,7 @@
     "close":35.9300003052,
     "volume":3900.0,
     "date":"2026-03-11",
-    "rs_score":92.92,
+    "rs_score":92.93,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5707,7 +5724,7 @@
     "close":108.8199996948,
     "volume":46100.0,
     "date":"2026-03-11",
-    "rs_score":92.91,
+    "rs_score":92.92,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5724,7 +5741,7 @@
     "close":70.4199981689,
     "volume":612000.0,
     "date":"2026-03-11",
-    "rs_score":92.9,
+    "rs_score":92.91,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5741,7 +5758,7 @@
     "close":13.5,
     "volume":2163300.0,
     "date":"2026-03-11",
-    "rs_score":92.89,
+    "rs_score":92.9,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5758,7 +5775,7 @@
     "close":84.3000030518,
     "volume":47300.0,
     "date":"2026-03-11",
-    "rs_score":92.88,
+    "rs_score":92.89,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5775,7 +5792,7 @@
     "close":107.3870010376,
     "volume":4900.0,
     "date":"2026-03-11",
-    "rs_score":92.85,
+    "rs_score":92.86,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5792,7 +5809,7 @@
     "close":17.7399997711,
     "volume":1262600.0,
     "date":"2026-03-11",
-    "rs_score":92.83,
+    "rs_score":92.84,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5809,7 +5826,7 @@
     "close":524.3300170898,
     "volume":437400.0,
     "date":"2026-03-11",
-    "rs_score":92.82,
+    "rs_score":92.83,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5826,7 +5843,7 @@
     "close":84.0899963379,
     "volume":35200.0,
     "date":"2026-03-11",
-    "rs_score":92.79,
+    "rs_score":92.8,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5843,7 +5860,7 @@
     "close":101.3600006104,
     "volume":19241600.0,
     "date":"2026-03-11",
-    "rs_score":92.78,
+    "rs_score":92.79,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5860,7 +5877,7 @@
     "close":6.6300001144,
     "volume":292900.0,
     "date":"2026-03-11",
-    "rs_score":92.76,
+    "rs_score":92.77,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5877,7 +5894,7 @@
     "close":27.0,
     "volume":0.0,
     "date":"2026-03-11",
-    "rs_score":92.73,
+    "rs_score":92.74,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5894,7 +5911,7 @@
     "close":93.4100036621,
     "volume":118200.0,
     "date":"2026-03-11",
-    "rs_score":92.72,
+    "rs_score":92.73,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5911,7 +5928,7 @@
     "close":6.0799999237,
     "volume":437500.0,
     "date":"2026-03-11",
-    "rs_score":92.71,
+    "rs_score":92.72,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5928,7 +5945,7 @@
     "close":41.9900016785,
     "volume":3593300.0,
     "date":"2026-03-11",
-    "rs_score":92.68,
+    "rs_score":92.69,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5945,7 +5962,7 @@
     "close":765.8599853516,
     "volume":114400.0,
     "date":"2026-03-11",
-    "rs_score":92.65,
+    "rs_score":92.66,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5962,7 +5979,7 @@
     "close":49.6100006104,
     "volume":209500.0,
     "date":"2026-03-11",
-    "rs_score":92.62,
+    "rs_score":92.63,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5979,7 +5996,7 @@
     "close":408.1400146484,
     "volume":383200.0,
     "date":"2026-03-11",
-    "rs_score":92.61,
+    "rs_score":92.62,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -5996,7 +6013,7 @@
     "close":123.6399993896,
     "volume":343600.0,
     "date":"2026-03-11",
-    "rs_score":92.58,
+    "rs_score":92.59,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6013,7 +6030,7 @@
     "close":50.922000885,
     "volume":100.0,
     "date":"2026-03-11",
-    "rs_score":92.57,
+    "rs_score":92.58,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6030,7 +6047,7 @@
     "close":13.5500001907,
     "volume":346800.0,
     "date":"2026-03-11",
-    "rs_score":92.56,
+    "rs_score":92.57,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6047,7 +6064,7 @@
     "close":222.8099975586,
     "volume":1773500.0,
     "date":"2026-03-11",
-    "rs_score":92.52,
+    "rs_score":92.53,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6064,7 +6081,7 @@
     "close":3.1700000763,
     "volume":386400.0,
     "date":"2025-08-19",
-    "rs_score":92.51,
+    "rs_score":92.52,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6081,7 +6098,7 @@
     "close":17.3999996185,
     "volume":11300.0,
     "date":"2026-03-11",
-    "rs_score":92.48,
+    "rs_score":92.49,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6098,7 +6115,7 @@
     "close":32.4719009399,
     "volume":13814.0,
     "date":"2026-03-11",
-    "rs_score":92.45,
+    "rs_score":92.46,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6115,7 +6132,7 @@
     "close":85.8199996948,
     "volume":1022100.0,
     "date":"2026-03-11",
-    "rs_score":92.44,
+    "rs_score":92.45,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6132,7 +6149,7 @@
     "close":42.9599990845,
     "volume":27800.0,
     "date":"2026-03-11",
-    "rs_score":92.43,
+    "rs_score":92.44,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6149,7 +6166,7 @@
     "close":46.1100006104,
     "volume":18200.0,
     "date":"2026-03-11",
-    "rs_score":92.41,
+    "rs_score":92.42,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6166,7 +6183,7 @@
     "close":6.6999998093,
     "volume":900.0,
     "date":"2026-03-11",
-    "rs_score":92.4,
+    "rs_score":92.41,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6183,7 +6200,7 @@
     "close":129.2100067139,
     "volume":86700.0,
     "date":"2026-03-11",
-    "rs_score":92.39,
+    "rs_score":92.4,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6846,7 +6863,7 @@
     "close":148.6699981689,
     "volume":2016100.0,
     "date":"2026-03-11",
-    "rs_score":91.65,
+    "rs_score":91.66,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6863,7 +6880,7 @@
     "close":53.8699989319,
     "volume":495600.0,
     "date":"2026-03-11",
-    "rs_score":91.63,
+    "rs_score":91.64,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6880,7 +6897,7 @@
     "close":30.9899997711,
     "volume":1120300.0,
     "date":"2026-03-11",
-    "rs_score":91.62,
+    "rs_score":91.63,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6897,7 +6914,7 @@
     "close":5.9699997902,
     "volume":1853.0,
     "date":"2026-01-20",
-    "rs_score":91.6,
+    "rs_score":91.61,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6914,7 +6931,7 @@
     "close":268.9700012207,
     "volume":238100.0,
     "date":"2026-03-11",
-    "rs_score":91.59,
+    "rs_score":91.6,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6931,7 +6948,7 @@
     "close":3.8699998856,
     "volume":70300.0,
     "date":"2026-03-11",
-    "rs_score":91.58,
+    "rs_score":91.59,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6948,7 +6965,7 @@
     "close":56.6399993896,
     "volume":1551000.0,
     "date":"2026-03-11",
-    "rs_score":91.55,
+    "rs_score":91.56,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6965,7 +6982,7 @@
     "close":81.5199966431,
     "volume":688900.0,
     "date":"2026-03-11",
-    "rs_score":91.54,
+    "rs_score":91.55,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6982,7 +6999,7 @@
     "close":1465.0,
     "volume":816400.0,
     "date":"2026-03-11",
-    "rs_score":91.53,
+    "rs_score":91.54,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -6999,7 +7016,7 @@
     "close":567.7100219727,
     "volume":939300.0,
     "date":"2026-03-11",
-    "rs_score":91.51,
+    "rs_score":91.52,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7016,7 +7033,7 @@
     "close":20.8400001526,
     "volume":300300.0,
     "date":"2026-03-11",
-    "rs_score":91.49,
+    "rs_score":91.5,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7033,7 +7050,7 @@
     "close":59.0400009155,
     "volume":5546200.0,
     "date":"2026-03-11",
-    "rs_score":91.48,
+    "rs_score":91.49,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7050,7 +7067,7 @@
     "close":45.3300018311,
     "volume":1122400.0,
     "date":"2026-03-11",
-    "rs_score":91.46,
+    "rs_score":91.47,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7152,7 +7169,7 @@
     "close":14.6300001144,
     "volume":726100.0,
     "date":"2026-03-11",
-    "rs_score":91.32,
+    "rs_score":91.31,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7169,7 +7186,7 @@
     "close":45.7400016785,
     "volume":187600.0,
     "date":"2026-03-11",
-    "rs_score":91.31,
+    "rs_score":91.3,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7186,7 +7203,7 @@
     "close":20.4599990845,
     "volume":1475800.0,
     "date":"2026-03-11",
-    "rs_score":91.28,
+    "rs_score":91.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7203,7 +7220,7 @@
     "close":73.2600021362,
     "volume":774400.0,
     "date":"2026-03-11",
-    "rs_score":91.27,
+    "rs_score":91.26,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7220,7 +7237,7 @@
     "close":231.0500030518,
     "volume":3757900.0,
     "date":"2026-03-11",
-    "rs_score":91.26,
+    "rs_score":91.25,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7237,7 +7254,7 @@
     "close":5.2300000191,
     "volume":2251400.0,
     "date":"2026-03-11",
-    "rs_score":91.25,
+    "rs_score":91.24,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7254,7 +7271,7 @@
     "close":9.3599996567,
     "volume":282500.0,
     "date":"2026-03-11",
-    "rs_score":91.23,
+    "rs_score":91.22,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7271,7 +7288,7 @@
     "close":3.2699999809,
     "volume":1537400.0,
     "date":"2026-03-11",
-    "rs_score":91.22,
+    "rs_score":91.21,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7288,7 +7305,7 @@
     "close":18.9899997711,
     "volume":43475400.0,
     "date":"2026-03-11",
-    "rs_score":91.2,
+    "rs_score":91.19,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7305,7 +7322,7 @@
     "close":692.5800170898,
     "volume":211400.0,
     "date":"2026-03-11",
-    "rs_score":91.19,
+    "rs_score":91.18,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7322,7 +7339,7 @@
     "close":11.3400001526,
     "volume":3951800.0,
     "date":"2026-03-11",
-    "rs_score":91.18,
+    "rs_score":91.17,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7338,23 +7355,6 @@
     "met_count":8,
     "close":137.7200012207,
     "volume":100.0,
-    "date":"2026-03-11",
-    "rs_score":91.17,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"NWPX",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":74.8899993896,
-    "volume":118900.0,
     "date":"2026-03-11",
     "rs_score":91.16,
     "rs_benchmark":"SPY",
@@ -7378,6 +7378,23 @@
     "cond8":true
   },
   {
+    "symbol":"NWPX",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":74.8899993896,
+    "volume":118900.0,
+    "date":"2026-03-11",
+    "rs_score":91.15,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
     "symbol":"TPR",
     "cond1":true,
     "cond2":true,
@@ -7390,7 +7407,7 @@
     "close":145.4199981689,
     "volume":2586700.0,
     "date":"2026-03-11",
-    "rs_score":91.13,
+    "rs_score":91.12,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7407,7 +7424,7 @@
     "close":25.1399993896,
     "volume":762400.0,
     "date":"2026-03-11",
-    "rs_score":91.1,
+    "rs_score":91.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7424,7 +7441,7 @@
     "close":316.4899902344,
     "volume":184000.0,
     "date":"2026-03-11",
-    "rs_score":91.09,
+    "rs_score":91.08,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7441,7 +7458,7 @@
     "close":267.2300109863,
     "volume":181300.0,
     "date":"2026-03-11",
-    "rs_score":91.08,
+    "rs_score":91.07,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7458,7 +7475,7 @@
     "close":17.8700008392,
     "volume":6651100.0,
     "date":"2026-03-11",
-    "rs_score":91.06,
+    "rs_score":91.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7475,7 +7492,7 @@
     "close":1.1599999666,
     "volume":72200.0,
     "date":"2026-03-11",
-    "rs_score":91.05,
+    "rs_score":91.04,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7492,7 +7509,7 @@
     "close":10.029999733,
     "volume":4275600.0,
     "date":"2026-03-11",
-    "rs_score":91.04,
+    "rs_score":91.03,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7509,7 +7526,7 @@
     "close":49.5499992371,
     "volume":22700.0,
     "date":"2026-03-11",
-    "rs_score":91.03,
+    "rs_score":91.02,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7526,7 +7543,7 @@
     "close":30.7000007629,
     "volume":885300.0,
     "date":"2026-03-11",
-    "rs_score":91.01,
+    "rs_score":91.0,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7543,7 +7560,7 @@
     "close":102.6699981689,
     "volume":12200.0,
     "date":"2026-03-11",
-    "rs_score":90.99,
+    "rs_score":90.98,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7560,7 +7577,7 @@
     "close":67.6399993896,
     "volume":399100.0,
     "date":"2026-03-11",
-    "rs_score":90.96,
+    "rs_score":90.95,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7577,7 +7594,7 @@
     "close":1.4400000572,
     "volume":3217700.0,
     "date":"2026-03-11",
-    "rs_score":90.95,
+    "rs_score":90.94,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7594,7 +7611,7 @@
     "close":10.9099998474,
     "volume":257200.0,
     "date":"2026-03-11",
-    "rs_score":90.94,
+    "rs_score":90.93,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7611,7 +7628,7 @@
     "close":74.6800003052,
     "volume":714400.0,
     "date":"2026-03-11",
-    "rs_score":90.91,
+    "rs_score":90.9,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7628,7 +7645,7 @@
     "close":42.9799995422,
     "volume":1038600.0,
     "date":"2026-03-11",
-    "rs_score":90.89,
+    "rs_score":90.88,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7645,7 +7662,7 @@
     "close":45.4099998474,
     "volume":275800.0,
     "date":"2026-03-11",
-    "rs_score":90.88,
+    "rs_score":90.87,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7662,7 +7679,7 @@
     "close":46.9399986267,
     "volume":253500.0,
     "date":"2026-03-11",
-    "rs_score":90.84,
+    "rs_score":90.83,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7679,7 +7696,7 @@
     "close":44.0400009155,
     "volume":8849300.0,
     "date":"2026-03-11",
-    "rs_score":90.83,
+    "rs_score":90.82,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7696,7 +7713,7 @@
     "close":193.8999938965,
     "volume":1290700.0,
     "date":"2026-03-11",
-    "rs_score":90.8,
+    "rs_score":90.79,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -7713,23 +7730,6 @@
     "close":94.6399993896,
     "volume":0.0,
     "date":"2025-06-02",
-    "rs_score":90.79,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"GLDD",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":16.9500007629,
-    "volume":871600.0,
-    "date":"2026-03-11",
     "rs_score":90.78,
     "rs_benchmark":"SPY",
     "cond8":true
@@ -8092,6 +8092,23 @@
     "cond8":true
   },
   {
+    "symbol":"GLDD",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":16.9500007629,
+    "volume":1170300.0,
+    "date":"2026-03-12",
+    "rs_score":90.42,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
     "symbol":"ENTA",
     "cond1":true,
     "cond2":true,
@@ -8104,7 +8121,7 @@
     "close":14.1700000763,
     "volume":103000.0,
     "date":"2026-03-11",
-    "rs_score":90.42,
+    "rs_score":90.41,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8121,7 +8138,7 @@
     "close":10.8000001907,
     "volume":5178900.0,
     "date":"2026-03-11",
-    "rs_score":90.39,
+    "rs_score":90.38,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8138,7 +8155,7 @@
     "close":274.8900146484,
     "volume":2388900.0,
     "date":"2026-03-11",
-    "rs_score":90.37,
+    "rs_score":90.36,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8155,7 +8172,7 @@
     "close":201.6999969482,
     "volume":550200.0,
     "date":"2026-03-11",
-    "rs_score":90.36,
+    "rs_score":90.35,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8172,7 +8189,7 @@
     "close":63.9000015259,
     "volume":1559532.0,
     "date":"2026-01-30",
-    "rs_score":90.35,
+    "rs_score":90.34,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8189,7 +8206,7 @@
     "close":108.3199996948,
     "volume":277600.0,
     "date":"2026-03-11",
-    "rs_score":90.32,
+    "rs_score":90.31,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8206,7 +8223,7 @@
     "close":69.4499969482,
     "volume":440000.0,
     "date":"2026-03-11",
-    "rs_score":90.3,
+    "rs_score":90.29,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8223,7 +8240,7 @@
     "close":354.5599975586,
     "volume":10616900.0,
     "date":"2026-03-11",
-    "rs_score":90.29,
+    "rs_score":90.28,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8240,7 +8257,7 @@
     "close":27.3199996948,
     "volume":378100.0,
     "date":"2026-03-11",
-    "rs_score":90.28,
+    "rs_score":90.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8257,7 +8274,7 @@
     "close":122.7200012207,
     "volume":2558000.0,
     "date":"2026-03-11",
-    "rs_score":90.27,
+    "rs_score":90.26,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8274,7 +8291,7 @@
     "close":47.2599983215,
     "volume":9774600.0,
     "date":"2026-03-11",
-    "rs_score":90.26,
+    "rs_score":90.25,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8291,7 +8308,7 @@
     "close":44.7599983215,
     "volume":98500.0,
     "date":"2026-03-11",
-    "rs_score":90.23,
+    "rs_score":90.22,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8308,7 +8325,7 @@
     "close":13.6199998856,
     "volume":2806500.0,
     "date":"2026-03-11",
-    "rs_score":90.2,
+    "rs_score":90.19,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8324,23 +8341,6 @@
     "met_count":8,
     "close":76.5100021362,
     "volume":710400.0,
-    "date":"2026-03-11",
-    "rs_score":90.17,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"FNV",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":265.7200012207,
-    "volume":2456300.0,
     "date":"2026-03-11",
     "rs_score":90.16,
     "rs_benchmark":"SPY",
@@ -8364,6 +8364,23 @@
     "cond8":true
   },
   {
+    "symbol":"FNV",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":265.7200012207,
+    "volume":2456300.0,
+    "date":"2026-03-11",
+    "rs_score":90.15,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
     "symbol":"DBP",
     "cond1":true,
     "cond2":true,
@@ -8376,7 +8393,7 @@
     "close":122.9100036621,
     "volume":5800.0,
     "date":"2026-03-11",
-    "rs_score":90.15,
+    "rs_score":90.14,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8393,7 +8410,7 @@
     "close":544.7100219727,
     "volume":1477200.0,
     "date":"2026-03-11",
-    "rs_score":90.14,
+    "rs_score":90.13,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8410,7 +8427,7 @@
     "close":26.7900009155,
     "volume":1700.0,
     "date":"2026-03-11",
-    "rs_score":90.13,
+    "rs_score":90.12,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8427,7 +8444,7 @@
     "close":152.0099945068,
     "volume":103600.0,
     "date":"2026-03-11",
-    "rs_score":90.12,
+    "rs_score":90.11,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8444,7 +8461,7 @@
     "close":7.4400000572,
     "volume":9293300.0,
     "date":"2026-03-11",
-    "rs_score":90.1,
+    "rs_score":90.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8461,7 +8478,7 @@
     "close":47.9399986267,
     "volume":78500.0,
     "date":"2026-03-11",
-    "rs_score":90.08,
+    "rs_score":90.07,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8478,7 +8495,7 @@
     "close":215.3000030518,
     "volume":518600.0,
     "date":"2026-03-11",
-    "rs_score":90.06,
+    "rs_score":90.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8495,7 +8512,7 @@
     "close":8.3500003815,
     "volume":1544800.0,
     "date":"2026-03-11",
-    "rs_score":90.05,
+    "rs_score":90.04,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8512,7 +8529,7 @@
     "close":120.25,
     "volume":543600.0,
     "date":"2026-03-11",
-    "rs_score":90.04,
+    "rs_score":90.03,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8529,7 +8546,7 @@
     "close":15.9899997711,
     "volume":1052000.0,
     "date":"2026-03-11",
-    "rs_score":90.01,
+    "rs_score":90.0,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8546,7 +8563,7 @@
     "close":95.0,
     "volume":161000.0,
     "date":"2026-03-11",
-    "rs_score":90.0,
+    "rs_score":89.99,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8563,7 +8580,7 @@
     "close":56.3100013733,
     "volume":9100.0,
     "date":"2026-03-11",
-    "rs_score":89.99,
+    "rs_score":89.98,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8580,7 +8597,7 @@
     "close":4.5100002289,
     "volume":19511220.0,
     "date":"2026-03-09",
-    "rs_score":89.95,
+    "rs_score":89.94,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8597,7 +8614,7 @@
     "close":38.2400016785,
     "volume":496000.0,
     "date":"2026-03-11",
-    "rs_score":89.94,
+    "rs_score":89.93,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8614,7 +8631,7 @@
     "close":32.9700012207,
     "volume":6631100.0,
     "date":"2026-03-11",
-    "rs_score":89.88,
+    "rs_score":89.87,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8631,7 +8648,7 @@
     "close":4.6199998856,
     "volume":100900.0,
     "date":"2026-03-11",
-    "rs_score":89.87,
+    "rs_score":89.86,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8648,7 +8665,7 @@
     "close":20.7700004578,
     "volume":235300.0,
     "date":"2026-03-11",
-    "rs_score":89.86,
+    "rs_score":89.85,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8665,7 +8682,7 @@
     "close":9.5100002289,
     "volume":245200.0,
     "date":"2026-03-11",
-    "rs_score":89.85,
+    "rs_score":89.84,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8682,7 +8699,7 @@
     "close":23.7700004578,
     "volume":10200.0,
     "date":"2026-03-11",
-    "rs_score":89.82,
+    "rs_score":89.81,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8699,7 +8716,7 @@
     "close":28.0,
     "volume":0.0,
     "date":"2025-12-17",
-    "rs_score":89.79,
+    "rs_score":89.78,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8716,7 +8733,7 @@
     "close":49.1100006104,
     "volume":39000.0,
     "date":"2026-03-11",
-    "rs_score":89.73,
+    "rs_score":89.72,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8733,7 +8750,7 @@
     "close":361.3900146484,
     "volume":1024900.0,
     "date":"2026-03-11",
-    "rs_score":89.69,
+    "rs_score":89.68,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8750,24 +8767,7 @@
     "close":8.75,
     "volume":461100.0,
     "date":"2026-03-11",
-    "rs_score":89.67,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"PLOW",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":43.2599983215,
-    "volume":170300.0,
-    "date":"2026-03-11",
-    "rs_score":89.65,
+    "rs_score":89.66,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8789,6 +8789,23 @@
     "cond8":true
   },
   {
+    "symbol":"PLOW",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":43.2599983215,
+    "volume":170300.0,
+    "date":"2026-03-11",
+    "rs_score":89.64,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
     "symbol":"FCX",
     "cond1":true,
     "cond2":true,
@@ -8801,7 +8818,7 @@
     "close":61.5400009155,
     "volume":17754700.0,
     "date":"2026-03-11",
-    "rs_score":89.64,
+    "rs_score":89.63,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8818,7 +8835,7 @@
     "close":40.0999984741,
     "volume":16100.0,
     "date":"2026-03-11",
-    "rs_score":89.62,
+    "rs_score":89.61,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8835,7 +8852,7 @@
     "close":44.7900009155,
     "volume":1163700.0,
     "date":"2026-03-11",
-    "rs_score":89.61,
+    "rs_score":89.6,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8852,7 +8869,7 @@
     "close":42.9399986267,
     "volume":512700.0,
     "date":"2026-03-11",
-    "rs_score":89.6,
+    "rs_score":89.59,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8869,7 +8886,7 @@
     "close":49.3600006104,
     "volume":505000.0,
     "date":"2026-03-11",
-    "rs_score":89.59,
+    "rs_score":89.58,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8886,7 +8903,7 @@
     "close":13.5699996948,
     "volume":82100.0,
     "date":"2026-03-11",
-    "rs_score":89.58,
+    "rs_score":89.57,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8903,7 +8920,7 @@
     "close":60.8100013733,
     "volume":111900.0,
     "date":"2026-03-11",
-    "rs_score":89.56,
+    "rs_score":89.55,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8920,7 +8937,7 @@
     "close":14.4399995804,
     "volume":220100.0,
     "date":"2026-03-11",
-    "rs_score":89.55,
+    "rs_score":89.54,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8937,7 +8954,7 @@
     "close":10.6999998093,
     "volume":245800.0,
     "date":"2026-03-11",
-    "rs_score":89.54,
+    "rs_score":89.53,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8954,7 +8971,7 @@
     "close":202.3999938965,
     "volume":1106600.0,
     "date":"2026-03-11",
-    "rs_score":89.53,
+    "rs_score":89.52,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8971,7 +8988,7 @@
     "close":11.8000001907,
     "volume":454600.0,
     "date":"2026-03-11",
-    "rs_score":89.52,
+    "rs_score":89.51,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -8988,7 +9005,7 @@
     "close":28.2199993134,
     "volume":870300.0,
     "date":"2026-03-11",
-    "rs_score":89.51,
+    "rs_score":89.5,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9005,7 +9022,7 @@
     "close":4.8499999046,
     "volume":0.0,
     "date":"2026-03-11",
-    "rs_score":89.44,
+    "rs_score":89.43,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9022,7 +9039,7 @@
     "close":8.8800001144,
     "volume":26700.0,
     "date":"2026-03-11",
-    "rs_score":89.43,
+    "rs_score":89.42,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9039,7 +9056,7 @@
     "close":35.9599990845,
     "volume":1320700.0,
     "date":"2026-03-11",
-    "rs_score":89.42,
+    "rs_score":89.41,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9056,7 +9073,7 @@
     "close":58.2700004578,
     "volume":3748500.0,
     "date":"2026-03-11",
-    "rs_score":89.39,
+    "rs_score":89.38,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9073,7 +9090,7 @@
     "close":46.3100013733,
     "volume":257700.0,
     "date":"2026-03-11",
-    "rs_score":89.38,
+    "rs_score":89.37,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9090,7 +9107,7 @@
     "close":270.6600036621,
     "volume":123500.0,
     "date":"2026-03-11",
-    "rs_score":89.37,
+    "rs_score":89.36,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9107,7 +9124,7 @@
     "close":51.6699981689,
     "volume":2227300.0,
     "date":"2026-03-11",
-    "rs_score":89.34,
+    "rs_score":89.33,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9124,7 +9141,7 @@
     "close":34.7400016785,
     "volume":1158300.0,
     "date":"2026-03-11",
-    "rs_score":89.33,
+    "rs_score":89.32,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9141,7 +9158,7 @@
     "close":102.5899963379,
     "volume":2808700.0,
     "date":"2026-03-11",
-    "rs_score":89.32,
+    "rs_score":89.31,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9158,7 +9175,7 @@
     "close":35.9300003052,
     "volume":14622300.0,
     "date":"2026-03-11",
-    "rs_score":89.31,
+    "rs_score":89.3,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9175,7 +9192,7 @@
     "close":49.3899993896,
     "volume":2539200.0,
     "date":"2026-03-11",
-    "rs_score":89.3,
+    "rs_score":89.29,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9192,7 +9209,7 @@
     "close":51.0600013733,
     "volume":207000.0,
     "date":"2026-03-11",
-    "rs_score":89.28,
+    "rs_score":89.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9209,7 +9226,7 @@
     "close":51.1300010681,
     "volume":1304800.0,
     "date":"2026-03-11",
-    "rs_score":89.27,
+    "rs_score":89.26,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9226,7 +9243,7 @@
     "close":11.2100000381,
     "volume":8700.0,
     "date":"2026-03-11",
-    "rs_score":89.26,
+    "rs_score":89.25,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9243,7 +9260,7 @@
     "close":40.7599983215,
     "volume":1409100.0,
     "date":"2026-03-11",
-    "rs_score":89.25,
+    "rs_score":89.24,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9260,7 +9277,7 @@
     "close":49.8600006104,
     "volume":617600.0,
     "date":"2026-03-11",
-    "rs_score":89.24,
+    "rs_score":89.23,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9277,7 +9294,7 @@
     "close":97.5500030518,
     "volume":5130300.0,
     "date":"2026-03-11",
-    "rs_score":89.23,
+    "rs_score":89.22,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9294,7 +9311,7 @@
     "close":10.220000267,
     "volume":6080900.0,
     "date":"2025-08-19",
-    "rs_score":89.21,
+    "rs_score":89.2,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9311,7 +9328,7 @@
     "close":136.1399993896,
     "volume":85300.0,
     "date":"2026-03-11",
-    "rs_score":89.2,
+    "rs_score":89.19,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9328,7 +9345,7 @@
     "close":476.2399902344,
     "volume":7463300.0,
     "date":"2026-03-11",
-    "rs_score":89.18,
+    "rs_score":89.17,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9345,24 +9362,7 @@
     "close":54.4199981689,
     "volume":1419300.0,
     "date":"2026-03-11",
-    "rs_score":89.17,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"MEOH",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":53.4799995422,
-    "volume":1387200.0,
-    "date":"2026-03-11",
-    "rs_score":89.15,
+    "rs_score":89.16,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9384,6 +9384,23 @@
     "cond8":true
   },
   {
+    "symbol":"MEOH",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":53.4799995422,
+    "volume":1387200.0,
+    "date":"2026-03-11",
+    "rs_score":89.14,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
     "symbol":"FGDL",
     "cond1":true,
     "cond2":true,
@@ -9396,7 +9413,7 @@
     "close":68.9400024414,
     "volume":37900.0,
     "date":"2026-03-11",
-    "rs_score":89.13,
+    "rs_score":89.12,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9413,7 +9430,7 @@
     "close":144.2599945068,
     "volume":64100.0,
     "date":"2026-03-11",
-    "rs_score":89.12,
+    "rs_score":89.11,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9430,7 +9447,7 @@
     "close":68.0800018311,
     "volume":93400.0,
     "date":"2026-03-11",
-    "rs_score":89.1,
+    "rs_score":89.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9447,7 +9464,7 @@
     "close":34.0699996948,
     "volume":304800.0,
     "date":"2026-03-11",
-    "rs_score":89.09,
+    "rs_score":89.08,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9464,7 +9481,7 @@
     "close":96.4800033569,
     "volume":788700.0,
     "date":"2026-03-11",
-    "rs_score":89.07,
+    "rs_score":89.06,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9481,7 +9498,7 @@
     "close":15.6700000763,
     "volume":2023900.0,
     "date":"2026-03-11",
-    "rs_score":89.06,
+    "rs_score":89.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9498,7 +9515,7 @@
     "close":27.4699993134,
     "volume":1678700.0,
     "date":"2026-03-11",
-    "rs_score":89.05,
+    "rs_score":89.04,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9515,7 +9532,7 @@
     "close":559.5200195312,
     "volume":170900.0,
     "date":"2026-03-11",
-    "rs_score":89.04,
+    "rs_score":89.03,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9532,7 +9549,7 @@
     "close":39.4399986267,
     "volume":2775200.0,
     "date":"2026-03-11",
-    "rs_score":89.02,
+    "rs_score":89.01,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9549,7 +9566,7 @@
     "close":26.7900009155,
     "volume":33300.0,
     "date":"2026-03-11",
-    "rs_score":89.01,
+    "rs_score":89.0,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9566,7 +9583,7 @@
     "close":47.8600006104,
     "volume":0.0,
     "date":"2026-02-19",
-    "rs_score":89.0,
+    "rs_score":88.99,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9583,7 +9600,7 @@
     "close":14.0900001526,
     "volume":1413200.0,
     "date":"2026-03-11",
-    "rs_score":88.99,
+    "rs_score":88.98,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9600,7 +9617,7 @@
     "close":364.2600097656,
     "volume":1107000.0,
     "date":"2026-03-11",
-    "rs_score":88.97,
+    "rs_score":88.96,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9617,7 +9634,7 @@
     "close":385.0199890137,
     "volume":305900.0,
     "date":"2026-03-11",
-    "rs_score":88.96,
+    "rs_score":88.95,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9634,7 +9651,7 @@
     "close":337.6099853516,
     "volume":172900.0,
     "date":"2026-03-11",
-    "rs_score":88.92,
+    "rs_score":88.91,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9650,23 +9667,6 @@
     "met_count":8,
     "close":11.6300001144,
     "volume":1599600.0,
-    "date":"2026-03-11",
-    "rs_score":88.9,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"SLDB",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":7.7150001526,
-    "volume":4257100.0,
     "date":"2026-03-11",
     "rs_score":88.89,
     "rs_benchmark":"SPY",
@@ -9860,6 +9860,23 @@
     "cond8":true
   },
   {
+    "symbol":"SLDB",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":7.7100000381,
+    "volume":1580100.0,
+    "date":"2026-03-12",
+    "rs_score":88.73,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
     "symbol":"GDE",
     "cond1":true,
     "cond2":true,
@@ -9872,7 +9889,7 @@
     "close":71.4499969482,
     "volume":69300.0,
     "date":"2026-03-11",
-    "rs_score":88.73,
+    "rs_score":88.72,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9889,7 +9906,7 @@
     "close":15.3500003815,
     "volume":64000.0,
     "date":"2026-03-11",
-    "rs_score":88.72,
+    "rs_score":88.71,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9906,7 +9923,7 @@
     "close":16.7999992371,
     "volume":428700.0,
     "date":"2026-03-11",
-    "rs_score":88.71,
+    "rs_score":88.7,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9923,7 +9940,7 @@
     "close":22.7989997864,
     "volume":3200.0,
     "date":"2026-03-11",
-    "rs_score":88.68,
+    "rs_score":88.67,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9957,7 +9974,7 @@
     "close":2.2799999714,
     "volume":429100.0,
     "date":"2026-03-11",
-    "rs_score":88.64,
+    "rs_score":88.63,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9974,7 +9991,7 @@
     "close":13.5600004196,
     "volume":3598600.0,
     "date":"2026-03-11",
-    "rs_score":88.62,
+    "rs_score":88.61,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -9991,7 +10008,7 @@
     "close":27.8099994659,
     "volume":278600.0,
     "date":"2026-03-11",
-    "rs_score":88.58,
+    "rs_score":88.57,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10008,7 +10025,7 @@
     "close":46.3800010681,
     "volume":2757700.0,
     "date":"2026-03-11",
-    "rs_score":88.57,
+    "rs_score":88.56,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10025,7 +10042,7 @@
     "close":140.25,
     "volume":58000.0,
     "date":"2026-03-11",
-    "rs_score":88.56,
+    "rs_score":88.55,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10042,7 +10059,7 @@
     "close":21.5699996948,
     "volume":600.0,
     "date":"2026-03-11",
-    "rs_score":88.53,
+    "rs_score":88.52,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10059,7 +10076,7 @@
     "close":212.6199951172,
     "volume":659900.0,
     "date":"2026-03-11",
-    "rs_score":88.52,
+    "rs_score":88.51,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10076,7 +10093,7 @@
     "close":22.2199993134,
     "volume":1103600.0,
     "date":"2026-03-11",
-    "rs_score":88.51,
+    "rs_score":88.5,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10093,7 +10110,7 @@
     "close":50.9900016785,
     "volume":1343000.0,
     "date":"2026-03-11",
-    "rs_score":88.48,
+    "rs_score":88.47,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10110,7 +10127,7 @@
     "close":50.6199989319,
     "volume":31400.0,
     "date":"2026-03-11",
-    "rs_score":88.47,
+    "rs_score":88.46,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10127,7 +10144,7 @@
     "close":90.8000030518,
     "volume":1783700.0,
     "date":"2026-03-11",
-    "rs_score":88.46,
+    "rs_score":88.45,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10144,7 +10161,7 @@
     "close":38.1399993896,
     "volume":54700.0,
     "date":"2026-03-11",
-    "rs_score":88.45,
+    "rs_score":88.44,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10161,7 +10178,7 @@
     "close":22.4799995422,
     "volume":1339000.0,
     "date":"2025-08-19",
-    "rs_score":88.44,
+    "rs_score":88.43,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10178,7 +10195,7 @@
     "close":15.5,
     "volume":0.0,
     "date":"2026-02-10",
-    "rs_score":88.43,
+    "rs_score":88.42,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10195,7 +10212,7 @@
     "close":38.7949981689,
     "volume":17400.0,
     "date":"2026-03-11",
-    "rs_score":88.42,
+    "rs_score":88.41,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10212,7 +10229,7 @@
     "close":27.2299995422,
     "volume":1356300.0,
     "date":"2026-03-11",
-    "rs_score":88.39,
+    "rs_score":88.38,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10229,24 +10246,7 @@
     "close":55.7299995422,
     "volume":1118900.0,
     "date":"2026-03-11",
-    "rs_score":88.38,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
-    "symbol":"ELPC",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":11.4899997711,
-    "volume":361800.0,
-    "date":"2026-03-11",
-    "rs_score":88.36,
+    "rs_score":88.37,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10348,7 +10348,7 @@
     "close":39.3219985962,
     "volume":3600.0,
     "date":"2026-03-11",
-    "rs_score":88.21,
+    "rs_score":88.22,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10365,7 +10365,7 @@
     "close":79.3099975586,
     "volume":6477800.0,
     "date":"2026-03-11",
-    "rs_score":88.19,
+    "rs_score":88.2,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10382,7 +10382,7 @@
     "close":58.7799987793,
     "volume":291200.0,
     "date":"2026-03-11",
-    "rs_score":88.17,
+    "rs_score":88.18,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10399,7 +10399,7 @@
     "close":195.1300048828,
     "volume":254500.0,
     "date":"2026-03-11",
-    "rs_score":88.16,
+    "rs_score":88.17,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10416,7 +10416,7 @@
     "close":87.1399993896,
     "volume":36400.0,
     "date":"2026-03-11",
-    "rs_score":88.14,
+    "rs_score":88.15,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10433,7 +10433,7 @@
     "close":26.0699996948,
     "volume":361300.0,
     "date":"2026-03-11",
-    "rs_score":88.13,
+    "rs_score":88.14,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10450,7 +10450,7 @@
     "close":62.7200012207,
     "volume":451200.0,
     "date":"2026-03-11",
-    "rs_score":88.09,
+    "rs_score":88.1,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10467,7 +10467,7 @@
     "close":6.0900001526,
     "volume":560400.0,
     "date":"2026-03-11",
-    "rs_score":88.08,
+    "rs_score":88.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10484,7 +10484,7 @@
     "close":1.8700000048,
     "volume":1084400.0,
     "date":"2026-03-11",
-    "rs_score":88.05,
+    "rs_score":88.06,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10501,7 +10501,7 @@
     "close":36.3740005493,
     "volume":3600.0,
     "date":"2026-03-11",
-    "rs_score":88.04,
+    "rs_score":88.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10518,7 +10518,7 @@
     "close":649.4699707031,
     "volume":1364000.0,
     "date":"2026-03-11",
-    "rs_score":88.03,
+    "rs_score":88.04,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10535,7 +10535,7 @@
     "close":720.1799926758,
     "volume":354400.0,
     "date":"2026-03-11",
-    "rs_score":88.01,
+    "rs_score":88.02,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10552,7 +10552,7 @@
     "close":16.4699993134,
     "volume":18500.0,
     "date":"2025-08-19",
-    "rs_score":88.0,
+    "rs_score":88.01,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10569,7 +10569,7 @@
     "close":29.0599994659,
     "volume":1003500.0,
     "date":"2026-03-11",
-    "rs_score":87.99,
+    "rs_score":88.0,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10586,7 +10586,7 @@
     "close":733.1799926758,
     "volume":622200.0,
     "date":"2026-03-11",
-    "rs_score":87.97,
+    "rs_score":87.98,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10603,7 +10603,7 @@
     "close":685.0,
     "volume":610700.0,
     "date":"2026-03-11",
-    "rs_score":87.96,
+    "rs_score":87.97,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10620,7 +10620,7 @@
     "close":5.25,
     "volume":17120200.0,
     "date":"2026-03-11",
-    "rs_score":87.95,
+    "rs_score":87.96,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10637,7 +10637,7 @@
     "close":401.0299987793,
     "volume":6007700.0,
     "date":"2026-03-11",
-    "rs_score":87.94,
+    "rs_score":87.95,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10654,7 +10654,7 @@
     "close":8.1400003433,
     "volume":1989500.0,
     "date":"2026-03-11",
-    "rs_score":87.93,
+    "rs_score":87.94,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10671,7 +10671,7 @@
     "close":234.5800018311,
     "volume":1011900.0,
     "date":"2026-03-11",
-    "rs_score":87.87,
+    "rs_score":87.88,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10688,7 +10688,7 @@
     "close":26.1000003815,
     "volume":509900.0,
     "date":"2026-03-11",
-    "rs_score":87.86,
+    "rs_score":87.87,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10705,7 +10705,7 @@
     "close":192.2899932861,
     "volume":247400.0,
     "date":"2026-03-11",
-    "rs_score":87.85,
+    "rs_score":87.86,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10722,7 +10722,7 @@
     "close":70.9400024414,
     "volume":139300.0,
     "date":"2026-03-11",
-    "rs_score":87.82,
+    "rs_score":87.83,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10739,7 +10739,7 @@
     "close":14.0100002289,
     "volume":574800.0,
     "date":"2026-03-11",
-    "rs_score":87.81,
+    "rs_score":87.82,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10756,7 +10756,7 @@
     "close":70.3399963379,
     "volume":347600.0,
     "date":"2026-03-11",
-    "rs_score":87.79,
+    "rs_score":87.8,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10773,7 +10773,7 @@
     "close":44.4500007629,
     "volume":742000.0,
     "date":"2026-03-11",
-    "rs_score":87.78,
+    "rs_score":87.79,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10790,7 +10790,7 @@
     "close":129.4600067139,
     "volume":0.0,
     "date":"2025-07-18",
-    "rs_score":87.77,
+    "rs_score":87.78,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10807,7 +10807,7 @@
     "close":50.5,
     "volume":161400.0,
     "date":"2026-03-11",
-    "rs_score":87.76,
+    "rs_score":87.77,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10824,7 +10824,7 @@
     "close":156.3399963379,
     "volume":98600.0,
     "date":"2026-03-11",
-    "rs_score":87.71,
+    "rs_score":87.72,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10841,7 +10841,7 @@
     "close":207.2599945068,
     "volume":4416200.0,
     "date":"2026-03-11",
-    "rs_score":87.7,
+    "rs_score":87.71,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10858,7 +10858,7 @@
     "close":19.3500003815,
     "volume":12738800.0,
     "date":"2026-03-11",
-    "rs_score":87.69,
+    "rs_score":87.7,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10875,7 +10875,7 @@
     "close":330.7900085449,
     "volume":281200.0,
     "date":"2026-03-11",
-    "rs_score":87.68,
+    "rs_score":87.69,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10892,7 +10892,7 @@
     "close":47.1100006104,
     "volume":84900.0,
     "date":"2026-03-11",
-    "rs_score":87.67,
+    "rs_score":87.68,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10909,7 +10909,7 @@
     "close":33.5099983215,
     "volume":603400.0,
     "date":"2026-03-11",
-    "rs_score":87.66,
+    "rs_score":87.67,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10926,7 +10926,7 @@
     "close":82.7300033569,
     "volume":34600.0,
     "date":"2026-03-11",
-    "rs_score":87.61,
+    "rs_score":87.62,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10943,7 +10943,7 @@
     "close":277.450012207,
     "volume":212500.0,
     "date":"2026-03-11",
-    "rs_score":87.57,
+    "rs_score":87.58,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10960,7 +10960,7 @@
     "close":242.9900054932,
     "volume":6933200.0,
     "date":"2026-03-11",
-    "rs_score":87.56,
+    "rs_score":87.57,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10977,7 +10977,7 @@
     "close":17.8899993896,
     "volume":2651100.0,
     "date":"2026-03-11",
-    "rs_score":87.54,
+    "rs_score":87.55,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -10994,7 +10994,7 @@
     "close":342.0899963379,
     "volume":6182600.0,
     "date":"2026-03-11",
-    "rs_score":87.53,
+    "rs_score":87.54,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11011,7 +11011,7 @@
     "close":63.2350006104,
     "volume":1100.0,
     "date":"2026-03-11",
-    "rs_score":87.52,
+    "rs_score":87.53,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11028,7 +11028,7 @@
     "close":29.9699993134,
     "volume":974500.0,
     "date":"2026-03-11",
-    "rs_score":87.49,
+    "rs_score":87.5,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11045,7 +11045,7 @@
     "close":57.6100006104,
     "volume":26200.0,
     "date":"2026-03-11",
-    "rs_score":87.45,
+    "rs_score":87.47,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11062,7 +11062,7 @@
     "close":3.4000000954,
     "volume":108000.0,
     "date":"2026-03-11",
-    "rs_score":87.42,
+    "rs_score":87.44,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11079,7 +11079,7 @@
     "close":137.5700073242,
     "volume":0.0,
     "date":"2026-03-11",
-    "rs_score":87.38,
+    "rs_score":87.4,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11096,7 +11096,7 @@
     "close":3.2599999905,
     "volume":11500.0,
     "date":"2026-03-11",
-    "rs_score":87.34,
+    "rs_score":87.35,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11113,7 +11113,7 @@
     "close":11.9399995804,
     "volume":779300.0,
     "date":"2026-03-11",
-    "rs_score":87.32,
+    "rs_score":87.33,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11130,7 +11130,7 @@
     "close":2.4300000668,
     "volume":1176000.0,
     "date":"2026-03-11",
-    "rs_score":87.31,
+    "rs_score":87.32,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11147,7 +11147,7 @@
     "close":3.8399999142,
     "volume":48518600.0,
     "date":"2026-03-11",
-    "rs_score":87.3,
+    "rs_score":87.31,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11164,7 +11164,7 @@
     "close":26.6100006104,
     "volume":2850800.0,
     "date":"2026-03-11",
-    "rs_score":87.29,
+    "rs_score":87.3,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11181,7 +11181,7 @@
     "close":56.0299987793,
     "volume":1165600.0,
     "date":"2025-08-19",
-    "rs_score":87.27,
+    "rs_score":87.28,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11198,7 +11198,7 @@
     "close":75.7200012207,
     "volume":12300.0,
     "date":"2026-03-11",
-    "rs_score":87.26,
+    "rs_score":87.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11215,7 +11215,7 @@
     "close":2.5999999046,
     "volume":52700.0,
     "date":"2026-03-11",
-    "rs_score":87.25,
+    "rs_score":87.26,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11232,7 +11232,7 @@
     "close":102.7300033569,
     "volume":154500.0,
     "date":"2026-03-11",
-    "rs_score":87.22,
+    "rs_score":87.23,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11249,7 +11249,7 @@
     "close":20.0499992371,
     "volume":2500.0,
     "date":"2026-03-11",
-    "rs_score":87.21,
+    "rs_score":87.22,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11266,7 +11266,7 @@
     "close":7.1900000572,
     "volume":2556300.0,
     "date":"2026-03-11",
-    "rs_score":87.2,
+    "rs_score":87.21,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11283,7 +11283,7 @@
     "close":63.5999984741,
     "volume":28100.0,
     "date":"2026-03-11",
-    "rs_score":87.18,
+    "rs_score":87.19,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11300,7 +11300,7 @@
     "close":62.3199996948,
     "volume":782700.0,
     "date":"2026-03-11",
-    "rs_score":87.17,
+    "rs_score":87.18,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11317,7 +11317,7 @@
     "close":255.4600067139,
     "volume":1052300.0,
     "date":"2026-03-11",
-    "rs_score":87.16,
+    "rs_score":87.17,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11334,7 +11334,7 @@
     "close":51.7000007629,
     "volume":13500.0,
     "date":"2026-03-11",
-    "rs_score":87.14,
+    "rs_score":87.15,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11351,7 +11351,7 @@
     "close":6.9000000954,
     "volume":47200.0,
     "date":"2026-03-11",
-    "rs_score":87.13,
+    "rs_score":87.14,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11368,7 +11368,7 @@
     "close":6.2300000191,
     "volume":297500.0,
     "date":"2026-03-11",
-    "rs_score":87.12,
+    "rs_score":87.13,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11385,7 +11385,7 @@
     "close":73.3499984741,
     "volume":3047400.0,
     "date":"2026-03-11",
-    "rs_score":87.09,
+    "rs_score":87.1,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11402,7 +11402,7 @@
     "close":26.6000003815,
     "volume":1136500.0,
     "date":"2025-08-19",
-    "rs_score":87.08,
+    "rs_score":87.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11419,7 +11419,7 @@
     "close":78.2300033569,
     "volume":1346200.0,
     "date":"2026-03-11",
-    "rs_score":87.06,
+    "rs_score":87.07,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11436,7 +11436,7 @@
     "close":54.25,
     "volume":119000.0,
     "date":"2026-03-11",
-    "rs_score":87.05,
+    "rs_score":87.06,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11453,7 +11453,7 @@
     "close":75.1999969482,
     "volume":208700.0,
     "date":"2026-03-11",
-    "rs_score":87.04,
+    "rs_score":87.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11470,7 +11470,7 @@
     "close":54.2462997437,
     "volume":118959.0,
     "date":"2026-03-11",
-    "rs_score":87.03,
+    "rs_score":87.04,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11487,7 +11487,7 @@
     "close":9.7700004578,
     "volume":2102600.0,
     "date":"2026-03-11",
-    "rs_score":87.01,
+    "rs_score":87.02,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11504,7 +11504,7 @@
     "close":236.5200042725,
     "volume":1278800.0,
     "date":"2026-03-11",
-    "rs_score":86.99,
+    "rs_score":87.0,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11521,7 +11521,7 @@
     "close":53.2200012207,
     "volume":555000.0,
     "date":"2026-03-11",
-    "rs_score":86.98,
+    "rs_score":86.99,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11538,7 +11538,7 @@
     "close":13.4300003052,
     "volume":2258700.0,
     "date":"2026-03-11",
-    "rs_score":86.97,
+    "rs_score":86.98,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11555,7 +11555,7 @@
     "close":55.0600013733,
     "volume":4930500.0,
     "date":"2026-03-11",
-    "rs_score":86.96,
+    "rs_score":86.97,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11572,7 +11572,7 @@
     "close":3.4100000858,
     "volume":53500.0,
     "date":"2026-03-11",
-    "rs_score":86.95,
+    "rs_score":86.96,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11589,7 +11589,7 @@
     "close":19.8999996185,
     "volume":390000.0,
     "date":"2026-03-11",
-    "rs_score":86.92,
+    "rs_score":86.93,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11606,7 +11606,7 @@
     "close":11.0699996948,
     "volume":1557600.0,
     "date":"2026-03-11",
-    "rs_score":86.89,
+    "rs_score":86.9,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11623,7 +11623,7 @@
     "close":185.4299926758,
     "volume":625800.0,
     "date":"2026-03-11",
-    "rs_score":86.88,
+    "rs_score":86.89,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11640,7 +11640,7 @@
     "close":57.5299987793,
     "volume":696500.0,
     "date":"2026-03-11",
-    "rs_score":86.87,
+    "rs_score":86.88,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11657,7 +11657,7 @@
     "close":210.4299926758,
     "volume":256200.0,
     "date":"2026-03-11",
-    "rs_score":86.86,
+    "rs_score":86.87,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11674,7 +11674,7 @@
     "close":15.7600002289,
     "volume":9600.0,
     "date":"2026-03-11",
-    "rs_score":86.85,
+    "rs_score":86.86,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11691,7 +11691,7 @@
     "close":14.8100004196,
     "volume":649300.0,
     "date":"2026-03-11",
-    "rs_score":86.76,
+    "rs_score":86.77,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11708,7 +11708,7 @@
     "close":7.0199999809,
     "volume":2900.0,
     "date":"2026-03-11",
-    "rs_score":86.73,
+    "rs_score":86.74,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11725,7 +11725,7 @@
     "close":10.6000003815,
     "volume":57100.0,
     "date":"2026-03-11",
-    "rs_score":86.72,
+    "rs_score":86.73,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11742,7 +11742,7 @@
     "close":34.0499992371,
     "volume":457400.0,
     "date":"2026-03-11",
-    "rs_score":86.71,
+    "rs_score":86.72,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11759,7 +11759,7 @@
     "close":50.0839996338,
     "volume":6200.0,
     "date":"2026-03-11",
-    "rs_score":86.68,
+    "rs_score":86.69,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11776,7 +11776,7 @@
     "close":151.5800018311,
     "volume":15270200.0,
     "date":"2026-03-11",
-    "rs_score":86.67,
+    "rs_score":86.68,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11793,7 +11793,7 @@
     "close":107.0299987793,
     "volume":1051500.0,
     "date":"2026-03-11",
-    "rs_score":86.66,
+    "rs_score":86.67,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11810,7 +11810,24 @@
     "close":56.25,
     "volume":290100.0,
     "date":"2026-03-11",
-    "rs_score":86.64,
+    "rs_score":86.65,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
+    "symbol":"ASHS",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":44.1699981689,
+    "volume":8500.0,
+    "date":"2026-03-11",
+    "rs_score":86.62,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11832,23 +11849,6 @@
     "cond8":true
   },
   {
-    "symbol":"ASHS",
-    "cond1":true,
-    "cond2":true,
-    "cond3":true,
-    "cond4":true,
-    "cond5":true,
-    "cond6":true,
-    "cond7":true,
-    "met_count":8,
-    "close":44.1699981689,
-    "volume":8500.0,
-    "date":"2026-03-11",
-    "rs_score":86.61,
-    "rs_benchmark":"SPY",
-    "cond8":true
-  },
-  {
     "symbol":"MPC",
     "cond1":true,
     "cond2":true,
@@ -11861,7 +11861,7 @@
     "close":226.7400054932,
     "volume":2221000.0,
     "date":"2026-03-11",
-    "rs_score":86.6,
+    "rs_score":86.61,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11878,7 +11878,7 @@
     "close":537.2800292969,
     "volume":997000.0,
     "date":"2026-03-11",
-    "rs_score":86.59,
+    "rs_score":86.6,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11895,7 +11895,7 @@
     "close":52.7999992371,
     "volume":2820300.0,
     "date":"2026-03-11",
-    "rs_score":86.58,
+    "rs_score":86.59,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11912,7 +11912,7 @@
     "close":38.8699989319,
     "volume":2009200.0,
     "date":"2026-03-11",
-    "rs_score":86.57,
+    "rs_score":86.58,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11929,7 +11929,7 @@
     "close":40.2239990234,
     "volume":300.0,
     "date":"2026-03-11",
-    "rs_score":86.56,
+    "rs_score":86.57,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11946,7 +11946,7 @@
     "close":19.9899997711,
     "volume":2903500.0,
     "date":"2026-03-11",
-    "rs_score":86.55,
+    "rs_score":86.56,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11963,7 +11963,7 @@
     "close":62.8300018311,
     "volume":875300.0,
     "date":"2026-03-11",
-    "rs_score":86.54,
+    "rs_score":86.55,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11980,7 +11980,7 @@
     "close":21.2600002289,
     "volume":300300.0,
     "date":"2026-03-11",
-    "rs_score":86.52,
+    "rs_score":86.53,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -11997,7 +11997,7 @@
     "close":27.4300003052,
     "volume":163600.0,
     "date":"2026-03-11",
-    "rs_score":86.51,
+    "rs_score":86.52,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12014,7 +12014,7 @@
     "close":145.9700012207,
     "volume":181800.0,
     "date":"2026-03-11",
-    "rs_score":86.5,
+    "rs_score":86.51,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12031,7 +12031,7 @@
     "close":57.8300018311,
     "volume":1229400.0,
     "date":"2026-03-11",
-    "rs_score":86.49,
+    "rs_score":86.5,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12048,7 +12048,7 @@
     "close":99.0699996948,
     "volume":1196300.0,
     "date":"2026-03-11",
-    "rs_score":86.48,
+    "rs_score":86.49,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12065,7 +12065,7 @@
     "close":85.9700012207,
     "volume":1835500.0,
     "date":"2026-03-11",
-    "rs_score":86.47,
+    "rs_score":86.48,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12082,7 +12082,7 @@
     "close":46.6599998474,
     "volume":18800.0,
     "date":"2026-03-11",
-    "rs_score":86.46,
+    "rs_score":86.47,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12099,7 +12099,7 @@
     "close":56.3899993896,
     "volume":2324500.0,
     "date":"2026-03-11",
-    "rs_score":86.45,
+    "rs_score":86.46,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12116,7 +12116,7 @@
     "close":26.0100002289,
     "volume":6088377.0,
     "date":"2025-07-24",
-    "rs_score":86.44,
+    "rs_score":86.45,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12133,7 +12133,7 @@
     "close":97.1600036621,
     "volume":1458300.0,
     "date":"2026-03-11",
-    "rs_score":86.38,
+    "rs_score":86.39,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12150,7 +12150,7 @@
     "close":153.9400024414,
     "volume":241400.0,
     "date":"2026-03-11",
-    "rs_score":86.37,
+    "rs_score":86.38,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12167,7 +12167,7 @@
     "close":32.7010993958,
     "volume":0.0,
     "date":"2025-10-30",
-    "rs_score":86.36,
+    "rs_score":86.37,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12184,7 +12184,7 @@
     "close":75.1500015259,
     "volume":447100.0,
     "date":"2025-08-19",
-    "rs_score":86.35,
+    "rs_score":86.36,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12201,7 +12201,7 @@
     "close":22.7900009155,
     "volume":32100.0,
     "date":"2026-03-11",
-    "rs_score":86.34,
+    "rs_score":86.35,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12218,7 +12218,7 @@
     "close":28.6399993896,
     "volume":1062400.0,
     "date":"2026-03-11",
-    "rs_score":86.32,
+    "rs_score":86.33,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12235,7 +12235,7 @@
     "close":368.3099975586,
     "volume":211900.0,
     "date":"2026-03-11",
-    "rs_score":86.31,
+    "rs_score":86.32,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12252,7 +12252,7 @@
     "close":10.2700004578,
     "volume":406600.0,
     "date":"2026-03-11",
-    "rs_score":86.3,
+    "rs_score":86.31,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12269,7 +12269,7 @@
     "close":58.1150016785,
     "volume":14800.0,
     "date":"2026-03-11",
-    "rs_score":86.28,
+    "rs_score":86.29,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12286,7 +12286,7 @@
     "close":12.8800001144,
     "volume":1419700.0,
     "date":"2026-03-11",
-    "rs_score":86.27,
+    "rs_score":86.28,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12303,7 +12303,7 @@
     "close":33.9970016479,
     "volume":8500.0,
     "date":"2026-03-11",
-    "rs_score":86.26,
+    "rs_score":86.27,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12320,7 +12320,7 @@
     "close":134.9900054932,
     "volume":2711200.0,
     "date":"2026-03-11",
-    "rs_score":86.25,
+    "rs_score":86.26,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12337,7 +12337,7 @@
     "close":58.9700012207,
     "volume":11141300.0,
     "date":"2026-03-11",
-    "rs_score":86.23,
+    "rs_score":86.24,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12354,7 +12354,7 @@
     "close":36.6899986267,
     "volume":18600.0,
     "date":"2026-03-11",
-    "rs_score":86.22,
+    "rs_score":86.23,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12371,7 +12371,7 @@
     "close":262.1499938965,
     "volume":177300.0,
     "date":"2026-03-11",
-    "rs_score":86.2,
+    "rs_score":86.21,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12388,7 +12388,7 @@
     "close":20.0400009155,
     "volume":366600.0,
     "date":"2026-03-11",
-    "rs_score":86.17,
+    "rs_score":86.18,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12405,7 +12405,7 @@
     "close":103.3300018311,
     "volume":857300.0,
     "date":"2026-03-11",
-    "rs_score":86.16,
+    "rs_score":86.17,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12422,7 +12422,7 @@
     "close":26.6800003052,
     "volume":27100.0,
     "date":"2026-03-11",
-    "rs_score":86.11,
+    "rs_score":86.12,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12439,7 +12439,7 @@
     "close":26.4899997711,
     "volume":108900.0,
     "date":"2026-03-11",
-    "rs_score":86.1,
+    "rs_score":86.11,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12456,7 +12456,7 @@
     "close":19.1200008392,
     "volume":3187900.0,
     "date":"2026-03-11",
-    "rs_score":86.09,
+    "rs_score":86.1,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12473,7 +12473,7 @@
     "close":16.5,
     "volume":494900.0,
     "date":"2026-03-11",
-    "rs_score":86.08,
+    "rs_score":86.09,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12490,7 +12490,7 @@
     "close":49.6899986267,
     "volume":123200.0,
     "date":"2026-03-11",
-    "rs_score":86.05,
+    "rs_score":86.06,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12507,7 +12507,7 @@
     "close":29.8899993896,
     "volume":1268900.0,
     "date":"2026-03-11",
-    "rs_score":86.04,
+    "rs_score":86.05,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12524,7 +12524,7 @@
     "close":173.1900024414,
     "volume":20900.0,
     "date":"2026-03-11",
-    "rs_score":86.03,
+    "rs_score":86.04,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12541,7 +12541,7 @@
     "close":3.8900001049,
     "volume":71400.0,
     "date":"2026-03-11",
-    "rs_score":86.0,
+    "rs_score":86.01,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12558,7 +12558,7 @@
     "close":30.1100006104,
     "volume":838104.0,
     "date":"2026-01-16",
-    "rs_score":85.99,
+    "rs_score":86.0,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12575,7 +12575,7 @@
     "close":62.5499992371,
     "volume":1560000.0,
     "date":"2026-03-11",
-    "rs_score":85.98,
+    "rs_score":85.99,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12592,7 +12592,7 @@
     "close":20.0100002289,
     "volume":237500.0,
     "date":"2026-03-11",
-    "rs_score":85.97,
+    "rs_score":85.98,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12609,7 +12609,7 @@
     "close":245.2200012207,
     "volume":250700.0,
     "date":"2026-03-11",
-    "rs_score":85.96,
+    "rs_score":85.97,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12626,7 +12626,7 @@
     "close":105.0100021362,
     "volume":80600.0,
     "date":"2026-03-11",
-    "rs_score":85.94,
+    "rs_score":85.95,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12643,7 +12643,7 @@
     "close":34.2799987793,
     "volume":282400.0,
     "date":"2026-03-11",
-    "rs_score":85.88,
+    "rs_score":85.89,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12660,7 +12660,7 @@
     "close":40.5499992371,
     "volume":45700.0,
     "date":"2026-03-11",
-    "rs_score":85.83,
+    "rs_score":85.84,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12677,7 +12677,7 @@
     "close":36.6180000305,
     "volume":17400.0,
     "date":"2026-03-11",
-    "rs_score":85.82,
+    "rs_score":85.83,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12694,7 +12694,7 @@
     "close":15.6000003815,
     "volume":0.0,
     "date":"2026-01-20",
-    "rs_score":85.81,
+    "rs_score":85.82,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12711,7 +12711,7 @@
     "close":88.6699981689,
     "volume":49187391.0,
     "date":"2026-01-30",
-    "rs_score":85.78,
+    "rs_score":85.79,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12728,7 +12728,7 @@
     "close":38.6699981689,
     "volume":314900.0,
     "date":"2026-03-11",
-    "rs_score":85.77,
+    "rs_score":85.78,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12745,7 +12745,7 @@
     "close":6.2699999809,
     "volume":169100.0,
     "date":"2026-03-11",
-    "rs_score":85.75,
+    "rs_score":85.76,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12762,7 +12762,7 @@
     "close":46.6899986267,
     "volume":2709300.0,
     "date":"2026-03-11",
-    "rs_score":85.74,
+    "rs_score":85.75,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12779,7 +12779,7 @@
     "close":0.2101099938,
     "volume":0.0,
     "date":"2026-03-11",
-    "rs_score":85.73,
+    "rs_score":85.74,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12796,7 +12796,7 @@
     "close":46.1599998474,
     "volume":6600.0,
     "date":"2026-03-11",
-    "rs_score":85.72,
+    "rs_score":85.73,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12813,7 +12813,7 @@
     "close":30.5900001526,
     "volume":52000.0,
     "date":"2026-03-11",
-    "rs_score":85.7,
+    "rs_score":85.71,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12830,7 +12830,7 @@
     "close":46.8199996948,
     "volume":119500.0,
     "date":"2026-03-11",
-    "rs_score":85.69,
+    "rs_score":85.7,
     "rs_benchmark":"SPY",
     "cond8":true
   },
@@ -12847,7 +12847,24 @@
     "close":24.3400001526,
     "volume":1274800.0,
     "date":"2025-08-19",
-    "rs_score":85.65,
+    "rs_score":85.66,
+    "rs_benchmark":"SPY",
+    "cond8":true
+  },
+  {
+    "symbol":"ELPC",
+    "cond1":true,
+    "cond2":true,
+    "cond3":true,
+    "cond4":true,
+    "cond5":true,
+    "cond6":true,
+    "cond7":true,
+    "met_count":8,
+    "close":10.8100004196,
+    "volume":235600.0,
+    "date":"2026-03-12",
+    "rs_score":85.61,
     "rs_benchmark":"SPY",
     "cond8":true
   },

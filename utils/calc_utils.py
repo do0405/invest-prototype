@@ -7,6 +7,9 @@ import os
 from datetime import datetime, timedelta
 from pytz import timezone
 
+from .indicator_helpers import rolling_atr, rolling_sma
+from .typing_utils import is_na_like, to_float_or_none
+
 __all__ = [
     "get_us_market_today",
     "clean_tickers",
@@ -29,7 +32,7 @@ def clean_tickers(tickers):
     """Clean ticker list by filtering unusual strings."""
     if not tickers:
         return []
-    cleaned = [t for t in tickers if t is not None and not pd.isna(t)]
+    cleaned = [t for t in tickers if not is_na_like(t)]
     cleaned = [str(t).strip() for t in cleaned]
     filtered = []
     for ticker in cleaned:
@@ -101,12 +104,7 @@ def calculate_atr(df, window=10):
                 print(f"⚠️ ATR 계산에 필요한 '{col}' 컬럼이 없습니다.")
                 return pd.Series(index=df.index)
         df = df.copy()
-        df.loc[:, 'prev_close'] = df['close'].shift(1)
-        df.loc[:, 'tr1'] = abs(df['high'] - df['low'])
-        df.loc[:, 'tr2'] = abs(df['high'] - df['prev_close'])
-        df.loc[:, 'tr3'] = abs(df['low'] - df['prev_close'])
-        df.loc[:, 'true_range'] = df[['tr1', 'tr2', 'tr3']].max(axis=1)
-        df.loc[:, 'atr'] = df['true_range'].rolling(window=window).mean()
+        df.loc[:, 'atr'] = rolling_atr(df, window)
         return df['atr']
     except Exception as e:
         print(f"❌ ATR 계산 오류: {e}")
@@ -205,9 +203,13 @@ def check_sp500_condition(data_dir, ma_days=100):
         if len(spy_df) < ma_days:
             print("⚠️ SPY 데이터가 충분하지 않습니다.")
             return False
-        spy_df.loc[:, f'ma{ma_days}'] = spy_df['close'].rolling(window=ma_days).mean()
+        spy_df.loc[:, f'ma{ma_days}'] = rolling_sma(spy_df['close'], ma_days)
         latest_spy = spy_df.iloc[-1]
-        spy_condition = latest_spy['close'] > latest_spy[f'ma{ma_days}']
+        latest_close = to_float_or_none(latest_spy.get('close'))
+        latest_ma = to_float_or_none(latest_spy.get(f'ma{ma_days}'))
+        if latest_close is None or latest_ma is None:
+            return False
+        spy_condition = latest_close > latest_ma
         if not spy_condition:
             print(f"⚠️ SPY 종가가 {ma_days}일 이동평균선 아래에 있습니다.")
             return False

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, timedelta
 from pathlib import Path
 import shutil
 
@@ -57,14 +57,14 @@ def test_format_us_chunk_summary_reports_status_counts():
         ["latest", "latest", "latest", "kept_existing", "soft_unavailable"],
     )
 
-    assert "처리 5개" in summary
-    assert "저장 0" in summary
-    assert "최신 3" in summary
-    assert "유지 1" in summary
+    assert "processed=5" in summary
+    assert "saved 0" in summary
+    assert "latest 3" in summary
+    assert "kept 1" in summary
     assert "soft 1" in summary
-    assert "상폐 0" in summary
-    assert "제한 0" in summary
-    assert "실패 0" in summary
+    assert "delisted 0" in summary
+    assert "rate_limited 0" in summary
+    assert "failed 0" in summary
 
 
 def test_fetch_us_single_does_not_request_income_statement(monkeypatch):
@@ -81,7 +81,8 @@ def test_fetch_us_single_does_not_request_income_statement(monkeypatch):
 
     monkeypatch.setattr(dc, "_wait_for_us_rate_limit_cooldown", lambda: None)
     monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
-    monkeypatch.setattr(dc.time, "sleep", lambda seconds: None)
+    monkeypatch.setattr(dc, "bootstrap_yfinance_cache", lambda: None)
+    monkeypatch.setattr(dc, "_configure_yfinance_logger", lambda: None)
     monkeypatch.setattr(dc.yf, "Ticker", lambda ticker: _Ticker())
 
     frame = dc.fetch_us_single("AAA", start=date(2026, 3, 1), end=date(2026, 3, 12))
@@ -97,62 +98,186 @@ def test_fetch_us_single_raises_rate_limit_error_for_429(monkeypatch):
 
     monkeypatch.setattr(dc, "_wait_for_us_rate_limit_cooldown", lambda: None)
     monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
-    monkeypatch.setattr(dc.time, "sleep", lambda seconds: None)
+    monkeypatch.setattr(dc, "bootstrap_yfinance_cache", lambda: None)
+    monkeypatch.setattr(dc, "_configure_yfinance_logger", lambda: None)
     monkeypatch.setattr(dc.yf, "Ticker", lambda ticker: _Ticker())
 
     with pytest.raises(dc.RateLimitError):
         dc.fetch_us_single("AAA", start=date(2026, 3, 1), end=date(2026, 3, 12))
 
 
-def test_fetch_us_single_raises_delisted_error_from_yfinance_empty_response(monkeypatch):
-    class _Ticker:
-        def history(self, **kwargs):  # noqa: ANN003, ANN201
-            dc.yf_shared._ERRORS["AAA"] = "possibly delisted; no timezone found"
-            return pd.DataFrame()
+def test_fetch_and_save_us_ohlcv_chunked_refetches_overlap_window(monkeypatch):
+    runtime_root = runtime_test_root("_test_runtime_overlap_us_ohlcv")
+    if runtime_root.exists():
+        shutil.rmtree(runtime_root, ignore_errors=True)
 
-    monkeypatch.setattr(dc, "_wait_for_us_rate_limit_cooldown", lambda: None)
+    data_dir = runtime_root
+    save_dir = data_dir / "us"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    existing_dates = pd.date_range(end="2026-03-11", periods=dc.US_OHLCV_TARGET_BARS, freq="D", tz="UTC")
+    existing = pd.DataFrame(
+        {
+            "date": existing_dates,
+            "symbol": ["AAA"] * len(existing_dates),
+            "open": range(10, 10 + len(existing_dates)),
+            "high": range(11, 11 + len(existing_dates)),
+            "low": range(9, 9 + len(existing_dates)),
+            "close": range(10, 10 + len(existing_dates)),
+            "volume": range(1000, 1000 + len(existing_dates)),
+        }
+    )
+    existing.to_csv(save_dir / "AAA.csv", index=False)
+
+    captured: dict[str, object] = {}
+
+    def _fetch(symbol, start, end):
+        captured["start"] = start
+        return pd.DataFrame(
+            {
+                "date": [
+                    pd.Timestamp("2026-03-11", tz="UTC"),
+                    pd.Timestamp("2026-03-12", tz="UTC"),
+                ],
+                "symbol": [symbol, symbol],
+                "open": [11.1, 12.0],
+                "high": [12.1, 13.0],
+                "low": [10.1, 11.0],
+                "close": [11.9, 12.5],
+                "volume": [1200, 1300],
+            }
+        )
+
+    monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
     monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
-    monkeypatch.setattr(dc.time, "sleep", lambda seconds: None)
-    monkeypatch.setattr(dc, "_configure_yfinance_logger", lambda: None)
-    monkeypatch.setattr(dc.yf, "Ticker", lambda ticker: _Ticker())
+    monkeypatch.setattr(dc, "get_us_market_today", lambda: date(2026, 3, 12))
+    monkeypatch.setattr(dc, "fetch_us_single", _fetch)
 
-    with pytest.raises(dc.DelistedSymbolError):
-        dc.fetch_us_single("AAA", start=date(2026, 3, 1), end=date(2026, 3, 12))
-
-
-def test_fetch_us_single_raises_delisted_error_for_yfinance_exception(monkeypatch):
-    class _Ticker:
-        def history(self, **kwargs):  # noqa: ANN003, ANN201
-            raise dc.YFTzMissingError("AAA")
-
-    monkeypatch.setattr(dc, "_wait_for_us_rate_limit_cooldown", lambda: None)
-    monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
-    monkeypatch.setattr(dc.time, "sleep", lambda seconds: None)
-    monkeypatch.setattr(dc.yf, "Ticker", lambda ticker: _Ticker())
-
-    with pytest.raises(dc.DelistedSymbolError):
-        dc.fetch_us_single("AAA", start=date(2026, 3, 1), end=date(2026, 3, 12))
-
-
-def test_delisted_symbol_error_uses_canonical_reason():
-    error = dc.DelistedSymbolError(
-        '$EVOK: possibly delisted; no price data found  (1d 2025-12-18 -> 2026-03-12) (Yahoo error = "No data found")'
+    dc.fetch_and_save_us_ohlcv_chunked(
+        ["AAA"],
+        save_dir=str(save_dir),
+        chunk_size=1,
+        pause=0.0,
+        max_workers=1,
     )
 
-    assert str(error) == "possibly delisted; no price data found"
+    assert captured["start"] == date(2026, 3, 10)
+    saved = pd.read_csv(save_dir / "AAA.csv")
+    assert list(saved["date"].tail(2)) == ["2026-03-11 00:00:00+00:00", "2026-03-12 00:00:00+00:00"]
+    assert float(saved.iloc[-2]["close"]) == 11.9
 
 
-def test_delisted_symbol_error_classifies_soft_and_hard_causes():
-    soft_error = dc.DelistedSymbolError("$AAA: possibly delisted; no timezone found")
-    hard_error = dc.DelistedSymbolError('HTTP Error 404: {"description":"Quote not found for symbol: AAA"}')
+def test_fetch_and_save_us_ohlcv_chunked_discards_invalid_cached_dates(monkeypatch):
+    runtime_root = runtime_test_root("_test_runtime_invalid_cached_dates_us_ohlcv")
+    if runtime_root.exists():
+        shutil.rmtree(runtime_root, ignore_errors=True)
 
-    assert soft_error.is_soft is True
-    assert hard_error.is_soft is False
+    data_dir = runtime_root
+    save_dir = data_dir / "us"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    pd.DataFrame(
+        {
+            "date": ["not-a-date"],
+            "symbol": ["AAA"],
+            "open": [1.0],
+            "high": [1.0],
+            "low": [1.0],
+            "close": [1.0],
+            "volume": [1],
+        }
+    ).to_csv(save_dir / "AAA.csv", index=False)
+
+    monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
+    monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
+    monkeypatch.setattr(dc, "get_us_market_today", lambda: date(2026, 3, 12))
+    monkeypatch.setattr(
+        dc,
+        "fetch_us_single",
+        lambda symbol, start, end: pd.DataFrame(
+            {
+                "date": [pd.Timestamp("2026-03-11", tz="UTC"), pd.Timestamp("2026-03-12", tz="UTC")],
+                "symbol": [symbol, symbol],
+                "open": [10.0, 11.0],
+                "high": [11.0, 12.0],
+                "low": [9.0, 10.0],
+                "close": [10.5, 11.5],
+                "volume": [1000, 1100],
+            }
+        ),
+    )
+
+    dc.fetch_and_save_us_ohlcv_chunked(
+        ["AAA"],
+        save_dir=str(save_dir),
+        chunk_size=1,
+        pause=0.0,
+        max_workers=1,
+    )
+
+    saved = pd.read_csv(save_dir / "AAA.csv")
+    assert list(saved["date"]) == ["2026-03-11 00:00:00+00:00", "2026-03-12 00:00:00+00:00"]
+    assert not saved["date"].isna().any()
 
 
-def test_fetch_and_save_us_ohlcv_chunked_does_not_mark_rate_limited_symbol_delisted(
-    monkeypatch,
-):
+def test_fetch_and_save_us_ohlcv_chunked_backfills_short_cached_history(monkeypatch):
+    runtime_root = runtime_test_root("_test_runtime_short_cached_history_us_ohlcv")
+    if runtime_root.exists():
+        shutil.rmtree(runtime_root, ignore_errors=True)
+
+    data_dir = runtime_root
+    save_dir = data_dir / "us"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    save_dir.mkdir(parents=True, exist_ok=True)
+
+    pd.DataFrame(
+        {
+            "date": [pd.Timestamp("2026-03-10", tz="UTC"), pd.Timestamp("2026-03-11", tz="UTC")],
+            "symbol": ["AAA", "AAA"],
+            "open": [10.0, 11.0],
+            "high": [11.0, 12.0],
+            "low": [9.0, 10.0],
+            "close": [10.5, 11.5],
+            "volume": [1000, 1100],
+        }
+    ).to_csv(save_dir / "AAA.csv", index=False)
+
+    today = date(2026, 3, 12)
+    captured: dict[str, object] = {}
+
+    def _fetch(symbol, start, end):
+        captured["start"] = start
+        return pd.DataFrame(
+            {
+                "date": [pd.Timestamp("2026-03-12", tz="UTC")],
+                "symbol": [symbol],
+                "open": [12.0],
+                "high": [13.0],
+                "low": [11.0],
+                "close": [12.5],
+                "volume": [1300],
+            }
+        )
+
+    monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
+    monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
+    monkeypatch.setattr(dc, "get_us_market_today", lambda: today)
+    monkeypatch.setattr(dc, "fetch_us_single", _fetch)
+
+    dc.fetch_and_save_us_ohlcv_chunked(
+        ["AAA"],
+        save_dir=str(save_dir),
+        chunk_size=1,
+        pause=0.0,
+        max_workers=1,
+    )
+
+    assert captured["start"] == today - timedelta(days=dc.US_OHLCV_DEFAULT_LOOKBACK_DAYS)
+
+
+def test_fetch_and_save_us_ohlcv_chunked_does_not_mark_rate_limited_symbol_delisted(monkeypatch):
     runtime_root = runtime_test_root("_test_runtime_rate_limit_ohlcv")
     if runtime_root.exists():
         shutil.rmtree(runtime_root, ignore_errors=True)
@@ -180,14 +305,12 @@ def test_fetch_and_save_us_ohlcv_chunked_does_not_mark_rate_limited_symbol_delis
 
     assert cooldowns == [
         dc.US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS,
-        dc.US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS * 2,
+        dc.US_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS,
     ]
     assert not (save_dir / "AAA.csv").exists()
 
 
-def test_fetch_and_save_us_ohlcv_chunked_keeps_existing_data_for_delisted_response(
-    monkeypatch,
-):
+def test_fetch_and_save_us_ohlcv_chunked_keeps_existing_data_for_delisted_response(monkeypatch):
     runtime_root = runtime_test_root("_test_runtime_delisted_existing_ohlcv")
     if runtime_root.exists():
         shutil.rmtree(runtime_root, ignore_errors=True)
@@ -224,41 +347,7 @@ def test_fetch_and_save_us_ohlcv_chunked_keeps_existing_data_for_delisted_respon
     assert saved.loc[0, "symbol"] == "AAA"
 
 
-def test_fetch_and_save_us_ohlcv_chunked_soft_signal_without_existing_keeps_retryable_state(
-    monkeypatch,
-):
-    runtime_root = runtime_test_root("_test_runtime_soft_unavailable_new_ohlcv")
-    if runtime_root.exists():
-        shutil.rmtree(runtime_root, ignore_errors=True)
-
-    data_dir = runtime_root
-    save_dir = data_dir / "us"
-    data_dir.mkdir(parents=True, exist_ok=True)
-    save_dir.mkdir(parents=True, exist_ok=True)
-
-    monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
-    monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
-    monkeypatch.setattr(dc, "get_us_market_today", lambda: date(2026, 3, 12))
-    monkeypatch.setattr(
-        dc,
-        "fetch_us_single",
-        lambda *args, **kwargs: (_ for _ in ()).throw(dc.DelistedSymbolError("possibly delisted; no timezone found")),
-    )
-
-    dc.fetch_and_save_us_ohlcv_chunked(
-        ["AAA"],
-        save_dir=str(save_dir),
-        chunk_size=1,
-        pause=0.0,
-        max_workers=1,
-    )
-
-    assert not (save_dir / "AAA.csv").exists()
-
-
-def test_fetch_and_save_us_ohlcv_chunked_hard_unavailable_marks_symbol_inactive(
-    monkeypatch,
-):
+def test_fetch_and_save_us_ohlcv_chunked_hard_unavailable_marks_symbol_inactive(monkeypatch):
     runtime_root = runtime_test_root("_test_runtime_hard_unavailable_existing_ohlcv")
     if runtime_root.exists():
         shutil.rmtree(runtime_root, ignore_errors=True)
@@ -300,17 +389,13 @@ def test_collect_data_uses_conservative_us_ohlcv_defaults(monkeypatch):
     monkeypatch.setattr(dc, "update_symbol_list", lambda: {"AAA"})
     monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
     monkeypatch.setattr(dc, "ensure_dir", lambda directory: None)
-    monkeypatch.setattr(
-        dc,
-        "fetch_and_save_us_ohlcv_chunked",
-        lambda **kwargs: captured.update(kwargs),
-    )
+    monkeypatch.setattr(dc, "fetch_and_save_us_ohlcv_chunked", lambda **kwargs: captured.update(kwargs))
 
     dc.collect_data(update_symbols=True)
 
-    assert captured["chunk_size"] == dc.US_OHLCV_CHUNK_SIZE == 5
-    assert captured["pause"] == dc.US_OHLCV_CHUNK_PAUSE_SECONDS == 6.0
-    assert captured["max_workers"] == dc.US_OHLCV_MAX_WORKERS == 2
+    assert captured["chunk_size"] == dc.US_OHLCV_CHUNK_SIZE == 4
+    assert captured["pause"] == dc.US_OHLCV_CHUNK_PAUSE_SECONDS == 8.0
+    assert captured["max_workers"] == dc.US_OHLCV_MAX_WORKERS == 1
 
 
 def test_configure_yfinance_logger_disables_hidden_exceptions(monkeypatch):

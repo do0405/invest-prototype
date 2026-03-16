@@ -259,9 +259,26 @@ OHLCV 외에 새롭게 긁을 수 있는 데이터는 아래와 같이 별도 ad
 
 ### 8.3 상대강도 지표
 
-OHLCV-only 환경에서는 universe 내부 cross-sectional RS를 기본으로 쓴다.
+기본 운영 RS는 broad benchmark 대비 IBD식 가중 상대성과로 둔다.
 
-- `RS_cross = pct_rank(0.4*r63 + 0.3*r126 + 0.3*r252)`
+```text
+stock_weighted_return =
+    0.40 * ret_63d
+  + 0.20 * ret_126d
+  + 0.20 * ret_189d
+  + 0.20 * ret_252d
+
+benchmark_weighted_return =
+    0.40 * benchmark_ret_63d
+  + 0.20 * benchmark_ret_126d
+  + 0.20 * benchmark_ret_189d
+  + 0.20 * benchmark_ret_252d
+
+RS_benchmark_relative =
+    (stock_weighted_return / benchmark_weighted_return) * 100
+```
+
+- `RS_cross = pct_rank(RS_benchmark_relative within same market)`
 
 benchmark가 있으면 아래를 추가한다.
 

@@ -91,6 +91,31 @@ def _stage1_base_closes() -> np.ndarray:
     )
 
 
+def _continuation_breakout_closes() -> np.ndarray:
+    return np.array(
+        [
+            60.0, 63.0, 66.0, 70.0, 74.0,
+            78.0, 82.0, 86.0, 90.0, 94.0,
+            97.0, 100.0, 99.0, 98.0, 96.0,
+            97.0, 98.0, 100.0, 99.0, 97.0,
+            96.0, 97.0, 99.0, 100.0, 101.0,
+            100.0, 99.0, 98.0, 97.0, 99.0,
+            100.0, 101.0, 100.5, 99.5, 100.8,
+            101.0, 101.2, 101.5, 102.0, 108.5,
+        ]
+    )
+
+
+def _generic_stage2_trend_closes() -> np.ndarray:
+    return np.concatenate(
+        [
+            np.linspace(60.0, 82.0, 20, endpoint=False),
+            np.linspace(82.0, 102.0, 20, endpoint=False),
+            np.linspace(102.0, 122.0, 20),
+        ]
+    )
+
+
 def test_weekly_builder_uses_actual_last_trading_day() -> None:
     analyzer = WeinsteinStage2Analyzer()
     frame = pd.DataFrame(
@@ -193,6 +218,111 @@ def test_analyze_symbol_classifies_breakout_week_and_fresh_w1() -> None:
     assert fresh_w1_result["timing_state"] == "FRESH_STAGE2_W1"
     assert fresh_w1_result["stock_stage"] == "STAGE_2A"
     assert fresh_w1_result["breakout_age_weeks"] == 1
+
+
+def test_analyze_symbol_marks_lighter_volume_retest_as_secondary_candidate() -> None:
+    analyzer = WeinsteinStage2Analyzer()
+    closes = np.concatenate([_stage1_base_closes(), [102.2, 104.8, 105.4, 102.6]])
+    volumes = np.linspace(700_000, 500_000, len(closes))
+    volumes[-3] = 2_600_000
+    volumes[-2] = 1_100_000
+    volumes[-1] = 700_000
+    daily = _weekly_to_daily(closes, volumes)
+
+    result = analyzer.analyze_symbol(
+        symbol="RET",
+        market="us",
+        daily_frame=daily,
+        benchmark_symbol="SPY",
+        benchmark_daily=_benchmark_daily(),
+        market_context=_market_context(),
+        group_context=_group_context(),
+        exchange="NASDAQ",
+        sector="Tech",
+        industry_group="Software",
+    )
+
+    assert result["timing_state"] == "RETEST_B"
+    assert result["retest_signal"] is True
+    assert result["retest_volume_lighter"] is True
+    assert result["breakout_structure_pass"] is False
+
+
+def test_analyze_symbol_classifies_continuation_breakout_as_stage_2b() -> None:
+    analyzer = WeinsteinStage2Analyzer()
+    closes = _continuation_breakout_closes()
+    volumes = np.linspace(600_000, 500_000, len(closes))
+    volumes[-1] = 2_800_000
+    daily = _weekly_to_daily(closes, volumes)
+
+    result = analyzer.analyze_symbol(
+        symbol="CTN",
+        market="us",
+        daily_frame=daily,
+        benchmark_symbol="SPY",
+        benchmark_daily=_benchmark_daily(),
+        market_context=_market_context(),
+        group_context=_group_context(),
+        exchange="NASDAQ",
+        sector="Tech",
+        industry_group="Software",
+    )
+
+    assert result["timing_state"] == "BREAKOUT_WEEK"
+    assert result["stock_stage"] == "STAGE_2B"
+    assert result["breakout_type"] == "CONTINUATION_BREAKOUT"
+    assert result["continuation_setup_pass"] is True
+    assert result["continuation_quality_score"] is not None
+    assert result["close_gt_ma50d"] is True
+    assert result["close_gt_ma200d"] is True
+
+
+def test_analyze_symbol_keeps_orderly_continuation_setup_as_stage_2b() -> None:
+    analyzer = WeinsteinStage2Analyzer()
+    closes = _continuation_breakout_closes()[:-1]
+    volumes = np.linspace(600_000, 500_000, len(closes))
+    daily = _weekly_to_daily(closes, volumes)
+
+    result = analyzer.analyze_symbol(
+        symbol="CTP",
+        market="us",
+        daily_frame=daily,
+        benchmark_symbol="SPY",
+        benchmark_daily=_benchmark_daily(),
+        market_context=_market_context(),
+        group_context=_group_context(),
+        exchange="NASDAQ",
+        sector="Tech",
+        industry_group="Software",
+    )
+
+    assert result["stock_stage"] == "STAGE_2B"
+    assert result["timing_state"] == "EXCLUDE"
+    assert result["continuation_setup_pass"] is True
+    assert result["breakout_type"] is None
+
+
+def test_analyze_symbol_uses_generic_stage_2_for_plain_uptrend() -> None:
+    analyzer = WeinsteinStage2Analyzer()
+    closes = _generic_stage2_trend_closes()
+    volumes = np.linspace(700_000, 900_000, len(closes))
+    daily = _weekly_to_daily(closes, volumes)
+
+    result = analyzer.analyze_symbol(
+        symbol="GEN",
+        market="us",
+        daily_frame=daily,
+        benchmark_symbol="SPY",
+        benchmark_daily=_benchmark_daily(),
+        market_context=_market_context(),
+        group_context=_group_context(),
+        exchange="NASDAQ",
+        sector="Tech",
+        industry_group="Software",
+    )
+
+    assert result["stock_stage"] == "STAGE_2"
+    assert result["continuation_setup_pass"] is False
 
 
 def test_run_persists_pattern_excluded_and_included_outputs(monkeypatch) -> None:

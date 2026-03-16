@@ -3,8 +3,8 @@
   "regime": {
     "benchmark_symbol": "KOSPI",
     "regime_state": "RISK_ON",
-    "regime_score": 66.5,
-    "market_trend_score": 50.0,
+    "regime_score": 68.75,
+    "market_trend_score": 55.0,
     "breadth_score": 100.0,
     "opportunity_score": 45.0,
     "focus_list_density": 0.0,
@@ -12,15 +12,15 @@
     "reason_codes": [
       "BREADTH_SUPPORTIVE"
     ],
-    "data_flags": [
-      "missing_benchmark_history"
-    ]
+    "data_flags": []
   },
   "actual_data_calibration": {
     "price_floor": 1000.0,
     "adv20_floor": 150000.0,
     "turnover20_floor": 800000000.0,
+    "breakout_min_ret_1m_pctile": 65.0,
     "breakout_min_ret_3m_pctile": 70.0,
+    "breakout_min_ret_6m_pctile": 65.0,
     "breakout_min_high_52w_proximity": 0.85,
     "breakout_min_compression_score": 65.0,
     "breakout_min_prior_run_pct": 0.3,
@@ -45,8 +45,9 @@
     "breakout": 0,
     "episode_pivot": 1,
     "parabolic_short": 0,
-    "universe": 1,
-    "pattern_excluded_pool": 1,
+    "universe": 0,
+    "pre_pattern_quant_financial": 1,
+    "pattern_excluded_pool": 0,
     "pattern_included_candidates": 1,
     "daily_focus": 1
   }

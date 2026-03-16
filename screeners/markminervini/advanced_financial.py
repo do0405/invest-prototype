@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import os
+from datetime import datetime
+from pathlib import Path
 
 import pandas as pd
 
@@ -12,19 +14,39 @@ from utils.market_runtime import (
     get_markminervini_with_rs_path,
     market_key,
 )
+from utils.typing_utils import to_float_or_none
 from .data_fetching import collect_financial_data_hybrid
-from .financial_metrics import calculate_percentile_rank
+
+
+def calculate_percentile_rank(series: pd.Series) -> pd.Series:
+    """Return percentile rank in percentage."""
+    return series.rank(pct=True) * 100
+
+
+def _write_frame_with_snapshot(frame: pd.DataFrame, csv_path: str) -> None:
+    json_path = csv_path.replace(".csv", ".json")
+    frame.to_csv(csv_path, index=False)
+    frame.to_json(json_path, orient="records", indent=2, force_ascii=False)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    csv_target = Path(csv_path)
+    json_target = Path(json_path)
+    frame.to_csv(csv_target.with_name(f"{csv_target.stem}_{timestamp}{csv_target.suffix}"), index=False)
+    frame.to_json(json_target.with_name(f"{json_target.stem}_{timestamp}{json_target.suffix}"), orient="records", indent=2, force_ascii=False)
 
 
 def screen_advanced_financials(financial_data: pd.DataFrame) -> pd.DataFrame:
     results: list[dict[str, object]] = []
     for _, row in financial_data.iterrows():
         met_count = 0
-        if pd.notna(row.get("annual_eps_growth")) and row["annual_eps_growth"] >= ADVANCED_FINANCIAL_CRITERIA["min_annual_eps_growth"]:
+        annual_eps_growth = to_float_or_none(row.get("annual_eps_growth"))
+        annual_revenue_growth = to_float_or_none(row.get("annual_revenue_growth"))
+        debt_to_equity = to_float_or_none(row.get("debt_to_equity"))
+        if annual_eps_growth is not None and annual_eps_growth >= ADVANCED_FINANCIAL_CRITERIA["min_annual_eps_growth"]:
             met_count += 1
         if row.get("eps_growth_acceleration"):
             met_count += 1
-        if pd.notna(row.get("annual_revenue_growth")) and row["annual_revenue_growth"] >= ADVANCED_FINANCIAL_CRITERIA["min_annual_revenue_growth"]:
+        if annual_revenue_growth is not None and annual_revenue_growth >= ADVANCED_FINANCIAL_CRITERIA["min_annual_revenue_growth"]:
             met_count += 1
         if row.get("revenue_growth_acceleration"):
             met_count += 1
@@ -36,7 +58,7 @@ def screen_advanced_financials(financial_data: pd.DataFrame) -> pd.DataFrame:
             met_count += 1
         if row.get("margin_3q_accel"):
             met_count += 1
-        if pd.notna(row.get("debt_to_equity")) and row["debt_to_equity"] <= ADVANCED_FINANCIAL_CRITERIA["max_debt_to_equity"]:
+        if debt_to_equity is not None and debt_to_equity <= ADVANCED_FINANCIAL_CRITERIA["max_debt_to_equity"]:
             met_count += 1
 
         results.append(
@@ -44,6 +66,8 @@ def screen_advanced_financials(financial_data: pd.DataFrame) -> pd.DataFrame:
                 "symbol": row["symbol"],
                 "provider_symbol": row.get("provider_symbol"),
                 "fin_met_count": met_count,
+                "fetch_status": str(row.get("fetch_status") or ("complete" if not bool(row.get("has_error", False)) else "failed")),
+                "unavailable_reason": row.get("unavailable_reason"),
                 "has_error": bool(row.get("has_error", False)),
             }
         )
@@ -51,7 +75,7 @@ def screen_advanced_financials(financial_data: pd.DataFrame) -> pd.DataFrame:
     result_df = pd.DataFrame(results)
     if result_df.empty:
         return result_df
-    return result_df[result_df["fin_met_count"] >= ADVANCED_FINANCIAL_MIN_MET].reset_index(drop=True)
+    return result_df.reset_index(drop=True)
 
 
 def run_advanced_financial_screening(
@@ -69,16 +93,14 @@ def run_advanced_financial_screening(
     integrated_path = get_markminervini_integrated_results_path(normalized_market)
 
     if not os.path.exists(with_rs_path):
-        empty = pd.DataFrame(columns=["symbol", "fin_met_count", "rs_score", "has_error"])
-        empty.to_csv(advanced_path, index=False)
-        empty.to_json(advanced_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
+        empty = pd.DataFrame(columns=["symbol", "fin_met_count", "rs_score", "fetch_status", "unavailable_reason", "has_error"])
+        _write_frame_with_snapshot(empty, advanced_path)
         return empty
 
     technical_df = pd.read_csv(with_rs_path)
     if technical_df.empty or "symbol" not in technical_df.columns:
-        empty = pd.DataFrame(columns=["symbol", "fin_met_count", "rs_score", "has_error"])
-        empty.to_csv(advanced_path, index=False)
-        empty.to_json(advanced_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
+        empty = pd.DataFrame(columns=["symbol", "fin_met_count", "rs_score", "fetch_status", "unavailable_reason", "has_error"])
+        _write_frame_with_snapshot(empty, advanced_path)
         return empty
 
     symbols = technical_df["symbol"].dropna().astype(str).str.upper().tolist()
@@ -87,9 +109,10 @@ def run_advanced_financial_screening(
     if financial_data.empty:
         empty = technical_df.loc[:, [column for column in technical_df.columns if column in {"symbol", "rs_score"}]].copy()
         empty["fin_met_count"] = 0
+        empty["fetch_status"] = "failed"
+        empty["unavailable_reason"] = "financial data unavailable"
         empty["has_error"] = True
-        empty.to_csv(advanced_path, index=False)
-        empty.to_json(advanced_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
+        _write_frame_with_snapshot(empty, advanced_path)
         return empty
 
     filtered_financial_df = screen_advanced_financials(financial_data)
@@ -107,18 +130,21 @@ def run_advanced_financial_screening(
         final_df["fin_percentile"] = fin_percentiles
         final_df["total_percentile"] = final_df["rs_percentile"] + final_df["fin_percentile"]
         final_df["fin_met_count"] = final_df["fin_met_count"].fillna(0).astype(int)
+        if "fetch_status" not in final_df.columns:
+            final_df["fetch_status"] = "failed"
+        final_df["fetch_status"] = final_df["fetch_status"].fillna("failed").astype(str)
+        if "unavailable_reason" not in final_df.columns:
+            final_df["unavailable_reason"] = None
         final_df["has_error"] = final_df["has_error"].fillna(True)
         final_df = final_df.sort_values(
             ["fin_met_count", "total_percentile", "rs_score"],
             ascending=[False, False, False],
         ).reset_index(drop=True)
 
-    final_df.to_csv(advanced_path, index=False)
-    final_df.to_json(advanced_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
+    _write_frame_with_snapshot(final_df, advanced_path)
 
     # Preserve the historical integrated seed output expected by the integrated screener.
-    final_df.to_csv(integrated_path, index=False)
-    final_df.to_json(integrated_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
+    _write_frame_with_snapshot(final_df, integrated_path)
     print(
         f"[AdvancedFinancial] Financial screening saved ({normalized_market}) - "
         f"rows={len(final_df)}, passed={int((final_df['fin_met_count'] >= ADVANCED_FINANCIAL_MIN_MET).sum()) if not final_df.empty else 0}"

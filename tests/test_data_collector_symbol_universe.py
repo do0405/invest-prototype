@@ -3,15 +3,15 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
-from tests._paths import runtime_root as runtime_test_root
 import pandas as pd
 
 import data_collector as dc
+from data_collectors import symbol_universe as su
+from tests._paths import runtime_root as runtime_test_root
 
 
 def _write_minimal_csv(path: Path, rows: list[dict[str, object]]) -> None:
-    frame = pd.DataFrame(rows)
-    frame.to_csv(path, index=False)
+    pd.DataFrame(rows).to_csv(path, index=False)
 
 
 def _reset_runtime_dir(path: Path) -> None:
@@ -20,7 +20,7 @@ def _reset_runtime_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
 
 
-def test_load_us_symbol_universe_includes_etf_inverse_and_vix(monkeypatch):
+def test_load_us_symbol_universe_includes_seed_symbols_and_indexes(monkeypatch):
     runtime_root = runtime_test_root("_test_runtime_symbol_universe")
     _reset_runtime_dir(runtime_root)
 
@@ -29,14 +29,8 @@ def test_load_us_symbol_universe_includes_etf_inverse_and_vix(monkeypatch):
     us_dir.mkdir(parents=True, exist_ok=True)
     metadata_path = data_dir / "stock_metadata.csv"
 
-    # Existing CSV symbol.
     (us_dir / "QQQ.csv").write_text("date,symbol,close\n", encoding="utf-8")
-
-    # External symbol seeds (includes ETF/inverse symbols).
-    _write_minimal_csv(
-        data_dir / "nasdaq_symbols.csv",
-        [{"symbol": "SQQQ"}, {"symbol": "SOXL"}, {"symbol": "UVXY"}],
-    )
+    _write_minimal_csv(data_dir / "nasdaq_symbols.csv", [{"symbol": "SQQQ"}, {"symbol": "SOXL"}])
     _write_minimal_csv(metadata_path, [{"symbol": "SPY"}])
 
     monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
@@ -48,9 +42,8 @@ def test_load_us_symbol_universe_includes_etf_inverse_and_vix(monkeypatch):
     assert "QQQ" in universe
     assert "SQQQ" in universe
     assert "SOXL" in universe
-    assert "UVXY" in universe
+    assert "SPY" in universe
     assert "^VIX" in universe
-    assert "^VVIX" in universe
 
 
 def test_update_symbol_list_writes_new_csvs_to_existing_data_us_dir(monkeypatch):
@@ -62,16 +55,14 @@ def test_update_symbol_list_writes_new_csvs_to_existing_data_us_dir(monkeypatch)
     us_dir.mkdir(parents=True, exist_ok=True)
     metadata_path = data_dir / "stock_metadata.csv"
 
-    # Existing symbol.
     (us_dir / "SPY.csv").write_text("date,symbol,open,high,low,close,volume\n", encoding="utf-8")
-
-    # New symbol seed.
     _write_minimal_csv(data_dir / "nasdaq_symbols.csv", [{"symbol": "SQQQ"}])
     _write_minimal_csv(metadata_path, [{"symbol": "SPY"}])
 
     monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
     monkeypatch.setattr(dc, "DATA_US_DIR", str(us_dir))
     monkeypatch.setattr(dc, "STOCK_METADATA_PATH", str(metadata_path))
+    monkeypatch.setattr(dc, "sync_official_us_symbol_directory", lambda **kwargs: {"broad_us_seed.csv": 1})
 
     symbols = dc.update_symbol_list()
 
@@ -84,13 +75,10 @@ def test_collect_data_without_symbol_update_uses_existing_csv_universe(monkeypat
     captured: dict[str, object] = {}
 
     monkeypatch.setattr(dc, "_list_symbols_from_existing_us_csv", lambda: {"AAA", "BBB"})
-    monkeypatch.setattr(dc, "_load_us_symbol_universe", lambda: (_ for _ in ()).throw(AssertionError("seeded universe should not be used")))
+    monkeypatch.setattr(dc, "_load_us_symbol_universe", lambda progress=None: (_ for _ in ()).throw(AssertionError("seeded universe should not be used")))
+    monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
     monkeypatch.setattr(dc, "ensure_dir", lambda directory: None)
-    monkeypatch.setattr(
-        dc,
-        "fetch_and_save_us_ohlcv_chunked",
-        lambda **kwargs: captured.update({"tickers": kwargs["tickers"]}),
-    )
+    monkeypatch.setattr(dc, "fetch_and_save_us_ohlcv_chunked", lambda **kwargs: captured.update({"tickers": kwargs["tickers"]}))
 
     dc.collect_data(update_symbols=False)
 
@@ -102,14 +90,153 @@ def test_collect_data_update_symbol_failure_falls_back_to_existing_csv_universe(
 
     monkeypatch.setattr(dc, "update_symbol_list", lambda: (_ for _ in ()).throw(RuntimeError("boom")))
     monkeypatch.setattr(dc, "_list_symbols_from_existing_us_csv", lambda: {"SPY"})
-    monkeypatch.setattr(dc, "_load_us_symbol_universe", lambda: (_ for _ in ()).throw(AssertionError("seeded universe should not be used")))
+    monkeypatch.setattr(dc, "bootstrap_windows_utf8", lambda: None)
     monkeypatch.setattr(dc, "ensure_dir", lambda directory: None)
-    monkeypatch.setattr(
-        dc,
-        "fetch_and_save_us_ohlcv_chunked",
-        lambda **kwargs: captured.update({"tickers": kwargs["tickers"]}),
-    )
+    monkeypatch.setattr(dc, "fetch_and_save_us_ohlcv_chunked", lambda **kwargs: captured.update({"tickers": kwargs["tickers"]}))
 
     dc.collect_data(update_symbols=True)
 
     assert captured["tickers"] == ["SPY"]
+
+
+def test_load_us_symbol_universe_uses_basename_fast_path_and_progress(monkeypatch):
+    runtime_root = runtime_test_root("_test_runtime_symbol_universe_progress")
+    _reset_runtime_dir(runtime_root)
+
+    data_dir = runtime_root
+    us_dir = data_dir / "us"
+    us_dir.mkdir(parents=True, exist_ok=True)
+    (us_dir / "AAPL.csv").write_text("date,symbol,close\n", encoding="utf-8")
+    (us_dir / "CON_file.csv").write_text("date,symbol,close\n2026-03-11,CON,10\n", encoding="utf-8")
+
+    calls: list[str] = []
+    messages: list[str] = []
+    original = su._read_symbol_from_existing_csv
+
+    def _tracking_reader(path: str) -> str:
+        calls.append(Path(path).name)
+        return original(path)
+
+    monkeypatch.setattr(su, "_read_symbol_from_existing_csv", _tracking_reader)
+
+    symbols = su.load_us_symbol_universe(
+        data_dir=str(data_dir),
+        us_data_dir=str(us_dir),
+        stock_metadata_path=None,
+        progress=messages.append,
+    )
+
+    assert "AAPL" in symbols
+    assert "CON" in symbols
+    assert calls == ["CON_file.csv"]
+    assert any("Local OHLCV scan started" in message for message in messages)
+    assert any("US universe ready" in message for message in messages)
+
+
+def test_load_us_symbol_universe_logs_legacy_broad_seed_alias(monkeypatch):
+    runtime_root = runtime_test_root("_test_runtime_symbol_universe_legacy_broad")
+    _reset_runtime_dir(runtime_root)
+
+    data_dir = runtime_root
+    us_dir = data_dir / "us"
+    us_dir.mkdir(parents=True, exist_ok=True)
+    _write_minimal_csv(data_dir / "nasdaq_symbols.csv", [{"symbol": "AAPL"}, {"symbol": "KSS"}, {"symbol": "KEY$I"}])
+
+    messages: list[str] = []
+
+    symbols = su.load_us_symbol_universe(
+        data_dir=str(data_dir),
+        us_data_dir=str(us_dir),
+        stock_metadata_path=None,
+        progress=messages.append,
+    )
+
+    assert "AAPL" in symbols
+    assert "KSS" in symbols
+    assert "KEY$I" not in symbols
+    assert any("Legacy broad seed loaded - file=nasdaq_symbols.csv" in message for message in messages)
+    assert any("logical_name=broad_us_seed.csv" in message for message in messages)
+
+
+def test_sync_official_us_symbol_directory_writes_split_and_filtered_seeds(monkeypatch):
+    runtime_root = runtime_test_root("_test_runtime_symbol_universe_official_sync")
+    _reset_runtime_dir(runtime_root)
+
+    nasdaq_raw = "\n".join(
+        [
+            "Symbol|Security Name|Market Category|Test Issue|Financial Status|Round Lot Size|ETF|NextShares",
+            "AAPL|Apple Inc.|Q|N|N|100|N|N",
+            "AACIW|Legacy warrant|Q|N|N|100|N|N",
+            "File Creation Time: 03142026",
+        ]
+    )
+    other_raw = "\n".join(
+        [
+            "ACT Symbol|Security Name|Exchange|CQS Symbol|ETF|Round Lot Size|Test Issue|NASDAQ Symbol",
+            "KSS|Kohl's Corp.|N|KSS|N|100|N|KSS",
+            "SPY|SPDR S&P 500 ETF|P|SPY|Y|100|N|SPY",
+            "KEY$I|KeyCorp Depositary|N|KEY-I|N|100|N|KEY$I",
+            "File Creation Time: 03142026",
+        ]
+    )
+
+    class _Response:
+        def __init__(self, text: str) -> None:
+            self.text = text
+
+        def raise_for_status(self) -> None:
+            return None
+
+    class _Requests:
+        def get(self, url: str, **kwargs):  # noqa: ANN001, ANN201
+            _ = kwargs
+            if url.endswith("nasdaqlisted.txt"):
+                return _Response(nasdaq_raw)
+            if url.endswith("otherlisted.txt"):
+                return _Response(other_raw)
+            raise AssertionError(f"unexpected url: {url}")
+
+    messages: list[str] = []
+    summary = su.sync_official_us_symbol_directory(
+        data_dir=str(runtime_root),
+        progress=messages.append,
+        requests_module=_Requests(),
+        timeout_seconds=1.0,
+    )
+
+    assert summary["nasdaq_symbols.csv"] == 1
+    assert summary["nyse_symbols.csv"] == 1
+    assert summary["nyse_arca_symbols.csv"] == 1
+    assert summary["broad_us_seed.csv"] == 3
+
+    nasdaq = pd.read_csv(runtime_root / "nasdaq_symbols.csv")
+    nyse = pd.read_csv(runtime_root / "nyse_symbols.csv")
+    arca = pd.read_csv(runtime_root / "nyse_arca_symbols.csv")
+    broad = pd.read_csv(runtime_root / "broad_us_seed.csv")
+
+    assert list(nasdaq["symbol"]) == ["AAPL"]
+    assert list(nyse["symbol"]) == ["KSS"]
+    assert list(arca["symbol"]) == ["SPY"]
+    assert set(broad["symbol"]) == {"AAPL", "KSS", "SPY"}
+    assert not any("AACIW" in value for value in broad["symbol"].tolist())
+    assert not any("KEY$I" in value for value in broad["symbol"].tolist())
+    assert any("Official seed manifest saved" in message for message in messages)
+
+
+def test_list_symbols_from_existing_us_csv_filters_special_issues_and_recovers_safe_filenames(monkeypatch):
+    runtime_root = runtime_test_root("_test_runtime_existing_us_csv_filtering")
+    _reset_runtime_dir(runtime_root)
+
+    us_dir = runtime_root / "us"
+    us_dir.mkdir(parents=True, exist_ok=True)
+    (us_dir / "SPY.csv").write_text("date,symbol,close\n", encoding="utf-8")
+    (us_dir / "IVR$C.csv").write_text("date,symbol,close\n2026-03-11,IVR$C,10\n", encoding="utf-8")
+    (us_dir / "CON_file.csv").write_text("date,symbol,close\n2026-03-11,CON,10\n", encoding="utf-8")
+
+    monkeypatch.setattr(dc, "DATA_US_DIR", str(us_dir))
+
+    symbols = dc._list_symbols_from_existing_us_csv()
+
+    assert "SPY" in symbols
+    assert "CON" in symbols
+    assert "IVR$C" not in symbols
