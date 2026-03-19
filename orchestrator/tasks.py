@@ -17,6 +17,7 @@ __all__ = [
     "collect_data_main",
     "run_kr_ohlcv_collection",
     "run_all_screening_processes",
+    "run_signal_engine_processes",
     "run_leader_lagging_screening",
     "run_stock_metadata_collection",
     "run_qullamaggie_strategy_task",
@@ -232,6 +233,40 @@ def run_tradingview_preset_screeners(*, market: str) -> Any:
         print(f"[Task] TradingView preset screeners failed ({market}): {exc}")
         print(traceback.format_exc())
         return None
+
+
+def run_signal_engine_task(*, market: str) -> Any:
+    try:
+        from screeners.signals import run_signal_scan
+
+        print(f"\n[Task] Multi-screener signal engine started ({market})")
+        result = run_signal_scan(market=market)
+        print(f"[Task] Multi-screener signal engine completed ({market})")
+        return result
+    except Exception as exc:
+        print(f"[Task] Multi-screener signal engine failed ({market}): {exc}")
+        print(traceback.format_exc())
+        return None
+
+
+def run_signal_engine_processes(markets: Optional[list[str]] = None) -> None:
+    target_markets = [market_key(item) for item in (markets or ["us"])]
+    print("\n[Task] Signal engine process started")
+    try:
+        total_steps = len(target_markets)
+        for index, market in enumerate(target_markets, start=1):
+            _run_timed_step(
+                index,
+                total_steps,
+                "Multi-screener signal engine",
+                market,
+                lambda market=market: run_signal_engine_task(market=market),
+            )
+
+        print("[Task] Signal engine process completed")
+    except Exception as exc:
+        print(f"[Task] Signal engine process failed: {exc}")
+        print(traceback.format_exc())
 
 
 def run_weinstein_stage2_screening(*, market: str) -> Any:

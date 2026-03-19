@@ -25,7 +25,7 @@ from utils.market_runtime import (
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
-from utils.typing_utils import series_to_str_float_dict, series_to_str_text_dict
+from utils.typing_utils import series_to_str_float_dict, series_to_str_text_dict, to_float_or_none
 
 
 MetricValue: TypeAlias = float | str | bool | None
@@ -96,12 +96,7 @@ def _metric_row_from_series(row: pd.Series) -> MetricRow:
 def _as_float(value: object) -> float | None:
     if isinstance(value, bool) or value is None:
         return None
-    if isinstance(value, (float, int)):
-        return float(value)
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return None
+    return to_float_or_none(value)
 
 
 def _ema(series: pd.Series, length: int) -> float | None:

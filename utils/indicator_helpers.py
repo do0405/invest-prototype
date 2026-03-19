@@ -120,11 +120,11 @@ def atr_percent(frame: pd.DataFrame, *, length: int = 14, close_col: str = "clos
 def adr_percent(frame: pd.DataFrame, *, length: int = 20, close_col: str = "close") -> float | None:
     if len(frame) < length:
         return None
-    close = pd.to_numeric(frame[close_col], errors="coerce").replace({0: pd.NA})
-    adr = ((pd.to_numeric(frame["high"], errors="coerce") - pd.to_numeric(frame["low"], errors="coerce")) / close * 100.0).rolling(
-        window=length,
-        min_periods=length,
-    ).mean().iloc[-1]
+    close = pd.to_numeric(frame[close_col], errors="coerce")
+    safe_close = close.mask(close == 0)
+    adr = (
+        (pd.to_numeric(frame["high"], errors="coerce") - pd.to_numeric(frame["low"], errors="coerce")) / safe_close * 100.0
+    ).rolling(window=length, min_periods=length).mean().iloc[-1]
     return to_float_or_none(adr)
 
 

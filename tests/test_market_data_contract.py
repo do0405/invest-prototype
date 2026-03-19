@@ -201,7 +201,7 @@ def test_download_yfinance_ohlcv_requests_actions_and_preserves_split_adjusted_s
             return history.copy()
 
     fake_module = types.ModuleType("yfinance")
-    fake_module.Ticker = _FakeTicker
+    setattr(fake_module, "Ticker", _FakeTicker)
     monkeypatch.setitem(sys.modules, "yfinance", fake_module)
 
     normalized = market_data_contract._download_yfinance_ohlcv(

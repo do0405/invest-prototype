@@ -56,6 +56,7 @@ def build_parser() -> argparse.ArgumentParser:
         choices=[
             "all",
             "screening",
+            "signals",
             "leader",
             "qullamaggie",
             "kr-collect",
@@ -93,6 +94,7 @@ def main() -> None:
             run_all_screening_processes,
             run_kr_ohlcv_collection,
             run_leader_lagging_screening,
+            run_signal_engine_processes,
             run_tradingview_preset_screeners,
             run_qullamaggie_strategy_task,
             run_weinstein_stage2_screening,
@@ -127,6 +129,10 @@ def main() -> None:
 
         if task == "screening":
             run_all_screening_processes(skip_data=args.skip_data, markets=markets)
+            return
+
+        if task == "signals":
+            run_signal_engine_processes(markets=markets)
             return
 
         if task == "leader":
@@ -175,6 +181,9 @@ def main() -> None:
         print(f"[Main] Screening phase started - markets={markets}")
         run_all_screening_processes(skip_data=args.skip_data, markets=markets)
         print("[Main] Screening phase completed")
+        print(f"[Main] Signal phase started - markets={markets}")
+        run_signal_engine_processes(markets=markets)
+        print("[Main] Signal phase completed")
 
         print("[Main] All tasks completed")
         print(f"[Main] End time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")

@@ -1,12 +1,22 @@
 from __future__ import annotations
 
+import importlib
+import importlib.util
+from typing import Any
+
 import numpy as np
 import pandas as pd
+import pytest
 
+import screeners.qullamaggie as qullamaggie
 from screeners.qullamaggie.core import QullamaggieAnalyzer
 from screeners.qullamaggie import screener as qullamaggie_screener
 from tests._paths import runtime_root
 from utils.screener_utils import save_screening_results as real_save_screening_results
+
+
+def _row_record(row: pd.Series) -> dict[str, Any]:
+    return {str(key): value for key, value in row.to_dict().items()}
 
 
 def _daily_from_closes(
@@ -127,6 +137,25 @@ def _ep_daily() -> pd.DataFrame:
     return _daily_from_closes(closes, volumes, spreads=spreads, gap_on_last=0.12)
 
 
+def test_qullamaggie_hides_legacy_signal_aliases_when_signals_module_is_unavailable(monkeypatch) -> None:
+    original_find_spec = importlib.util.find_spec
+
+    def _patched_find_spec(name: str, package: str | None = None):  # noqa: ANN202
+        if name == "screeners.signals":
+            return None
+        return original_find_spec(name, package)
+
+    with monkeypatch.context() as patch:
+        patch.setattr(importlib.util, "find_spec", _patched_find_spec)
+        reloaded = importlib.reload(qullamaggie)
+        assert "SignalEngine" not in reloaded.__all__
+        assert "run_signal_scan" not in reloaded.__all__
+        with pytest.raises(AttributeError):
+            getattr(reloaded, "SignalEngine")
+
+    importlib.reload(qullamaggie)
+
+
 def test_breakout_analyzer_identifies_actionable_candidate() -> None:
     analyzer = QullamaggieAnalyzer()
     frames = {
@@ -136,7 +165,7 @@ def test_breakout_analyzer_identifies_actionable_candidate() -> None:
     }
     feature_rows = [analyzer.compute_feature_row(symbol, "us", frame) for symbol, frame in frames.items()]
     feature_table = analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
-    feature_map = {row["symbol"]: row.to_dict() for _, row in feature_table.iterrows()}
+    feature_map = {str(row["symbol"]): _row_record(row) for _, row in feature_table.iterrows()}
     feature_map["AAA"]["breakout_universe_pass"] = True
     regime = analyzer.compute_market_regime(
         market="us",
@@ -170,7 +199,7 @@ def test_breakout_analyzer_requires_universe_gate_before_passing() -> None:
     }
     feature_rows = [analyzer.compute_feature_row(symbol, "us", frame) for symbol, frame in frames.items()]
     feature_table = analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
-    feature_map = {row["symbol"]: row.to_dict() for _, row in feature_table.iterrows()}
+    feature_map = {str(row["symbol"]): _row_record(row) for _, row in feature_table.iterrows()}
     feature_map["AAA"]["breakout_universe_pass"] = True
     regime = analyzer.compute_market_regime(
         market="us",
@@ -198,7 +227,7 @@ def test_episode_pivot_analyzer_promotes_core_when_event_is_present() -> None:
     analyzer = QullamaggieAnalyzer()
     daily = _ep_daily()
     feature_table = analyzer.finalize_feature_table(pd.DataFrame([analyzer.compute_feature_row("EPX", "us", daily)]))
-    feature_row = feature_table.iloc[0].to_dict()
+    feature_row = _row_record(feature_table.iloc[0])
     regime = analyzer.compute_market_regime(
         market="us",
         benchmark_symbol="SPY",
@@ -235,7 +264,7 @@ def test_episode_pivot_requires_universe_gate_before_passing() -> None:
     analyzer = QullamaggieAnalyzer()
     daily = _ep_daily()
     feature_table = analyzer.finalize_feature_table(pd.DataFrame([analyzer.compute_feature_row("EPX", "us", daily)]))
-    feature_row = feature_table.iloc[0].to_dict()
+    feature_row = _row_record(feature_table.iloc[0])
     feature_row["ep_universe_pass"] = False
     regime = analyzer.compute_market_regime(
         market="us",
@@ -337,7 +366,7 @@ def test_episode_pivot_skips_earnings_fetch_until_technical_prefilter_passes() -
     analyzer = QullamaggieAnalyzer()
     daily = _ep_daily()
     feature_table = analyzer.finalize_feature_table(pd.DataFrame([analyzer.compute_feature_row("EPX", "us", daily)]))
-    feature_row = feature_table.iloc[0].to_dict()
+    feature_row = _row_record(feature_table.iloc[0])
     feature_row["gap_pct"] = 0.01
     feature_row["rvol"] = 1.0
     feature_row["dcr"] = 0.5
@@ -371,7 +400,7 @@ def test_episode_pivot_fetches_earnings_after_technical_prefilter_passes() -> No
     analyzer = QullamaggieAnalyzer()
     daily = _ep_daily()
     feature_table = analyzer.finalize_feature_table(pd.DataFrame([analyzer.compute_feature_row("EPX", "us", daily)]))
-    feature_row = feature_table.iloc[0].to_dict()
+    feature_row = _row_record(feature_table.iloc[0])
     feature_row["gap_pct"] = 0.18
     feature_row["rvol"] = 3.2
     feature_row["dcr"] = 0.72
@@ -418,7 +447,7 @@ def test_episode_pivot_does_not_treat_unavailable_earnings_payload_as_event_data
     analyzer = QullamaggieAnalyzer()
     daily = _ep_daily()
     feature_table = analyzer.finalize_feature_table(pd.DataFrame([analyzer.compute_feature_row("EPX", "us", daily)]))
-    feature_row = feature_table.iloc[0].to_dict()
+    feature_row = _row_record(feature_table.iloc[0])
     feature_row["gap_pct"] = 0.18
     feature_row["rvol"] = 3.2
     feature_row["dcr"] = 0.72

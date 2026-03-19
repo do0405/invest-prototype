@@ -78,21 +78,23 @@ def resolve_price_policy(price_policy: PricePolicy | str | None) -> PricePolicy:
     return PricePolicy.SPLIT_ADJUSTED
 
 
-def _normalize_trading_date(value: object) -> str | pd.NA:
+def _normalize_trading_date(value: object) -> str | None:
     if is_na_like(value):
-        return pd.NA
+        return None
 
-    parsed = None
-    for kwargs in ({"format": "mixed"}, {}):
+    text_value = str(value)
+    parsed: pd.Timestamp | None = None
+    try:
+        parsed = pd.Timestamp(pd.to_datetime(text_value, errors="raise", format="mixed"))
+    except Exception:
         try:
-            parsed = pd.to_datetime(value, errors="raise", **kwargs)
-            break
+            parsed = pd.Timestamp(pd.to_datetime(text_value, errors="raise"))
         except Exception:
-            continue
+            return None
 
     if parsed is None or is_na_like(parsed):
-        return pd.NA
-    return pd.Timestamp(parsed).date().isoformat()
+        return None
+    return parsed.date().isoformat()
 
 
 def normalize_ohlcv_columns(frame: pd.DataFrame) -> pd.DataFrame:
@@ -117,7 +119,12 @@ def normalize_ohlcv_columns(frame: pd.DataFrame) -> pd.DataFrame:
 
 
 def _derive_split_factor(normalized: pd.DataFrame) -> tuple[pd.Series, pd.Series]:
-    split_factor = pd.to_numeric(normalized.get("split_factor"), errors="coerce")
+    raw_split_factor = (
+        normalized["split_factor"]
+        if "split_factor" in normalized.columns
+        else pd.Series(pd.NA, index=normalized.index)
+    )
+    split_factor = pd.to_numeric(raw_split_factor, errors="coerce")
 
     factor = pd.Series(1.0, index=normalized.index, dtype=float)
     source = pd.Series("raw", index=normalized.index, dtype=object)

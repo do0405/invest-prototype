@@ -49,7 +49,9 @@ def frame_keyed_records(
 
     for _, row in frame.iterrows():
         key_raw = row.get(key_column)
-        key = str(key_raw or "").strip()
+        if is_na_like(key_raw):
+            continue
+        key = str(key_raw).strip()
         if not key:
             continue
         if uppercase_keys:

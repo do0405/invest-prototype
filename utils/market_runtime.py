@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from typing import Iterable
 
 from config import DATA_KR_DIR, DATA_US_DIR, EXTERNAL_DATA_DIR, RESULTS_DIR, STOCK_METADATA_PATH
 from .market_data_contract import normalize_market
@@ -54,6 +53,10 @@ def get_market_screeners_root(market: str) -> str:
     return os.path.join(get_market_results_root(market), "screeners")
 
 
+def get_market_signals_root(market: str) -> str:
+    return os.path.join(get_market_results_root(market), "signals")
+
+
 def get_markminervini_results_dir(market: str) -> str:
     return os.path.join(get_market_screeners_root(market), "markminervini")
 
@@ -96,6 +99,18 @@ def get_tradingview_results_dir(market: str) -> str:
 
 def get_weinstein_stage2_results_dir(market: str) -> str:
     return os.path.join(get_market_screeners_root(market), "weinstein_stage2")
+
+
+def get_peg_imminent_results_dir(market: str) -> str:
+    return os.path.join(get_market_screeners_root(market), "peg_imminent")
+
+
+def get_multi_screener_signals_results_dir(market: str) -> str:
+    return os.path.join(get_market_signals_root(market), "multi_screener")
+
+
+def get_signal_engine_results_dir(market: str) -> str:
+    return get_multi_screener_signals_results_dir(market)
 
 
 def get_earnings_cache_dir(market: str) -> str:
@@ -141,8 +156,8 @@ def iter_provider_symbols(symbol: str, market: str) -> list[str]:
     return [f"{symbol_key}.KS", f"{symbol_key}.KQ"]
 
 
-def ensure_market_dirs(market: str) -> None:
-    directories: Iterable[str] = (
+def ensure_market_dirs(market: str, *, include_signal_dirs: bool = False) -> None:
+    directories: list[str] = [
         get_market_results_root(market),
         get_market_screeners_root(market),
         get_markminervini_results_dir(market),
@@ -152,6 +167,14 @@ def ensure_market_dirs(market: str) -> None:
         get_weinstein_stage2_results_dir(market),
         get_earnings_cache_dir(market),
         get_financial_cache_dir(market),
-    )
+    ]
+    if include_signal_dirs:
+        directories.extend(
+            [
+                get_market_signals_root(market),
+                get_peg_imminent_results_dir(market),
+                get_multi_screener_signals_results_dir(market),
+            ]
+        )
     for directory in directories:
         os.makedirs(directory, exist_ok=True)

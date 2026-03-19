@@ -3,6 +3,7 @@ from __future__ import annotations
 import shutil
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import cast
 
 import pandas as pd
 import pytest
@@ -66,7 +67,8 @@ def test_collect_kr_ohlcv_csv_summary_and_canonical_outputs(monkeypatch):
     assert summary["total"] == 2
     assert summary["saved"] == 1
     assert summary["failed"] == 1
-    assert summary["failed_samples"][0]["ticker"] == "035720"
+    failed_samples = cast(list[dict[str, object]], summary["failed_samples"])
+    assert failed_samples[0]["ticker"] == "035720"
 
     saved_path = runtime_dir / "005930.csv"
     assert saved_path.exists()
@@ -125,10 +127,10 @@ def test_collect_kr_ohlcv_csv_refetches_overlap_for_latest_existing_file(monkeyp
     )
     existing.to_csv(runtime_dir / "005930.csv", index=False)
 
-    captured: dict[str, object] = {}
+    captured: dict[str, datetime] = {}
 
     def _fetch(**kwargs):
-        captured["start_dt"] = kwargs["start_dt"]
+        captured["start_dt"] = cast(datetime, kwargs["start_dt"])
         return (
             pd.DataFrame(
                 {

@@ -1,4 +1,4 @@
-﻿"""Non-destructive repository hygiene candidate scanner.
+"""Non-destructive repository hygiene candidate scanner.
 
 This module only reports cleanup candidates and never deletes files.
 """

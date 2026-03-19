@@ -5,7 +5,7 @@ import os
 import re
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 __all__ = [
     "extract_timestamp_from_filename",
@@ -35,7 +35,7 @@ def extract_timestamp_from_filename(filename: str) -> Optional[datetime]:
     return None
 
 
-def get_timestamped_files(directory: str, extensions: List[str] = None) -> List[tuple]:
+def get_timestamped_files(directory: str, extensions: list[str] | None = None) -> list[tuple[str, datetime]]:
     """디렉터리에서 타임스탬프가 포함된 파일들을 찾아 반환
     
     Args:
@@ -68,8 +68,12 @@ def get_timestamped_files(directory: str, extensions: List[str] = None) -> List[
     return timestamped_files
 
 
-def cleanup_old_timestamped_files(directory: str, days_threshold: int = 30, 
-                                 extensions: List[str] = None, dry_run: bool = False) -> dict:
+def cleanup_old_timestamped_files(
+    directory: str,
+    days_threshold: int = 30,
+    extensions: list[str] | None = None,
+    dry_run: bool = False,
+) -> dict:
     """지정된 기간보다 오래된 타임스탬프 파일들을 삭제
     
     Args:

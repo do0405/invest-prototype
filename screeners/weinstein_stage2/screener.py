@@ -51,6 +51,19 @@ def _date_str(value: Any) -> str | None:
     return ts.strftime("%Y-%m-%d")
 
 
+def _ratio_or_none(numerator: float | None, denominator: float | None) -> float | None:
+    if numerator is None or denominator is None or denominator == 0:
+        return None
+    return numerator / denominator
+
+
+def _pct_change_value(start: float | None, end: float | None) -> float | None:
+    ratio = _ratio_or_none(end, start)
+    if ratio is None:
+        return None
+    return ratio - 1.0
+
+
 def _pct_slope(series: pd.Series, end_idx: int, lookback: int) -> float | None:
     if end_idx < lookback:
         return None
@@ -301,7 +314,7 @@ class WeinsteinStage2Analyzer:
         segment = weekly.iloc[start : end_idx + 1].copy()
         if segment.empty or segment["ma30w"].dropna().empty:
             return False
-        sign = np.sign(segment["close"] - segment["ma30w"])
+        sign = pd.Series(np.sign(segment["close"] - segment["ma30w"]), index=segment.index)
         changes = int((sign != sign.shift(1)).sum())
         return changes >= 4
 
@@ -413,14 +426,13 @@ class WeinsteinStage2Analyzer:
         ma30w_last = _safe_float(prior_window["ma30w"].iloc[-1]) if "ma30w" in prior_window.columns else None
         ma40w_last = _safe_float(prior_window["ma40w"].iloc[-1]) if "ma40w" in prior_window.columns else None
         slope4 = _pct_slope(prior_window["ma30w"], len(prior_window) - 1, 4) if "ma30w" in prior_window.columns else None
-        prior_run = None
-        if prior_close_start not in {None, 0} and prior_close_end is not None:
-            prior_run = (prior_close_end / prior_close_start) - 1.0
+        prior_run = _pct_change_value(prior_close_start, prior_close_end)
 
         if (
             prior_run is not None
             and prior_run >= 0.12
             and ma30w_last is not None
+            and prior_close_end is not None
             and prior_close_end > ma30w_last
             and (ma40w_last is None or ma30w_last >= ma40w_last)
             and (slope4 is None or slope4 > 0)
@@ -459,14 +471,15 @@ class WeinsteinStage2Analyzer:
             return False
         current_volume = _safe_float(weekly.loc[latest_idx, "volume"])
         breakout_week_volume = breakout_signal.breakout_week_volume
+        breakout_volume_ratio = breakout_signal.weekly_volume_ratio
         current_ratio = _safe_float(weekly.loc[latest_idx, "weekly_volume_ratio"])
-        if current_volume is None or breakout_week_volume in {None, 0}:
+        if current_volume is None or breakout_week_volume is None or breakout_week_volume == 0:
             return False
         lighter_absolute = current_volume <= breakout_week_volume * 0.9
         lighter_relative = (
             current_ratio is not None
-            and breakout_signal.weekly_volume_ratio is not None
-            and current_ratio <= max(1.2, breakout_signal.weekly_volume_ratio * 0.75)
+            and breakout_volume_ratio is not None
+            and current_ratio <= max(1.2, breakout_volume_ratio * 0.75)
         )
         return bool(lighter_absolute or lighter_relative)
 
@@ -522,10 +535,15 @@ class WeinsteinStage2Analyzer:
             first_ranges = window["range_pct"].head(min(5, len(window))).dropna()
             last_ranges = window["range_pct"].tail(min(5, len(window))).dropna()
             contraction_ratio = None
-            if not first_ranges.empty and not last_ranges.empty and float(first_ranges.median()) > 0:
-                contraction_ratio = float(last_ranges.median() / first_ranges.median())
+            first_range_median = _safe_float(first_ranges.median()) if not first_ranges.empty else None
+            last_range_median = _safe_float(last_ranges.median()) if not last_ranges.empty else None
+            if first_range_median is not None and first_range_median > 0 and last_range_median is not None:
+                contraction_ratio = float(last_range_median / first_range_median)
 
-            close_position = (float(window["close"].iloc[-1]) - base_low) / max(base_high - base_low, 1e-9)
+            latest_window_close = _safe_float(window["close"].iloc[-1])
+            if latest_window_close is None:
+                continue
+            close_position = (latest_window_close - base_low) / max(base_high - base_low, 1e-9)
             duration_score = _score_range(duration, 26, 52, min_duration, 65)
             flatness_score = _score_inverse(abs(slope8) if slope8 is not None else None, self.FLAT_THRESHOLD, 0.01)
             width_score = _score_range(width_pct, 0.10, 0.45, 0.05, 0.80)
@@ -576,9 +594,7 @@ class WeinsteinStage2Analyzer:
             return None
         base_volume = _safe_float(pd.to_numeric(base_window["volume"], errors="coerce").median())
         reference_volume = _safe_float(pd.to_numeric(reference_window["volume"], errors="coerce").median())
-        if base_volume is None or reference_volume in {None, 0}:
-            return None
-        return base_volume / reference_volume
+        return _ratio_or_none(base_volume, reference_volume)
 
     def _consecutive_weeks_above_ma30(self, weekly: pd.DataFrame, end_idx: int) -> int:
         if weekly.empty or end_idx < 0:
@@ -624,9 +640,9 @@ class WeinsteinStage2Analyzer:
 
             prior_close_start = _safe_float(prior_window["close"].iloc[0])
             prior_close_end = _safe_float(prior_window["close"].iloc[-1])
-            if prior_close_start in {None, 0} or prior_close_end is None:
+            prior_run_pct = _pct_change_value(prior_close_start, prior_close_end)
+            if prior_run_pct is None:
                 continue
-            prior_run_pct = (prior_close_end / prior_close_start) - 1.0
             if prior_run_pct < 0.12:
                 continue
 
@@ -640,22 +656,27 @@ class WeinsteinStage2Analyzer:
             if support_hold_ratio < 0.60:
                 continue
 
-            close_position = (float(window["close"].iloc[-1]) - base_low) / max(base_high - base_low, 1e-9)
+            latest_window_close = _safe_float(window["close"].iloc[-1])
+            if latest_window_close is None:
+                continue
+            close_position = (latest_window_close - base_low) / max(base_high - base_low, 1e-9)
             if close_position < 0.45:
                 continue
             first_close = _safe_float(window["close"].iloc[0])
             last_close = _safe_float(window["close"].iloc[-1])
-            net_progress_pct = None
-            if first_close not in {None, 0} and last_close is not None:
-                net_progress_pct = abs((last_close / first_close) - 1.0)
+            net_progress_pct = _pct_change_value(first_close, last_close)
+            if net_progress_pct is not None:
+                net_progress_pct = abs(net_progress_pct)
             if net_progress_pct is None or net_progress_pct > 0.10:
                 continue
 
             first_ranges = window["range_pct"].head(max(2, duration // 2)).dropna()
             last_ranges = window["range_pct"].tail(max(2, duration // 2)).dropna()
             contraction_ratio = None
-            if not first_ranges.empty and not last_ranges.empty and float(first_ranges.median()) > 0:
-                contraction_ratio = float(last_ranges.median() / first_ranges.median())
+            first_range_median = _safe_float(first_ranges.median()) if not first_ranges.empty else None
+            last_range_median = _safe_float(last_ranges.median()) if not last_ranges.empty else None
+            if first_range_median is not None and first_range_median > 0 and last_range_median is not None:
+                contraction_ratio = float(last_range_median / first_range_median)
 
             dryup_ratio = self._volume_dryup_ratio(weekly, start_idx, end_idx)
             quality_score = float(
@@ -710,9 +731,7 @@ class WeinsteinStage2Analyzer:
 
         prior_close_start = _safe_float(prior_window["close"].iloc[0])
         prior_close_end = _safe_float(prior_window["close"].iloc[-1])
-        prior_run_pct = None
-        if prior_close_start not in {None, 0} and prior_close_end is not None:
-            prior_run_pct = (prior_close_end / prior_close_start) - 1.0
+        prior_run_pct = _pct_change_value(prior_close_start, prior_close_end)
 
         window = weekly.iloc[base_window.start_idx : base_window.end_idx + 1].copy()
         ma30_support = window["ma30w"].replace(0, np.nan)
@@ -781,7 +800,9 @@ class WeinsteinStage2Analyzer:
         earliest_idx = max(10, latest_idx - 8)
         first_valid: BreakoutSignal | None = None
         for idx in range(earliest_idx, latest_idx + 1):
-            close = float(weekly.loc[idx, "close"])
+            close = _safe_float(weekly.loc[idx, "close"])
+            if close is None:
+                continue
             weekly_alignment_pass = self._trend_alignment_pass(weekly, idx)
             weekly_volume_ratio, volume_reference = self._resolve_weekly_volume_ratio(weekly, idx, mode)
             breakout_week_volume = _safe_float(weekly.loc[idx, "volume"])
@@ -883,14 +904,15 @@ class WeinsteinStage2Analyzer:
         breakout_signal: BreakoutSignal | None,
         continuation_setup: ContinuationSetup | None,
     ) -> str:
-        close = float(weekly.loc[latest_idx, "close"])
+        close = _safe_float(weekly.loc[latest_idx, "close"])
         ma30w = _safe_float(weekly.loc[latest_idx, "ma30w"])
         ma40w = _safe_float(weekly.loc[latest_idx, "ma40w"]) if "ma40w" in weekly.columns else None
         ma10w = _safe_float(weekly.loc[latest_idx, "ma10w"]) if "ma10w" in weekly.columns else None
         slope4 = _pct_slope(weekly["ma30w"], latest_idx, 4)
         slope8 = _pct_slope(weekly["ma30w"], latest_idx, 8)
         if (
-            breakout_signal is not None
+            close is not None
+            and breakout_signal is not None
             and breakout_signal.breakout_age_weeks <= 8
             and ma30w is not None
             and close > ma30w
@@ -901,16 +923,18 @@ class WeinsteinStage2Analyzer:
                 return "STAGE_2B"
             return "STAGE_2A"
         if (
-            latest_base is not None
+            close is not None
+            and latest_base is not None
             and close <= latest_base.base_high * (1.0 + self.BREAKOUT_BUFFER)
             and slope8 is not None
             and abs(slope8) <= max(self.FLAT_THRESHOLD * 2.0, 0.005)
         ):
             return "STAGE_1"
-        if ma30w is not None and close < ma30w and (ma40w is None or close < ma40w) and slope8 is not None and slope8 < -self.FLAT_THRESHOLD:
+        if close is not None and ma30w is not None and close < ma30w and (ma40w is None or close < ma40w) and slope8 is not None and slope8 < -self.FLAT_THRESHOLD:
             return "STAGE_4"
         if (
-            ma30w is not None
+            close is not None
+            and ma30w is not None
             and close > ma30w
             and (ma40w is None or close > ma40w)
             and slope8 is not None
@@ -1072,7 +1096,8 @@ class WeinsteinStage2Analyzer:
             current_continuation_setup,
         )
 
-        latest_close = float(weekly.loc[latest_idx, "close"])
+        latest_close = _safe_float(weekly.loc[latest_idx, "close"])
+        latest_low = _safe_float(weekly.loc[latest_idx, "low"])
         ma10w = _safe_float(weekly.loc[latest_idx, "ma10w"]) if "ma10w" in weekly.columns else None
         ma30w = _safe_float(weekly.loc[latest_idx, "ma30w"])
         ma40w = _safe_float(weekly.loc[latest_idx, "ma40w"]) if "ma40w" in weekly.columns else None
@@ -1102,7 +1127,11 @@ class WeinsteinStage2Analyzer:
             base_low = active_base.base_low
             base_duration_weeks = active_base.duration_weeks
             base_quality_score = active_base.quality_score
-            percent_to_stage2 = ((active_base.base_high - latest_close) / latest_close) * 100.0 if latest_close > 0 else None
+            percent_to_stage2 = (
+                ((active_base.base_high - latest_close) / latest_close) * 100.0
+                if latest_close is not None and latest_close > 0
+                else None
+            )
 
         group_is_weak = default_group.data_available and default_group.group_state == "GROUP_WEAK"
         rejection_reason = ""
@@ -1117,8 +1146,8 @@ class WeinsteinStage2Analyzer:
         close_gt_ma50d = bool(daily_trend.get("close_gt_ma50d"))
         close_gt_ma200d = bool(daily_trend.get("close_gt_ma200d"))
         ma50d_gt_ma200d = bool(daily_trend.get("ma50d_gt_ma200d"))
-        close_gt_ma10w = bool(ma10w is not None and latest_close > ma10w)
-        close_gt_ma40w = bool(ma40w is not None and latest_close > ma40w)
+        close_gt_ma10w = bool(latest_close is not None and ma10w is not None and latest_close > ma10w)
+        close_gt_ma40w = bool(latest_close is not None and ma40w is not None and latest_close > ma40w)
         weekly_trend_ok = self._trend_alignment_pass(weekly, latest_idx)
         daily_trend_ok = ((ma50d is None and ma200d is None) or (close_gt_ma50d and close_gt_ma200d and ma50d_gt_ma200d))
 
@@ -1129,15 +1158,16 @@ class WeinsteinStage2Analyzer:
             if breakout_signal is not None:
                 breakout_level = breakout_signal.breakout_level
                 breakout_age_weeks = breakout_signal.breakout_age_weeks
-                if latest_close < breakout_level:
+                if latest_close is None or latest_close < breakout_level:
                     timing_state = "FAIL"
-                    rejection_reason = "lost_breakout_level"
+                    rejection_reason = "missing_latest_close" if latest_close is None else "lost_breakout_level"
                 else:
                     retest_volume_lighter = self._lighter_volume_retest(weekly, latest_idx, breakout_signal)
                     retest_signal = (
                         breakout_age_weeks is not None
                         and 1 <= breakout_age_weeks <= self.RETEST_MAX_AGE
-                        and float(weekly.loc[latest_idx, "low"]) <= breakout_level * (1.0 + self.SMALL_BAND)
+                        and latest_low is not None
+                        and latest_low <= breakout_level * (1.0 + self.SMALL_BAND)
                         and latest_close >= breakout_level
                         and rs_pass
                         and ma30w is not None
@@ -1166,6 +1196,7 @@ class WeinsteinStage2Analyzer:
                 and stock_stage == "STAGE_1"
                 and percent_to_stage2 is not None
                 and percent_to_stage2 <= self.PRE_STAGE2_MAX_PCT
+                and latest_close is not None
                 and ma30w is not None
                 and latest_close < active_base.base_high * (1.0 + self.BREAKOUT_BUFFER)
                 and latest_close >= ma30w * 0.97

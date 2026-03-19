@@ -241,7 +241,7 @@ def _classify_us_unavailable_reason(reason: str) -> str:
     return "hard"
 
 
-def _format_us_chunk_summary(chunk_num: int, total_chunks: int, statuses: list[str]) -> str:
+def _legacy_format_us_chunk_summary(chunk_num: int, total_chunks: int, statuses: list[str]) -> str:
     counter = Counter(statuses)
     return (
         f"✅ 청크 {chunk_num}/{total_chunks} 완료: "

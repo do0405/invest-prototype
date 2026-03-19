@@ -111,7 +111,9 @@ def calculate_rs_score_enhanced(
             # 메모리 사용량 최적화를 위해 배치로 백분위 계산
             rs_ratings = {}
             for symbol, score in rs_scores.items():
-                rs_ratings[symbol] = round(percentileofscore(rs_score_values, score, kind="rank"), 2)
+                percentile = percentileofscore(rs_score_values, score, kind="rank")
+                percentile_value = float(np.asarray(percentile, dtype=float).reshape(-1)[0])
+                rs_ratings[symbol] = round(percentile_value, 2)
             
             # 최종 가비지 컬렉션
             gc.collect()

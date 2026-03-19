@@ -7,6 +7,7 @@ import pandas as pd
 
 from screeners.markminervini import screener as mark_screener
 from tests._paths import runtime_root
+from utils.typing_utils import to_float_or_none
 
 
 def _trend_template_frame() -> pd.DataFrame:
@@ -58,6 +59,6 @@ def test_run_market_screening_does_not_require_recommended_rs_gate(monkeypatch) 
     result = mark_screener.run_market_screening("us")
 
     assert not result.empty
-    assert float(result.loc[0, "rs_score"]) == 60.0
+    assert to_float_or_none(result.loc[0, "rs_score"]) == 60.0
     assert bool(result.loc[0, "cond8"]) is False
     assert Path(results_path).exists()

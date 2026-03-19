@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Mapping
+from typing import Any, Mapping, Protocol
 
 import numpy as np
 import pandas as pd
@@ -20,6 +20,10 @@ from utils.market_data_contract import PricePolicy
 from utils.typing_utils import row_to_record
 
 from .earnings_data_collector import EarningsDataCollector
+
+
+class SupportsEarningsCollector(Protocol):
+    def get_earnings_surprise(self, symbol: str) -> Mapping[str, Any] | None: ...
 
 
 def _safe_float(value: Any) -> float | None:
@@ -1592,7 +1596,7 @@ class QullamaggieAnalyzer:
         market: str = "us",
         feature_row: Mapping[str, Any] | None = None,
         regime: MarketRegime | None = None,
-        earnings_collector: EarningsDataCollector | None = None,
+        earnings_collector: SupportsEarningsCollector | None = None,
         earnings_payload: Mapping[str, Any] | None = None,
         calibration: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:

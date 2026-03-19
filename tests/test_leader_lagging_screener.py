@@ -193,17 +193,27 @@ def test_weighted_rs_uses_benchmark_relative_ibd_formula() -> None:
         return (end / start) - 1.0
 
     def _weighted_rs(end_offset: int) -> float:
+        stock_ret_3m = _subperiod_return(stock_close, end_offset, 63)
+        stock_ret_6m = _subperiod_return(stock_close, end_offset, 126)
+        stock_ret_9m = _subperiod_return(stock_close, end_offset, 189)
+        stock_ret_12m = _subperiod_return(stock_close, end_offset, 252)
+        benchmark_ret_3m = _subperiod_return(benchmark_close, end_offset, 63)
+        benchmark_ret_6m = _subperiod_return(benchmark_close, end_offset, 126)
+        benchmark_ret_9m = _subperiod_return(benchmark_close, end_offset, 189)
+        benchmark_ret_12m = _subperiod_return(benchmark_close, end_offset, 252)
+        assert stock_ret_3m is not None and stock_ret_6m is not None and stock_ret_9m is not None and stock_ret_12m is not None
+        assert benchmark_ret_3m is not None and benchmark_ret_6m is not None and benchmark_ret_9m is not None and benchmark_ret_12m is not None
         stock_score = (
-            0.40 * _subperiod_return(stock_close, end_offset, 63)
-            + 0.20 * _subperiod_return(stock_close, end_offset, 126)
-            + 0.20 * _subperiod_return(stock_close, end_offset, 189)
-            + 0.20 * _subperiod_return(stock_close, end_offset, 252)
+            0.40 * stock_ret_3m
+            + 0.20 * stock_ret_6m
+            + 0.20 * stock_ret_9m
+            + 0.20 * stock_ret_12m
         )
         benchmark_score = (
-            0.40 * _subperiod_return(benchmark_close, end_offset, 63)
-            + 0.20 * _subperiod_return(benchmark_close, end_offset, 126)
-            + 0.20 * _subperiod_return(benchmark_close, end_offset, 189)
-            + 0.20 * _subperiod_return(benchmark_close, end_offset, 252)
+            0.40 * benchmark_ret_3m
+            + 0.20 * benchmark_ret_6m
+            + 0.20 * benchmark_ret_9m
+            + 0.20 * benchmark_ret_12m
         )
         return (stock_score - benchmark_score) * 100.0
 

@@ -90,3 +90,34 @@ def test_run_all_screening_processes_applies_yahoo_handoffs_before_financial_ste
         ("us", "tradingview"),
     ]
     assert handoffs == ["Advanced financial", "Qullamaggie"]
+
+
+def test_run_signal_engine_task_calls_signal_scan(monkeypatch):
+    captured: dict[str, object] = {}
+    fake_module = types.ModuleType("screeners.signals")
+
+    def _fake_run_signal_scan(*, market="us", as_of_date=None, upcoming_earnings_fetcher=None, earnings_collector=None):  # noqa: ANN202
+        captured["market"] = market
+        return {"all_signals_v2": []}
+
+    setattr(fake_module, "run_signal_scan", _fake_run_signal_scan)
+    monkeypatch.setitem(sys.modules, "screeners.signals", fake_module)
+
+    result = tasks.run_signal_engine_task(market="kr")
+
+    assert captured["market"] == "kr"
+    assert result == {"all_signals_v2": []}
+
+
+def test_run_signal_engine_processes_runs_each_market(monkeypatch):
+    calls: list[str] = []
+
+    monkeypatch.setattr(
+        tasks,
+        "run_signal_engine_task",
+        lambda *, market="us": calls.append(market),
+    )
+
+    tasks.run_signal_engine_processes(markets=["us", "kr"])
+
+    assert calls == ["us", "kr"]

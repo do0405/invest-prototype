@@ -3,7 +3,11 @@ from __future__ import annotations
 from utils.market_runtime import (
     get_leader_lagging_results_dir,
     get_markminervini_with_rs_path,
+    get_market_signals_root,
+    get_multi_screener_signals_results_dir,
+    get_peg_imminent_results_dir,
     get_primary_benchmark_symbol,
+    get_signal_engine_results_dir,
     get_stock_metadata_path,
     get_tradingview_results_dir,
     get_weinstein_stage2_results_dir,
@@ -50,3 +54,22 @@ def test_market_metadata_paths_are_separated():
     assert us_path != kr_path
     assert us_path.endswith("stock_metadata.csv")
     assert kr_path.endswith("stock_metadata_kr.csv")
+
+
+def test_signal_runtime_paths_are_separated() -> None:
+    us_root = get_market_signals_root("us")
+    kr_root = get_market_signals_root("kr")
+    assert "/us/signals" in us_root.replace("\\", "/")
+    assert "/kr/signals" in kr_root.replace("\\", "/")
+
+    us_signal_engine = get_signal_engine_results_dir("us")
+    kr_signal_engine = get_signal_engine_results_dir("kr")
+    assert "/us/signals/multi_screener" in us_signal_engine.replace("\\", "/")
+    assert "/kr/signals/multi_screener" in kr_signal_engine.replace("\\", "/")
+    assert us_signal_engine == get_multi_screener_signals_results_dir("us")
+    assert kr_signal_engine == get_multi_screener_signals_results_dir("kr")
+
+    us_peg = get_peg_imminent_results_dir("us")
+    kr_peg = get_peg_imminent_results_dir("kr")
+    assert "/us/screeners/peg_imminent" in us_peg.replace("\\", "/")
+    assert "/kr/screeners/peg_imminent" in kr_peg.replace("\\", "/")

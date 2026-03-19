@@ -3,6 +3,7 @@ from __future__ import annotations
 import threading
 import time
 from dataclasses import dataclass, field
+from typing import TypedDict
 
 
 YAHOO_PHASE_HANDOFF_SECONDS = 30.0
@@ -24,6 +25,14 @@ class _YahooThrottleState:
     last_rate_limit_source: str = ""
     last_request_source: str = ""
     adaptive_sources: dict[str, _YahooAdaptiveSourceState] = field(default_factory=dict)
+
+
+class YahooThrottleSnapshot(TypedDict):
+    next_request_in: float
+    cooldown_in: float
+    last_rate_limit_source: str
+    last_request_source: str
+    adaptive_interval_scale: dict[str, float]
 
 
 _STATE = _YahooThrottleState()
@@ -51,7 +60,7 @@ def _source_state(source_name: str) -> _YahooAdaptiveSourceState:
     return state
 
 
-def get_yahoo_throttle_state() -> dict[str, object]:
+def get_yahoo_throttle_state() -> YahooThrottleSnapshot:
     with _LOCK:
         now = time.monotonic()
         return {
