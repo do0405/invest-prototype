@@ -39,6 +39,10 @@ from utils.symbol_normalization import (
 )
 from utils.typing_utils import frame_keyed_records, row_to_record
 
+from . import cycle_store as _cycle_store
+from . import metrics as _signal_metrics
+from . import source_registry as _source_registry
+from . import writers as _signal_writers
 
 from screeners.qullamaggie.core import QullamaggieAnalyzer, _safe_bool, _safe_float
 
@@ -367,6 +371,7 @@ _UG_COOLDOWN_BUSINESS_DAYS = 15
 _TF_CHANNEL_LOOKBACK = 8
 _PEG_FOLLOWUP_WINDOW = 10
 _SIGNAL_HISTORY_PREFIX = "signal_event_history"
+_STATE_HISTORY_PREFIX = "signal_state_history"
 _PEG_EVENT_HISTORY_PREFIX = "peg_event_history"
 _CONTRACT_VERSION_V2 = "v2"
 _CONTRACT_VERSION_LEGACY = "legacy"
@@ -376,7 +381,6 @@ _UG_TF_ONLY_FIELDS = (
     "tp2_level",
     "trailing_mode",
     "tp_plan",
-    "trim_count",
     "risk_free_armed",
     "protected_stop_level",
     "add_on_count",
@@ -385,8 +389,6 @@ _UG_TF_ONLY_FIELDS = (
     "tranche_pct",
     "next_addon_allowed",
     "pyramid_state",
-    "base_position_units",
-    "current_position_units",
     "blended_entry_price",
     "last_trailing_confirmed_level",
     "last_protected_stop_level",
@@ -399,7 +401,6 @@ _UG_CYCLE_TF_ONLY_FIELDS = (
     "trailing_level",
     "trailing_mode",
     "tp_plan",
-    "trim_count",
     "risk_free_armed",
     "protected_stop_level",
     "add_on_count",
@@ -409,19 +410,11 @@ _UG_CYCLE_TF_ONLY_FIELDS = (
     "next_addon_allowed",
     "last_addon_date",
     "pyramid_state",
-    "base_position_units",
-    "current_position_units",
     "blended_entry_price",
     "last_trailing_confirmed_level",
     "last_protected_stop_level",
     "last_pyramid_reference_level",
 )
-_TF_SIGNAL_RENAMES = {
-    "TF_SELL_PBS": "TF_SELL_RESISTANCE_REJECT",
-}
-_TF_SIGNAL_ALIASES = {value: key for key, value in _TF_SIGNAL_RENAMES.items()}
-_TF_RENAME_REASON = "TF_UG_NAMESPACE_SEPARATION"
-
 _LABELS = {
     "TF_SETUP_ACTIVE": "Setup Active | TF_SETUP_ACTIVE",
     "TF_VCP_ACTIVE": "VCP Active | TF_VCP_ACTIVE",
@@ -441,7 +434,6 @@ _LABELS = {
     "TF_BUY_PEG_REBREAK": "PEG Rebreak Buy | TF_BUY_PEG_REBREAK",
     "TF_BUY_MOMENTUM": "Momentum Buy | TF_BUY_MOMENTUM",
     "TF_ADDON_PYRAMID": "Add-on Pyramid | TF_ADDON_PYRAMID",
-    "TF_SELL_PBS": "PBS Sell | TF_SELL_PBS",
     "TF_SELL_RESISTANCE_REJECT": "Resistance Reject Sell | TF_SELL_RESISTANCE_REJECT",
     "TF_SELL_BREAKDOWN": "Breakdown Sell | TF_SELL_BREAKDOWN",
     "TF_SELL_CHANNEL_BREAK": "Channel Break Sell | TF_SELL_CHANNEL_BREAK",
@@ -449,7 +441,6 @@ _LABELS = {
     "TF_SELL_TP1": "TP1 Sell | TF_SELL_TP1",
     "TF_SELL_TP2": "TP2 Sell | TF_SELL_TP2",
     "TF_SELL_MOMENTUM_END": "Momentum End Sell | TF_SELL_MOMENTUM_END",
-    "TF_SELL_SUB200": "Sub-200MA Sell | TF_SELL_SUB200",
     "TF_PEG_EVENT": "PEG Event | TF_PEG_EVENT",
     "UG_STATE_GREEN": "Green Light | UG_STATE_GREEN",
     "UG_STATE_ORANGE": "Orange Light | UG_STATE_ORANGE",
@@ -570,119 +561,37 @@ def _to_list(value: Any) -> list[str]:
 def _write_records(
     output_dir: str, filename_prefix: str, rows: list[dict[str, Any]]
 ) -> None:
-
-    save_screening_results(
-        results=rows,
-        output_dir=output_dir,
-        filename_prefix=filename_prefix,
-        include_timestamp=False,
-        incremental_update=False,
+    _signal_writers.write_records(
+        output_dir,
+        filename_prefix,
+        rows,
+        save_screening_results_fn=save_screening_results,
     )
 
 
 def _load_metadata_map(market: str) -> dict[str, dict[str, Any]]:
-    path = get_stock_metadata_path(market)
-    if not os.path.exists(path):
-        return {}
-    normalized_market = market_key(market)
-    frame = pd.read_csv(path, dtype={"symbol": "string"})
-    if frame.empty or "symbol" not in frame.columns:
-        return {}
-    frame = normalize_symbol_columns(frame, normalized_market, columns=("symbol",))
-    return frame_keyed_records(
-        frame, key_column="symbol", uppercase_keys=True, drop_na=True
+    return _source_registry.load_metadata_map(
+        market,
+        get_stock_metadata_path_fn=get_stock_metadata_path,
     )
 
 
 def _financial_cache_lookup_paths(symbol: str, market: str) -> list[str]:
-    normalized_market = market_key(market)
-    directory = get_financial_cache_dir(normalized_market)
-    normalized_symbol = normalize_symbol_value(symbol, normalized_market)
-    raw_symbol = str(symbol or "").strip().upper()
-    candidates: list[str] = []
-
-    def _add(symbol_text: str) -> None:
-        text = str(symbol_text or "").strip().upper()
-        if not text:
-            return
-        path = os.path.join(directory, f"{safe_filename(text)}.csv")
-        if path not in candidates:
-            candidates.append(path)
-
-    _add(normalized_symbol)
-    _add(raw_symbol)
-    if normalized_market == "kr" and normalized_symbol.isdigit():
-        _add(normalized_symbol.lstrip("0") or "0")
-    return candidates
+    return _source_registry.financial_cache_lookup_paths(
+        symbol,
+        market,
+        get_financial_cache_dir_fn=get_financial_cache_dir,
+    )
 
 
 def _load_financial_map(
     market: str, symbols: Iterable[str] | None = None
 ) -> dict[str, dict[str, Any]]:
-    normalized_market = market_key(market)
-    directory = get_financial_cache_dir(normalized_market)
-    if not os.path.isdir(directory):
-        return {}
-
-    if symbols is None:
-        candidate_paths = [
-            os.path.join(directory, filename)
-            for filename in sorted(os.listdir(directory))
-            if filename.lower().endswith(".csv")
-        ]
-    else:
-        candidate_paths = []
-        seen_paths: set[str] = set()
-        for symbol in sorted(
-            {
-                normalize_symbol_value(item, normalized_market)
-                for item in symbols
-                if str(item).strip()
-            }
-        ):
-            if not symbol:
-                continue
-            resolved_path = next(
-                (
-                    path
-                    for path in _financial_cache_lookup_paths(symbol, normalized_market)
-                    if os.path.exists(path)
-                ),
-                None,
-            )
-            if resolved_path is None or resolved_path in seen_paths:
-                continue
-            candidate_paths.append(resolved_path)
-            seen_paths.add(resolved_path)
-
-    records: dict[str, dict[str, Any]] = {}
-    for path in candidate_paths:
-        try:
-            frame = pd.read_csv(
-                path, nrows=1, dtype={"symbol": "string", "provider_symbol": "string"}
-            )
-        except Exception:
-            continue
-        if frame.empty:
-            continue
-        row = row_to_record(frame.iloc[0])
-        symbol = normalize_symbol_value(row.get("symbol"), normalized_market)
-        if not symbol:
-            symbol = normalize_symbol_value(
-                os.path.splitext(os.path.basename(path))[0], normalized_market
-            )
-        if not symbol:
-            continue
-        provider_symbol = normalize_provider_symbol_value(row.get("provider_symbol"))
-        if normalized_market == "kr" and provider_symbol and "." in provider_symbol:
-            base, suffix = provider_symbol.rsplit(".", 1)
-            provider_symbol = (
-                f"{normalize_symbol_value(base, normalized_market)}.{suffix}"
-            )
-        row["symbol"] = symbol.upper()
-        row["provider_symbol"] = provider_symbol or None
-        records[symbol.upper()] = row
-    return records
+    return _source_registry.load_financial_map(
+        market,
+        symbols=symbols,
+        get_financial_cache_dir_fn=get_financial_cache_dir,
+    )
 
 
 def _resolve_symbol_column(frame: pd.DataFrame) -> str | None:
@@ -1205,9 +1114,55 @@ def _pick_latest_lead_hit(
     return hit
 
 
-def _signal_code_label(signal_code: str) -> str:
+_ACTIVE_SIGNAL_CODES = frozenset(_LABELS)
+_UG_PULLBACK_REFERENCE_EXIT_SIGNAL = "UG_SELL_MR_SHORT_OR_PBS"
+_REFERENCE_EXIT_HELPER_LITERALS = frozenset({_UG_PULLBACK_REFERENCE_EXIT_SIGNAL})
 
-    return _LABELS.get(signal_code, signal_code)
+
+def _is_active_signal_code(signal_code: Any) -> bool:
+    return _safe_text(signal_code).upper() in _ACTIVE_SIGNAL_CODES
+
+
+
+def _is_reference_exit_helper_literal(signal_code: Any) -> bool:
+    return _safe_text(signal_code).upper() in _REFERENCE_EXIT_HELPER_LITERALS
+
+
+def _signal_code_label(signal_code: str) -> str:
+    normalized = _safe_text(signal_code).upper()
+    if _is_active_signal_code(normalized):
+        return _LABELS[normalized]
+    return _safe_text(signal_code)
+
+
+_REFERENCE_EXIT_SIGNAL_MAP: dict[str, tuple[str, ...]] = {
+    _UG_PULLBACK_REFERENCE_EXIT_SIGNAL: ("UG_SELL_MR_SHORT", "UG_SELL_PBS"),
+}
+
+
+def _normalized_reference_exit_signal(
+    *, engine: Any, family: Any, reference_exit_signal: Any
+) -> str:
+    if _safe_text(engine).upper() != "UG":
+        return ""
+    if _safe_text(family) != "UG_PULLBACK":
+        return ""
+    text = _safe_text(reference_exit_signal).upper()
+    return _UG_PULLBACK_REFERENCE_EXIT_SIGNAL if _is_reference_exit_helper_literal(text) else ""
+
+
+def _reference_exit_codes(reference_exit_signal: Any) -> tuple[str, ...]:
+
+    text = _safe_text(reference_exit_signal).upper()
+    if not text:
+        return ()
+    mapped = _REFERENCE_EXIT_SIGNAL_MAP.get(text)
+    if mapped is not None:
+        return mapped
+    normalized = text.replace(',', '|')
+    return tuple(
+        dict.fromkeys(part.strip().upper() for part in normalized.split('|') if part.strip())
+    )
 
 
 def _select_ma_system(stock_character: str) -> str:
@@ -1519,15 +1474,6 @@ def _legacy_signal_row(row: Mapping[str, Any]) -> dict[str, Any]:
     updated.setdefault("strategy_combo", "")
     updated.setdefault("deprecated_alias_code", "")
     updated.setdefault("deprecated_alias_reason", "")
-    code = _safe_text(updated.get("signal_code"))
-    legacy_alias = _TF_SIGNAL_ALIASES.get(code)
-    if legacy_alias:
-        updated = _set_row_code(updated, legacy_alias)
-        updated["deprecated_alias_code"] = code
-        updated["deprecated_alias_reason"] = _TF_RENAME_REASON
-    elif code in _TF_SIGNAL_RENAMES:
-        updated["deprecated_alias_code"] = _TF_SIGNAL_RENAMES[code]
-        updated["deprecated_alias_reason"] = _TF_RENAME_REASON
     return updated
 
 
@@ -1545,14 +1491,6 @@ def _v2_signal_row(row: Mapping[str, Any]) -> dict[str, Any] | None:
     updated["contract_version"] = _CONTRACT_VERSION_V2
     updated["deprecated_alias_code"] = ""
     updated["deprecated_alias_reason"] = ""
-    code = _safe_text(updated.get("signal_code"))
-    if code in _TF_SIGNAL_RENAMES:
-        updated = _set_row_code(updated, _TF_SIGNAL_RENAMES[code])
-        updated["deprecated_alias_code"] = code
-        updated["deprecated_alias_reason"] = _TF_RENAME_REASON
-    elif code in _TF_SIGNAL_ALIASES:
-        updated["deprecated_alias_code"] = _TF_SIGNAL_ALIASES[code]
-        updated["deprecated_alias_reason"] = _TF_RENAME_REASON
     if _safe_text(updated.get("engine")) == "UG":
         updated = _blank_ug_tf_fields(updated)
     return updated
@@ -2895,278 +2833,115 @@ class MultiScreenerSignalEngine:
         )
 
     def _load_source_registry(self) -> dict[str, dict[str, Any]]:
-        registry: dict[str, dict[str, Any]] = {}
-        normalized_market = market_key(self.market)
-        for spec in _SOURCE_SPECS:
-            path = os.path.join(self.screeners_root, spec.relative_path)
-            if not os.path.exists(path):
-                continue
-            try:
-                frame = pd.read_csv(path)
-
-            except Exception:
-
-                continue
-
-            if frame.empty:
-
-                continue
-
-            frame.columns = [str(column).strip() for column in frame.columns]
-            symbol_column = _resolve_symbol_column(frame)
-            if symbol_column is None:
-                continue
-            if symbol_column == "provider_symbol":
-                frame = normalize_symbol_columns(
-                    frame, normalized_market, provider_columns=(symbol_column,)
-                )
-            else:
-                frame = normalize_symbol_columns(
-                    frame, normalized_market, columns=(symbol_column,)
-                )
-            for _, row in frame.iterrows():
-                raw_symbol = row.get(symbol_column)
-                if symbol_column == "provider_symbol":
-                    provider_symbol = normalize_provider_symbol_value(raw_symbol)
-                    if (
-                        normalized_market == "kr"
-                        and provider_symbol
-                        and "." in provider_symbol
-                    ):
-                        base, _suffix = provider_symbol.rsplit(".", 1)
-                        symbol = normalize_symbol_value(base, normalized_market)
-                    else:
-                        symbol = provider_symbol
-                else:
-                    symbol = normalize_symbol_value(raw_symbol, normalized_market)
-                if not symbol:
-                    continue
-                entry = registry.setdefault(
-                    symbol,
-                    {
-                        "symbol": symbol,
-                        "buy_eligible": False,
-                        "watch_only": False,
-                        "screen_stage": spec.screen_stage,
-                        "source_tags": [],
-                        "source_records": [],
-                        "sector": "",
-                        "industry": "",
-                        "group_name": "",
-                        "as_of_ts": None,
-                    },
-                )
-                entry["buy_eligible"] = bool(entry["buy_eligible"] or spec.buy_eligible)
-                entry["watch_only"] = bool(entry["watch_only"] or not spec.buy_eligible)
-                entry["source_tags"].append(spec.source_tag)
-                entry["source_records"].append(
-                    {
-                        "source_tag": spec.source_tag,
-                        "screen_stage": spec.screen_stage,
-                        "buy_eligible": spec.buy_eligible,
-                    }
-                )
-                if _stage_priority(spec.screen_stage) > _stage_priority(
-                    str(entry.get("screen_stage") or "")
-                ):
-                    entry["screen_stage"] = spec.screen_stage
-                if not entry.get("sector"):
-
-                    entry["sector"] = _safe_text(row.get("sector"))
-
-                if not entry.get("industry"):
-
-                    entry["industry"] = _safe_text(row.get("industry"))
-
-                if not entry.get("group_name"):
-
-                    entry["group_name"] = _safe_text(
-                        row.get("group_name")
-                        or row.get("industry")
-                        or row.get("sector")
-                    )
-
-                row_date = _date_to_str(row.get("as_of_ts") or row.get("date"))
-
-                if row_date and (
-                    entry.get("as_of_ts") is None
-                    or row_date > str(entry.get("as_of_ts"))
-                ):
-
-                    entry["as_of_ts"] = row_date
-
-        for entry in registry.values():
-            unique_tags = _sorted_source_tags(entry.get("source_tags", []))
-            source_records = list(entry.get("source_records", []))
-            best_record = max(
-                source_records,
-                key=lambda record: (
-                    _stage_priority(_safe_text(record.get("screen_stage"))),
-                    _source_tag_priority(_safe_text(record.get("source_tag"))),
-                ),
-                default={},
-            )
-            entry["source_tags"] = unique_tags
-            entry["primary_source_tag"] = _safe_text(best_record.get("source_tag")) or (
-                unique_tags[0] if unique_tags else ""
-            )
-            entry["primary_source_stage"] = _safe_text(
-                best_record.get("screen_stage")
-            ) or _safe_text(entry.get("screen_stage"))
-            entry["source_style_tags"] = _source_style_tags(unique_tags)
-            entry["primary_source_style"] = _primary_source_style(unique_tags)
-            entry["source_priority_score"] = _source_priority_score(unique_tags)
-            entry["trend_source_bonus"] = _source_engine_bonus(
-                unique_tags, engine="TREND"
-            )
-            entry["ug_source_bonus"] = _source_engine_bonus(unique_tags, engine="UG")
-            entry["source_overlap_bonus"] = max(len(unique_tags) - 1, 0) * 5.0
-        return registry
+        return _source_registry.load_source_registry(
+            screeners_root=self.screeners_root,
+            market=self.market,
+            source_specs=_SOURCE_SPECS,
+            stage_priority=_stage_priority,
+            source_tag_priority=_source_tag_priority,
+            sorted_source_tags=_sorted_source_tags,
+            source_style_tags=_source_style_tags,
+            primary_source_style=_primary_source_style,
+            source_priority_score=_source_priority_score,
+            source_engine_bonus=_source_engine_bonus,
+            safe_text=_safe_text,
+        )
 
     def _load_feature_map(
         self, frames: Mapping[str, pd.DataFrame]
     ) -> dict[str, dict[str, Any]]:
-
-        rows: list[dict[str, Any]] = []
-
-        for symbol, frame in frames.items():
-
-            if frame.empty:
-
-                continue
-
-            rows.append(
-                _ANALYZER.compute_feature_row(
-                    symbol, self.market, frame, self.metadata_map.get(symbol)
-                )
-            )
-
-        if not rows:
-
-            return {}
-
-        table = _ANALYZER.finalize_feature_table(pd.DataFrame(rows))
-
-        return frame_keyed_records(
-            table, key_column="symbol", uppercase_keys=True, drop_na=True
+        return _signal_metrics.load_feature_map(
+            frames,
+            analyzer=_ANALYZER,
+            market=self.market,
+            metadata_map=self.metadata_map,
+            frame_keyed_records_fn=frame_keyed_records,
         )
 
     def _load_active_cycles(self) -> dict[tuple[str, str, str], dict[str, Any]]:
-        path = os.path.join(self.results_dir, "open_family_cycles.csv")
-        cycles: dict[tuple[str, str, str], dict[str, Any]] = {}
-        for row in _safe_csv_rows(path):
-            symbol = _safe_text(row.get("symbol")).upper()
-            engine = _safe_text(row.get("engine"))
-            family = _safe_text(row.get("family"))
-            if not symbol or not engine or not family:
-                continue
-            cycles[(engine, family, symbol)] = self._hydrate_loaded_cycle(row)
-        return cycles
+        return _cycle_store.load_active_cycles(
+            self.results_dir,
+            safe_csv_rows=_safe_csv_rows,
+            safe_text=_safe_text,
+            hydrate_loaded_cycle=self._hydrate_loaded_cycle,
+        )
 
     def _load_signal_history(self) -> list[dict[str, Any]]:
+        return _cycle_store.load_signal_history(
+            self.results_dir,
+            safe_csv_rows=_safe_csv_rows,
+            safe_text=_safe_text,
+            signal_history_prefix=_SIGNAL_HISTORY_PREFIX,
+        )
 
-        path = os.path.join(self.results_dir, f"{_SIGNAL_HISTORY_PREFIX}.csv")
-
-        return [
-            row
-            for row in _safe_csv_rows(path)
-            if _safe_text(row.get("signal_kind")) == "EVENT"
-        ]
+    def _load_state_history(self) -> list[dict[str, Any]]:
+        return _cycle_store.load_state_history(
+            self.results_dir,
+            safe_csv_rows=_safe_csv_rows,
+            safe_text=_safe_text,
+            state_history_prefix=_STATE_HISTORY_PREFIX,
+        )
 
     def _persist_signal_history(
         self,
         existing_rows: Iterable[Mapping[str, Any]],
         new_event_rows: Iterable[Mapping[str, Any]],
     ) -> list[dict[str, Any]]:
-
-        merged = _history_merge_rows(
-            existing_rows,
-            [
-                row
-                for row in new_event_rows
-                if _safe_text(row.get("signal_kind")) == "EVENT"
-                and _safe_text(row.get("action_type"))
-                in {"BUY", "SELL", "WATCH", "ALERT", "TRIM", "EXIT"}
-            ],
-            key_fields=(
-                "signal_date",
-                "symbol",
-                "engine",
-                "family",
-                "signal_code",
-                "action_type",
-            ),
+        return _cycle_store.persist_signal_history(
+            self.results_dir,
+            existing_rows=existing_rows,
+            new_event_rows=new_event_rows,
+            history_merge_rows=_history_merge_rows,
+            safe_text=_safe_text,
+            write_records=_write_records,
+            signal_history_prefix=_SIGNAL_HISTORY_PREFIX,
         )
-        _write_records(self.results_dir, _SIGNAL_HISTORY_PREFIX, merged)
 
-        return merged
+    def _persist_state_history(
+        self,
+        existing_rows: Iterable[Mapping[str, Any]],
+        new_state_rows: Iterable[Mapping[str, Any]],
+    ) -> list[dict[str, Any]]:
+        return _cycle_store.persist_state_history(
+            self.results_dir,
+            existing_rows=existing_rows,
+            new_state_rows=new_state_rows,
+            history_merge_rows=_history_merge_rows,
+            safe_text=_safe_text,
+            write_records=_write_records,
+            state_history_prefix=_STATE_HISTORY_PREFIX,
+        )
 
     def _load_peg_event_history(self) -> list[dict[str, Any]]:
-
-        path = os.path.join(self.results_dir, f"{_PEG_EVENT_HISTORY_PREFIX}.csv")
-
-        return _safe_csv_rows(path)
+        return _cycle_store.load_peg_event_history(
+            self.results_dir,
+            safe_csv_rows=_safe_csv_rows,
+            peg_event_history_prefix=_PEG_EVENT_HISTORY_PREFIX,
+        )
 
     def _latest_peg_event_map(
         self, rows: Iterable[Mapping[str, Any]]
     ) -> dict[str, dict[str, Any]]:
-
-        latest: dict[str, dict[str, Any]] = {}
-
-        for row in rows:
-
-            symbol = _safe_text(row.get("symbol")).upper()
-
-            event_date = _date_to_str(row.get("event_date"))
-
-            if not symbol or event_date is None:
-
-                continue
-
-            current = latest.get(symbol)
-
-            if current is None or event_date > _safe_text(current.get("event_date")):
-
-                latest[symbol] = dict(row)
-
-        return latest
+        return _cycle_store.latest_peg_event_map(
+            rows,
+            safe_text=_safe_text,
+            date_to_str=_date_to_str,
+        )
 
     def _persist_peg_event_history(
         self,
         existing_rows: Iterable[Mapping[str, Any]],
         peg_context_map: Mapping[str, Mapping[str, Any]],
     ) -> list[dict[str, Any]]:
-
-        confirmed_rows: list[dict[str, Any]] = []
-
-        for symbol, context in peg_context_map.items():
-
-            if not (context.get("event_day") and context.get("event_confirmed")):
-
-                continue
-
-            confirmed_rows.append(
-                {
-                    "symbol": symbol,
-                    "market": self.market.upper(),
-                    "earnings_date": context.get("earnings_date"),
-                    "event_date": context.get("event_date"),
-                    "gap_pct": context.get("gap_pct"),
-                    "gap_low": context.get("gap_low"),
-                    "half_gap": context.get("half_gap"),
-                    "event_high": context.get("event_high"),
-                }
-            )
-
-        merged = _history_merge_rows(
-            existing_rows,
-            confirmed_rows,
-            key_fields=("symbol", "event_date"),
+        return _cycle_store.persist_peg_event_history(
+            self.results_dir,
+            market=self.market,
+            existing_rows=existing_rows,
+            peg_context_map=peg_context_map,
+            history_merge_rows=_history_merge_rows,
+            write_records=_write_records,
+            peg_event_history_prefix=_PEG_EVENT_HISTORY_PREFIX,
         )
-
-        _write_records(self.results_dir, _PEG_EVENT_HISTORY_PREFIX, merged)
-
-        return merged
 
     def _load_or_run_peg_screen(
         self,
@@ -3748,7 +3523,25 @@ class MultiScreenerSignalEngine:
         hydrated = dict(row)
         engine = _safe_text(hydrated.get("engine"))
         if engine == "UG":
-            return _blank_ug_tf_fields(hydrated, cycle=True)
+            family = _safe_text(hydrated.get("family"))
+            hydrated = _blank_ug_tf_fields(hydrated, cycle=True)
+            hydrated["trim_count"] = max(_safe_int(hydrated.get("trim_count")) or 0, 0)
+            hydrated["partial_exit_active"] = _safe_bool(
+                hydrated.get("partial_exit_active")
+            )
+            hydrated["last_trim_date"] = _safe_text(hydrated.get("last_trim_date"))
+            hydrated["reference_exit_signal"] = _normalized_reference_exit_signal(
+                engine=engine,
+                family=family,
+                reference_exit_signal=hydrated.get("reference_exit_signal"),
+            )
+            hydrated["base_position_units"] = (
+                _safe_float(hydrated.get("base_position_units")) or 1.0
+            )
+            hydrated["current_position_units"] = (
+                _safe_float(hydrated.get("current_position_units")) or 1.0
+            )
+            return hydrated
 
         entry_price = _safe_float(hydrated.get("entry_price"))
         add_on_count = max(_safe_int(hydrated.get("add_on_count")) or 0, 0)
@@ -5723,6 +5516,13 @@ class MultiScreenerSignalEngine:
         primary_source_style = _safe_text(cycle.get("primary_source_style"))
         source_fit_label = _safe_text(cycle.get("source_fit_label"))
         source_fit_score = _safe_float(cycle.get("source_fit_score"))
+        reference_exit_signal = _normalized_reference_exit_signal(engine="UG", family=family, reference_exit_signal=cycle.get("reference_exit_signal"))
+        reference_exit_codes = set(_reference_exit_codes(reference_exit_signal))
+        trim_count = max(_safe_int(cycle.get("trim_count")) or 0, 0)
+        mr_short_allowed = (
+            not reference_exit_codes or "UG_SELL_MR_SHORT" in reference_exit_codes
+        )
+        pbs_allowed = not reference_exit_codes or "UG_SELL_PBS" in reference_exit_codes
         exit_context_codes = []
         if primary_source_style:
             exit_context_codes.append(f"SOURCE_STYLE_{primary_source_style}")
@@ -5783,7 +5583,14 @@ class MultiScreenerSignalEngine:
                 )
             )
         bb_mid = _safe_float(metrics.get("bb_mid"))
-        if metrics.get("ug_pbs_ready") and bb_mid is not None:
+        if metrics.get("ug_pbs_ready") and bb_mid is not None and pbs_allowed:
+            reason_codes = [
+                "SIGMA_PBS",
+                *list(dashboard_profile.get("reason_codes", [])),
+                *exit_context_codes,
+            ]
+            if "UG_SELL_PBS" in reference_exit_codes:
+                reason_codes.append("REFERENCE_EXIT_MATCH")
             events.append(
                 _build_signal_row(
                     signal_date=metrics.get("date"),
@@ -5828,15 +5635,20 @@ class MultiScreenerSignalEngine:
                     source_fit_score=source_fit_score,
                     source_fit_label=source_fit_label,
                     source_tags=metrics.get("source_tags"),
-                    reason_codes=[
-                        "SIGMA_PBS",
-                        *list(dashboard_profile.get("reason_codes", [])),
-                        *exit_context_codes,
-                    ],
+                    reason_codes=reason_codes,
                     quality_flags=self._base_quality_flags(metrics),
                 )
             )
-        if metrics.get("ug_mr_short_ready"):
+        if metrics.get("ug_mr_short_ready") and mr_short_allowed and trim_count < 2:
+            action_type = "TRIM"
+            signal_phase = "TRIM"
+            reason_codes = [
+                "SIGMA_MR_SHORT",
+                *list(dashboard_profile.get("reason_codes", [])),
+                *exit_context_codes,
+            ]
+            if "UG_SELL_MR_SHORT" in reference_exit_codes:
+                reason_codes.append("REFERENCE_EXIT_MATCH")
             events.append(
                 _build_signal_row(
                     signal_date=metrics.get("date"),
@@ -5847,7 +5659,7 @@ class MultiScreenerSignalEngine:
                     family_cycle_id=_safe_text(cycle.get("family_cycle_id")),
                     signal_kind="EVENT",
                     signal_code="UG_SELL_MR_SHORT",
-                    action_type="TRIM",
+                    action_type=action_type,
                     conviction_grade=conviction,
                     screen_stage=screen_stage,
                     signal_score=validation_score,
@@ -5876,16 +5688,12 @@ class MultiScreenerSignalEngine:
                     support_zone_low=support_low,
                     support_zone_high=support_high,
                     stop_level=bb_mid,
-                    signal_phase="TRIM",
+                    signal_phase=signal_phase,
                     primary_source_style=primary_source_style,
                     source_fit_score=source_fit_score,
                     source_fit_label=source_fit_label,
                     source_tags=metrics.get("source_tags"),
-                    reason_codes=[
-                        "SIGMA_MR_SHORT",
-                        *list(dashboard_profile.get("reason_codes", [])),
-                        *exit_context_codes,
-                    ],
+                    reason_codes=reason_codes,
                     quality_flags=self._base_quality_flags(metrics),
                 )
             )
@@ -6063,7 +5871,6 @@ class MultiScreenerSignalEngine:
 
         close_codes = {
             "TF_SELL_RESISTANCE_REJECT",
-            "TF_SELL_PBS",
             "TF_SELL_BREAKDOWN",
             "TF_SELL_CHANNEL_BREAK",
             "TF_SELL_TRAILING_BREAK",
@@ -6112,6 +5919,16 @@ class MultiScreenerSignalEngine:
                             "primary_source_style": primary_source_style,
                             "source_fit_score": row.get("source_fit_score"),
                             "source_fit_label": row.get("source_fit_label"),
+                            "reference_exit_signal": _normalized_reference_exit_signal(
+                                engine=engine,
+                                family=family,
+                                reference_exit_signal=row.get("reference_exit_signal"),
+                            ),
+                            "trim_count": 0,
+                            "last_trim_date": None,
+                            "partial_exit_active": False,
+                            "base_position_units": 1.0,
+                            "current_position_units": 1.0,
                         }
                     else:
                         break_even_level = entry_price
@@ -6208,6 +6025,14 @@ class MultiScreenerSignalEngine:
                         cycle["support_zone_low"] = support_low
                         cycle["support_zone_high"] = support_high
                         cycle["stop_level"] = stop_level
+                        cycle["reference_exit_signal"] = _normalized_reference_exit_signal(
+                            engine=engine,
+                            family=family,
+                            reference_exit_signal=_safe_text(
+                                cycle.get("reference_exit_signal")
+                            )
+                            or row.get("reference_exit_signal"),
+                        )
                     else:
                         cycle["tp_plan"] = _safe_text(
                             cycle.get("tp_plan")
@@ -6325,6 +6150,37 @@ class MultiScreenerSignalEngine:
                     row["last_pyramid_reference_level"] = cycle.get(
                         "last_pyramid_reference_level"
                     )
+            elif row.get("signal_code") == "UG_SELL_MR_SHORT":
+                cycle = updated.get(key)
+                if cycle:
+                    row["family_cycle_id"] = cycle.get("family_cycle_id", "")
+                    if row.get("action_type") == "TRIM":
+                        next_trim_count = min(
+                            max(_safe_int(cycle.get("trim_count")) or 0, 0) + 1,
+                            2,
+                        )
+                        trim_fraction = 0.5 if next_trim_count == 1 else 0.25
+                        cycle["trim_count"] = next_trim_count
+                        cycle["partial_exit_active"] = True
+                        cycle["last_trim_date"] = row.get("signal_date")
+                        base_position_units = (
+                            _safe_float(cycle.get("base_position_units")) or 1.0
+                        )
+                        current_position_units = _safe_float(
+                            cycle.get("current_position_units")
+                        )
+                        if current_position_units is None:
+                            current_position_units = base_position_units
+                        cycle["base_position_units"] = base_position_units
+                        cycle["current_position_units"] = max(
+                            current_position_units - (base_position_units * trim_fraction),
+                            0.0,
+                        )
+                        row["trim_count"] = cycle.get("trim_count")
+                        row["base_position_units"] = cycle.get("base_position_units")
+                        row["current_position_units"] = cycle.get("current_position_units")
+                    else:
+                        updated.pop(key, None)
             elif row.get("signal_code") in {"TF_SELL_TP1", "TF_SELL_TP2"}:
                 cycle = updated.get(key)
                 if cycle:
@@ -7173,6 +7029,7 @@ class MultiScreenerSignalEngine:
         active_cycles = self._load_active_cycles()
 
         signal_history = self._load_signal_history()
+        state_history = self._load_state_history()
 
         peg_event_history_rows = self._load_peg_event_history()
 
@@ -7197,40 +7054,17 @@ class MultiScreenerSignalEngine:
 
         feature_map = self._load_feature_map(frames)
 
-        metrics_map: dict[str, dict[str, Any]] = {}
-
-        for symbol, frame in frames.items():
-
-            source_entry = source_registry.get(
-                symbol,
-                {
-                    "symbol": symbol,
-                    "buy_eligible": symbol in peg_ready_map
-                    or symbol in peg_event_history_map,
-                    "watch_only": False,
-                    "screen_stage": (
-                        "PEG_ONLY"
-                        if (symbol in peg_ready_map or symbol in peg_event_history_map)
-                        else "UNIVERSE"
-                    ),
-                    "source_tags": (
-                        ["PEG_ONLY"]
-                        if (symbol in peg_ready_map or symbol in peg_event_history_map)
-                        else []
-                    ),
-                    "source_overlap_bonus": 0.0,
-                },
-            )
-
-            metrics_map[symbol] = _build_metrics(
-                symbol=symbol,
-                market=self.market,
-                frame=frame,
-                metadata=self.metadata_map.get(symbol, {}),
-                financial_row=self.financial_map.get(symbol, {}),
-                feature_row=feature_map.get(symbol, {}),
-                source_entry=source_entry,
-            )
+        metrics_map = _signal_metrics.build_metrics_map(
+            frames=frames,
+            market=self.market,
+            metadata_map=self.metadata_map,
+            financial_map=self.financial_map,
+            feature_map=feature_map,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+            build_metrics_fn=_build_metrics,
+        )
 
         trend_event_rows: list[dict[str, Any]] = []
         trend_state_rows: list[dict[str, Any]] = []
@@ -7387,6 +7221,10 @@ class MultiScreenerSignalEngine:
             ),
         )
 
+        all_state_rows = _sorted_signal_rows(
+            trend_state_rows + ug_state_rows + ug_combo_rows
+        )
+        state_history = self._persist_state_history(state_history, all_state_rows)
         signal_history = self._persist_signal_history(signal_history, all_events)
         peg_event_history_rows = self._persist_peg_event_history(
             peg_event_history_rows, peg_context_map
@@ -7465,40 +7303,6 @@ class MultiScreenerSignalEngine:
             source_registry, signal_universe_rows
         )
 
-        _write_records(
-            self.results_dir, "trend_following_events", legacy_trend_event_rows
-        )
-        _write_records(
-            self.results_dir, "trend_following_states", legacy_trend_state_rows
-        )
-        _write_records(self.results_dir, "ultimate_growth_events", legacy_ug_event_rows)
-        _write_records(self.results_dir, "ultimate_growth_states", legacy_ug_state_rows)
-        _write_records(self.results_dir, "all_signals", legacy_all_signal_rows)
-        _write_records(
-            self.results_dir, "trend_following_events_v2", trend_event_rows_v2
-        )
-        _write_records(
-            self.results_dir, "trend_following_states_v2", trend_state_rows_v2
-        )
-        _write_records(self.results_dir, "ultimate_growth_events_v2", ug_event_rows_v2)
-        _write_records(self.results_dir, "ultimate_growth_states_v2", ug_state_rows_v2)
-        _write_records(self.results_dir, "ug_strategy_combos_v2", ug_combo_rows_v2)
-        _write_records(self.results_dir, "all_signals_v2", all_signal_rows_v2)
-        _write_records(self.results_dir, "open_family_cycles", open_cycle_rows_v2)
-        _write_records(
-            self.results_dir, "open_family_cycles_legacy", open_cycle_rows_legacy
-        )
-        _write_records(self.results_dir, "screen_signal_diagnostics", diagnostics)
-        _write_records(
-            self.results_dir, "signal_universe_snapshot", signal_universe_rows
-        )
-        with open(
-            os.path.join(self.results_dir, "source_registry_summary.json"),
-            "w",
-            encoding="utf-8",
-        ) as handle:
-            json.dump(source_registry_summary, handle, ensure_ascii=False, indent=2)
-
         summary = {
             "market": self.market.upper(),
             "as_of_date": self.as_of_date,
@@ -7516,6 +7320,7 @@ class MultiScreenerSignalEngine:
                 "open_cycles": len(open_cycle_rows_v2),
                 "diagnostics": len(diagnostics),
                 "signal_history": len(signal_history),
+                "signal_state_history": len(state_history),
                 "peg_event_history": len(peg_event_history_rows),
                 "signal_universe": len(signal_universe_rows),
                 "deprecated_rows": sum(
@@ -7525,10 +7330,27 @@ class MultiScreenerSignalEngine:
                 ),
             },
         }
-        with open(
-            os.path.join(self.results_dir, "signal_summary.json"), "w", encoding="utf-8"
-        ) as handle:
-            json.dump(summary, handle, ensure_ascii=False, indent=2)
+        _signal_writers.write_signal_outputs(
+            self.results_dir,
+            legacy_trend_event_rows=legacy_trend_event_rows,
+            legacy_trend_state_rows=legacy_trend_state_rows,
+            legacy_ug_event_rows=legacy_ug_event_rows,
+            legacy_ug_state_rows=legacy_ug_state_rows,
+            legacy_all_signal_rows=legacy_all_signal_rows,
+            trend_event_rows_v2=trend_event_rows_v2,
+            trend_state_rows_v2=trend_state_rows_v2,
+            ug_event_rows_v2=ug_event_rows_v2,
+            ug_state_rows_v2=ug_state_rows_v2,
+            ug_combo_rows_v2=ug_combo_rows_v2,
+            all_signal_rows_v2=all_signal_rows_v2,
+            open_cycle_rows_v2=open_cycle_rows_v2,
+            open_cycle_rows_legacy=open_cycle_rows_legacy,
+            diagnostics=diagnostics,
+            signal_universe_rows=signal_universe_rows,
+            source_registry_summary=source_registry_summary,
+            signal_summary=summary,
+            write_records_fn=_write_records,
+        )
         return {
             "trend_following_events": legacy_trend_event_rows,
             "trend_following_states": legacy_trend_state_rows,

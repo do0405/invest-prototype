@@ -1,0 +1,19 @@
+{
+  "checkpoint_id": "gx_rotation_edges_daily_v1:checkpoint",
+  "contract": "rotation_edges_daily",
+  "metrics": {
+    "crosswalk_row_count": 0,
+    "missing_provenance_ref_count": 0,
+    "provenance_entry_count": 0,
+    "referential_integrity_ok": true,
+    "review_required_count": 0,
+    "revision_row_count": 0,
+    "row_count": 0,
+    "stale_row_count": 0
+  },
+  "reason": "no_vendor_inputs",
+  "run_id": "collector__us__rotation_edges_daily__20260328",
+  "status": "degraded",
+  "success": false,
+  "suite_id": "gx_rotation_edges_daily_v1"
+}

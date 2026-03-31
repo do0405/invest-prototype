@@ -1,0 +1,8 @@
+as_of,axis,key,value,source,updated_at
+2026-02-24,breadth_state,sector_participation,-0.5655,external_breadth,2026-03-19T14:30:45Z
+2026-02-24,vol_tail_state,vix,31.0,risk_inputs,2026-03-19T14:30:45Z
+2026-02-24,vol_tail_state,vvix,145.0,risk_inputs,2026-03-19T14:30:45Z
+2026-02-24,vol_tail_state,skew,160.0,risk_inputs,2026-03-19T14:30:45Z
+2026-02-24,macro_backdrop,policy_pressure,0.55,risk_inputs,2026-03-19T14:30:45Z
+2026-02-24,liquidity_fx_state,credit_spread_z,1.0833,risk_inputs,2026-03-19T14:30:45Z
+2026-02-24,liquidity_fx_state,funding_stress_z,1.4,risk_inputs,2026-03-19T14:30:45Z

@@ -1,1 +1,2 @@
-date,symbol,open,high,low,close,adj_close,volume,dividends,stock_splits,split_factor
+date,symbol,open,high,low,close,volume
+2026-03-20,BCTXL,1.0499999523162842,1.059999942779541,1.0399999618530273,1.0399999618530273,1738

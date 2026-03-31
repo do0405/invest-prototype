@@ -352,6 +352,230 @@ def test_run_signal_scan_v2_and_snapshot_include_overlay_fields(monkeypatch) -> 
         assert "aux_signal_summary" in row
         assert "conviction_reason" in row
 
+    expected_outputs = [
+        signals_root / "all_signals_v2.csv",
+        signals_root / "signal_universe_snapshot.csv",
+        signals_root / "open_family_cycles.csv",
+        signals_root / "signal_event_history.csv",
+        signals_root / "signal_state_history.csv",
+        signals_root / "source_registry_summary.json",
+        signals_root / "signal_summary.json",
+    ]
+    for output_path in expected_outputs:
+        assert output_path.exists(), output_path
+
+    assert result["signal_summary"]["counts"]["signal_state_history"] > 0
+
+
+def test_run_signal_scan_persists_state_history_separately_from_event_history(monkeypatch) -> None:
+    base = cache_root("signal_engine_state_history_runtime")
+    if base.exists():
+        shutil.rmtree(base, ignore_errors=True)
+    base.mkdir(parents=True, exist_ok=True)
+
+    screeners_root = base / "screeners"
+    signals_root = base / "signals"
+    peg_root = screeners_root / "peg_imminent"
+    (screeners_root / "qullamaggie").mkdir(parents=True, exist_ok=True)
+
+    monkeypatch.setattr(signal_engine, "get_market_screeners_root", lambda market: str(screeners_root))
+    monkeypatch.setattr(signal_engine, "get_signal_engine_results_dir", lambda market: str(signals_root))
+    monkeypatch.setattr(signal_engine, "get_peg_imminent_results_dir", lambda market: str(peg_root))
+    monkeypatch.setattr(signal_engine, "ensure_market_dirs", lambda market, include_signal_dirs=False: None)
+    monkeypatch.setattr(signal_engine, "_load_metadata_map", lambda market: {})
+    monkeypatch.setattr(signal_engine, "_load_financial_map", lambda market, symbols=None: {})
+    monkeypatch.setattr(
+        signal_engine,
+        "load_local_ohlcv_frame",
+        lambda market, symbol, **kwargs: _breakout_daily(end="2026-03-11").copy() if symbol == "AAA" else pd.DataFrame(),
+    )
+
+    pd.DataFrame([{"symbol": "AAA", "as_of_ts": "2026-03-11"}]).to_csv(
+        screeners_root / "qullamaggie" / "daily_focus_list.csv",
+        index=False,
+    )
+
+    signal_engine.run_signal_scan(
+        market="us",
+        as_of_date="2026-03-11",
+        upcoming_earnings_fetcher=lambda market, as_of_date, days: pd.DataFrame(),
+        earnings_collector=_StubEarningsCollector(),
+    )
+
+    event_history = pd.read_csv(signals_root / "signal_event_history.csv")
+    state_history = pd.read_csv(signals_root / "signal_state_history.csv")
+
+    assert set(event_history["signal_kind"]) == {"EVENT"}
+    assert set(state_history["signal_kind"]) <= {"STATE", "AUX"}
+    assert "UG_COMBO_TREND" in set(state_history["signal_code"])
+    assert "TF_TRAILING_LEVEL" in set(state_history["signal_code"])
+    assert "UG_STATE_GREEN" in set(state_history["signal_code"])
+
+
+def test_state_history_persistence_includes_state_aux_alert_and_combo_rows(monkeypatch) -> None:
+    base = cache_root("signal_engine_state_history_unit")
+    if base.exists():
+        shutil.rmtree(base, ignore_errors=True)
+    base.mkdir(parents=True, exist_ok=True)
+
+    monkeypatch.setattr(signal_engine, "get_signal_engine_results_dir", lambda market: str(base))
+    monkeypatch.setattr(signal_engine, "_load_metadata_map", lambda market: {})
+    monkeypatch.setattr(signal_engine, "_load_financial_map", lambda market, symbols=None: {})
+    engine = signal_engine.MultiScreenerSignalEngine(market="us", as_of_date="2026-03-31")
+
+    event_row = signal_engine._build_signal_row(
+        signal_date="2026-03-31",
+        symbol="AAA",
+        market="us",
+        engine="TREND",
+        family="TF_BREAKOUT",
+        signal_kind="EVENT",
+        signal_code="TF_BUY_BREAKOUT",
+        action_type="BUY",
+        conviction_grade="B",
+        screen_stage="TEST",
+    )
+    state_rows = [
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="AAA",
+            market="us",
+            engine="TREND",
+            family="TF_BREAKOUT",
+            signal_kind="STATE",
+            signal_code="TF_AGGRESSIVE_ALERT",
+            action_type="ALERT",
+            conviction_grade="C",
+            screen_stage="TEST",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="AAA",
+            market="us",
+            engine="TREND",
+            family="TF_BREAKOUT",
+            signal_kind="STATE",
+            signal_code="TF_TRAILING_LEVEL",
+            action_type="STATE",
+            conviction_grade="C",
+            screen_stage="TEST",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="AAA",
+            market="us",
+            engine="TREND",
+            family="TF_BREAKOUT",
+            signal_kind="STATE",
+            signal_code="TF_ADDON_READY",
+            action_type="STATE",
+            conviction_grade="C",
+            screen_stage="TEST",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="AAA",
+            market="us",
+            engine="UG",
+            family="UG_STATE",
+            signal_kind="STATE",
+            signal_code="UG_STATE_GREEN",
+            action_type="STATE",
+            conviction_grade="B",
+            screen_stage="TEST",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="BBB",
+            market="us",
+            engine="UG",
+            family="UG_STATE",
+            signal_kind="STATE",
+            signal_code="UG_STATE_ORANGE",
+            action_type="STATE",
+            conviction_grade="C",
+            screen_stage="TEST",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="CCC",
+            market="us",
+            engine="UG",
+            family="UG_STATE",
+            signal_kind="STATE",
+            signal_code="UG_STATE_RED",
+            action_type="STATE",
+            conviction_grade="D",
+            screen_stage="TEST",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="AAA",
+            market="us",
+            engine="UG",
+            family="UG_STRATEGY",
+            signal_kind="STATE",
+            signal_code="UG_COMBO_TREND",
+            action_type="STATE",
+            conviction_grade="B",
+            screen_stage="TEST",
+            strategy_combo="UG_COMBO_TREND",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="BBB",
+            market="us",
+            engine="UG",
+            family="UG_STRATEGY",
+            signal_kind="STATE",
+            signal_code="UG_COMBO_PULLBACK",
+            action_type="STATE",
+            conviction_grade="C",
+            screen_stage="TEST",
+            strategy_combo="UG_COMBO_PULLBACK",
+        ),
+        signal_engine._build_signal_row(
+            signal_date="2026-03-31",
+            symbol="CCC",
+            market="us",
+            engine="UG",
+            family="UG_STRATEGY",
+            signal_kind="STATE",
+            signal_code="UG_COMBO_SQUEEZE",
+            action_type="STATE",
+            conviction_grade="C",
+            screen_stage="TEST",
+            strategy_combo="UG_COMBO_SQUEEZE",
+        ),
+    ]
+
+    engine._persist_signal_history([], [event_row, *state_rows])
+    engine._persist_state_history([], state_rows)
+
+    event_history = pd.read_csv(base / "signal_event_history.csv")
+    state_history = pd.read_csv(base / "signal_state_history.csv")
+
+    assert set(event_history["signal_code"]) == {"TF_BUY_BREAKOUT"}
+    assert set(state_history["signal_code"]) == {
+        "TF_AGGRESSIVE_ALERT",
+        "TF_TRAILING_LEVEL",
+        "TF_ADDON_READY",
+        "UG_STATE_GREEN",
+        "UG_STATE_ORANGE",
+        "UG_STATE_RED",
+        "UG_COMBO_TREND",
+        "UG_COMBO_PULLBACK",
+        "UG_COMBO_SQUEEZE",
+    }
+
+
+def test_signal_code_boundary_helpers_separate_active_legacy_and_reference_exit_strings() -> None:
+    assert signal_engine._is_active_signal_code("TF_SELL_RESISTANCE_REJECT") is True
+    assert signal_engine._is_active_signal_code("TF_SELL_PBS") is False
+    assert signal_engine._is_active_signal_code("TF_SELL_SUB200") is False
+    assert signal_engine._is_active_signal_code("UG_SELL_MR_SHORT_OR_PBS") is False
+    assert signal_engine._is_reference_exit_helper_literal("UG_SELL_MR_SHORT_OR_PBS") is True
+
 
 def test_run_signal_scan_alias_matches_multi_screener_helper() -> None:
     assert signal_engine.run_signal_scan is signal_engine.run_multi_screener_signal_scan
@@ -402,3 +626,1079 @@ def test_load_financial_map_uses_filename_stem_when_cached_symbol_missing(
     assert set(financial_map) == {"005930"}
     assert financial_map["005930"]["symbol"] == "005930"
     assert financial_map["005930"]["sales_growth_qoq"] == 12.5
+
+
+def _ug_sell_metrics(*, date: str = "2026-03-11") -> dict[str, object]:
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end=date), source_entry=source_entry)
+    updated = dict(metrics)
+    updated["date"] = date
+    updated["screen_stage"] = "TEST"
+    updated["source_tags"] = ["QM_DAILY"]
+    updated["close"] = max(float(updated.get("close") or 0.0), 85.0)
+    updated["high"] = max(float(updated.get("high") or 0.0), float(updated["close"]))
+    updated["ug_pbs_ready"] = False
+    updated["ug_mr_short_ready"] = True
+    return updated
+
+
+def _ug_cycle(
+    *,
+    family: str = "UG_PULLBACK",
+    reference_exit_signal: str = "UG_SELL_MR_SHORT_OR_PBS",
+    trim_count: int = 0,
+    last_trim_date: str = "",
+    partial_exit_active: bool = False,
+    current_position_units: float = 1.0,
+) -> dict[str, object]:
+    return {
+        "family_cycle_id": f"UG:{family}:AAA:2026-03-10",
+        "engine": "UG",
+        "family": family,
+        "symbol": "AAA",
+        "opened_on": "2026-03-10",
+        "last_signal_date": "2026-03-10",
+        "buy_signal_code": "UG_BUY_PBB" if family == "UG_PULLBACK" else "UG_BUY_BREAKOUT",
+        "screen_stage": "TEST",
+        "entry_price": 80.0,
+        "support_zone_low": 74.0,
+        "support_zone_high": 82.0,
+        "stop_level": 74.0,
+        "source_tags": ["QM_DAILY"],
+        "primary_source_style": "BREAKOUT",
+        "source_fit_score": 90.0,
+        "source_fit_label": "HIGH",
+        "reference_exit_signal": reference_exit_signal,
+        "trim_count": trim_count,
+        "last_trim_date": last_trim_date,
+        "partial_exit_active": partial_exit_active,
+        "base_position_units": 1.0,
+        "current_position_units": current_position_units,
+    }
+
+
+def _trend_sell_metrics(
+    *,
+    date: str = "2026-03-11",
+    family: str = "TF_BREAKOUT",
+) -> dict[str, object]:
+    source_style = "PULLBACK" if family == "TF_REGULAR_PULLBACK" else "BREAKOUT"
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": [source_style],
+    }
+    base_frame = (
+        _regular_pullback_daily(end=date)
+        if family == "TF_REGULAR_PULLBACK"
+        else _breakout_daily(end=date)
+    )
+    metrics = _metrics_for(base_frame, source_entry=source_entry)
+    updated = dict(metrics)
+    updated["date"] = date
+    updated["screen_stage"] = "TEST"
+    updated["source_tags"] = ["QM_DAILY"]
+    return updated
+
+
+def _trend_cycle(
+    *,
+    family: str = "TF_BREAKOUT",
+    tp1_level: float = 90.0,
+    tp2_level: float = 95.0,
+    trailing_level: float = 70.0,
+    protected_stop_level: float = 70.0,
+    support_zone_low: float = 60.0,
+    support_zone_high: float = 92.0,
+    risk_free_armed: bool = False,
+    tp1_hit: bool = False,
+    tp2_hit: bool = False,
+    trim_count: int = 0,
+) -> dict[str, object]:
+    return {
+        "family_cycle_id": f"TREND:{family}:AAA:2026-03-10",
+        "engine": "TREND",
+        "family": family,
+        "symbol": "AAA",
+        "opened_on": "2026-03-10",
+        "last_signal_date": "2026-03-10",
+        "buy_signal_code": "TF_BUY_BREAKOUT",
+        "screen_stage": "TEST",
+        "entry_price": 80.0,
+        "break_even_level": 80.0,
+        "support_zone_low": support_zone_low,
+        "support_zone_high": support_zone_high,
+        "stop_level": support_zone_low,
+        "trailing_level": trailing_level,
+        "trailing_mode": "BREAKOUT_FAST",
+        "tp1_level": tp1_level,
+        "tp2_level": tp2_level,
+        "tp_plan": "TP_BREAKOUT_2R_3R",
+        "tp1_hit": tp1_hit,
+        "tp2_hit": tp2_hit,
+        "trim_count": trim_count,
+        "last_trim_date": "",
+        "partial_exit_active": trim_count > 0,
+        "risk_free_armed": risk_free_armed,
+        "add_on_count": 0,
+        "add_on_slot": 0,
+        "max_add_ons": 2,
+        "tranche_pct": None,
+        "next_addon_allowed": False,
+        "last_addon_date": "",
+        "pyramid_state": "INITIAL",
+        "protected_stop_level": protected_stop_level,
+        "base_position_units": 1.0,
+        "current_position_units": 1.0,
+        "blended_entry_price": 80.0,
+        "last_trailing_confirmed_level": trailing_level,
+        "last_protected_stop_level": protected_stop_level,
+        "last_pyramid_reference_level": protected_stop_level,
+        "source_tags": ["QM_DAILY"],
+        "primary_source_style": "PULLBACK" if family == "TF_REGULAR_PULLBACK" else "BREAKOUT",
+        "source_fit_score": 90.0,
+        "source_fit_label": "HIGH",
+    }
+
+
+def test_update_cycles_persists_reference_exit_signal_for_ug_buy_rows(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    metrics = _ug_sell_metrics()
+    buy_row = signal_engine._build_signal_row(
+        signal_date="2026-03-11",
+        symbol="AAA",
+        market="us",
+        engine="UG",
+        family="UG_PULLBACK",
+        signal_kind="EVENT",
+        signal_code="UG_BUY_PBB",
+        action_type="BUY",
+        conviction_grade="B",
+        screen_stage="TEST",
+        support_zone_low=74.0,
+        support_zone_high=82.0,
+        stop_level=74.0,
+        source_tags=["QM_DAILY"],
+        primary_source_style="BREAKOUT",
+        source_fit_score=90.0,
+        source_fit_label="HIGH",
+        reference_exit_signal="UG_SELL_MR_SHORT_OR_PBS",
+    )
+
+    updated = engine._update_cycles(
+        [buy_row],
+        {},
+        {"AAA": metrics},
+    )
+
+    cycle = updated[("UG", "UG_PULLBACK", "AAA")]
+    assert cycle["reference_exit_signal"] == "UG_SELL_MR_SHORT_OR_PBS"
+
+
+def test_update_cycles_ignores_reference_exit_signal_for_non_pullback_ug_buy_rows(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    metrics = _ug_sell_metrics()
+    buy_row = signal_engine._build_signal_row(
+        signal_date="2026-03-11",
+        symbol="AAA",
+        market="us",
+        engine="UG",
+        family="UG_BREAKOUT",
+        signal_kind="EVENT",
+        signal_code="UG_BUY_BREAKOUT",
+        action_type="BUY",
+        conviction_grade="B",
+        screen_stage="TEST",
+        support_zone_low=74.0,
+        support_zone_high=82.0,
+        stop_level=74.0,
+        source_tags=["QM_DAILY"],
+        primary_source_style="BREAKOUT",
+        source_fit_score=90.0,
+        source_fit_label="HIGH",
+        reference_exit_signal="UG_SELL_MR_SHORT_OR_PBS",
+    )
+
+    updated = engine._update_cycles(
+        [buy_row],
+        {},
+        {"AAA": metrics},
+    )
+
+    cycle = updated[("UG", "UG_BREAKOUT", "AAA")]
+    assert cycle["reference_exit_signal"] == ""
+
+
+def test_ug_mr_short_trims_twice_and_waits_for_pbs_exit(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("UG", "UG_PULLBACK", "AAA")
+    active_cycles = {key: _ug_cycle()}
+
+    first_metrics = _ug_sell_metrics(date="2026-03-11")
+    first_events = engine._ug_sell_events(
+        symbol="AAA",
+        metrics=first_metrics,
+        cycle=active_cycles[key],
+    )
+    first_row = next(row for row in first_events if row["signal_code"] == "UG_SELL_MR_SHORT")
+
+    assert first_row["action_type"] == "TRIM"
+
+    updated_cycles = engine._update_cycles(first_events, active_cycles, {"AAA": first_metrics})
+    updated_cycle = updated_cycles[key]
+    assert updated_cycle["trim_count"] == 1
+    assert updated_cycle["partial_exit_active"] is True
+    assert updated_cycle["last_trim_date"] == "2026-03-11"
+    assert updated_cycle["current_position_units"] == 0.5
+
+    second_metrics = _ug_sell_metrics(date="2026-03-12")
+    second_events = engine._ug_sell_events(
+        symbol="AAA",
+        metrics=second_metrics,
+        cycle=updated_cycle,
+    )
+    second_row = next(row for row in second_events if row["signal_code"] == "UG_SELL_MR_SHORT")
+
+    assert second_row["action_type"] == "TRIM"
+
+    twice_trimmed_cycles = engine._update_cycles(
+        second_events,
+        updated_cycles,
+        {"AAA": second_metrics},
+    )
+    twice_trimmed_cycle = twice_trimmed_cycles[key]
+    assert twice_trimmed_cycle["trim_count"] == 2
+    assert twice_trimmed_cycle["current_position_units"] == 0.25
+
+    third_metrics = _ug_sell_metrics(date="2026-03-13")
+    third_events = engine._ug_sell_events(
+        symbol="AAA",
+        metrics=third_metrics,
+        cycle=twice_trimmed_cycle,
+    )
+
+    assert not any(row["signal_code"] == "UG_SELL_MR_SHORT" for row in third_events)
+
+    exit_metrics = dict(third_metrics)
+    exit_metrics["date"] = "2026-03-14"
+    exit_metrics["ug_mr_short_ready"] = False
+    exit_metrics["ug_pbs_ready"] = True
+    exit_events = engine._ug_sell_events(
+        symbol="AAA",
+        metrics=exit_metrics,
+        cycle=twice_trimmed_cycle,
+    )
+    exit_row = next(row for row in exit_events if row["signal_code"] == "UG_SELL_PBS")
+
+    assert exit_row["action_type"] == "EXIT"
+
+    final_cycles = engine._update_cycles(exit_events, twice_trimmed_cycles, {"AAA": exit_metrics})
+    assert key not in final_cycles
+
+
+def test_ug_breakdown_exit_closes_cycle(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("UG", "UG_PULLBACK", "AAA")
+    active_cycles = {key: _ug_cycle(reference_exit_signal="")}
+    metrics = _ug_sell_metrics(date="2026-03-15")
+    metrics["close"] = 73.5
+    metrics["high"] = 74.0
+    metrics["ug_mr_short_ready"] = False
+    metrics["ug_pbs_ready"] = False
+
+    events = engine._ug_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+    row = next(row for row in events if row["signal_code"] == "UG_SELL_BREAKDOWN")
+
+    assert row["action_type"] == "EXIT"
+
+    updated = engine._update_cycles(events, active_cycles, {"AAA": metrics})
+    assert key not in updated
+
+
+def test_ug_pbs_is_allowed_without_reference_exit_hint(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("UG", "UG_BREAKOUT", "AAA")
+    active_cycles = {key: _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="")}
+    metrics = _ug_sell_metrics(date="2026-03-16")
+    metrics["ug_mr_short_ready"] = False
+    metrics["ug_pbs_ready"] = True
+    metrics["bb_mid"] = 84.0
+    metrics["high"] = 85.0
+    metrics["close"] = 83.5
+
+    events = engine._ug_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+    row = next(row for row in events if row["signal_code"] == "UG_SELL_PBS")
+
+    assert row["action_type"] == "EXIT"
+
+    updated = engine._update_cycles(events, active_cycles, {"AAA": metrics})
+    assert key not in updated
+
+
+def test_ug_non_pullback_reference_exit_hint_does_not_gate_sell_events(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("UG", "UG_BREAKOUT", "AAA")
+    active_cycles = {key: _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="UG_SELL_PBS")}
+    metrics = _ug_sell_metrics(date="2026-03-17")
+    metrics["ug_mr_short_ready"] = True
+    metrics["ug_pbs_ready"] = False
+
+    events = engine._ug_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+
+    assert any(row["signal_code"] == "UG_SELL_MR_SHORT" for row in events)
+
+
+def test_ug_pullback_noncanonical_reference_exit_hint_is_ignored(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("UG", "UG_PULLBACK", "AAA")
+    active_cycles = {key: _ug_cycle(reference_exit_signal="UG_SELL_PBS")}
+    metrics = _ug_sell_metrics(date="2026-03-18")
+    metrics["ug_mr_short_ready"] = True
+    metrics["ug_pbs_ready"] = False
+
+    events = engine._ug_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+
+    assert any(row["signal_code"] == "UG_SELL_MR_SHORT" for row in events)
+
+
+def test_ug_trim_state_survives_open_cycle_round_trip(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    cycle = _ug_cycle(
+        trim_count=1,
+        last_trim_date="2026-03-11",
+        partial_exit_active=True,
+        current_position_units=0.5,
+    )
+
+    sanitized = signal_engine._sanitize_cycle_row(cycle)
+    hydrated = engine._hydrate_loaded_cycle(sanitized)
+
+    assert hydrated["trim_count"] == 1
+    assert hydrated["last_trim_date"] == "2026-03-11"
+    assert hydrated["partial_exit_active"] is True
+    assert hydrated["current_position_units"] == 0.5
+    assert hydrated["reference_exit_signal"] == "UG_SELL_MR_SHORT_OR_PBS"
+
+
+def test_trend_tp_hits_update_cycle_state(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("TREND", "TF_BREAKOUT", "AAA")
+    active_cycles = {key: _trend_cycle()}
+    metrics = _trend_sell_metrics(date="2026-03-11", family="TF_BREAKOUT")
+    metrics["high"] = 96.0
+    metrics["close"] = 94.0
+    metrics["in_channel8"] = False
+    metrics["channel_low8"] = 55.0
+
+    events = engine._trend_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+    signal_codes = {row["signal_code"] for row in events}
+
+    assert {"TF_SELL_TP1", "TF_SELL_TP2"} <= signal_codes
+
+    updated = engine._update_cycles(events, active_cycles, {"AAA": metrics})
+    cycle = updated[key]
+    assert cycle["tp1_hit"] is True
+    assert cycle["tp2_hit"] is True
+    assert cycle["trim_count"] == 2
+    assert cycle["risk_free_armed"] is True
+
+
+def test_trend_trailing_break_closes_cycle(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("TREND", "TF_BREAKOUT", "AAA")
+    active_cycles = {key: _trend_cycle(tp1_level=120.0, tp2_level=130.0, trailing_level=90.0, protected_stop_level=90.0)}
+    metrics = _trend_sell_metrics(date="2026-03-12", family="TF_BREAKOUT")
+    metrics["close"] = 89.0
+    metrics["high"] = 89.5
+    metrics["in_channel8"] = False
+    metrics["channel_low8"] = 70.0
+    metrics["bb_mid"] = 80.0
+    metrics["daily_return_pct"] = 1.0
+
+    events = engine._trend_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+    row = next(row for row in events if row["signal_code"] == "TF_SELL_TRAILING_BREAK")
+
+    assert row["action_type"] == "SELL"
+
+    updated = engine._update_cycles(events, active_cycles, {"AAA": metrics})
+    assert key not in updated
+
+
+def test_trend_momentum_end_closes_cycle(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("TREND", "TF_MOMENTUM", "AAA")
+    active_cycles = {key: _trend_cycle(family="TF_MOMENTUM", tp1_level=120.0, tp2_level=130.0)}
+    metrics = _trend_sell_metrics(date="2026-03-24", family="TF_BREAKOUT")
+    metrics["rsi14"] = 49.0
+    metrics["macd_hist"] = -0.2
+    metrics["ema10"] = 85.0
+    metrics["fast_ref"] = 85.0
+    metrics["close"] = 84.0
+    metrics["high"] = 84.5
+    metrics["in_channel8"] = False
+    metrics["channel_low8"] = 70.0
+    metrics["bb_mid"] = 75.0
+    metrics["daily_return_pct"] = 0.5
+
+    events = engine._trend_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+    row = next(row for row in events if row["signal_code"] == "TF_SELL_MOMENTUM_END")
+
+    assert row["action_type"] == "SELL"
+
+    updated = engine._update_cycles(events, active_cycles, {"AAA": metrics})
+    assert key not in updated
+
+
+def test_trend_resistance_reject_uses_canonical_code(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    key = ("TREND", "TF_REGULAR_PULLBACK", "AAA")
+    active_cycles = {
+        key: _trend_cycle(
+            family="TF_REGULAR_PULLBACK",
+            tp1_level=120.0,
+            tp2_level=130.0,
+            trailing_level=70.0,
+            protected_stop_level=70.0,
+        )
+    }
+    metrics = _trend_sell_metrics(date="2026-03-13", family="TF_REGULAR_PULLBACK")
+    metrics["close"] = 79.0
+    metrics["high"] = 82.0
+    metrics["bb_mid"] = 80.0
+    metrics["daily_return_pct"] = -1.0
+    metrics["in_channel8"] = False
+    metrics["channel_low8"] = 72.0
+
+    events = engine._trend_sell_events(symbol="AAA", metrics=metrics, cycle=active_cycles[key])
+    row = next(row for row in events if row["signal_code"] == "TF_SELL_RESISTANCE_REJECT")
+
+    assert row["action_type"] == "SELL"
+    assert not any(candidate["signal_code"] == "TF_SELL_PBS" for candidate in events)
+
+    updated = engine._update_cycles(events, active_cycles, {"AAA": metrics})
+    assert key not in updated
+
+
+def test_tf_sell_contract_uses_resistance_reject_only() -> None:
+    row = signal_engine._build_signal_row(
+        signal_date="2026-03-11",
+        symbol="AAA",
+        market="us",
+        engine="TREND",
+        family="TF_REGULAR_PULLBACK",
+        signal_kind="EVENT",
+        signal_code="TF_SELL_RESISTANCE_REJECT",
+        action_type="SELL",
+        conviction_grade="C",
+        screen_stage="TEST",
+    )
+
+    transformed = signal_engine._transform_signal_rows(
+        [row],
+        contract_version=signal_engine._CONTRACT_VERSION_V2,
+    )[0]
+
+    assert transformed["signal_code"] == "TF_SELL_RESISTANCE_REJECT"
+    assert transformed["deprecated_alias_code"] == ""
+    assert signal_engine._signal_code_label("TF_SELL_PBS") == "TF_SELL_PBS"
+    assert signal_engine._signal_code_label("TF_SELL_SUB200") == "TF_SELL_SUB200"
+
+
+def test_trend_regular_buy_emits_signal(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["PULLBACK"],
+    }
+    metrics = _metrics_for(_regular_pullback_daily(end="2026-03-31"), source_entry=source_entry)
+
+    events = engine._trend_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        peg_ready_map={},
+        peg_context={},
+    )
+
+    assert any(row["signal_code"] == "TF_BUY_REGULAR" for row in events)
+
+
+def test_trend_breakout_and_momentum_buy_signals_can_coexist(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+
+    events = engine._trend_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        peg_ready_map={},
+        peg_context={},
+    )
+
+    signal_codes = {row["signal_code"] for row in events}
+    assert {"TF_BUY_BREAKOUT", "TF_BUY_MOMENTUM"} <= signal_codes
+
+
+def test_trend_addon_pyramid_emits_when_addon_context_is_ready(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "close": 92.0,
+            "low": 89.0,
+            "build_up_ready": True,
+            "setup_active": True,
+            "in_channel8": False,
+            "ema_turn_down": False,
+            "alignment_state": "BULLISH",
+        }
+    )
+    cycle = _trend_cycle(
+        family="TF_BREAKOUT",
+        trailing_level=70.0,
+        protected_stop_level=70.0,
+    )
+    cycle.update(
+        {
+            "last_trailing_confirmed_level": 70.0,
+            "last_protected_stop_level": 70.0,
+            "last_pyramid_reference_level": 70.0,
+            "add_on_count": 0,
+            "add_on_slot": 0,
+            "max_add_ons": 2,
+            "break_even_level": 80.0,
+            "blended_entry_price": 80.0,
+            "current_position_units": 1.0,
+            "base_position_units": 1.0,
+        }
+    )
+
+    events = engine._trend_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={("TREND", "TF_BREAKOUT", "AAA"): cycle},
+        peg_ready_map={},
+        peg_context={},
+    )
+
+    assert any(row["signal_code"] == "TF_ADDON_PYRAMID" for row in events)
+
+
+def test_trend_peg_event_rows_emit_alert_and_watch(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY", "PEG_READY"],
+        "source_style_tags": ["PEG"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+
+    confirmed = engine._trend_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        peg_ready_map={"AAA": True},
+        peg_context={"event_day": True, "event_confirmed": True, "gap_low": 90.0, "half_gap": 94.0},
+    )
+    missed = engine._trend_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        peg_ready_map={"AAA": True},
+        peg_context={"event_day": True, "missed": True},
+    )
+
+    assert any(
+        row["signal_code"] == "TF_PEG_EVENT" and row["action_type"] == "ALERT"
+        for row in confirmed
+    )
+    assert any(
+        row["signal_code"] == "TF_PEG_EVENT" and row["action_type"] == "WATCH"
+        for row in missed
+    )
+
+
+def test_trend_peg_pullback_buy_emits_signal(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY", "PEG_READY"],
+        "source_style_tags": ["PEG"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "low": 91.0,
+            "close": 95.0,
+            "ema_turn_down": False,
+            "alignment_state": "BULLISH",
+        }
+    )
+
+    events = engine._trend_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        peg_ready_map={"AAA": True},
+        peg_context={"peg_active": True, "gap_low": 90.0, "half_gap": 94.0, "event_high": 100.0},
+    )
+
+    assert any(row["signal_code"] == "TF_BUY_PEG_PULLBACK" for row in events)
+
+
+def test_trend_peg_rebreak_buy_emits_signal(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY", "PEG_READY"],
+        "source_style_tags": ["PEG"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "close": 100.5,
+            "low": 96.0,
+            "ema_turn_down": False,
+            "alignment_state": "BULLISH",
+        }
+    )
+
+    events = engine._trend_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        peg_ready_map={"AAA": True},
+        peg_context={"peg_active": True, "gap_low": 90.0, "half_gap": 94.0, "event_high": 100.0},
+    )
+
+    assert any(row["signal_code"] == "TF_BUY_PEG_REBREAK" for row in events)
+
+
+def test_trend_breakdown_sell_emits_without_channel_break_when_only_support_fails(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    cycle = _trend_cycle(
+        family="TF_BREAKOUT",
+        support_zone_low=60.0,
+        support_zone_high=92.0,
+        trailing_level=40.0,
+        protected_stop_level=40.0,
+        tp1_level=120.0,
+        tp2_level=130.0,
+    )
+    metrics = _trend_sell_metrics(date="2026-03-31", family="TF_BREAKOUT")
+    metrics.update({"close": 59.0, "high": 60.0, "channel_low8": 55.0, "in_channel8": False})
+
+    events = engine._trend_sell_events(symbol="AAA", metrics=metrics, cycle=cycle)
+    signal_codes = {row["signal_code"] for row in events}
+
+    assert "TF_SELL_BREAKDOWN" in signal_codes
+    assert "TF_SELL_CHANNEL_BREAK" not in signal_codes
+
+
+def test_trend_channel_break_sell_emits_without_breakdown_when_only_channel_fails(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    cycle = _trend_cycle(
+        family="TF_BREAKOUT",
+        support_zone_low=50.0,
+        support_zone_high=92.0,
+        trailing_level=40.0,
+        protected_stop_level=40.0,
+        tp1_level=120.0,
+        tp2_level=130.0,
+    )
+    metrics = _trend_sell_metrics(date="2026-03-31", family="TF_BREAKOUT")
+    metrics.update({"close": 60.5, "high": 60.8, "channel_low8": 61.0, "in_channel8": False})
+
+    events = engine._trend_sell_events(symbol="AAA", metrics=metrics, cycle=cycle)
+    signal_codes = {row["signal_code"] for row in events}
+
+    assert "TF_SELL_CHANNEL_BREAK" in signal_codes
+    assert "TF_SELL_BREAKDOWN" not in signal_codes
+
+
+def test_trend_state_rows_emit_setup_build_up_vcp_and_aggressive_alert(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "setup_active": True,
+            "vcp_active": True,
+            "build_up_ready": True,
+            "aggressive_ready": True,
+            "in_channel8": True,
+            "volume_dry": True,
+            "near_high_ready": True,
+            "squeeze_active": True,
+            "tight_active": True,
+        }
+    )
+
+    rows = engine._trend_state_rows(symbol="AAA", metrics=metrics, source_entry=source_entry)
+    signal_codes = {row["signal_code"] for row in rows}
+
+    assert {
+        "TF_SETUP_ACTIVE",
+        "TF_VCP_ACTIVE",
+        "TF_BUILDUP_READY",
+        "TF_AGGRESSIVE_ALERT",
+    } <= signal_codes
+
+
+def test_trend_level_and_addon_state_rows_emit_from_active_cycle(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    cycle = _trend_cycle(
+        family="TF_BREAKOUT",
+        trailing_level=85.0,
+        protected_stop_level=86.0,
+        risk_free_armed=True,
+        trim_count=1,
+    )
+    cycle.update(
+        {
+            "next_addon_allowed": True,
+            "addon_next_slot": 1,
+            "addon_tranche_pct": 0.5,
+            "addon_reason_codes": ["ADDON_READY"],
+            "add_on_count": 0,
+        }
+    )
+    active_cycles = {("TREND", "TF_BREAKOUT", "AAA"): cycle}
+
+    level_rows = engine._build_level_state_rows(active_cycles, {"AAA": metrics})
+    addon_rows = engine._build_trend_addon_state_rows(active_cycles, {"AAA": metrics}, {})
+
+    assert {
+        "TF_TRAILING_LEVEL",
+        "TF_PROTECTED_STOP_LEVEL",
+        "TF_BREAKEVEN_LEVEL",
+        "TF_TP1_LEVEL",
+        "TF_TP2_LEVEL",
+    } <= {row["signal_code"] for row in level_rows}
+    assert {"TF_ADDON_READY", "TF_ADDON_SLOT1_READY"} <= {
+        row["signal_code"] for row in addon_rows
+    }
+
+
+def test_trend_addon_slot2_state_row_emits_when_second_slot_ready(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    cycle = _trend_cycle(
+        family="TF_BREAKOUT",
+        trailing_level=88.0,
+        protected_stop_level=89.0,
+        risk_free_armed=True,
+        trim_count=1,
+    )
+    cycle.update(
+        {
+            "next_addon_allowed": True,
+            "addon_next_slot": 2,
+            "addon_tranche_pct": 0.3,
+            "addon_reason_codes": ["ADDON_READY"],
+            "add_on_count": 1,
+            "add_on_slot": 1,
+        }
+    )
+
+    rows = engine._build_trend_addon_state_rows(
+        {("TREND", "TF_BREAKOUT", "AAA"): cycle},
+        {"AAA": metrics},
+        {},
+    )
+
+    assert {"TF_ADDON_READY", "TF_ADDON_SLOT2_READY"} <= {
+        row["signal_code"] for row in rows
+    }
+
+
+def test_ug_pullback_and_squeeze_breakout_signals_can_coexist(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "nh60": True,
+            "breakout_ready": True,
+            "ema_turn_down": False,
+            "recent_orange_ready10": True,
+            "recent_squeeze_ready10": True,
+            "rvol20": 2.5,
+            "ug_pbb_ready": True,
+            "pullback_profile_pass": True,
+        }
+    )
+
+    events = engine._ug_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        signal_history=[],
+    )
+
+    event_map = {row["signal_code"]: row for row in events}
+    assert {"UG_BUY_SQUEEZE_BREAKOUT", "UG_BUY_PBB"} <= set(event_map)
+    assert event_map["UG_BUY_PBB"]["reference_exit_signal"] == "UG_SELL_MR_SHORT_OR_PBS"
+
+
+def test_ug_mr_long_buy_emits_signal(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "ug_mr_long_ready": True,
+            "alignment_state": "BULLISH",
+            "ema_turn_down": False,
+        }
+    )
+
+    events = engine._ug_buy_events(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+        signal_history=[],
+    )
+
+    assert any(row["signal_code"] == "UG_BUY_MR_LONG" for row in events)
+
+
+def test_ug_state_rows_emit_primary_and_aux_codes(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "nh60": True,
+            "rvol20": 2.5,
+            "w_active": True,
+            "vcp_active": True,
+            "squeeze_active": True,
+            "tight_active": True,
+        }
+    )
+
+    rows = engine._ug_state_rows(symbol="AAA", metrics=metrics, source_entry=source_entry)
+    signal_codes = {row["signal_code"] for row in rows}
+
+    assert {
+        "UG_STATE_GREEN",
+        "UG_NH60",
+        "UG_VOL2X",
+        "UG_W",
+        "UG_VCP",
+        "UG_SQUEEZE",
+        "UG_TIGHT",
+    } <= signal_codes
+
+
+def test_ug_state_rows_emit_orange_profile(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "breakout_ready": False,
+            "ug_pbb_ready": False,
+            "ug_mr_long_ready": False,
+            "recent_orange_ready10": True,
+            "recent_squeeze_ready10": True,
+            "squeeze_active": True,
+            "vcp_active": True,
+            "tight_active": True,
+            "nh60": False,
+        }
+    )
+
+    rows = engine._ug_state_rows(symbol="AAA", metrics=metrics, source_entry=source_entry)
+
+    assert any(row["signal_code"] == "UG_STATE_ORANGE" for row in rows)
+
+
+def test_ug_state_rows_emit_red_profile(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "breakout_ready": False,
+            "ug_pbb_ready": False,
+            "ug_mr_long_ready": False,
+            "recent_orange_ready10": False,
+            "recent_squeeze_ready10": False,
+            "squeeze_active": False,
+            "vcp_active": False,
+            "tight_active": False,
+            "nh60": False,
+            "above_200ma": False,
+            "alignment_state": "BEARISH",
+            "ema_turn_down": True,
+            "liquidity_pass": False,
+        }
+    )
+
+    rows = engine._ug_state_rows(symbol="AAA", metrics=metrics, source_entry=source_entry)
+
+    assert any(row["signal_code"] == "UG_STATE_RED" for row in rows)
+
+
+def test_ug_combo_rows_emit_trend_and_pullback_context(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "nh60": True,
+            "breakout_ready": True,
+            "ug_pbb_ready": True,
+            "above_200ma": True,
+            "squeeze_active": True,
+            "vcp_active": True,
+            "tight_active": True,
+        }
+    )
+    active_cycles = {("UG", "UG_BREAKOUT", "AAA"): _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="")}
+
+    rows = engine._ug_strategy_combo_rows(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles=active_cycles,
+    )
+
+    assert {"UG_COMBO_TREND", "UG_COMBO_PULLBACK"} <= {row["signal_code"] for row in rows}
+
+
+def test_ug_combo_rows_emit_squeeze_context(monkeypatch) -> None:
+    engine = _engine_for_unit(monkeypatch)
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = _metrics_for(_breakout_daily(end="2026-03-31"), source_entry=source_entry)
+    metrics = dict(metrics)
+    metrics.update(
+        {
+            "date": "2026-03-31",
+            "breakout_ready": False,
+            "ug_pbb_ready": False,
+            "ug_mr_long_ready": False,
+            "recent_orange_ready10": True,
+            "recent_squeeze_ready10": True,
+            "squeeze_active": True,
+            "vcp_active": True,
+            "tight_active": True,
+            "nh60": False,
+        }
+    )
+
+    rows = engine._ug_strategy_combo_rows(
+        symbol="AAA",
+        metrics=metrics,
+        source_entry=source_entry,
+        active_cycles={},
+    )
+
+    assert any(row["signal_code"] == "UG_COMBO_SQUEEZE" for row in rows)

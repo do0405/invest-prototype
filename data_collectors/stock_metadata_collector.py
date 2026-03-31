@@ -9,6 +9,7 @@ import io
 import logging
 import os
 import time
+from datetime import datetime, timezone
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from typing import Any, Dict, List, Optional
 
@@ -40,6 +41,7 @@ METADATA_MAX_WORKERS = 1
 METADATA_PROGRESS_HEARTBEAT_SECONDS = 15.0
 METADATA_RATE_LIMIT_COOLDOWN_SECONDS = 45.0
 METADATA_MIN_REQUEST_DELAY_SECONDS = 1.0
+METADATA_FRESHNESS_WINDOW_DAYS = 7
 
 METADATA_COLUMNS: tuple[str, ...] = (
     "symbol",

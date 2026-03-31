@@ -4,6 +4,7 @@ import sys
 import types
 
 import data_collectors
+import pytest
 
 from orchestrator import tasks
 
@@ -24,15 +25,15 @@ def test_collect_data_main_runs_ohlcv_before_metadata_and_applies_handoffs(monke
     monkeypatch.setattr(
         tasks,
         "run_stock_metadata_collection",
-        lambda *, market="us": calls.append((f"{market}_metadata", None)),
+        lambda *, market="us": calls.append((f"{market}_metadata", None)) or {"ok": True},
     )
     monkeypatch.setattr(
         tasks,
         "run_kr_ohlcv_collection",
-        lambda **kwargs: calls.append(("kr_ohlcv", kwargs)),
+        lambda **kwargs: calls.append(("kr_ohlcv", kwargs)) or {"total": 1, "saved": 1, "failed": 0},
     )
 
-    tasks.collect_data_main(update_symbols=True, skip_ohlcv=False, include_kr=True)
+    summary = tasks.collect_data_main(update_symbols=True, skip_ohlcv=False, include_kr=True)
 
     assert calls == [
         ("us_ohlcv", True),
@@ -41,6 +42,8 @@ def test_collect_data_main_runs_ohlcv_before_metadata_and_applies_handoffs(monke
         ("kr_metadata", None),
     ]
     assert handoffs == ["US OHLCV", "KR OHLCV", "US stock metadata", "KR stock metadata"]
+    assert summary["ok"] is True
+
 
 
 def test_run_kr_ohlcv_collection_defaults_to_include_etn(monkeypatch):
@@ -63,21 +66,22 @@ def test_run_kr_ohlcv_collection_defaults_to_include_etn(monkeypatch):
     assert observed["include_etn"] is True
 
 
+
 def test_run_all_screening_processes_applies_yahoo_handoffs_before_financial_steps(monkeypatch):
     calls: list[tuple[str, str]] = []
     handoffs: list[str] = []
 
     monkeypatch.setattr(tasks, "wait_for_yahoo_phase_handoff", lambda label: handoffs.append(label))
-    monkeypatch.setattr(tasks, "run_markminervini_screening", lambda *, market="us": calls.append((market, "technical")))
-    monkeypatch.setattr(tasks, "run_advanced_financial_screening", lambda *, market="us", skip_data=False: calls.append((market, "financial")))
-    monkeypatch.setattr(tasks, "run_integrated_screening", lambda *, market="us": calls.append((market, "integrated")))
-    monkeypatch.setattr(tasks, "run_new_ticker_tracking", lambda *, market="us": calls.append((market, "tracking")))
-    monkeypatch.setattr(tasks, "run_weinstein_stage2_screening", lambda *, market="us": calls.append((market, "weinstein")))
-    monkeypatch.setattr(tasks, "run_leader_lagging_screening", lambda *, market="us": calls.append((market, "leader")))
-    monkeypatch.setattr(tasks, "run_qullamaggie_strategy_task", lambda *, skip_data=False, market="us": calls.append((market, "qullamaggie")))
-    monkeypatch.setattr(tasks, "run_tradingview_preset_screeners", lambda *, market="us": calls.append((market, "tradingview")))
+    monkeypatch.setattr(tasks, "run_markminervini_screening", lambda *, market="us": calls.append((market, "technical")) or {"rows": 1})
+    monkeypatch.setattr(tasks, "run_advanced_financial_screening", lambda *, market="us", skip_data=False: calls.append((market, "financial")) or {"rows": 1})
+    monkeypatch.setattr(tasks, "run_integrated_screening", lambda *, market="us": calls.append((market, "integrated")) or {"rows": 1})
+    monkeypatch.setattr(tasks, "run_new_ticker_tracking", lambda *, market="us": calls.append((market, "tracking")) or {"rows": 1})
+    monkeypatch.setattr(tasks, "run_weinstein_stage2_screening", lambda *, market="us": calls.append((market, "weinstein")) or {"rows": 1})
+    monkeypatch.setattr(tasks, "run_leader_lagging_screening", lambda *, market="us": calls.append((market, "leader")) or {"rows": 1})
+    monkeypatch.setattr(tasks, "run_qullamaggie_strategy_task", lambda *, skip_data=False, market="us": calls.append((market, "qullamaggie")) or {"rows": 1})
+    monkeypatch.setattr(tasks, "run_tradingview_preset_screeners", lambda *, market="us": calls.append((market, "tradingview")) or {"growth": []})
 
-    tasks.run_all_screening_processes(markets=["us"])
+    summary = tasks.run_all_screening_processes(markets=["us"])
 
     assert calls == [
         ("us", "technical"),
@@ -90,6 +94,8 @@ def test_run_all_screening_processes_applies_yahoo_handoffs_before_financial_ste
         ("us", "tradingview"),
     ]
     assert handoffs == ["Advanced financial", "Qullamaggie"]
+    assert summary["ok"] is True
+
 
 
 def test_run_signal_engine_task_calls_signal_scan(monkeypatch):
@@ -109,15 +115,65 @@ def test_run_signal_engine_task_calls_signal_scan(monkeypatch):
     assert result == {"all_signals_v2": []}
 
 
+
 def test_run_signal_engine_processes_runs_each_market(monkeypatch):
     calls: list[str] = []
 
     monkeypatch.setattr(
         tasks,
         "run_signal_engine_task",
-        lambda *, market="us": calls.append(market),
+        lambda *, market="us": calls.append(market) or {"all_signals_v2": []},
     )
 
-    tasks.run_signal_engine_processes(markets=["us", "kr"])
+    summary = tasks.run_signal_engine_processes(markets=["us", "kr"])
 
     assert calls == ["us", "kr"]
+    assert summary["ok"] is True
+
+
+
+def test_run_all_screening_processes_reports_failed_steps_honestly(monkeypatch, capsys):
+    monkeypatch.setattr(tasks, "wait_for_yahoo_phase_handoff", lambda label: None)
+    monkeypatch.setattr(tasks, "run_markminervini_screening", lambda *, market="us": {"rows": 1})
+    monkeypatch.setattr(tasks, "run_advanced_financial_screening", lambda *, market="us", skip_data=False: {"rows": 1})
+    monkeypatch.setattr(tasks, "run_integrated_screening", lambda *, market="us": {"rows": 1})
+    monkeypatch.setattr(tasks, "run_new_ticker_tracking", lambda *, market="us": {"rows": 1})
+    monkeypatch.setattr(tasks, "run_weinstein_stage2_screening", lambda *, market="us": {"rows": 1})
+    monkeypatch.setattr(tasks, "run_leader_lagging_screening", lambda *, market="us": {"error": "boom"})
+    monkeypatch.setattr(tasks, "run_qullamaggie_strategy_task", lambda *, skip_data=False, market="us": {"rows": 1})
+    monkeypatch.setattr(tasks, "run_tradingview_preset_screeners", lambda *, market="us": {"growth": []})
+
+    summary = tasks.run_all_screening_processes(markets=["us"])
+
+    captured = capsys.readouterr()
+    assert summary["ok"] is False
+    assert summary["failed_steps"] == 1
+    assert "failed (us) - Leader / lagging" in captured.out
+    assert "degraded" in captured.out.lower()
+
+
+
+def test_run_signal_engine_processes_rejects_invalid_markets():
+    with pytest.raises(ValueError, match="Unsupported market"):
+        tasks.run_signal_engine_processes(markets=["jp"])
+
+
+
+def test_run_scheduler_runs_screening_with_signals(monkeypatch):
+    calls: list[dict[str, object]] = []
+
+    def _fake_market_pipeline(*, skip_data=False, markets=None, include_signals=False):  # noqa: ANN202
+        calls.append(
+            {
+                "skip_data": skip_data,
+                "markets": markets,
+                "include_signals": include_signals,
+            }
+        )
+        raise KeyboardInterrupt()
+
+    monkeypatch.setattr(tasks, "run_market_analysis_pipeline", _fake_market_pipeline)
+
+    tasks.run_scheduler()
+
+    assert calls == [{"skip_data": True, "markets": ["us"], "include_signals": True}]

@@ -1,6 +1,5 @@
 from .io_utils import (
     ensure_dir,
-    ensure_directory_exists,
     create_required_dirs,
     load_csvs_parallel,
     extract_ticker_from_filename,
@@ -64,7 +63,6 @@ from .external_data_cache import (
 
 __all__ = [
     'ensure_dir',
-    'ensure_directory_exists',
     'create_required_dirs',
     'load_csvs_parallel',
     'extract_ticker_from_filename',

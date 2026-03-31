@@ -12,12 +12,11 @@
 
 ## Priority Order
 
-1. Stop unsafe destructive behavior in the default CLI path.
-2. Make orchestration status honest and machine-readable.
-3. Make metadata refresh incremental so runtime scales with change, not universe size.
-4. Enforce fail-fast market validation at public entrypoints.
-5. Make scheduler freshness consistent with the new signal phase.
-6. Split the signal engine into smaller internal seams after behavior is stabilized.
+1. Make orchestration status honest and machine-readable.
+2. Make metadata refresh incremental so runtime scales with change, not universe size.
+3. Enforce fail-fast market validation at public entrypoints.
+4. Make scheduler freshness consistent with the new signal phase.
+5. Split the signal engine into smaller internal seams after behavior is stabilized.
 
 ## Invariants
 
@@ -96,7 +95,7 @@ git add orchestrator/tasks.py main.py tests/test_orchestrator_tasks.py tests/tes
 git commit -m "fix: report pipeline failures honestly"
 ```
 
-### Task 3: Make Metadata Refresh Incremental
+### Task 2: Make Metadata Refresh Incremental
 
 **Files:**
 - Modify: `data_collectors/stock_metadata_collector.py`
@@ -136,7 +135,7 @@ git add data_collectors/stock_metadata_collector.py tests/test_stock_metadata_co
 git commit -m "perf: make metadata refresh incremental"
 ```
 
-### Task 4: Enforce Fail-Fast Market Validation
+### Task 3: Enforce Fail-Fast Market Validation
 
 **Files:**
 - Modify: `main.py`
@@ -170,7 +169,7 @@ git add main.py utils/market_runtime.py orchestrator/tasks.py tests/test_main_ma
 git commit -m "fix: enforce fail-fast market validation"
 ```
 
-### Task 5: Unify Screening And Signal Freshness In Scheduler And CLI
+### Task 4: Unify Screening And Signal Freshness In Scheduler And CLI
 
 **Files:**
 - Modify: `orchestrator/tasks.py`
@@ -201,7 +200,7 @@ git add main.py orchestrator/tasks.py tests/test_orchestrator_tasks.py tests/tes
 git commit -m "fix: keep signals fresh across scheduler and cli flows"
 ```
 
-### Task 6: Split The Signal Engine Internals Without Breaking Its Public Contract
+### Task 5: Split The Signal Engine Internals Without Breaking Its Public Contract
 
 **Files:**
 - Modify: `screeners/signals/engine.py`
@@ -242,7 +241,7 @@ git add screeners/signals/engine.py screeners/signals/source_registry.py screene
 git commit -m "refactor: split signal engine into internal modules"
 ```
 
-### Task 7: Add Runtime Baselines And Post-Change Verification
+### Task 6: Add Runtime Baselines And Post-Change Verification
 
 **Files:**
 - Modify: `orchestrator/tasks.py`
@@ -283,6 +282,6 @@ git commit -m "chore: add pipeline timing and verification baselines"
 
 ## Recommended Execution Notes
 
-- Execute Tasks 1 through 5 before attempting Task 6. The signal engine refactor should not start until cleanup, failure propagation, market validation, and freshness rules are stable.
-- The highest expected runtime win is Task 3. The highest operational risk reduction is Task 1 plus Task 2.
-- If Task 4 reveals too many internal callers depending on fallback behavior, introduce `require_market_key()` first and migrate public entrypoints before removing legacy tolerance deeper inside the codebase.
+- Execute Tasks 1 through 4 before attempting Task 5. The signal engine refactor should not start until failure propagation, market validation, and freshness rules are stable.
+- The highest expected runtime win is Task 2. The highest operational risk reduction is Task 1 plus Task 3.
+- If Task 3 reveals too many internal callers depending on fallback behavior, introduce `require_market_key()` first and migrate public entrypoints before removing legacy tolerance deeper inside the codebase.

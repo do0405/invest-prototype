@@ -20,7 +20,6 @@ from config import (
 
 __all__ = [
     "ensure_dir",
-    "ensure_directory_exists",
     "create_required_dirs",
     "load_csvs_parallel",
     "extract_ticker_from_filename",
@@ -34,9 +33,6 @@ def ensure_dir(directory: str) -> None:
     if not os.path.exists(directory):
         os.makedirs(directory)
         print(f"📁 디렉토리 생성됨: {directory}")
-
-# Alias for backward compatibility
-ensure_directory_exists = ensure_dir
 
 
 def create_required_dirs(directories=None) -> None:

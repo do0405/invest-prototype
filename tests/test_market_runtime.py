@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import pytest
+
 from utils.market_runtime import (
     get_leader_lagging_results_dir,
     get_markminervini_with_rs_path,
@@ -12,6 +14,7 @@ from utils.market_runtime import (
     get_tradingview_results_dir,
     get_weinstein_stage2_results_dir,
     iter_provider_symbols,
+    require_market_key,
 )
 
 
@@ -42,10 +45,12 @@ def test_market_result_paths_are_separated():
     assert "/kr/screeners/tradingview" in kr_tradingview.replace("\\", "/")
 
 
+
 def test_kr_market_provider_symbols_and_benchmark():
     assert iter_provider_symbols("005930", "kr") == ["005930.KS", "005930.KQ"]
     assert iter_provider_symbols("KOSPI", "kr") == ["^KS11"]
     assert get_primary_benchmark_symbol("kr") == "KOSPI"
+
 
 
 def test_market_metadata_paths_are_separated():
@@ -54,6 +59,7 @@ def test_market_metadata_paths_are_separated():
     assert us_path != kr_path
     assert us_path.endswith("stock_metadata.csv")
     assert kr_path.endswith("stock_metadata_kr.csv")
+
 
 
 def test_signal_runtime_paths_are_separated() -> None:
@@ -73,3 +79,15 @@ def test_signal_runtime_paths_are_separated() -> None:
     kr_peg = get_peg_imminent_results_dir("kr")
     assert "/us/screeners/peg_imminent" in us_peg.replace("\\", "/")
     assert "/kr/screeners/peg_imminent" in kr_peg.replace("\\", "/")
+
+
+
+def test_require_market_key_accepts_supported_markets() -> None:
+    assert require_market_key("US") == "us"
+    assert require_market_key("kr") == "kr"
+
+
+
+def test_require_market_key_rejects_unsupported_markets() -> None:
+    with pytest.raises(ValueError, match="Unsupported market"):
+        require_market_key("jp")

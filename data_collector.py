@@ -15,7 +15,6 @@ import yfinance.shared as yf_shared
 from yfinance.exceptions import YFPricesMissingError, YFRateLimitError, YFTickerMissingError, YFTzMissingError
 from datetime import date, datetime, timedelta
 from pytz import timezone
-from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from typing import List, Set
 
@@ -239,21 +238,6 @@ def _classify_us_unavailable_reason(reason: str) -> str:
         return "soft"
 
     return "hard"
-
-
-def _legacy_format_us_chunk_summary(chunk_num: int, total_chunks: int, statuses: list[str]) -> str:
-    counter = Counter(statuses)
-    return (
-        f"✅ 청크 {chunk_num}/{total_chunks} 완료: "
-        f"처리 {len(statuses)}개 | "
-        f"저장 {counter['saved']} | "
-        f"최신 {counter['latest']} | "
-        f"유지 {counter['kept_existing']} | "
-        f"soft {counter['soft_unavailable']} | "
-        f"상폐 {counter['delisted']} | "
-        f"제한 {counter['rate_limited']} | "
-        f"실패 {counter['failed']}"
-    )
 
 
 def _format_us_chunk_summary(chunk_num: int, total_chunks: int, statuses: list[str]) -> str:
