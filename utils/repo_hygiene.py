@@ -14,9 +14,12 @@ from typing import Iterable, Sequence
 
 
 DEFAULT_PATTERNS: tuple[str, ...] = (
+    ".pytest_cache",
     ".pytest_tmp",
     "artifacts_*",
     "provider_*",
+    "logs/*",
+    "logs/**/*",
     "**/__pycache__",
     "**/*.pyc",
     "data/_test/*",
@@ -26,6 +29,8 @@ DEFAULT_PATTERNS: tuple[str, ...] = (
     "data/_test_runtime_*",
     "results/_test_runtime_*",
 )
+
+_DEFAULT_EXCLUDED_DIRS = {".git", ".venv", "venv", "env", "ENV", "node_modules"}
 
 
 def _to_iso(ts: float) -> str:
@@ -58,6 +63,14 @@ def _iter_matches(root: Path, patterns: Sequence[str]) -> Iterable[tuple[Path, s
             yield path, pattern
 
 
+def _is_excluded_candidate(root: Path, candidate: Path) -> bool:
+    try:
+        relative = candidate.relative_to(root)
+    except ValueError:
+        return True
+    return any(part in _DEFAULT_EXCLUDED_DIRS for part in relative.parts)
+
+
 def collect_cleanup_candidates(
     root: str | Path = ".",
     patterns: Sequence[str] | None = None,
@@ -72,6 +85,8 @@ def collect_cleanup_candidates(
         try:
             resolved = path.resolve()
         except OSError:
+            continue
+        if _is_excluded_candidate(root_path, resolved):
             continue
         key = str(resolved).lower()
         if key in seen:
@@ -165,6 +180,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-
-

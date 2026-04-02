@@ -30,7 +30,7 @@ def test_load_us_symbol_universe_includes_seed_symbols_and_indexes(monkeypatch):
     metadata_path = data_dir / "stock_metadata.csv"
 
     (us_dir / "QQQ.csv").write_text("date,symbol,close\n", encoding="utf-8")
-    _write_minimal_csv(data_dir / "nasdaq_symbols.csv", [{"symbol": "SQQQ"}, {"symbol": "SOXL"}])
+    _write_minimal_csv(data_dir / "broad_us_seed.csv", [{"symbol": "SQQQ"}, {"symbol": "SOXL"}])
     _write_minimal_csv(metadata_path, [{"symbol": "SPY"}])
 
     monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
@@ -56,7 +56,7 @@ def test_update_symbol_list_writes_new_csvs_to_existing_data_us_dir(monkeypatch)
     metadata_path = data_dir / "stock_metadata.csv"
 
     (us_dir / "SPY.csv").write_text("date,symbol,open,high,low,close,volume\n", encoding="utf-8")
-    _write_minimal_csv(data_dir / "nasdaq_symbols.csv", [{"symbol": "SQQQ"}])
+    _write_minimal_csv(data_dir / "broad_us_seed.csv", [{"symbol": "SQQQ"}])
     _write_minimal_csv(metadata_path, [{"symbol": "SPY"}])
 
     monkeypatch.setattr(dc, "DATA_DIR", str(data_dir))
@@ -131,31 +131,6 @@ def test_load_us_symbol_universe_uses_basename_fast_path_and_progress(monkeypatc
     assert calls == ["CON_file.csv"]
     assert any("Local OHLCV scan started" in message for message in messages)
     assert any("US universe ready" in message for message in messages)
-
-
-def test_load_us_symbol_universe_logs_legacy_broad_seed_alias(monkeypatch):
-    runtime_root = runtime_test_root("_test_runtime_symbol_universe_legacy_broad")
-    _reset_runtime_dir(runtime_root)
-
-    data_dir = runtime_root
-    us_dir = data_dir / "us"
-    us_dir.mkdir(parents=True, exist_ok=True)
-    _write_minimal_csv(data_dir / "nasdaq_symbols.csv", [{"symbol": "AAPL"}, {"symbol": "KSS"}, {"symbol": "KEY$I"}])
-
-    messages: list[str] = []
-
-    symbols = su.load_us_symbol_universe(
-        data_dir=str(data_dir),
-        us_data_dir=str(us_dir),
-        stock_metadata_path=None,
-        progress=messages.append,
-    )
-
-    assert "AAPL" in symbols
-    assert "KSS" in symbols
-    assert "KEY$I" not in symbols
-    assert any("Legacy broad seed loaded - file=nasdaq_symbols.csv" in message for message in messages)
-    assert any("logical_name=broad_us_seed.csv" in message for message in messages)
 
 
 def test_sync_official_us_symbol_directory_writes_split_and_filtered_seeds(monkeypatch):

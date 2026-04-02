@@ -93,6 +93,11 @@ def build_parser() -> argparse.ArgumentParser:
         default="us",
         help="Target market for screening and KR collection tasks (us|kr|both|csv list)",
     )
+    parser.add_argument(
+        "--enable-augment",
+        action="store_true",
+        help="Run diagnostics-only screening augment after screening and before signals",
+    )
     parser.add_argument("--schedule", action="store_true", help="Run scheduler mode")
     return parser
 
@@ -128,6 +133,8 @@ def main() -> None:
         from utils.file_cleanup import cleanup_old_timestamped_files
 
         task = args.task
+        if args.enable_augment and (args.schedule or task not in {"all", "screening"}):
+            parser.error("--enable-augment is only supported with --task screening or --task all")
         markets = _resolve_markets_arg(args.market) if not args.schedule else ["us"]
 
         print("[Main] Task runner started")
@@ -152,7 +159,12 @@ def main() -> None:
             return
 
         if task == "screening":
-            summary = run_market_analysis_pipeline(skip_data=args.skip_data, markets=markets, include_signals=False)
+            summary = run_market_analysis_pipeline(
+                skip_data=args.skip_data,
+                markets=markets,
+                include_signals=False,
+                enable_augment=args.enable_augment,
+            )
             _print_task_summary("Screening task", summary)
             return
 
@@ -213,6 +225,7 @@ def main() -> None:
             skip_data=args.skip_data,
             markets=markets,
             include_signals=True,
+            enable_augment=args.enable_augment,
         )
         print("[Main] Analysis phase completed")
 

@@ -18,6 +18,7 @@ from utils.indicator_helpers import (
 )
 from utils.market_data_contract import PricePolicy
 from utils.typing_utils import row_to_record
+from screeners.leader_core_bridge import MarketTruthSnapshot, shared_market_alias_to_qullamaggie_state
 
 from .earnings_data_collector import EarningsDataCollector
 
@@ -157,13 +158,14 @@ class MarketRegime:
     benchmark_symbol: str
     regime_state: str
     regime_score: float
-    market_trend_score: float
-    breadth_score: float
-    opportunity_score: float
-    focus_list_density: float
-    breakout_success_proxy: float
+    market_alignment_score: float
+    breadth_support_score: float
+    rotation_support_score: float
+    benchmark_trend_score: float | None
     reason_codes: tuple[str, ...]
     data_flags: tuple[str, ...] = ()
+    leader_health_score: float | None = None
+    market_alias: str = ""
 
 
 class QullamaggieAnalyzer:
@@ -1028,160 +1030,6 @@ class QullamaggieAnalyzer:
         table.attrs["actual_data_calibration"] = dict(calibration)
         return table
 
-    def compute_market_regime(
-        self,
-        *,
-        market: str,
-        benchmark_symbol: str,
-        benchmark_daily: pd.DataFrame,
-        feature_table: pd.DataFrame,
-        calibration: Mapping[str, Any] | None = None,
-    ) -> MarketRegime:
-        benchmark = self.normalize_daily_frame(benchmark_daily)
-        flags: list[str] = []
-        reasons: list[str] = []
-        calibration_map = dict(calibration or {})
-
-        market_trend_score = 50.0
-        if not benchmark.empty and len(benchmark) >= 20:
-            benchmark["sma20"] = rolling_sma(benchmark["close"], 20, min_periods=10)
-            benchmark["sma50"] = rolling_sma(benchmark["close"], 50, min_periods=20)
-            benchmark["sma10"] = rolling_sma(benchmark["close"], 10, min_periods=5)
-            benchmark_close = _safe_float(benchmark["close"].iloc[-1])
-            sma20 = _safe_float(benchmark["sma20"].iloc[-1])
-            sma50 = _safe_float(benchmark["sma50"].iloc[-1])
-            sma10 = _safe_float(benchmark["sma10"].iloc[-1])
-            slope = None
-            if len(benchmark) >= 30:
-                prev = _safe_float(benchmark["sma20"].iloc[-10])
-                slope_ratio = _safe_divide(sma20, prev)
-                if slope_ratio is not None:
-                    slope = slope_ratio - 1.0
-            market_trend_score = _weighted_mean(
-                [
-                    (100.0 if benchmark_close is not None and sma50 is not None and benchmark_close > sma50 else 0.0, 0.30),
-                    (100.0 if sma10 is not None and sma20 is not None and sma10 > sma20 else 0.0, 0.25),
-                    ((_score_ratio(slope, 0.01, -0.01) * 100.0), 0.25),
-                    (100.0 if benchmark_close is not None and sma20 is not None and benchmark_close > sma20 else 0.0, 0.20),
-                ]
-            )
-        else:
-            flags.append("missing_benchmark_history")
-
-        if feature_table.empty:
-            breadth_score = 25.0
-            opportunity_score = 20.0
-            focus_density = 0.0
-            breakout_success_proxy = 0.0
-            flags.append("missing_feature_table")
-        else:
-            pct_above_50 = float(feature_table["close_gt_50dma"].fillna(False).mean() * 100.0)
-            pct_above_200 = float(feature_table["close_gt_200dma"].fillna(False).mean() * 100.0)
-            new_high_pct = float((feature_table["high_52w_proximity"].fillna(0.0) >= 0.98).mean())
-            weak_low_pct = float(
-                (
-                    (feature_table["high_52w_proximity"].fillna(1.0) <= 0.75)
-                    & (feature_table["ret_1m"].fillna(0.0) < 0.0)
-                ).mean()
-            )
-            net_high_low_score = _clamp(0.5 + (new_high_pct - weak_low_pct), 0.0, 1.0) * 100.0
-            adv_decline_score = float((feature_table["ret_1d"].fillna(0.0) > 0.0).mean() * 100.0)
-            breadth_score = _weighted_mean(
-                [
-                    (pct_above_50, 0.35),
-                    (pct_above_200, 0.25),
-                    (net_high_low_score, 0.20),
-                    (adv_decline_score, 0.20),
-                ]
-            )
-
-            breakout_ready_ratio = float(
-                (
-                    feature_table["breakout_universe_pass"].fillna(False)
-                    & (
-                        feature_table["compression_score"].fillna(0.0)
-                        >= (_safe_float(calibration_map.get("breakout_min_compression_score")) or 65.0)
-                    )
-                    & (
-                        feature_table["prior_run_pct"].fillna(0.0)
-                        >= (_safe_float(calibration_map.get("breakout_min_prior_run_pct")) or 0.30)
-                    )
-                ).mean()
-            )
-            top_candidate_ratio = float(
-                (
-                    feature_table["a_pp_score"].fillna(0.0)
-                    >= (_safe_float(calibration_map.get("top_candidate_score_min")) or 85.0)
-                ).mean()
-            )
-            leading_group_ratio = float(
-                (
-                    feature_table["group_strength_score"].fillna(50.0)
-                    >= (_safe_float(calibration_map.get("group_strength_min")) or 70.0)
-                ).mean()
-            )
-            breakout_success_proxy = float(
-                (
-                    (
-                        feature_table["pivot_distance_pct"].fillna(-10.0)
-                        >= (_safe_float(calibration_map.get("breakout_success_min_pivot_distance")) or -1.5)
-                    )
-                    & (feature_table["ret_1m"].fillna(0.0) > 0.0)
-                ).mean()
-            )
-            focus_density = float(
-                (
-                    (
-                        feature_table["focus_seed_score"].fillna(0.0)
-                        >= (_safe_float(calibration_map.get("focus_seed_min")) or 80.0)
-                    )
-                    & feature_table["breakout_universe_pass"].fillna(False)
-                ).mean()
-            )
-            opportunity_score = _weighted_mean(
-                [
-                    ((_score_ratio(breakout_ready_ratio, 0.10, 0.01) * 100.0), 0.30),
-                    ((_score_ratio(top_candidate_ratio, 0.08, 0.01) * 100.0), 0.25),
-                    ((_score_ratio(leading_group_ratio, 0.35, 0.05) * 100.0), 0.20),
-                    ((_score_ratio(breakout_success_proxy, 0.15, 0.02) * 100.0), 0.25),
-                ]
-            )
-
-        regime_score = 0.45 * market_trend_score + 0.35 * breadth_score + 0.20 * opportunity_score
-        if regime_score >= 80.0:
-            regime_state = "RISK_ON_AGGRESSIVE"
-        elif regime_score >= 60.0:
-            regime_state = "RISK_ON"
-        elif regime_score >= 40.0:
-            regime_state = "RISK_NEUTRAL"
-        else:
-            regime_state = "RISK_OFF"
-
-        if market_trend_score >= 70.0:
-            reasons.append("BENCHMARK_UPTREND")
-        if breadth_score >= 60.0:
-            reasons.append("BREADTH_SUPPORTIVE")
-        if opportunity_score >= 60.0:
-            reasons.append("OPPORTUNITY_DENSE")
-        if focus_density >= 0.04:
-            reasons.append("FOCUS_LIST_EXPANDING")
-        if not reasons:
-            reasons.append("REGIME_MIXED")
-
-        return MarketRegime(
-            market_code=self.market_profile(market).market_code,
-            benchmark_symbol=str(benchmark_symbol or "").upper(),
-            regime_state=regime_state,
-            regime_score=round(regime_score, 2),
-            market_trend_score=round(market_trend_score, 2),
-            breadth_score=round(breadth_score, 2),
-            opportunity_score=round(opportunity_score, 2),
-            focus_list_density=round(focus_density * 100.0, 2),
-            breakout_success_proxy=round(breakout_success_proxy * 100.0, 2),
-            reason_codes=tuple(_unique(reasons)),
-            data_flags=tuple(_unique(flags)),
-        )
-
     def stock_grade(self, a_pp_score: float | None) -> str:
         score = _safe_float(a_pp_score) or 0.0
         if score >= 85.0:
@@ -1277,19 +1125,89 @@ class QullamaggieAnalyzer:
             and base_length <= (_safe_float(calibration_map.get("breakout_max_base_length")) or 45.0)
         )
 
+    def _benchmark_trend_score(
+        self,
+        benchmark_daily: pd.DataFrame,
+    ) -> float | None:
+        benchmark = self.normalize_daily_frame(benchmark_daily)
+        if benchmark.empty or len(benchmark) < 20:
+            return None
+        benchmark["sma20"] = rolling_sma(benchmark["close"], 20, min_periods=10)
+        benchmark["sma50"] = rolling_sma(benchmark["close"], 50, min_periods=20)
+        benchmark["sma10"] = rolling_sma(benchmark["close"], 10, min_periods=5)
+        benchmark_close = _safe_float(benchmark["close"].iloc[-1])
+        sma20 = _safe_float(benchmark["sma20"].iloc[-1])
+        sma50 = _safe_float(benchmark["sma50"].iloc[-1])
+        sma10 = _safe_float(benchmark["sma10"].iloc[-1])
+        slope = None
+        if len(benchmark) >= 30:
+            prev = _safe_float(benchmark["sma20"].iloc[-10])
+            slope_ratio = _safe_divide(sma20, prev)
+            if slope_ratio is not None:
+                slope = slope_ratio - 1.0
+        return _weighted_mean(
+            [
+                (100.0 if benchmark_close is not None and sma50 is not None and benchmark_close > sma50 else 0.0, 0.30),
+                (100.0 if sma10 is not None and sma20 is not None and sma10 > sma20 else 0.0, 0.25),
+                ((_score_ratio(slope, 0.01, -0.01) * 100.0), 0.25),
+                (100.0 if benchmark_close is not None and sma20 is not None and benchmark_close > sma20 else 0.0, 0.20),
+            ]
+        )
+
     def _default_regime(self, market: str) -> MarketRegime:
         return MarketRegime(
             market_code=self.market_profile(market).market_code,
             benchmark_symbol="",
             regime_state="RISK_NEUTRAL",
             regime_score=55.0,
-            market_trend_score=55.0,
-            breadth_score=55.0,
-            opportunity_score=55.0,
-            focus_list_density=0.0,
-            breakout_success_proxy=0.0,
+            market_alignment_score=55.0,
+            breadth_support_score=55.0,
+            rotation_support_score=55.0,
+            benchmark_trend_score=None,
             reason_codes=("REGIME_DEFAULTED",),
             data_flags=("missing_regime_context",),
+        )
+
+    def build_market_regime_from_truth(
+        self,
+        *,
+        market: str,
+        benchmark_symbol: str,
+        market_truth: MarketTruthSnapshot,
+        benchmark_daily: pd.DataFrame | None = None,
+    ) -> MarketRegime:
+        reasons = [f"CORE_{market_truth.market_alias}"]
+        data_flags = ["core_market_truth"]
+        if market_truth.market_state:
+            reasons.append(f"MARKET_{market_truth.market_state.upper()}")
+        if market_truth.breadth_state:
+            reasons.append(f"BREADTH_{market_truth.breadth_state.upper()}")
+        if market_truth.rotation_support_score is not None and market_truth.rotation_support_score >= 70.0:
+            reasons.append("ROTATION_SUPPORTIVE")
+        if market_truth.leader_health_score is not None and market_truth.leader_health_score >= 70.0:
+            reasons.append("LEADER_HEALTHY")
+        trend_adjustment = 0.0
+        benchmark_trend_score = self._benchmark_trend_score(benchmark_daily if benchmark_daily is not None else pd.DataFrame())
+        if benchmark_trend_score is None:
+            data_flags.append("missing_benchmark_history")
+        else:
+            if benchmark_trend_score >= 70.0:
+                reasons.append("BENCHMARK_UPTREND")
+            trend_adjustment = (benchmark_trend_score - 50.0) * 0.10
+        regime_score = _clamp((market_truth.market_alignment_score or 55.0) + trend_adjustment, 0.0, 100.0)
+        return MarketRegime(
+            market_code=self.market_profile(market).market_code,
+            benchmark_symbol=str(benchmark_symbol or "").upper(),
+            regime_state=shared_market_alias_to_qullamaggie_state(market_truth.market_alias),
+            regime_score=round(regime_score, 2),
+            market_alignment_score=round(market_truth.market_alignment_score or 55.0, 2),
+            breadth_support_score=round(market_truth.breadth_support_score or 55.0, 2),
+            rotation_support_score=round(market_truth.rotation_support_score or 55.0, 2),
+            benchmark_trend_score=_round_or_none(benchmark_trend_score),
+            reason_codes=tuple(_unique(reasons)),
+            data_flags=tuple(_unique(data_flags)),
+            leader_health_score=_round_or_none(market_truth.leader_health_score),
+            market_alias=market_truth.market_alias,
         )
 
     def _regime_alignment_score(self, regime: MarketRegime) -> float:
@@ -1300,13 +1218,6 @@ class QullamaggieAnalyzer:
         if regime.regime_state == "RISK_NEUTRAL":
             return 55.0
         return 20.0
-
-    def _position_size_hint(self, risk_unit_pct: float | None, regime_state: str) -> float | None:
-        if risk_unit_pct is None or risk_unit_pct <= 0:
-            return None
-        target_risk_pct = 0.60 if regime_state in {"RISK_ON", "RISK_ON_AGGRESSIVE"} else 0.40 if regime_state == "RISK_NEUTRAL" else 0.25
-        suggested = (target_risk_pct / risk_unit_pct) * 100.0
-        return _clamp(suggested, 5.0, 20.0)
 
     def _candidate_stage(self, *, tier: str, setup_family: str, passed: bool, universe_ready: bool) -> str:
         if tier == "Tier 1":
@@ -1522,7 +1433,6 @@ class QullamaggieAnalyzer:
         )
 
         entry_timeframe = profile.orh_windows[0]
-        position_size_hint = self._position_size_hint(risk_unit_pct, regime_ctx.regime_state)
         target_price = (_safe_float(feature_row.get("pivot_price")) or 0.0) * 1.10
         entry_price = max(_safe_float(feature_row.get("close")) or 0.0, _safe_float(feature_row.get("pivot_price")) or 0.0)
         stop_price = _safe_float(feature_row.get("stop_price"))
@@ -1542,7 +1452,11 @@ class QullamaggieAnalyzer:
             "score": _round_or_none(breakout_setup_score),
             "final_priority_score": _round_or_none(final_priority_score),
             "regime_state": regime_ctx.regime_state,
-            "regime_score": _round_or_none(regime_ctx.regime_score),
+            "market_alias": regime_ctx.market_alias,
+            "market_alignment_score": _round_or_none(regime_ctx.market_alignment_score),
+            "breadth_support_score": _round_or_none(regime_ctx.breadth_support_score),
+            "rotation_support_score": _round_or_none(regime_ctx.rotation_support_score),
+            "leader_health_score": _round_or_none(regime_ctx.leader_health_score),
             "reason_codes": _unique(reasons),
             "fail_codes": _unique(fail_codes),
             "data_flags": data_flags,
@@ -1553,8 +1467,6 @@ class QullamaggieAnalyzer:
             "entry_timeframe": entry_timeframe,
             "suggested_entry": _round_or_none(entry_price),
             "suggested_stop": _round_or_none(stop_price),
-            "position_size_hint": _round_or_none(position_size_hint),
-            "overnight_exposure_flag": "CAP_30_PCT" if (position_size_hint or 0.0) >= 20.0 else "NORMAL",
             "current_price": _round_or_none(_safe_float(feature_row.get("close"))),
             "volume_ratio": _round_or_none(volume_ratio),
             "adr": _round_or_none(adr20_pct),
@@ -1808,7 +1720,6 @@ class QullamaggieAnalyzer:
         stock_grade = str(feature_row.get("stock_grade") or self.stock_grade(a_pp_score))
         setup_grade = self.setup_grade(ep_setup_score, five_star=five_star, watch=not ep_core)
         entry_timeframe = profile.ep_orh_windows[0]
-        position_size_hint = self._position_size_hint(risk_unit_pct, regime_ctx.regime_state)
         target_price = entry_price * 1.10
         return {
             "as_of_ts": feature_row.get("as_of_ts"),
@@ -1826,7 +1737,11 @@ class QullamaggieAnalyzer:
             "score": _round_or_none(ep_setup_score),
             "final_priority_score": _round_or_none(final_priority_score),
             "regime_state": regime_ctx.regime_state,
-            "regime_score": _round_or_none(regime_ctx.regime_score),
+            "market_alias": regime_ctx.market_alias,
+            "market_alignment_score": _round_or_none(regime_ctx.market_alignment_score),
+            "breadth_support_score": _round_or_none(regime_ctx.breadth_support_score),
+            "rotation_support_score": _round_or_none(regime_ctx.rotation_support_score),
+            "leader_health_score": _round_or_none(regime_ctx.leader_health_score),
             "reason_codes": _unique(reasons),
             "fail_codes": _unique(fail_codes),
             "data_flags": data_flags,
@@ -1837,8 +1752,6 @@ class QullamaggieAnalyzer:
             "entry_timeframe": entry_timeframe,
             "suggested_entry": _round_or_none(entry_price),
             "suggested_stop": _round_or_none(stop_price),
-            "position_size_hint": _round_or_none(position_size_hint),
-            "overnight_exposure_flag": "CAP_30_PCT" if (position_size_hint or 0.0) >= 20.0 else "NORMAL",
             "current_price": _round_or_none(close),
             "gap_percent": _round_or_none(gap_pct * 100.0),
             "volume_ratio": _round_or_none(volume_ratio),
@@ -1933,7 +1846,11 @@ class QullamaggieAnalyzer:
             "stock_grade": str(feature_row.get("stock_grade") or self.stock_grade(feature_row.get("a_pp_score"))),
             "setup_grade": self.setup_grade(short_score, watch=not passed),
             "regime_state": regime_ctx.regime_state,
-            "regime_score": _round_or_none(regime_ctx.regime_score),
+            "market_alias": regime_ctx.market_alias,
+            "market_alignment_score": _round_or_none(regime_ctx.market_alignment_score),
+            "breadth_support_score": _round_or_none(regime_ctx.breadth_support_score),
+            "rotation_support_score": _round_or_none(regime_ctx.rotation_support_score),
+            "leader_health_score": _round_or_none(regime_ctx.leader_health_score),
             "current_price": _round_or_none(_safe_float(feature_row.get("close"))),
             "short_term_rise": _round_or_none((_safe_float(feature_row.get("ret_1m")) or 0.0) * 100.0),
             "consecutive_up_days": consecutive_up_days,

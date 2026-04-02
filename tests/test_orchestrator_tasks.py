@@ -18,7 +18,7 @@ def test_collect_data_main_runs_ohlcv_before_metadata_and_applies_handoffs(monke
     def _fake_collect_data(*, update_symbols: bool = True):  # noqa: ANN202
         calls.append(("us_ohlcv", update_symbols))
 
-    fake_data_collector.collect_data = _fake_collect_data
+    setattr(fake_data_collector, "collect_data", _fake_collect_data)
 
     monkeypatch.setitem(sys.modules, "data_collector", fake_data_collector)
     monkeypatch.setattr(tasks, "wait_for_yahoo_phase_handoff", lambda label: handoffs.append(label))
@@ -49,13 +49,13 @@ def test_collect_data_main_runs_ohlcv_before_metadata_and_applies_handoffs(monke
 def test_run_kr_ohlcv_collection_defaults_to_include_etn(monkeypatch):
     observed: dict[str, object] = {}
     fake_module = types.ModuleType("data_collectors.kr_ohlcv_collector")
-    fake_module.KR_OHLCV_DEFAULT_LOOKBACK_DAYS = 520
+    setattr(fake_module, "KR_OHLCV_DEFAULT_LOOKBACK_DAYS", 520)
 
     def _fake_collect_kr_ohlcv_csv(**kwargs):  # noqa: ANN202
         observed.update(kwargs)
         return {"total": 1, "saved": 1, "failed": 0}
 
-    fake_module.collect_kr_ohlcv_csv = _fake_collect_kr_ohlcv_csv
+    setattr(fake_module, "collect_kr_ohlcv_csv", _fake_collect_kr_ohlcv_csv)
     monkeypatch.setitem(sys.modules, "data_collectors.kr_ohlcv_collector", fake_module)
     monkeypatch.setattr(data_collectors, "kr_ohlcv_collector", fake_module, raising=False)
 
@@ -102,11 +102,11 @@ def test_run_signal_engine_task_calls_signal_scan(monkeypatch):
     captured: dict[str, object] = {}
     fake_module = types.ModuleType("screeners.signals")
 
-    def _fake_run_signal_scan(*, market="us", as_of_date=None, upcoming_earnings_fetcher=None, earnings_collector=None):  # noqa: ANN202
+    def _fake_run_multi_screener_signal_scan(*, market="us", as_of_date=None, upcoming_earnings_fetcher=None, earnings_collector=None):  # noqa: ANN202
         captured["market"] = market
         return {"all_signals_v2": []}
 
-    setattr(fake_module, "run_signal_scan", _fake_run_signal_scan)
+    setattr(fake_module, "run_multi_screener_signal_scan", _fake_run_multi_screener_signal_scan)
     monkeypatch.setitem(sys.modules, "screeners.signals", fake_module)
 
     result = tasks.run_signal_engine_task(market="kr")
@@ -129,6 +129,60 @@ def test_run_signal_engine_processes_runs_each_market(monkeypatch):
 
     assert calls == ["us", "kr"]
     assert summary["ok"] is True
+
+
+def test_run_market_analysis_pipeline_runs_augment_between_screening_and_signals(monkeypatch):
+    calls: list[str] = []
+
+    monkeypatch.setattr(
+        tasks,
+        "run_all_screening_processes",
+        lambda **kwargs: calls.append("screening") or {"ok": True, "failed_steps": 0},
+    )
+    monkeypatch.setattr(
+        tasks,
+        "run_screening_augment_processes",
+        lambda **kwargs: calls.append("augment") or {"ok": True, "failed_steps": 0},
+    )
+    monkeypatch.setattr(
+        tasks,
+        "run_signal_engine_processes",
+        lambda **kwargs: calls.append("signals") or {"ok": True, "failed_steps": 0},
+    )
+
+    summary = tasks.run_market_analysis_pipeline(
+        skip_data=True,
+        markets=["us"],
+        include_signals=True,
+        enable_augment=True,
+    )
+
+    assert calls == ["screening", "augment", "signals"]
+    assert summary["ok"] is True
+
+
+def test_run_market_analysis_pipeline_skips_augment_when_disabled(monkeypatch):
+    calls: list[str] = []
+
+    monkeypatch.setattr(
+        tasks,
+        "run_all_screening_processes",
+        lambda **kwargs: calls.append("screening") or {"ok": True, "failed_steps": 0},
+    )
+    monkeypatch.setattr(
+        tasks,
+        "run_screening_augment_processes",
+        lambda **kwargs: calls.append("augment") or {"ok": True, "failed_steps": 0},
+    )
+
+    tasks.run_market_analysis_pipeline(
+        skip_data=True,
+        markets=["us"],
+        include_signals=False,
+        enable_augment=False,
+    )
+
+    assert calls == ["screening"]
 
 
 

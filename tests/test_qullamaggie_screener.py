@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-import importlib
-import importlib.util
+from types import SimpleNamespace
 from typing import Any
 
 import numpy as np
 import pandas as pd
 import pytest
 
-import screeners.qullamaggie as qullamaggie
-from screeners.qullamaggie.core import QullamaggieAnalyzer
+from screeners.qullamaggie.core import MarketRegime, QullamaggieAnalyzer
 from screeners.qullamaggie import screener as qullamaggie_screener
 from tests._paths import runtime_root
 from utils.screener_utils import save_screening_results as real_save_screening_results
@@ -62,6 +60,23 @@ def _benchmark_daily(length: int = 140) -> pd.DataFrame:
     volumes = np.linspace(4_000_000.0, 4_500_000.0, length)
     spreads = np.full(length, 0.008)
     return _daily_from_closes(closes, volumes, spreads=spreads)
+
+
+def _core_regime(*, alias: str = "RISK_ON") -> MarketRegime:
+    return MarketRegime(
+        market_code="US",
+        benchmark_symbol="SPY",
+        regime_state=alias,
+        regime_score=82.0,
+        market_alignment_score=82.0,
+        breadth_support_score=79.0,
+        rotation_support_score=84.0,
+        benchmark_trend_score=76.0,
+        leader_health_score=74.0,
+        reason_codes=("CORE_RISK_ON",),
+        data_flags=("core_market_truth",),
+        market_alias="RISK_ON",
+    )
 
 
 def _breakout_daily() -> pd.DataFrame:
@@ -137,25 +152,6 @@ def _ep_daily() -> pd.DataFrame:
     return _daily_from_closes(closes, volumes, spreads=spreads, gap_on_last=0.12)
 
 
-def test_qullamaggie_hides_legacy_signal_aliases_when_signals_module_is_unavailable(monkeypatch) -> None:
-    original_find_spec = importlib.util.find_spec
-
-    def _patched_find_spec(name: str, package: str | None = None):  # noqa: ANN202
-        if name == "screeners.signals":
-            return None
-        return original_find_spec(name, package)
-
-    with monkeypatch.context() as patch:
-        patch.setattr(importlib.util, "find_spec", _patched_find_spec)
-        reloaded = importlib.reload(qullamaggie)
-        assert "SignalEngine" not in reloaded.__all__
-        assert "run_signal_scan" not in reloaded.__all__
-        with pytest.raises(AttributeError):
-            getattr(reloaded, "SignalEngine")
-
-    importlib.reload(qullamaggie)
-
-
 def test_breakout_analyzer_identifies_actionable_candidate() -> None:
     analyzer = QullamaggieAnalyzer()
     frames = {
@@ -167,12 +163,7 @@ def test_breakout_analyzer_identifies_actionable_candidate() -> None:
     feature_table = analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
     feature_map = {str(row["symbol"]): _row_record(row) for _, row in feature_table.iterrows()}
     feature_map["AAA"]["breakout_universe_pass"] = True
-    regime = analyzer.compute_market_regime(
-        market="us",
-        benchmark_symbol="SPY",
-        benchmark_daily=_benchmark_daily(len(next(iter(frames.values())))),
-        feature_table=feature_table,
-    )
+    regime = _core_regime()
 
     result = analyzer.analyze_breakout(
         "AAA",
@@ -201,12 +192,7 @@ def test_breakout_analyzer_requires_universe_gate_before_passing() -> None:
     feature_table = analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
     feature_map = {str(row["symbol"]): _row_record(row) for _, row in feature_table.iterrows()}
     feature_map["AAA"]["breakout_universe_pass"] = True
-    regime = analyzer.compute_market_regime(
-        market="us",
-        benchmark_symbol="SPY",
-        benchmark_daily=_benchmark_daily(len(next(iter(frames.values())))),
-        feature_table=feature_table,
-    )
+    regime = _core_regime()
 
     forced_row = dict(feature_map["AAA"])
     forced_row["breakout_universe_pass"] = False
@@ -228,12 +214,7 @@ def test_episode_pivot_analyzer_promotes_core_when_event_is_present() -> None:
     daily = _ep_daily()
     feature_table = analyzer.finalize_feature_table(pd.DataFrame([analyzer.compute_feature_row("EPX", "us", daily)]))
     feature_row = _row_record(feature_table.iloc[0])
-    regime = analyzer.compute_market_regime(
-        market="us",
-        benchmark_symbol="SPY",
-        benchmark_daily=_benchmark_daily(len(daily)),
-        feature_table=feature_table,
-    )
+    regime = _core_regime()
     earnings_payload = {
         "meets_criteria": True,
         "eps_surprise_pct": 32.0,
@@ -266,12 +247,7 @@ def test_episode_pivot_requires_universe_gate_before_passing() -> None:
     feature_table = analyzer.finalize_feature_table(pd.DataFrame([analyzer.compute_feature_row("EPX", "us", daily)]))
     feature_row = _row_record(feature_table.iloc[0])
     feature_row["ep_universe_pass"] = False
-    regime = analyzer.compute_market_regime(
-        market="us",
-        benchmark_symbol="SPY",
-        benchmark_daily=_benchmark_daily(len(daily)),
-        feature_table=feature_table,
-    )
+    regime = _core_regime()
     earnings_payload = {
         "meets_criteria": True,
         "eps_surprise_pct": 32.0,
@@ -331,6 +307,21 @@ def test_run_qullamaggie_screening_builds_watchlists(monkeypatch) -> None:
     monkeypatch.setattr(qullamaggie_screener, "save_screening_results", real_save_screening_results)
     monkeypatch.setattr(qullamaggie_screener, "track_new_tickers", lambda **kwargs: [])
     monkeypatch.setattr(qullamaggie_screener, "create_screener_summary", lambda **kwargs: None)
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market="us",
+            as_of="2026-04-02",
+            market_alias="RISK_ON",
+            market_state="uptrend",
+            breadth_state="broad_participation",
+            rotation_support_score=84.0,
+            leader_health_score=74.0,
+            market_alignment_score=82.0,
+            breadth_support_score=79.0,
+        ),
+    )
     real_build_context = qullamaggie_screener._build_context
 
     def _patched_build_context(*args, **kwargs):  # noqa: ANN002, ANN003
@@ -347,14 +338,30 @@ def test_run_qullamaggie_screening_builds_watchlists(monkeypatch) -> None:
     result = qullamaggie_screener.run_qullamaggie_screening(setup_type="breakout", market="us")
 
     assert result["market_regime"]["regime_state"] in {"RISK_ON", "RISK_ON_AGGRESSIVE"}
+    assert result["market_regime"]["market_alignment_score"] == 82.0
+    assert result["market_regime"]["breadth_support_score"] == 79.0
+    assert result["market_regime"]["rotation_support_score"] == 84.0
+    assert result["market_regime"]["leader_health_score"] == 74.0
+    assert "regime_score" not in result["market_regime"]
+    assert "market_trend_score" not in result["market_regime"]
+    assert "breadth_score" not in result["market_regime"]
+    assert "opportunity_score" not in result["market_regime"]
+    assert "focus_list_density" not in result["market_regime"]
+    assert "breakout_success_proxy" not in result["market_regime"]
     assert len(result["breakout"]) >= 1
     assert result["breakout"][0]["symbol"] == "AAA"
+    assert result["breakout"][0]["market_alignment_score"] == 82.0
+    assert result["breakout"][0]["breadth_support_score"] == 79.0
+    assert result["breakout"][0]["rotation_support_score"] == 84.0
+    assert result["breakout"][0]["leader_health_score"] == 74.0
+    assert "regime_score" not in result["breakout"][0]
     assert len(result["universe_list"]) >= 1
     assert len(result["pattern_excluded_pool"]) >= 1
     assert len(result["pattern_included_candidates"]) >= 1
     assert len(result["wide_list"]) >= 1
     assert result["actual_data_calibration"]["breakout_min_compression_score"] >= 58.0
     assert len(result["weekly_focus"]) >= 1
+    assert "position_size_hint" not in result["breakout"][0]
     assert (output_root / "pattern_excluded_pool.csv").exists()
     assert (output_root / "pattern_included_candidates.csv").exists()
     assert (output_root / "pre_pattern_quant_financial_candidates.csv").exists()
@@ -371,12 +378,7 @@ def test_episode_pivot_skips_earnings_fetch_until_technical_prefilter_passes() -
     feature_row["rvol"] = 1.0
     feature_row["dcr"] = 0.5
     feature_row["no_excessive_run"] = False
-    regime = analyzer.compute_market_regime(
-        market="us",
-        benchmark_symbol="SPY",
-        benchmark_daily=_benchmark_daily(len(daily)),
-        feature_table=feature_table,
-    )
+    regime = _core_regime()
 
     class _Collector:
         def get_earnings_surprise(self, symbol: str):  # noqa: ANN201
@@ -407,12 +409,7 @@ def test_episode_pivot_fetches_earnings_after_technical_prefilter_passes() -> No
     feature_row["no_excessive_run"] = True
     feature_row["neglected_base_score"] = 70.0
     feature_row["open"] = float(feature_row.get("close") or 100.0) * 0.98
-    regime = analyzer.compute_market_regime(
-        market="us",
-        benchmark_symbol="SPY",
-        benchmark_daily=_benchmark_daily(len(daily)),
-        feature_table=feature_table,
-    )
+    regime = _core_regime()
 
     calls: list[str] = []
 
@@ -454,12 +451,7 @@ def test_episode_pivot_does_not_treat_unavailable_earnings_payload_as_event_data
     feature_row["no_excessive_run"] = True
     feature_row["neglected_base_score"] = 70.0
     feature_row["open"] = float(feature_row.get("close") or 100.0) * 0.98
-    regime = analyzer.compute_market_regime(
-        market="us",
-        benchmark_symbol="SPY",
-        benchmark_daily=_benchmark_daily(len(daily)),
-        feature_table=feature_table,
-    )
+    regime = _core_regime()
 
     result = analyzer.analyze_episode_pivot(
         "EPX",
@@ -519,19 +511,7 @@ def test_universe_list_requires_hard_universe_pass(monkeypatch) -> None:
             "metadata_map": {},
             "benchmark_symbol": "SPY",
             "benchmark_daily": pd.DataFrame(),
-            "regime": qullamaggie_screener.MarketRegime(
-                market_code="US",
-                benchmark_symbol="SPY",
-                regime_state="RISK_ON",
-                regime_score=75.0,
-                market_trend_score=75.0,
-                breadth_score=75.0,
-                opportunity_score=75.0,
-                focus_list_density=0.0,
-                breakout_success_proxy=0.0,
-                reason_codes=("TEST",),
-                data_flags=("TEST",),
-            ),
+            "regime": _core_regime(),
             "earnings_collector": None,
         },
     )

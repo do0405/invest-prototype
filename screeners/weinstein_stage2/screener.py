@@ -24,6 +24,13 @@ from utils.market_runtime import (
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
 from utils.typing_utils import is_na_like, series_to_str_text_dict, series_value_counts_to_int_dict, to_float_or_none
+from screeners.leader_core_bridge import (
+    LeaderCoreSnapshot,
+    MarketTruthSnapshot,
+    build_industry_key,
+    load_market_truth_snapshot,
+    shared_market_alias_to_weinstein_state,
+)
 
 
 def _safe_float(value: Any) -> float | None:
@@ -132,16 +139,23 @@ class MarketContext:
     ma30w_slope_4w: float | None
     market_score: float
     assumption_flags: tuple[str, ...] = ()
+    market_alignment_score: float | None = None
+    breadth_support_score: float | None = None
+    rotation_support_score: float | None = None
+    leader_health_score: float | None = None
+    market_alias: str = ""
 
 
 @dataclass(frozen=True)
 class GroupContext:
+    industry_key: str
     group_name: str
     group_state: str
     breadth150_group: float | None
     group_mrs: float | None
     group_rp_ma52_slope: float | None
     group_score: float
+    group_overlay_score: float | None
     data_available: bool
     assumption_flags: tuple[str, ...] = ()
 
@@ -996,14 +1010,16 @@ class WeinsteinStage2Analyzer:
         daily_trend = self._daily_trend_snapshot(daily)
 
         default_group = group_context or GroupContext(
-            group_name=sector or "Unknown",
-            group_state="GROUP_NEUTRAL",
+            industry_key=build_industry_key(sector, industry_group),
+            group_name=industry_group or sector or "Unknown",
+            group_state="WEAK",
             breadth150_group=None,
             group_mrs=None,
             group_rp_ma52_slope=None,
-            group_score=50.0,
+            group_score=0.0,
+            group_overlay_score=None,
             data_available=False,
-            assumption_flags=("missing_group_data",),
+            assumption_flags=("missing_core_group",),
         )
 
         assumption_flags: list[str] = list(market_context.assumption_flags) + list(default_group.assumption_flags)
@@ -1019,6 +1035,7 @@ class WeinsteinStage2Analyzer:
                 "benchmark_symbol": benchmark_symbol,
                 "mode": "BOOTSTRAP_MODE",
                 "market_state": market_context.market_state,
+                "industry_key": default_group.industry_key,
                 "group_state": default_group.group_state,
                 "stock_stage": "STAGE_1",
                 "timing_state": "EXCLUDE",
@@ -1045,6 +1062,7 @@ class WeinsteinStage2Analyzer:
                 "resistance_confidence": "LOW",
                 "breadth150_market": market_context.breadth150_market,
                 "breadth150_group": default_group.breadth150_group,
+                "group_overlay_score": default_group.group_overlay_score,
                 "early_stage2_score": 0.0,
                 "confidence_tier": "LOW",
                 "priority_label": "EXCLUDED",
@@ -1133,7 +1151,7 @@ class WeinsteinStage2Analyzer:
                 else None
             )
 
-        group_is_weak = default_group.data_available and default_group.group_state == "GROUP_WEAK"
+        group_is_weak = default_group.group_state == "WEAK"
         rejection_reason = ""
         timing_state = "EXCLUDE"
         breakout_age_weeks = breakout_signal.breakout_age_weeks if breakout_signal is not None else None
@@ -1222,6 +1240,8 @@ class WeinsteinStage2Analyzer:
         freshness_points, priority_label = self._timing_priority(timing_state)
         market_score = market_context.market_score
         group_score = default_group.group_score
+        group_overlay_score = default_group.group_overlay_score
+        group_overlay_adjustment = round(((group_overlay_score - 50.0) * 0.08), 2) if group_overlay_score is not None else 0.0
         relative_strength_score = round(rs_score_unit * 100.0, 2)
         if timing_state in {"BREAKOUT_WEEK", "FRESH_STAGE2_W1", "FRESH_STAGE2_W2"}:
             volume_quality_score = round(_score_ratio(current_volume_ratio, 2.0, 1.1) * 100.0, 2)
@@ -1239,7 +1259,7 @@ class WeinsteinStage2Analyzer:
             + 0.15 * volume_quality_score
             + 0.15 * base_quality_score_points
         )
-        early_stage2_score = max(0.0, round(early_stage2_score - penalty_points, 2))
+        early_stage2_score = max(0.0, round(early_stage2_score + group_overlay_adjustment - penalty_points, 2))
 
         return {
             "symbol": symbol,
@@ -1325,6 +1345,7 @@ class WeinsteinStage2Analyzer:
         benchmark_symbol: str,
         benchmark_daily: pd.DataFrame,
         daily_frames: dict[str, pd.DataFrame],
+        market_truth: MarketTruthSnapshot | None = None,
     ) -> MarketContext:
         assumption_flags: list[str] = []
         above_flags = []
@@ -1360,6 +1381,23 @@ class WeinsteinStage2Analyzer:
         else:
             market_state = "MARKET_NEUTRAL"
 
+        if market_truth is not None:
+            return MarketContext(
+                benchmark_symbol=benchmark_symbol,
+                market_state=shared_market_alias_to_weinstein_state(market_truth.market_alias),
+                breadth150_market=breadth150_market,
+                benchmark_close=benchmark_close,
+                ma30w=ma30w,
+                ma30w_slope_4w=_safe_float(ma30w_slope_4w),
+                market_score=round(market_truth.market_alignment_score or 60.0, 2),
+                assumption_flags=tuple(sorted(set(assumption_flags))),
+                market_alignment_score=_safe_float(market_truth.market_alignment_score),
+                breadth_support_score=_safe_float(market_truth.breadth_support_score),
+                rotation_support_score=_safe_float(market_truth.rotation_support_score),
+                leader_health_score=_safe_float(market_truth.leader_health_score),
+                market_alias=market_truth.market_alias,
+            )
+
         if market_state == "MARKET_STAGE2_FAVORABLE":
             market_score = 100.0 if breadth150_market is not None and breadth150_market >= 60 else 80.0
         elif market_state == "MARKET_STAGE4_RISK":
@@ -1385,28 +1423,43 @@ class WeinsteinStage2Analyzer:
         daily_frames: dict[str, pd.DataFrame],
         benchmark_daily: pd.DataFrame,
         sector_map: dict[str, str],
+        industry_map: dict[str, str],
+        leader_core: LeaderCoreSnapshot,
     ) -> tuple[dict[str, GroupContext], pd.DataFrame]:
         groups: dict[str, list[str]] = {}
+        labels: dict[str, tuple[str, str]] = {}
         for symbol, sector in sector_map.items():
-            if not sector:
-                continue
-            groups.setdefault(str(sector).strip(), []).append(symbol)
+            industry = str(industry_map.get(symbol, "") or "")
+            industry_key = build_industry_key(sector, industry)
+            groups.setdefault(industry_key, []).append(symbol)
+            labels[industry_key] = (str(sector or ""), industry)
 
         benchmark_weekly = self.build_weekly_bars(benchmark_daily)
         contexts: dict[str, GroupContext] = {}
         ranking_rows: list[dict[str, Any]] = []
 
-        for sector, members in sorted(groups.items()):
+        for industry_key, members in sorted(groups.items()):
+            sector, industry = labels.get(industry_key, ("", ""))
+            display_name = industry or sector or industry_key
+            core_row = leader_core.groups_by_key.get(industry_key)
+            core_state = str((core_row or {}).get("group_state") or "WEAK").upper()
+            core_score = _safe_float((core_row or {}).get("group_strength_score")) or 0.0
+            assumption_flags: list[str] = []
+            if core_row is None:
+                assumption_flags.append("missing_core_group")
+
             if len(members) < 3:
-                contexts[sector] = GroupContext(
-                    group_name=sector,
-                    group_state="GROUP_NEUTRAL",
+                contexts[industry_key] = GroupContext(
+                    industry_key=industry_key,
+                    group_name=display_name,
+                    group_state=core_state,
                     breadth150_group=None,
                     group_mrs=None,
                     group_rp_ma52_slope=None,
-                    group_score=50.0,
+                    group_score=core_score,
+                    group_overlay_score=None,
                     data_available=False,
-                    assumption_flags=("missing_group_data",),
+                    assumption_flags=tuple(assumption_flags + ["missing_group_data"]),
                 )
                 continue
 
@@ -1429,62 +1482,61 @@ class WeinsteinStage2Analyzer:
                 normalized["symbol"] = symbol
                 normalized_closes.append(normalized[["date", "symbol", "close_norm"]])
 
-            if len(normalized_closes) < 3:
-                contexts[sector] = GroupContext(
-                    group_name=sector,
-                    group_state="GROUP_NEUTRAL",
-                    breadth150_group=float(np.mean(above_flags) * 100.0) if above_flags else None,
-                    group_mrs=None,
-                    group_rp_ma52_slope=None,
-                    group_score=50.0,
-                    data_available=False,
-                    assumption_flags=("missing_group_data",),
-                )
-                continue
-
-            combined = pd.concat(normalized_closes, ignore_index=True)
-            group_series = combined.pivot_table(index="date", values="close_norm", aggfunc="mean").reset_index()
-            group_series = group_series.rename(columns={"close_norm": "close"})
-            group_series["open"] = group_series["close"]
-            group_series["high"] = group_series["close"]
-            group_series["low"] = group_series["close"]
-            group_series["volume"] = 0.0
-            group_weekly = self.build_weekly_bars(group_series)
-            group_weekly, _, _ = self._compute_rs_features(group_weekly, benchmark_weekly)
-
             breadth150_group = float(np.mean(above_flags) * 100.0) if above_flags else None
-            latest_idx = len(group_weekly) - 1
-            group_mrs = _safe_float(group_weekly.loc[latest_idx, "mrs"]) if latest_idx >= 0 else None
-            group_rp_ma52_slope = _safe_float(group_weekly.loc[latest_idx, "rp_ma52_slope"]) if latest_idx >= 0 else None
+            group_mrs = None
+            group_rp_ma52_slope = None
+            group_overlay_score = None
+            overlay_available = False
 
-            if group_mrs is not None and group_mrs > 0 and (group_rp_ma52_slope is None or group_rp_ma52_slope >= 0) and (breadth150_group is None or breadth150_group >= 40):
-                group_state = "GROUP_STRONG"
-                group_score = 100.0
-            elif breadth150_group is not None and breadth150_group < 40 and (group_mrs is None or group_mrs <= 0):
-                group_state = "GROUP_WEAK"
-                group_score = 0.0
+            if len(normalized_closes) >= 3:
+                combined = pd.concat(normalized_closes, ignore_index=True)
+                group_series = combined.pivot_table(index="date", values="close_norm", aggfunc="mean").reset_index()
+                group_series = group_series.rename(columns={"close_norm": "close"})
+                group_series["open"] = group_series["close"]
+                group_series["high"] = group_series["close"]
+                group_series["low"] = group_series["close"]
+                group_series["volume"] = 0.0
+                group_weekly = self.build_weekly_bars(group_series)
+                group_weekly, _, _ = self._compute_rs_features(group_weekly, benchmark_weekly)
+                latest_idx = len(group_weekly) - 1
+                group_mrs = _safe_float(group_weekly.loc[latest_idx, "mrs"]) if latest_idx >= 0 else None
+                group_rp_ma52_slope = _safe_float(group_weekly.loc[latest_idx, "rp_ma52_slope"]) if latest_idx >= 0 else None
+                overlay_components: list[tuple[float, float]] = []
+                if breadth150_group is not None:
+                    overlay_components.append((breadth150_group, 0.45))
+                if group_mrs is not None:
+                    overlay_components.append((_score_ratio(group_mrs, 0.0, -5.0) * 100.0, 0.30))
+                if group_rp_ma52_slope is not None:
+                    overlay_components.append((_score_ratio(group_rp_ma52_slope, 0.0, -0.005) * 100.0, 0.25))
+                if overlay_components:
+                    total_weight = sum(weight for _, weight in overlay_components)
+                    group_overlay_score = round(sum(value * weight for value, weight in overlay_components) / total_weight, 2)
+                overlay_available = True
             else:
-                group_state = "GROUP_NEUTRAL"
-                group_score = 60.0
+                assumption_flags.append("missing_group_data")
 
-            contexts[sector] = GroupContext(
-                group_name=sector,
-                group_state=group_state,
+            contexts[industry_key] = GroupContext(
+                industry_key=industry_key,
+                group_name=display_name,
+                group_state=core_state,
                 breadth150_group=breadth150_group,
                 group_mrs=group_mrs,
                 group_rp_ma52_slope=group_rp_ma52_slope,
-                group_score=group_score,
-                data_available=True,
-                assumption_flags=(),
+                group_score=core_score,
+                group_overlay_score=group_overlay_score,
+                data_available=overlay_available,
+                assumption_flags=tuple(assumption_flags),
             )
             ranking_rows.append(
                 {
-                    "group_name": sector,
-                    "group_state": group_state,
+                    "industry_key": industry_key,
+                    "group_name": display_name,
+                    "group_state": core_state,
+                    "group_score": core_score,
+                    "group_overlay_score": group_overlay_score,
                     "breadth150_group": breadth150_group,
                     "group_mrs": group_mrs,
                     "group_rp_ma52_slope": group_rp_ma52_slope,
-                    "group_score": group_score,
                     "member_count": len(members),
                 }
             )
@@ -1492,8 +1544,8 @@ class WeinsteinStage2Analyzer:
         ranking_df = pd.DataFrame(ranking_rows)
         if not ranking_df.empty:
             ranking_df = ranking_df.sort_values(
-                ["group_score", "breadth150_group", "group_mrs"],
-                ascending=[False, False, False],
+                ["group_score", "group_overlay_score", "breadth150_group", "group_mrs"],
+                ascending=[False, False, False, False],
             ).reset_index(drop=True)
         return contexts, ranking_df
 
@@ -1711,17 +1763,23 @@ class WeinsteinStage2Screener:
         )
         benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(self.market)
         print(f"[Weinstein] Market context build started ({self.market}) - benchmark={benchmark_symbol}")
+        as_of_date = _date_str(pd.to_datetime(benchmark_daily["date"].iloc[-1], errors="coerce")) or ""
+        market_truth = load_market_truth_snapshot(self.market, as_of_date=as_of_date)
         market_context = self.analyzer.compute_market_context(
             market=self.market,
             benchmark_symbol=benchmark_symbol,
             benchmark_daily=benchmark_daily,
             daily_frames=frames,
+            market_truth=market_truth,
         )
+        leader_core = market_truth.leader_core
         group_contexts, group_rankings = self.analyzer.compute_group_contexts(
             market=self.market,
             daily_frames=frames,
             benchmark_daily=benchmark_daily,
             sector_map=sector_map,
+            industry_map=industry_map,
+            leader_core=leader_core,
         )
 
         rows: list[dict[str, Any]] = []
@@ -1730,6 +1788,8 @@ class WeinsteinStage2Screener:
         print(f"[Weinstein] Symbol analysis started ({self.market}) - symbols={total_symbols}")
         for index, (symbol, frame) in enumerate(frames.items(), start=1):
             sector = str(sector_map.get(symbol, "") or "")
+            industry_group = str(industry_map.get(symbol, "") or "")
+            industry_key = build_industry_key(sector, industry_group)
             rows.append(
                 self.analyzer.analyze_symbol(
                     symbol=symbol,
@@ -1738,10 +1798,10 @@ class WeinsteinStage2Screener:
                     benchmark_symbol=benchmark_symbol,
                     benchmark_daily=benchmark_daily,
                     market_context=market_context,
-                    group_context=group_contexts.get(sector),
+                    group_context=group_contexts.get(industry_key),
                     exchange=str(exchange_map.get(symbol, "") or ""),
                     sector=sector,
-                    industry_group=str(industry_map.get(symbol, "") or ""),
+                    industry_group=industry_group,
                 )
             )
             if is_progress_tick(index, total_symbols, interval):
@@ -1787,11 +1847,23 @@ class WeinsteinStage2Screener:
                 ascending=[True, False, True, True],
             ).drop(columns=["timing_rank"]).reset_index(drop=True)
 
+        if not results_df.empty:
+            results_df = results_df.drop(columns=["breadth150_market", "breadth150_group", "group_mrs", "group_rp_ma52_slope", "group_overlay_score", "group_score", "market_score"], errors="ignore")
+        if not group_rankings.empty:
+            group_rankings = group_rankings.rename(columns={"group_score": "group_strength_score"})
+            group_rankings = group_rankings[["industry_key", "group_name", "group_state", "group_strength_score", "member_count"]].copy()
+        else:
+            group_rankings = pd.DataFrame(columns=["industry_key", "group_name", "group_state", "group_strength_score", "member_count"])
+
         market_summary = {
             "market": self.market,
             "benchmark_symbol": benchmark_symbol,
             "market_state": market_context.market_state,
-            "breadth150_market": market_context.breadth150_market,
+            "market_alias": market_context.market_alias,
+            "market_alignment_score": market_context.market_alignment_score,
+            "breadth_support_score": market_context.breadth_support_score,
+            "rotation_support_score": market_context.rotation_support_score,
+            "leader_health_score": market_context.leader_health_score,
             "benchmark_close": market_context.benchmark_close,
             "benchmark_ma30w": market_context.ma30w,
             "benchmark_ma30w_slope_4w": market_context.ma30w_slope_4w,

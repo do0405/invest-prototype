@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import pandas as pd
 
@@ -221,6 +222,19 @@ def test_qullamaggie_kr_defaults_to_earnings_filter(monkeypatch):
     monkeypatch.setattr(qullamaggie_screener, "save_screening_results", lambda **kwargs: {"csv": "dummy.csv", "json": "dummy.json"})
     monkeypatch.setattr(qullamaggie_screener, "track_new_tickers", lambda **kwargs: [])
     monkeypatch.setattr(qullamaggie_screener, "create_screener_summary", lambda **kwargs: None)
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market_alias="RISK_ON",
+            market_alignment_score=82.0,
+            breadth_support_score=78.0,
+            rotation_support_score=86.0,
+            leader_health_score=74.0,
+            market_state="uptrend",
+            breadth_state="broad_participation",
+        ),
+    )
 
     result = qullamaggie_screener.run_qullamaggie_screening(setup_type="episode_pivot", market="kr")
 

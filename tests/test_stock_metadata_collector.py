@@ -33,7 +33,7 @@ def test_get_symbols_for_us_uses_seed_universe_and_excludes_special_issue(monkey
     metadata_path = data_dir / "stock_metadata.csv"
 
     pd.DataFrame([{"symbol": "AAPL"}, {"symbol": "SQQQ"}, {"symbol": "AACIW"}]).to_csv(
-        data_dir / "nasdaq_symbols.csv",
+        data_dir / "broad_us_seed.csv",
         index=False,
     )
     pd.DataFrame([{"symbol": "GLD", "fetch_status": "complete", "source": "cache", "last_attempted_at": "2026-03-14T00:00:00Z"}]).to_csv(metadata_path, index=False)

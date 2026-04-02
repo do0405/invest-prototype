@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import os
@@ -11,7 +11,7 @@ def write_records(
     filename_prefix: str,
     rows: list[dict[str, Any]],
     *,
-    save_screening_results_fn: Callable[..., None],
+    save_screening_results_fn: Callable[..., Any],
 ) -> None:
     save_screening_results_fn(
         results=rows,
@@ -26,38 +26,26 @@ def write_records(
 def write_signal_outputs(
     results_dir: str,
     *,
-    legacy_trend_event_rows: list[dict[str, Any]],
-    legacy_trend_state_rows: list[dict[str, Any]],
-    legacy_ug_event_rows: list[dict[str, Any]],
-    legacy_ug_state_rows: list[dict[str, Any]],
-    legacy_all_signal_rows: list[dict[str, Any]],
-    trend_event_rows_v2: list[dict[str, Any]],
-    trend_state_rows_v2: list[dict[str, Any]],
-    ug_event_rows_v2: list[dict[str, Any]],
-    ug_state_rows_v2: list[dict[str, Any]],
-    ug_combo_rows_v2: list[dict[str, Any]],
-    all_signal_rows_v2: list[dict[str, Any]],
-    open_cycle_rows_v2: list[dict[str, Any]],
-    open_cycle_rows_legacy: list[dict[str, Any]],
+    trend_event_rows: list[dict[str, Any]],
+    trend_state_rows: list[dict[str, Any]],
+    ug_event_rows: list[dict[str, Any]],
+    ug_state_rows: list[dict[str, Any]],
+    ug_combo_rows: list[dict[str, Any]],
+    all_signal_rows: list[dict[str, Any]],
+    open_cycle_rows: list[dict[str, Any]],
     diagnostics: list[dict[str, Any]],
     signal_universe_rows: list[dict[str, Any]],
     source_registry_summary: dict[str, Any],
     signal_summary: dict[str, Any],
     write_records_fn: Callable[[str, str, list[dict[str, Any]]], None],
 ) -> None:
-    write_records_fn(results_dir, "trend_following_events", legacy_trend_event_rows)
-    write_records_fn(results_dir, "trend_following_states", legacy_trend_state_rows)
-    write_records_fn(results_dir, "ultimate_growth_events", legacy_ug_event_rows)
-    write_records_fn(results_dir, "ultimate_growth_states", legacy_ug_state_rows)
-    write_records_fn(results_dir, "all_signals", legacy_all_signal_rows)
-    write_records_fn(results_dir, "trend_following_events_v2", trend_event_rows_v2)
-    write_records_fn(results_dir, "trend_following_states_v2", trend_state_rows_v2)
-    write_records_fn(results_dir, "ultimate_growth_events_v2", ug_event_rows_v2)
-    write_records_fn(results_dir, "ultimate_growth_states_v2", ug_state_rows_v2)
-    write_records_fn(results_dir, "ug_strategy_combos_v2", ug_combo_rows_v2)
-    write_records_fn(results_dir, "all_signals_v2", all_signal_rows_v2)
-    write_records_fn(results_dir, "open_family_cycles", open_cycle_rows_v2)
-    write_records_fn(results_dir, "open_family_cycles_legacy", open_cycle_rows_legacy)
+    write_records_fn(results_dir, "trend_following_events_v2", trend_event_rows)
+    write_records_fn(results_dir, "trend_following_states_v2", trend_state_rows)
+    write_records_fn(results_dir, "ultimate_growth_events_v2", ug_event_rows)
+    write_records_fn(results_dir, "ultimate_growth_states_v2", ug_state_rows)
+    write_records_fn(results_dir, "ug_strategy_combos_v2", ug_combo_rows)
+    write_records_fn(results_dir, "all_signals_v2", all_signal_rows)
+    write_records_fn(results_dir, "open_family_cycles", open_cycle_rows)
     write_records_fn(results_dir, "screen_signal_diagnostics", diagnostics)
     write_records_fn(results_dir, "signal_universe_snapshot", signal_universe_rows)
 

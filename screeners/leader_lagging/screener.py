@@ -32,6 +32,13 @@ from utils.market_runtime import (
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
 from utils.typing_utils import frame_keyed_records, row_to_record, series_to_str_text_dict
+from screeners.leader_core_bridge import (
+    MarketTruthSnapshot,
+    annotate_frame_with_leader_core,
+    build_industry_key,
+    load_market_truth_snapshot,
+    shared_market_alias_to_leader_lagging_state,
+)
 
 
 def _safe_float(value: Any) -> float | None:
@@ -206,6 +213,11 @@ class MarketContext:
     top_group_share: float | None
     score_multiplier: float
     reason_codes: tuple[str, ...]
+    market_alignment_score: float | None = None
+    breadth_support_score: float | None = None
+    rotation_support_score: float | None = None
+    leader_health_score: float | None = None
+    market_alias: str = ""
 
 
 class LeaderLaggingAnalyzer:
@@ -639,6 +651,7 @@ class LeaderLaggingAnalyzer:
             "event_gap_up_flag": event_gap_up_flag,
             "event_proxy_score": event_proxy_score,
             "market_cap": _safe_float(metadata.get("market_cap")),
+            "industry_key": build_industry_key(sector, industry),
             "group_name": industry or sector,
         }
 
@@ -734,11 +747,19 @@ class LeaderLaggingAnalyzer:
         if feature_table.empty:
             return pd.DataFrame()
 
+        table = feature_table.copy()
+        if "industry_key" not in table.columns:
+            table["industry_key"] = table.apply(
+                lambda row: build_industry_key(row.get("sector"), row.get("industry")),
+                axis=1,
+            )
+
         group_table = (
-            feature_table.groupby("group_name", dropna=False)
+            table.groupby("industry_key", dropna=False)
             .agg(
                 sector=("sector", lambda values: next((str(item) for item in values if str(item)), "")),
                 industry=("industry", lambda values: next((str(item) for item in values if str(item)), "")),
+                group_name=("group_name", lambda values: next((str(item) for item in values if str(item)), "")),
                 group_member_count=("symbol", "count"),
                 group_return_20d=("ret_20d", "mean"),
                 group_return_60d=("ret_60d", "mean"),
@@ -746,6 +767,9 @@ class LeaderLaggingAnalyzer:
                 group_rs_slope_20d=("rs_line_20d_slope", "mean"),
                 group_pct_above_50dma=("close_gt_50", "mean"),
                 group_new_high_share=("distance_to_52w_high", lambda s: float((pd.to_numeric(s, errors="coerce") <= 0.08).mean())),
+                core_group_strength_score=("core_group_strength_score", lambda values: next((value for value in (_safe_float(item) for item in values) if value is not None), None)),
+                core_group_rank=("core_group_rank", lambda values: next((value for value in (_safe_float(item) for item in values) if value is not None), None)),
+                core_group_state=("core_group_state", lambda values: next((str(item) for item in values if str(item)), "")),
             )
             .reset_index()
         )
@@ -753,27 +777,35 @@ class LeaderLaggingAnalyzer:
         group_table["group_return_60d_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_return_60d"]), higher_is_better=True)
         group_table["group_mansfield_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_mansfield_rs"]), higher_is_better=True)
         group_table["group_rs_slope_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_rs_slope_20d"]), higher_is_better=True)
-        group_table["industry_rs_pct"] = _percentile_series(group_table["group_return_60d"])
-        group_table["sector_rs_pct"] = _percentile_series(group_table["group_return_20d"])
-        group_table["group_strength_score"] = group_table.apply(
+        group_table["group_overlay_score"] = group_table.apply(
             lambda row: _weighted_mean(
                 [
-                    (_safe_float(row.get("industry_rs_pct")), 0.25),
-                    (_safe_float(row.get("sector_rs_pct")), 0.15),
-                    (_safe_float(row.get("group_mansfield_score")), 0.20),
-                    (_safe_float(row.get("group_return_20d_score")), 0.15),
-                    (_safe_float(row.get("group_return_60d_score")), 0.10),
-                    (((_safe_float(row.get("group_pct_above_50dma")) or 0.0) * 100.0), 0.10),
-                    (((_safe_float(row.get("group_new_high_share")) or 0.0) * 100.0), 0.05),
+                    (_safe_float(row.get("group_mansfield_score")), 0.25),
+                    (_safe_float(row.get("group_return_20d_score")), 0.20),
+                    (_safe_float(row.get("group_return_60d_score")), 0.15),
+                    (_safe_float(row.get("group_rs_slope_score")), 0.15),
+                    (((_safe_float(row.get("group_pct_above_50dma")) or 0.0) * 100.0), 0.15),
+                    (((_safe_float(row.get("group_new_high_share")) or 0.0) * 100.0), 0.10),
                 ]
             ),
             axis=1,
         )
+        group_table["group_strength_score"] = group_table["core_group_strength_score"].fillna(0.0)
+        group_table["industry_rs_pct"] = group_table["group_strength_score"]
+        group_table["sector_rs_pct"] = group_table["group_overlay_score"]
+        group_table["group_state"] = group_table["core_group_state"].fillna("")
+        group_table["group_rank"] = group_table["core_group_rank"].fillna(999.0)
         group_table = group_table.sort_values(
-            ["group_strength_score", "industry_rs_pct", "group_return_60d"],
+            ["group_strength_score", "group_overlay_score", "group_return_60d"],
             ascending=[False, False, False],
         ).reset_index(drop=True)
-        group_table["group_rank"] = np.arange(1, len(group_table) + 1)
+        missing_rank_mask = pd.to_numeric(group_table["group_rank"], errors="coerce").fillna(999.0) >= 999.0
+        if bool(missing_rank_mask.any()):
+            fallback_ranks = pd.Series(
+                np.arange(1, int(missing_rank_mask.sum()) + 1, dtype=float),
+                index=group_table.index[missing_rank_mask],
+            )
+            group_table.loc[missing_rank_mask, "group_rank"] = fallback_ranks
         return group_table
 
     def compute_market_context(
@@ -784,6 +816,7 @@ class LeaderLaggingAnalyzer:
         benchmark_daily: pd.DataFrame,
         feature_table: pd.DataFrame,
         group_table: pd.DataFrame,
+        market_truth: MarketTruthSnapshot | None = None,
     ) -> MarketContext:
         benchmark = self.normalize_daily_frame(benchmark_daily)
         reasons: list[str] = []
@@ -800,8 +833,37 @@ class LeaderLaggingAnalyzer:
             high_low_ratio = float((new_high_count + 1) / (new_low_count + 1))
             if not group_table.empty:
                 top_cutoff = max(1, int(np.ceil(len(group_table) * 0.2)))
-                top_groups = set(group_table.head(top_cutoff)["group_name"].astype(str))
-                top_group_share = float(feature_table["group_name"].astype(str).isin(top_groups).mean() * 100.0)
+                top_groups = set(group_table.head(top_cutoff)["industry_key"].astype(str))
+                top_group_share = float(feature_table["industry_key"].astype(str).isin(top_groups).mean() * 100.0)
+
+        if market_truth is not None:
+            regime_state = shared_market_alias_to_leader_lagging_state(market_truth.market_alias)
+            score_multiplier = 1.0 if market_truth.market_alias == "RISK_ON" else 0.88 if market_truth.market_alias == "NEUTRAL" else 0.70
+            reasons = [f"CORE_{market_truth.market_alias}"]
+            if market_truth.market_state:
+                reasons.append(f"MARKET_{market_truth.market_state.upper()}")
+            if market_truth.breadth_state:
+                reasons.append(f"BREADTH_{market_truth.breadth_state.upper()}")
+            if market_truth.rotation_support_score is not None and market_truth.rotation_support_score >= 70.0:
+                reasons.append("CORE_ROTATION_SUPPORTIVE")
+            if market_truth.leader_health_score is not None and market_truth.leader_health_score >= 70.0:
+                reasons.append("CORE_LEADERS_HEALTHY")
+            return MarketContext(
+                benchmark_symbol=str(benchmark_symbol or "").upper(),
+                regime_state=regime_state,
+                regime_score=round(market_truth.market_alignment_score or 55.0, 2),
+                breadth_50=_round_or_none(breadth_50),
+                breadth_200=_round_or_none(breadth_200),
+                high_low_ratio=_round_or_none(high_low_ratio),
+                top_group_share=_round_or_none(top_group_share),
+                score_multiplier=score_multiplier,
+                reason_codes=tuple(_unique(reasons)),
+                market_alignment_score=_round_or_none(market_truth.market_alignment_score),
+                breadth_support_score=_round_or_none(market_truth.breadth_support_score),
+                rotation_support_score=_round_or_none(market_truth.rotation_support_score),
+                leader_health_score=_round_or_none(market_truth.leader_health_score),
+                market_alias=market_truth.market_alias,
+            )
 
         trend_score = 50.0
         if not benchmark.empty and len(benchmark) >= 220:
@@ -1192,15 +1254,17 @@ class LeaderLaggingAnalyzer:
         table = feature_table.merge(
             group_table[
                 [
-                    "group_name",
+                    "industry_key",
                     "industry_rs_pct",
                     "sector_rs_pct",
                     "group_strength_score",
                     "group_rank",
+                    "group_state",
+                    "group_overlay_score",
                     "group_new_high_share",
                 ]
             ],
-            on="group_name",
+            on="industry_key",
             how="left",
         ).copy()
         breadth_context_score = 100.0 if market_context.regime_state == "Risk-On" else 65.0 if market_context.regime_state == "Neutral" else 35.0
@@ -1284,6 +1348,7 @@ class LeaderLaggingAnalyzer:
                     "market": row.get("market"),
                     "sector": row.get("sector"),
                     "industry": row.get("industry"),
+                    "industry_key": row.get("industry_key"),
                     "group_name": row.get("group_name"),
                     "leader_score": _round_or_none(leader_score),
                     "rs_rank": _round_or_none(_safe_float(row.get("rs_rank"))),
@@ -1361,15 +1426,15 @@ class LeaderLaggingAnalyzer:
 
         calibration_map = dict(calibration or self.build_actual_data_calibration(feature_table=feature_table, group_table=group_table))
 
-        leader_pool = leaders[leaders["label"] == "Confirmed Leader"].copy()
+        leader_pool = leaders.copy()
         if leader_pool.empty:
             return pd.DataFrame(), pd.DataFrame()
 
         table = feature_table.merge(
             group_table[
-                ["group_name", "industry_rs_pct", "group_strength_score", "group_rank"]
+                ["industry_key", "industry_rs_pct", "group_strength_score", "group_rank", "group_state", "group_overlay_score"]
             ],
-            on="group_name",
+            on="industry_key",
             how="left",
         ).copy()
         confirmed_symbols = set(leader_pool["symbol"].astype(str))
@@ -1381,7 +1446,7 @@ class LeaderLaggingAnalyzer:
             symbol = str(candidate.get("symbol"))
             if symbol in confirmed_symbols:
                 continue
-            peers = leader_pool[leader_pool["group_name"] == candidate.get("group_name")].copy()
+            peers = leader_pool[leader_pool["industry_key"] == candidate.get("industry_key")].copy()
             if peers.empty:
                 continue
 
@@ -1504,6 +1569,7 @@ class LeaderLaggingAnalyzer:
                 "market": candidate.get("market"),
                 "sector": candidate.get("sector"),
                 "industry": candidate.get("industry"),
+                "industry_key": candidate.get("industry_key"),
                 "group_name": candidate.get("group_name"),
                 "follower_score": _round_or_none(_safe_float(best_payload.get("follower_score"))),
                 "pair_link_score": _round_or_none(_safe_float(best_payload.get("pair_link_score"))),
@@ -1623,7 +1689,16 @@ class LeaderLaggingScreener:
             "leaders": leaders,
             "followers": followers,
             "leader_follower_pairs": pairs,
-            "group_dashboard": group_table,
+            "group_dashboard": group_table[[
+                "industry_key",
+                "sector",
+                "industry",
+                "group_name",
+                "group_member_count",
+                "group_strength_score",
+                "group_state",
+                "group_rank",
+            ]].copy(),
         }
         for stem, frame in outputs.items():
             csv_path = os.path.join(self.results_dir, f"{stem}.csv")
@@ -1635,12 +1710,11 @@ class LeaderLaggingScreener:
             "market": self.market.upper(),
             "benchmark_symbol": market_context.benchmark_symbol,
             "regime_state": market_context.regime_state,
-            "regime_score": market_context.regime_score,
-            "breadth_50": market_context.breadth_50,
-            "breadth_200": market_context.breadth_200,
-            "high_low_ratio": market_context.high_low_ratio,
-            "top_group_share": market_context.top_group_share,
-            "score_multiplier": market_context.score_multiplier,
+            "market_alias": market_context.market_alias,
+            "market_alignment_score": market_context.market_alignment_score,
+            "breadth_support_score": market_context.breadth_support_score,
+            "rotation_support_score": market_context.rotation_support_score,
+            "leader_health_score": market_context.leader_health_score,
             "reason_codes": list(market_context.reason_codes),
             "actual_data_calibration": actual_data_calibration,
             "counts": {
@@ -1694,6 +1768,9 @@ class LeaderLaggingScreener:
                     f"processed={index}/{total_symbols}, features={len(feature_rows)}"
                 )
         feature_table = self.analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
+        as_of_date = str(feature_table["as_of_ts"].dropna().max()) if not feature_table.empty and "as_of_ts" in feature_table.columns and not feature_table["as_of_ts"].dropna().empty else _as_date_str(benchmark_daily["date"].iloc[-1]) or ""
+        market_truth = load_market_truth_snapshot(self.market, as_of_date=as_of_date)
+        feature_table = annotate_frame_with_leader_core(feature_table, market_truth.leader_core)
         group_table = self.analyzer.compute_group_table(feature_table)
         actual_data_calibration = self.analyzer.build_actual_data_calibration(
             feature_table=feature_table,
@@ -1709,6 +1786,7 @@ class LeaderLaggingScreener:
             benchmark_daily=benchmark_daily,
             feature_table=feature_table,
             group_table=group_table,
+            market_truth=market_truth,
         )
         leaders = self.analyzer.analyze_leaders(
             feature_table=feature_table,
@@ -1716,6 +1794,41 @@ class LeaderLaggingScreener:
             market_context=market_context,
             calibration=actual_data_calibration,
         )
+        if not leaders.empty:
+            leaders = leaders.merge(
+                feature_table[[
+                    "symbol",
+                    "core_group_state",
+                    "core_group_strength_score",
+                    "core_group_rank",
+                    "core_leader_state",
+                    "core_breakdown_status",
+                    "core_leader_score",
+                ]].drop_duplicates(subset=["symbol"]),
+                on="symbol",
+                how="left",
+            )
+            leaders["leader_overlay_score"] = leaders["leader_score"]
+            leaders["leader_score"] = leaders["core_leader_score"]
+            leaders["group_state"] = leaders["core_group_state"].fillna("")
+            leaders["group_strength_score"] = leaders["core_group_strength_score"].where(leaders["core_group_strength_score"].notna(), leaders["group_strength_score"])
+            leaders["group_rank"] = leaders["core_group_rank"].where(leaders["core_group_rank"].notna(), leaders["group_rank"])
+            leaders["leader_state"] = leaders["core_leader_state"].fillna("")
+            leaders["breakdown_status"] = leaders["core_breakdown_status"].fillna("")
+            leaders = leaders[
+                leaders["leader_state"].isin(["CONFIRMED", "EMERGING"])
+                & (leaders["breakdown_status"] == "OK")
+            ].copy()
+            leaders = leaders.drop(columns=[
+                "core_group_state",
+                "core_group_strength_score",
+                "core_group_rank",
+                "core_leader_state",
+                "core_breakdown_status",
+                "core_leader_score",
+            ])
+            leaders = leaders.sort_values(["leader_overlay_score", "leader_score", "rs_rank"], ascending=[False, False, False]).reset_index(drop=True)
+
         followers, pairs = self.analyzer.analyze_followers(
             feature_table=feature_table,
             leaders=leaders,
@@ -1724,11 +1837,47 @@ class LeaderLaggingScreener:
             frames=frames,
             calibration=actual_data_calibration,
         )
+        if not followers.empty:
+            followers = followers.merge(
+                feature_table[[
+                    "symbol",
+                    "core_group_state",
+                    "core_group_strength_score",
+                    "core_group_rank",
+                    "core_leader_state",
+                    "core_breakdown_status",
+                    "core_leader_score",
+                ]].drop_duplicates(subset=["symbol"]),
+                on="symbol",
+                how="left",
+            )
+            followers["group_state"] = followers["core_group_state"].fillna("")
+            followers["group_strength_score"] = followers["core_group_strength_score"].where(followers["core_group_strength_score"].notna(), followers["group_strength_score"])
+            existing_group_rank = (
+                followers["group_rank"]
+                if "group_rank" in followers.columns
+                else pd.Series(np.nan, index=followers.index, dtype="float64")
+            )
+            followers["group_rank"] = followers["core_group_rank"].where(
+                followers["core_group_rank"].notna(),
+                existing_group_rank,
+            )
+            followers["leader_state"] = followers["core_leader_state"].fillna("")
+            followers["breakdown_status"] = followers["core_breakdown_status"].fillna("")
+            followers["leader_score"] = followers["core_leader_score"]
+            followers = followers.drop(columns=[
+                "core_group_state",
+                "core_group_strength_score",
+                "core_group_rank",
+                "core_leader_state",
+                "core_breakdown_status",
+                "core_leader_score",
+            ])
 
         pool_table = (
             feature_table.merge(
-                group_table[["group_name", "group_strength_score", "group_rank"]],
-                on="group_name",
+                group_table[["industry_key", "group_strength_score", "group_rank", "group_state", "group_overlay_score"]],
+                on="industry_key",
                 how="left",
             )
             if not feature_table.empty and not group_table.empty
@@ -1736,6 +1885,9 @@ class LeaderLaggingScreener:
         )
         broad_pool = pd.DataFrame()
         if not pool_table.empty:
+            pool_table["leader_state"] = pool_table.get("core_leader_state", pd.Series("", index=pool_table.index)).fillna("")
+            pool_table["breakdown_status"] = pool_table.get("core_breakdown_status", pd.Series("", index=pool_table.index)).fillna("")
+            pool_table["leader_score"] = pool_table.get("core_leader_score", pd.Series(pd.NA, index=pool_table.index))
             for column in ("group_strength_score", "group_rank", "delta_rs_rank_qoq", "mansfield_rs_slope"):
                 if column not in pool_table.columns:
                     pool_table[column] = pd.NA
@@ -1749,11 +1901,16 @@ class LeaderLaggingScreener:
                     "market",
                     "sector",
                     "industry",
+                    "industry_key",
                     "group_name",
+                    "group_state",
                     "rs_rank",
                     "delta_rs_rank_qoq",
                     "group_strength_score",
                     "group_rank",
+                    "leader_state",
+                    "breakdown_status",
+                    "leader_score",
                     "trend_integrity_score",
                     "structure_quality_score",
                     "volume_demand_score",
@@ -1795,7 +1952,7 @@ class LeaderLaggingScreener:
             sort=False,
         ) if not leaders.empty or not followers.empty else pd.DataFrame()
         if not pattern_included_candidates.empty:
-            leader_scores = _numeric_frame_column(pattern_included_candidates, "leader_score")
+            leader_scores = _numeric_frame_column(pattern_included_candidates, "leader_overlay_score")
             follower_scores = _numeric_frame_column(pattern_included_candidates, "follower_score")
             pattern_included_candidates["_sort_score"] = leader_scores.fillna(follower_scores)
             pattern_included_candidates = pattern_included_candidates.sort_values(
@@ -1823,13 +1980,26 @@ class LeaderLaggingScreener:
             "leaders": leaders.to_dict(orient="records"),
             "followers": followers.to_dict(orient="records"),
             "pairs": pairs.to_dict(orient="records"),
-            "group_dashboard": group_table.to_dict(orient="records"),
+            "group_dashboard": group_table[[
+                "industry_key",
+                "sector",
+                "industry",
+                "group_name",
+                "group_member_count",
+                "group_strength_score",
+                "group_state",
+                "group_rank",
+            ]].to_dict(orient="records"),
             "actual_data_calibration": actual_data_calibration,
             "market_summary": {
                 "market": self.market.upper(),
                 "benchmark_symbol": market_context.benchmark_symbol,
                 "regime_state": market_context.regime_state,
-                "regime_score": market_context.regime_score,
+                "market_alias": market_context.market_alias,
+                "market_alignment_score": market_context.market_alignment_score,
+                "breadth_support_score": market_context.breadth_support_score,
+                "rotation_support_score": market_context.rotation_support_score,
+                "leader_health_score": market_context.leader_health_score,
                 "reason_codes": list(market_context.reason_codes),
             },
         }

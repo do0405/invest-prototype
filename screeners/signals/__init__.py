@@ -1,23 +1,25 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
-from .engine import (
-    MultiScreenerSignalEngine,
-    PEGImminentScreener,
-    run_multi_screener_signal_scan,
-    run_peg_imminent_screen,
-    run_qullamaggie_signal_scan,
-    run_signal_scan,
-    QullamaggieSignalEngine,
-    SignalEngine,
-)
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from .engine import (
+        MultiScreenerSignalEngine,
+        PEGImminentScreener,
+        run_multi_screener_signal_scan,
+    )
 
 __all__ = [
     "MultiScreenerSignalEngine",
     "PEGImminentScreener",
-    "SignalEngine",
-    "QullamaggieSignalEngine",
-    "run_signal_scan",
     "run_multi_screener_signal_scan",
-    "run_peg_imminent_screen",
-    "run_qullamaggie_signal_scan",
 ]
+
+
+
+def __getattr__(name: str) -> Any:
+    if name not in __all__:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from . import engine as _engine
+
+    return getattr(_engine, name)

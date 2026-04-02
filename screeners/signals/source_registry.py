@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Callable, Iterable, Sequence
+from typing import Any, Callable, Iterable, Mapping, Sequence
 
 import pandas as pd
 
@@ -20,6 +20,51 @@ def resolve_symbol_column(frame: pd.DataFrame) -> str | None:
         if candidate in frame.columns:
             return candidate
     return None
+
+
+def _safe_float(value: Any) -> float | None:
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    try:
+        return float(str(value).replace(",", ""))
+    except Exception:
+        return None
+
+
+def _default_entry(symbol: str, screen_stage: str) -> dict[str, Any]:
+    return {
+        "symbol": symbol,
+        "buy_eligible": False,
+        "watch_only": False,
+        "screen_stage": screen_stage,
+        "source_tags": [],
+        "source_records": [],
+        "sector": "",
+        "industry": "",
+        "group_name": "",
+        "as_of_ts": None,
+        "industry_key": "",
+        "group_state": "",
+        "leader_state": "",
+        "breakdown_status": "",
+        "group_strength_score": None,
+        "leader_score": None,
+        "breakdown_score": None,
+        "market_condition_state": "",
+        "market_condition_reason": "",
+        "market_alignment_score": None,
+        "breadth_support_score": None,
+        "rotation_support_score": None,
+        "leader_health_score": None,
+        "regime_state": "",
+        "top_state": "",
+        "market_state": "",
+        "breadth_state": "",
+        "concentration_state": "",
+        "leadership_state": "",
+    }
 
 
 def load_metadata_map(
@@ -141,6 +186,98 @@ def load_financial_map(
     return records
 
 
+def _merge_registry_row(
+    *,
+    registry: dict[str, dict[str, Any]],
+    symbol: str,
+    incoming: Mapping[str, Any],
+    stage_priority: Callable[[str], int],
+    safe_text: Callable[[Any], str],
+) -> None:
+    screen_stage = str(incoming.get("screen_stage") or "UNIVERSE")
+    entry = registry.setdefault(symbol, _default_entry(symbol, screen_stage))
+    entry["buy_eligible"] = bool(entry["buy_eligible"] or incoming.get("buy_eligible"))
+    entry["watch_only"] = bool(entry["watch_only"] or incoming.get("watch_only"))
+    for tag in incoming.get("source_tags", []) or []:
+        if str(tag).strip():
+            entry["source_tags"].append(str(tag).strip())
+    for record in incoming.get("source_records", []) or []:
+        if isinstance(record, dict):
+            entry["source_records"].append(dict(record))
+    if stage_priority(screen_stage) > stage_priority(str(entry.get("screen_stage") or "")):
+        entry["screen_stage"] = screen_stage
+    if not entry.get("sector"):
+        entry["sector"] = safe_text(incoming.get("sector"))
+    if not entry.get("industry"):
+        entry["industry"] = safe_text(incoming.get("industry"))
+    if not entry.get("group_name"):
+        entry["group_name"] = safe_text(
+            incoming.get("group_name") or incoming.get("industry") or incoming.get("sector")
+        )
+    row_date = safe_text(incoming.get("as_of_ts") or incoming.get("date")) or None
+    if row_date and (entry.get("as_of_ts") is None or row_date > str(entry.get("as_of_ts"))):
+        entry["as_of_ts"] = row_date
+    for text_key in ("industry_key", "group_state", "leader_state", "breakdown_status"):
+        value = safe_text(incoming.get(text_key))
+        if value:
+            entry[text_key] = value
+    for numeric_key in ("group_strength_score", "leader_score", "breakdown_score"):
+        value = _safe_float(incoming.get(numeric_key))
+        if value is not None:
+            entry[numeric_key] = value
+
+
+
+def merge_source_registry_entries(
+    *,
+    registry: dict[str, dict[str, Any]],
+    entries: Iterable[Mapping[str, Any]],
+    stage_priority: Callable[[str], int],
+    source_tag_priority: Callable[[str], float],
+    sorted_source_tags: Callable[[Iterable[str] | object | None], list[str]],
+    source_style_tags: Callable[[Iterable[str]], list[str]],
+    primary_source_style: Callable[[Iterable[str]], str],
+    source_priority_score: Callable[[Iterable[str]], float],
+    source_engine_bonus: Callable[..., float],
+    safe_text: Callable[[Any], str],
+) -> dict[str, dict[str, Any]]:
+    for incoming in entries:
+        if not isinstance(incoming, Mapping):
+            continue
+        symbol = safe_text(incoming.get("symbol")).upper()
+        if not symbol:
+            continue
+        _merge_registry_row(
+            registry=registry,
+            symbol=symbol,
+            incoming=incoming,
+            stage_priority=stage_priority,
+            safe_text=safe_text,
+        )
+
+    for entry in registry.values():
+        unique_tags = sorted_source_tags(entry.get("source_tags", []))
+        source_records = list(entry.get("source_records", []))
+        best_record = max(
+            source_records,
+            key=lambda record: (
+                stage_priority(safe_text(record.get("screen_stage"))),
+                source_tag_priority(safe_text(record.get("source_tag"))),
+            ),
+            default={},
+        )
+        entry["source_tags"] = unique_tags
+        entry["primary_source_tag"] = safe_text(best_record.get("source_tag")) or (unique_tags[0] if unique_tags else "")
+        entry["primary_source_stage"] = safe_text(best_record.get("screen_stage")) or safe_text(entry.get("screen_stage"))
+        entry["source_style_tags"] = source_style_tags(unique_tags)
+        entry["primary_source_style"] = primary_source_style(unique_tags)
+        entry["source_priority_score"] = source_priority_score(unique_tags)
+        entry["trend_source_bonus"] = source_engine_bonus(unique_tags, engine="TREND")
+        entry["ug_source_bonus"] = source_engine_bonus(unique_tags, engine="UG")
+        entry["source_overlap_bonus"] = max(len(unique_tags) - 1, 0) * 5.0
+    return registry
+
+
 def load_source_registry(
     *,
     screeners_root: str,
@@ -193,63 +330,39 @@ def load_source_registry(
                 symbol = normalize_symbol_value(raw_symbol, normalized_market)
             if not symbol:
                 continue
-            entry = registry.setdefault(
-                symbol,
-                {
-                    "symbol": symbol,
-                    "buy_eligible": False,
-                    "watch_only": False,
-                    "screen_stage": spec.screen_stage,
-                    "source_tags": [],
-                    "source_records": [],
-                    "sector": "",
-                    "industry": "",
-                    "group_name": "",
-                    "as_of_ts": None,
-                },
-            )
-            entry["buy_eligible"] = bool(entry["buy_eligible"] or spec.buy_eligible)
-            entry["watch_only"] = bool(entry["watch_only"] or not spec.buy_eligible)
-            entry["source_tags"].append(spec.source_tag)
-            entry["source_records"].append(
-                {
-                    "source_tag": spec.source_tag,
+            _merge_registry_row(
+                registry=registry,
+                symbol=symbol,
+                incoming={
                     "screen_stage": spec.screen_stage,
                     "buy_eligible": spec.buy_eligible,
-                }
+                    "watch_only": not spec.buy_eligible,
+                    "source_tags": [spec.source_tag],
+                    "source_records": [
+                        {
+                            "source_tag": spec.source_tag,
+                            "screen_stage": spec.screen_stage,
+                            "buy_eligible": spec.buy_eligible,
+                        }
+                    ],
+                    "sector": row.get("sector"),
+                    "industry": row.get("industry"),
+                    "group_name": row.get("group_name") or row.get("industry") or row.get("sector"),
+                    "as_of_ts": row.get("as_of_ts") or row.get("date"),
+                },
+                stage_priority=stage_priority,
+                safe_text=safe_text,
             )
-            if stage_priority(spec.screen_stage) > stage_priority(str(entry.get("screen_stage") or "")):
-                entry["screen_stage"] = spec.screen_stage
-            if not entry.get("sector"):
-                entry["sector"] = safe_text(row.get("sector"))
-            if not entry.get("industry"):
-                entry["industry"] = safe_text(row.get("industry"))
-            if not entry.get("group_name"):
-                entry["group_name"] = safe_text(
-                    row.get("group_name") or row.get("industry") or row.get("sector")
-                )
-            row_date = safe_text(row.get("as_of_ts") or row.get("date")) or None
-            if row_date and (entry.get("as_of_ts") is None or row_date > str(entry.get("as_of_ts"))):
-                entry["as_of_ts"] = row_date
 
-    for entry in registry.values():
-        unique_tags = sorted_source_tags(entry.get("source_tags", []))
-        source_records = list(entry.get("source_records", []))
-        best_record = max(
-            source_records,
-            key=lambda record: (
-                stage_priority(safe_text(record.get("screen_stage"))),
-                source_tag_priority(safe_text(record.get("source_tag"))),
-            ),
-            default={},
-        )
-        entry["source_tags"] = unique_tags
-        entry["primary_source_tag"] = safe_text(best_record.get("source_tag")) or (unique_tags[0] if unique_tags else "")
-        entry["primary_source_stage"] = safe_text(best_record.get("screen_stage")) or safe_text(entry.get("screen_stage"))
-        entry["source_style_tags"] = source_style_tags(unique_tags)
-        entry["primary_source_style"] = primary_source_style(unique_tags)
-        entry["source_priority_score"] = source_priority_score(unique_tags)
-        entry["trend_source_bonus"] = source_engine_bonus(unique_tags, engine="TREND")
-        entry["ug_source_bonus"] = source_engine_bonus(unique_tags, engine="UG")
-        entry["source_overlap_bonus"] = max(len(unique_tags) - 1, 0) * 5.0
-    return registry
+    return merge_source_registry_entries(
+        registry=registry,
+        entries=[],
+        stage_priority=stage_priority,
+        source_tag_priority=source_tag_priority,
+        sorted_source_tags=sorted_source_tags,
+        source_style_tags=source_style_tags,
+        primary_source_style=primary_source_style,
+        source_priority_score=source_priority_score,
+        source_engine_bonus=source_engine_bonus,
+        safe_text=safe_text,
+    )

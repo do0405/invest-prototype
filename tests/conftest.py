@@ -38,6 +38,10 @@ def _redirect_results_root_for_tests() -> Generator[None, None, None]:
         "MARKMINERVINI_RESULTS_DIR": str(base / "screeners" / "markminervini"),
         "QULLAMAGGIE_RESULTS_DIR": str(base / "screeners" / "qullamaggie"),
         "RANKING_RESULTS_DIR": str(base / "ranking"),
+        "EXTERNAL_DATA_DIR": str(cache_root("external_data")),
+        "FINANCIAL_CACHE_DIR": str(cache_root("external_data") / "financials" / "us"),
+        "EARNINGS_CACHE_DIR": str(cache_root("external_data") / "earnings" / "us"),
+        "RISK_INPUTS_CACHE_DIR": str(cache_root("external_data") / "risk_inputs"),
     }
 
     original_config = {name: getattr(config, name) for name in updates}
@@ -45,7 +49,9 @@ def _redirect_results_root_for_tests() -> Generator[None, None, None]:
         setattr(config, name, value)
 
     original_market_runtime = market_runtime.RESULTS_DIR
+    original_market_runtime_external = market_runtime.EXTERNAL_DATA_DIR
     market_runtime.RESULTS_DIR = updates["RESULTS_DIR"]
+    market_runtime.EXTERNAL_DATA_DIR = updates["EXTERNAL_DATA_DIR"]
 
     module_originals = {
         "data_collector": _apply_module_attrs("data_collector", {"RESULTS_DIR": updates["RESULTS_DIR"]}),
@@ -58,6 +64,10 @@ def _redirect_results_root_for_tests() -> Generator[None, None, None]:
                 "OPTION_RESULTS_DIR": updates["OPTION_RESULTS_DIR"],
             },
         ),
+        "utils.yfinance_runtime": _apply_module_attrs(
+            "utils.yfinance_runtime",
+            {"EXTERNAL_DATA_DIR": updates["EXTERNAL_DATA_DIR"]},
+        ),
     }
 
     try:
@@ -66,6 +76,7 @@ def _redirect_results_root_for_tests() -> Generator[None, None, None]:
         for name, value in original_config.items():
             setattr(config, name, value)
         market_runtime.RESULTS_DIR = original_market_runtime
+        market_runtime.EXTERNAL_DATA_DIR = original_market_runtime_external
         for module_name, originals in module_originals.items():
             module = sys.modules.get(module_name)
             if module is None:

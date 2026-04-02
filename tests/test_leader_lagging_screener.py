@@ -1,13 +1,16 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 import pytest
 
+from screeners import leader_core_bridge
 from screeners.leader_lagging import screener as leader_lagging_screener
 from screeners.leader_lagging.screener import LeaderLaggingAnalyzer, LeaderLaggingScreener
+from screeners.leader_core_bridge import LeaderCoreSnapshot, annotate_frame_with_leader_core, build_industry_key
 from tests._paths import runtime_root
 from utils import market_runtime
 
@@ -117,6 +120,129 @@ def _build_market_fixture() -> tuple[dict[str, pd.DataFrame], dict[str, dict[str
     return frames, metadata_map, _benchmark_daily(len(leader_closes))
 
 
+def _build_leader_core_snapshot(
+    metadata_map: dict[str, dict[str, object]],
+    *,
+    as_of: str,
+) -> LeaderCoreSnapshot:
+    tech_key = build_industry_key("Tech", "Software")
+    retail_key = build_industry_key("Retail", "Apparel")
+    return LeaderCoreSnapshot(
+        market="us",
+        as_of=as_of,
+        summary={
+            "market": "us",
+            "as_of": as_of,
+            "schema_version": leader_core_bridge.LEADER_CORE_SCHEMA_VERSION,
+            "engine_version": leader_core_bridge.LEADER_CORE_ENGINE_VERSION,
+            "leader_health_score": 72.0,
+            "leader_health_status": "HEALTHY",
+            "confirmed_count": 1,
+            "imminent_count": 0,
+            "broken_count": 1,
+        },
+        groups_by_key={
+            tech_key: {
+                "industry_key": tech_key,
+                "group_strength_score": 88.0,
+                "group_state": "STRONG",
+                "rank": 1.0,
+                "leaders": ["LEAD"],
+            },
+            retail_key: {
+                "industry_key": retail_key,
+                "group_strength_score": 24.0,
+                "group_state": "WEAK",
+                "rank": 2.0,
+                "leaders": [],
+            },
+        },
+        leaders_by_symbol={
+            "LEAD": {
+                "symbol": "LEAD",
+                "industry_key": tech_key,
+                "leader_score": 84.0,
+                "leader_state": "CONFIRMED",
+                "breakdown_score": 10.0,
+                "breakdown_status": "OK",
+            },
+            "FOLLOW": {
+                "symbol": "FOLLOW",
+                "industry_key": tech_key,
+                "leader_score": 56.0,
+                "leader_state": "REJECT",
+                "breakdown_score": 18.0,
+                "breakdown_status": "OK",
+            },
+            "WEAK1": {
+                "symbol": "WEAK1",
+                "industry_key": retail_key,
+                "leader_score": 28.0,
+                "leader_state": "REJECT",
+                "breakdown_score": 66.0,
+                "breakdown_status": "BROKEN",
+            },
+            "WEAK2": {
+                "symbol": "WEAK2",
+                "industry_key": retail_key,
+                "leader_score": 22.0,
+                "leader_state": "REJECT",
+                "breakdown_score": 74.0,
+                "breakdown_status": "BROKEN",
+            },
+        },
+    )
+
+
+def _write_leader_core_artifacts(
+    root: Path,
+    metadata_map: dict[str, dict[str, object]],
+    *,
+    as_of: str,
+) -> Path:
+    compat_market_root = root / "market_intel_compat" / "us"
+    compat_market_root.mkdir(parents=True, exist_ok=True)
+    snapshot = _build_leader_core_snapshot(metadata_map, as_of=as_of)
+    (compat_market_root / "leader_market_summary.json").write_text(
+        json.dumps(snapshot.summary, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (compat_market_root / "industry_rotation.json").write_text(
+        json.dumps(list(snapshot.groups_by_key.values()), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (compat_market_root / "leaders.json").write_text(
+        json.dumps(list(snapshot.leaders_by_symbol.values()), ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (compat_market_root / "market_context.json").write_text(
+        json.dumps(
+            {
+                "market": "us",
+                "as_of": as_of,
+                "schema_version": leader_core_bridge.MARKET_CONTEXT_SCHEMA_VERSION,
+                "engine_version": "compat_market_context_v1",
+                "regime_state": "uptrend",
+                "top_state": "risk_on",
+                "market_state": "uptrend",
+                "breadth_state": "broad_participation",
+                "concentration_state": "diversified",
+                "leadership_state": "growth_ai",
+                "prototype_market_alias": "RISK_ON",
+                "market_alignment_score": 82.0,
+                "breadth_support_score": 79.0,
+                "rotation_support_score": 88.0,
+                "leader_health_score": 72.0,
+                "leader_health_status": "HEALTHY",
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return compat_market_root
+
+
 def test_analyzer_detects_confirmed_leader_and_high_quality_follower() -> None:
     frames, metadata_map, benchmark_daily = _build_market_fixture()
     analyzer = LeaderLaggingAnalyzer()
@@ -132,6 +258,8 @@ def test_analyzer_detects_confirmed_leader_and_high_quality_follower() -> None:
         for symbol, frame in frames.items()
     ]
     feature_table = analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
+    snapshot = _build_leader_core_snapshot(metadata_map, as_of=str(feature_table["as_of_ts"].dropna().max()))
+    feature_table = annotate_frame_with_leader_core(feature_table, snapshot)
     group_table = analyzer.compute_group_table(feature_table)
     market_context = analyzer.compute_market_context(
         market="us",
@@ -145,9 +273,10 @@ def test_analyzer_detects_confirmed_leader_and_high_quality_follower() -> None:
         group_table=group_table,
         market_context=market_context,
     )
+    confirmed_leaders = leaders[leaders["label"] == "Confirmed Leader"].copy()
     followers, pairs = analyzer.analyze_followers(
         feature_table=feature_table,
-        leaders=leaders,
+        leaders=confirmed_leaders,
         group_table=group_table,
         market_context=market_context,
         frames=frames,
@@ -254,6 +383,8 @@ def test_follower_requires_positive_delta_rs_rank_qoq_even_if_rs_slopes_are_posi
     feature_table.loc[feature_table["symbol"] == "FOLLOW", "delta_rs_rank_qoq"] = -3.0
     feature_table.loc[feature_table["symbol"] == "FOLLOW", "rs_line_20d_slope"] = 0.08
     feature_table.loc[feature_table["symbol"] == "FOLLOW", "mansfield_rs_slope"] = 0.09
+    snapshot = _build_leader_core_snapshot(metadata_map, as_of=str(feature_table["as_of_ts"].dropna().max()))
+    feature_table = annotate_frame_with_leader_core(feature_table, snapshot)
     group_table = analyzer.compute_group_table(feature_table)
     market_context = analyzer.compute_market_context(
         market="us",
@@ -267,9 +398,10 @@ def test_follower_requires_positive_delta_rs_rank_qoq_even_if_rs_slopes_are_posi
         group_table=group_table,
         market_context=market_context,
     )
+    confirmed_leaders = leaders[leaders["label"] == "Confirmed Leader"].copy()
     followers, _ = analyzer.analyze_followers(
         feature_table=feature_table,
-        leaders=leaders,
+        leaders=confirmed_leaders,
         group_table=group_table,
         market_context=market_context,
         frames=frames,
@@ -293,6 +425,13 @@ def test_run_leader_lagging_screening_persists_outputs(monkeypatch) -> None:
         leader_lagging_screener,
         "load_benchmark_data",
         lambda *args, **kwargs: ("SPY", benchmark_daily.copy()),
+    )
+    as_of = str(next(iter(frames.values()))["date"].iloc[-1].date())
+    compat_market_root = _write_leader_core_artifacts(output_root, metadata_map, as_of=as_of)
+    monkeypatch.setattr(
+        leader_core_bridge,
+        "get_market_intel_compat_root",
+        lambda market: str(compat_market_root),
     )
 
     result = leader_lagging_screener.run_leader_lagging_screening(market="us")
@@ -318,3 +457,21 @@ def test_run_leader_lagging_screening_persists_outputs(monkeypatch) -> None:
         summary = json.load(handle)
     assert summary["counts"]["confirmed_leaders"] == 1
     assert summary["counts"]["high_quality_followers"] == 1
+    assert summary["market_alias"] == "RISK_ON"
+    assert summary["market_alignment_score"] == 82.0
+    assert summary["breadth_support_score"] == 79.0
+    assert summary["rotation_support_score"] == 88.0
+    assert summary["leader_health_score"] == 72.0
+    assert "regime_score" not in summary
+    assert "breadth_50" not in summary
+    assert "breadth_200" not in summary
+    assert "high_low_ratio" not in summary
+    assert "top_group_share" not in summary
+
+    group_dashboard = pd.read_csv(output_root / "group_dashboard.csv")
+    assert "group_strength_score" in group_dashboard.columns
+    assert "group_state" in group_dashboard.columns
+    assert "group_rank" in group_dashboard.columns
+    assert "group_overlay_score" not in group_dashboard.columns
+    assert "industry_rs_pct" not in group_dashboard.columns
+    assert "sector_rs_pct" not in group_dashboard.columns

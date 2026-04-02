@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+from types import SimpleNamespace
 import shutil
+from typing import Any
 
 import numpy as np
 import pandas as pd
+import pytest
 
-import screeners.qullamaggie as qullamaggie
-import screeners.signals as signals
 import screeners.signals.engine as signal_engine
 from tests._paths import cache_root
 
@@ -177,6 +178,66 @@ def _metrics_for(
 def _engine_for_unit(monkeypatch, *, market: str = "us", as_of_date: str = "2026-03-11"):
     monkeypatch.setattr(signal_engine, "_load_metadata_map", lambda market: {})
     monkeypatch.setattr(signal_engine, "_load_financial_map", lambda market, symbols=None: {})
+    monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_leader_core_registry_entries",
+        lambda *args, **kwargs: {},
+    )
+    monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market_alias="RISK_ON",
+            regime_state="uptrend",
+            top_state="risk_on",
+            market_state="uptrend",
+            breadth_state="broad_participation",
+            concentration_state="diversified",
+            leadership_state="growth_ai",
+            market_alignment_score=82.0,
+            breadth_support_score=78.0,
+            rotation_support_score=86.0,
+            leader_health_score=74.0,
+            leader_health_status="HEALTHY",
+        ),
+    )
+    monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market_alias="RISK_ON",
+            regime_state="uptrend",
+            top_state="risk_on",
+            market_state="uptrend",
+            breadth_state="broad_participation",
+            concentration_state="diversified",
+            leadership_state="growth_ai",
+            market_alignment_score=82.0,
+            breadth_support_score=78.0,
+            rotation_support_score=86.0,
+            leader_health_score=74.0,
+            leader_health_status="HEALTHY",
+        ),
+    )
+    monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market="us",
+            as_of=as_of_date,
+            market_alias="RISK_ON",
+            regime_state="uptrend",
+            top_state="risk_on",
+            market_state="uptrend",
+            breadth_state="broad_participation",
+            concentration_state="diversified",
+            leadership_state="growth_ai",
+            market_alignment_score=82.0,
+            breadth_support_score=78.0,
+            rotation_support_score=86.0,
+            leader_health_score=74.0,
+        ),
+    )
     return signal_engine.MultiScreenerSignalEngine(market=market, as_of_date=as_of_date)
 
 
@@ -191,20 +252,54 @@ class _StubEarningsCollector(signal_engine.EarningsDataCollector):
         return None
 
 
-def test_signals_package_restores_legacy_exports() -> None:
-    assert signals.SignalEngine is signals.MultiScreenerSignalEngine
-    assert signals.QullamaggieSignalEngine is signals.MultiScreenerSignalEngine
-    assert signals.run_signal_scan is signals.run_multi_screener_signal_scan
+def _overlay_buy_like_row(
+    *,
+    signal_code: str = "TF_BUY_BREAKOUT",
+    action_type: str = "BUY",
+    conviction_grade: str = "A",
+    market_condition_state: str = "GREEN",
+    entry_price: float | None = 100.0,
+    stop_level: float | None = 95.0,
+) -> dict[str, object]:
+    source_entry = {
+        "buy_eligible": True,
+        "screen_stage": "TEST",
+        "source_tags": ["QM_DAILY"],
+        "source_style_tags": ["BREAKOUT"],
+    }
+    metrics = dict(_metrics_for(_breakout_daily(end="2026-03-11"), source_entry=source_entry))
+    metrics["date"] = "2026-03-11"
+    metrics["screen_stage"] = "TEST"
+    metrics["source_tags"] = ["QM_DAILY"]
+    metrics["above_200ma"] = True
+    metrics["alignment_state"] = "BULLISH"
+    metrics["ema_turn_down"] = False
+    metrics["liquidity_pass"] = True
+    metrics["market_condition_state"] = market_condition_state
+    metrics["market_condition_reason"] = f"MANUAL_{market_condition_state}"
+    metrics["close"] = entry_price
 
+    row = signal_engine._build_signal_row(
+        signal_date="2026-03-11",
+        symbol="AAA",
+        market="us",
+        engine="TREND",
+        family="TF_BREAKOUT",
+        signal_kind="EVENT",
+        signal_code=signal_code,
+        action_type=action_type,
+        conviction_grade=conviction_grade,
+        screen_stage="TEST",
+        stop_level=stop_level,
+        blended_entry_price=entry_price,
+        source_tags=["QM_DAILY"],
+    )
 
-def test_qullamaggie_package_forwards_legacy_signal_exports() -> None:
-    assert qullamaggie.MultiScreenerSignalEngine is signals.MultiScreenerSignalEngine
-    assert qullamaggie.SignalEngine is signals.SignalEngine
-    assert qullamaggie.QullamaggieSignalEngine is signals.QullamaggieSignalEngine
-    assert qullamaggie.run_signal_scan is signals.run_signal_scan
-    assert qullamaggie.run_multi_screener_signal_scan is signals.run_multi_screener_signal_scan
-    assert qullamaggie.run_peg_imminent_screen is signals.run_peg_imminent_screen
-    assert qullamaggie.run_qullamaggie_signal_scan is signals.run_qullamaggie_signal_scan
+    return signal_engine._apply_update_overlay_rows(
+        signal_engine._transform_signal_rows([row]),
+        {"AAA": metrics},
+    )[0]
+
 
 
 def test_update_overlay_allows_ug_breakout_below_200_with_warning(monkeypatch) -> None:
@@ -234,7 +329,7 @@ def test_update_overlay_allows_ug_breakout_below_200_with_warning(monkeypatch) -
     raw_conviction = engine._ug_conviction(metrics, state_code, dashboard_profile)
 
     overlaid = signal_engine._apply_update_overlay_rows(
-        signal_engine._transform_signal_rows(events, contract_version=signal_engine._CONTRACT_VERSION_V2),
+        signal_engine._transform_signal_rows(events),
         {"AAA": metrics},
     )
     row = next(row for row in overlaid if row["signal_code"] == "UG_BUY_BREAKOUT")
@@ -285,6 +380,84 @@ def test_update_overlay_blocks_trend_regular_buy_when_ema_turns_down(monkeypatch
     assert overlay_row["conviction_grade"] == "D"
 
 
+def test_update_overlay_assigns_top_sizing_for_a_green_buy() -> None:
+    row = _overlay_buy_like_row(conviction_grade="A", market_condition_state="GREEN")
+
+    assert row["sizing_tier"] == "TOP"
+    assert row["sizing_status"] == "OK"
+    assert row["sizing_reason"] == "GRADE_A|MARKET_GREEN"
+    assert row["sizing_risk_budget_pct"] == pytest.approx(2.0)
+    assert row["sizing_position_cap_pct"] == pytest.approx(20.0)
+    assert row["sizing_stop_distance_pct"] == pytest.approx(5.0)
+    assert row["sizing_raw_position_pct"] == pytest.approx(40.0)
+    assert row["sizing_recommended_position_pct"] == pytest.approx(20.0)
+
+
+def test_update_overlay_assigns_top_sizing_for_s_bullish_buy() -> None:
+    row = _overlay_buy_like_row(conviction_grade="S", market_condition_state="BULLISH")
+
+    assert row["sizing_tier"] == "TOP"
+    assert row["sizing_status"] == "OK"
+    assert row["sizing_reason"] == "GRADE_S|MARKET_BULLISH"
+    assert row["sizing_risk_budget_pct"] == pytest.approx(2.0)
+    assert row["sizing_position_cap_pct"] == pytest.approx(20.0)
+
+
+def test_update_overlay_assigns_strong_sizing_for_b_green_buy() -> None:
+    row = _overlay_buy_like_row(conviction_grade="B", market_condition_state="GREEN")
+
+    assert row["sizing_tier"] == "STRONG"
+    assert row["sizing_status"] == "OK"
+    assert row["sizing_reason"] == "GRADE_B|MARKET_GREEN"
+    assert row["sizing_risk_budget_pct"] == pytest.approx(1.5)
+    assert row["sizing_position_cap_pct"] == pytest.approx(10.0)
+    assert row["sizing_raw_position_pct"] == pytest.approx(30.0)
+    assert row["sizing_recommended_position_pct"] == pytest.approx(10.0)
+
+
+def test_update_overlay_falls_back_to_base_sizing_without_strong_market() -> None:
+    row = _overlay_buy_like_row(conviction_grade="A", market_condition_state="UNKNOWN")
+
+    assert row["sizing_tier"] == "BASE"
+    assert row["sizing_status"] == "OK"
+    assert row["sizing_reason"] == "BASE_FALLBACK"
+    assert row["sizing_risk_budget_pct"] == pytest.approx(1.0)
+    assert row["sizing_position_cap_pct"] == pytest.approx(10.0)
+    assert row["sizing_raw_position_pct"] == pytest.approx(20.0)
+    assert row["sizing_recommended_position_pct"] == pytest.approx(10.0)
+
+
+def test_update_overlay_applies_sizing_to_trend_addon_buy() -> None:
+    row = _overlay_buy_like_row(signal_code="TF_ADDON_PYRAMID", conviction_grade="B", market_condition_state="GREEN")
+
+    assert row["action_type"] == "BUY"
+    assert row["signal_code"] == "TF_ADDON_PYRAMID"
+    assert row["sizing_tier"] == "STRONG"
+    assert row["sizing_status"] == "OK"
+
+
+def test_update_overlay_marks_invalid_stop_for_buy_sizing() -> None:
+    row = _overlay_buy_like_row(conviction_grade="A", market_condition_state="GREEN", entry_price=100.0, stop_level=100.0)
+
+    assert row["sizing_tier"] == "TOP"
+    assert row["sizing_status"] == "INVALID_STOP"
+    assert row["sizing_reason"] == "INVALID_STOP"
+    assert row["sizing_stop_distance_pct"] is None
+    assert row["sizing_raw_position_pct"] is None
+    assert row["sizing_recommended_position_pct"] is None
+
+
+def test_update_overlay_marks_non_buy_rows_with_non_buy_sizing_status() -> None:
+    row = _overlay_buy_like_row(action_type="WATCH", conviction_grade="A", market_condition_state="GREEN")
+
+    assert row["action_type"] == "WATCH"
+    assert row["sizing_status"] == "NON_BUY"
+    assert row["sizing_tier"] is None
+    assert row["sizing_reason"] == "NON_BUY"
+    assert row["sizing_risk_budget_pct"] is None
+    assert row["sizing_recommended_position_pct"] is None
+
+
 def test_peg_imminent_screener_marks_bullish_below_200_candidate(monkeypatch) -> None:
     monkeypatch.setattr(
         signal_engine,
@@ -324,6 +497,29 @@ def test_run_signal_scan_v2_and_snapshot_include_overlay_fields(monkeypatch) -> 
     monkeypatch.setattr(signal_engine, "_load_metadata_map", lambda market: {})
     monkeypatch.setattr(signal_engine, "_load_financial_map", lambda market, symbols=None: {})
     monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_leader_core_registry_entries",
+        lambda *args, **kwargs: {},
+    )
+    monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market_alias="RISK_ON",
+            regime_state="uptrend",
+            top_state="risk_on",
+            market_state="uptrend",
+            breadth_state="broad_participation",
+            concentration_state="diversified",
+            leadership_state="growth_ai",
+            market_alignment_score=82.0,
+            breadth_support_score=78.0,
+            rotation_support_score=86.0,
+            leader_health_score=74.0,
+            leader_health_status="HEALTHY",
+        ),
+    )
+    monkeypatch.setattr(
         signal_engine,
         "load_local_ohlcv_frame",
         lambda market, symbol, **kwargs: _breakout_daily(end="2026-03-11").copy() if symbol == "AAA" else pd.DataFrame(),
@@ -334,7 +530,7 @@ def test_run_signal_scan_v2_and_snapshot_include_overlay_fields(monkeypatch) -> 
         index=False,
     )
 
-    result = signal_engine.run_signal_scan(
+    result = signal_engine.run_multi_screener_signal_scan(
         market="us",
         as_of_date="2026-03-11",
         upcoming_earnings_fetcher=lambda market, as_of_date, days: pd.DataFrame(),
@@ -342,6 +538,11 @@ def test_run_signal_scan_v2_and_snapshot_include_overlay_fields(monkeypatch) -> 
     )
 
     v2_row = next(row for row in result["all_signals_v2"] if row["symbol"] == "AAA" and row["engine"] == "TREND")
+    v2_buy_row = next(
+        row
+        for row in result["all_signals_v2"]
+        if row["symbol"] == "AAA" and row["engine"] == "TREND" and row["action_type"] == "BUY"
+    )
     snapshot_row = next(row for row in result["signal_universe_snapshot"] if row["symbol"] == "AAA")
 
     for row in (v2_row, snapshot_row):
@@ -351,6 +552,13 @@ def test_run_signal_scan_v2_and_snapshot_include_overlay_fields(monkeypatch) -> 
         assert "buy_warning_summary" in row
         assert "aux_signal_summary" in row
         assert "conviction_reason" in row
+
+    assert v2_buy_row["sizing_status"] == "OK"
+    assert v2_buy_row["sizing_tier"] in {"BASE", "STRONG", "TOP"}
+    assert "sizing_recommended_position_pct" in v2_buy_row
+    assert "sizing_risk_budget_pct" in v2_buy_row
+    assert "sizing_position_cap_pct" in v2_buy_row
+    assert "sizing_status" not in snapshot_row
 
     expected_outputs = [
         signals_root / "all_signals_v2.csv",
@@ -385,6 +593,29 @@ def test_run_signal_scan_persists_state_history_separately_from_event_history(mo
     monkeypatch.setattr(signal_engine, "_load_metadata_map", lambda market: {})
     monkeypatch.setattr(signal_engine, "_load_financial_map", lambda market, symbols=None: {})
     monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_leader_core_registry_entries",
+        lambda *args, **kwargs: {},
+    )
+    monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market_alias="RISK_ON",
+            regime_state="uptrend",
+            top_state="risk_on",
+            market_state="uptrend",
+            breadth_state="broad_participation",
+            concentration_state="diversified",
+            leadership_state="growth_ai",
+            market_alignment_score=82.0,
+            breadth_support_score=78.0,
+            rotation_support_score=86.0,
+            leader_health_score=74.0,
+            leader_health_status="HEALTHY",
+        ),
+    )
+    monkeypatch.setattr(
         signal_engine,
         "load_local_ohlcv_frame",
         lambda market, symbol, **kwargs: _breakout_daily(end="2026-03-11").copy() if symbol == "AAA" else pd.DataFrame(),
@@ -395,7 +626,7 @@ def test_run_signal_scan_persists_state_history_separately_from_event_history(mo
         index=False,
     )
 
-    signal_engine.run_signal_scan(
+    signal_engine.run_multi_screener_signal_scan(
         market="us",
         as_of_date="2026-03-11",
         upcoming_earnings_fetcher=lambda market, as_of_date, days: pd.DataFrame(),
@@ -421,6 +652,11 @@ def test_state_history_persistence_includes_state_aux_alert_and_combo_rows(monke
     monkeypatch.setattr(signal_engine, "get_signal_engine_results_dir", lambda market: str(base))
     monkeypatch.setattr(signal_engine, "_load_metadata_map", lambda market: {})
     monkeypatch.setattr(signal_engine, "_load_financial_map", lambda market, symbols=None: {})
+    monkeypatch.setattr(
+        signal_engine._market_intel_bridge,
+        "load_leader_core_registry_entries",
+        lambda *args, **kwargs: {},
+    )
     engine = signal_engine.MultiScreenerSignalEngine(market="us", as_of_date="2026-03-31")
 
     event_row = signal_engine._build_signal_row(
@@ -577,9 +813,6 @@ def test_signal_code_boundary_helpers_separate_active_legacy_and_reference_exit_
     assert signal_engine._is_reference_exit_helper_literal("UG_SELL_MR_SHORT_OR_PBS") is True
 
 
-def test_run_signal_scan_alias_matches_multi_screener_helper() -> None:
-    assert signal_engine.run_signal_scan is signal_engine.run_multi_screener_signal_scan
-
 
 def test_load_metadata_map_skips_blank_symbol_rows(monkeypatch) -> None:
     base = cache_root("signal_engine_metadata_map")
@@ -640,8 +873,9 @@ def _ug_sell_metrics(*, date: str = "2026-03-11") -> dict[str, object]:
     updated["date"] = date
     updated["screen_stage"] = "TEST"
     updated["source_tags"] = ["QM_DAILY"]
-    updated["close"] = max(float(updated.get("close") or 0.0), 85.0)
-    updated["high"] = max(float(updated.get("high") or 0.0), float(updated["close"]))
+    close_value = max(signal_engine._safe_float(updated.get("close")) or 0.0, 85.0)
+    updated["close"] = close_value
+    updated["high"] = max(signal_engine._safe_float(updated.get("high")) or 0.0, close_value)
     updated["ug_pbs_ready"] = False
     updated["ug_mr_short_ready"] = True
     return updated
@@ -837,8 +1071,8 @@ def test_update_cycles_ignores_reference_exit_signal_for_non_pullback_ug_buy_row
 
 def test_ug_mr_short_trims_twice_and_waits_for_pbs_exit(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("UG", "UG_PULLBACK", "AAA")
-    active_cycles = {key: _ug_cycle()}
+    key: tuple[str, str, str] = ("UG", "UG_PULLBACK", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _ug_cycle()}
 
     first_metrics = _ug_sell_metrics(date="2026-03-11")
     first_events = engine._ug_sell_events(
@@ -904,8 +1138,8 @@ def test_ug_mr_short_trims_twice_and_waits_for_pbs_exit(monkeypatch) -> None:
 
 def test_ug_breakdown_exit_closes_cycle(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("UG", "UG_PULLBACK", "AAA")
-    active_cycles = {key: _ug_cycle(reference_exit_signal="")}
+    key: tuple[str, str, str] = ("UG", "UG_PULLBACK", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _ug_cycle(reference_exit_signal="")}
     metrics = _ug_sell_metrics(date="2026-03-15")
     metrics["close"] = 73.5
     metrics["high"] = 74.0
@@ -923,8 +1157,8 @@ def test_ug_breakdown_exit_closes_cycle(monkeypatch) -> None:
 
 def test_ug_pbs_is_allowed_without_reference_exit_hint(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("UG", "UG_BREAKOUT", "AAA")
-    active_cycles = {key: _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="")}
+    key: tuple[str, str, str] = ("UG", "UG_BREAKOUT", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="")}
     metrics = _ug_sell_metrics(date="2026-03-16")
     metrics["ug_mr_short_ready"] = False
     metrics["ug_pbs_ready"] = True
@@ -943,8 +1177,8 @@ def test_ug_pbs_is_allowed_without_reference_exit_hint(monkeypatch) -> None:
 
 def test_ug_non_pullback_reference_exit_hint_does_not_gate_sell_events(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("UG", "UG_BREAKOUT", "AAA")
-    active_cycles = {key: _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="UG_SELL_PBS")}
+    key: tuple[str, str, str] = ("UG", "UG_BREAKOUT", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="UG_SELL_PBS")}
     metrics = _ug_sell_metrics(date="2026-03-17")
     metrics["ug_mr_short_ready"] = True
     metrics["ug_pbs_ready"] = False
@@ -956,8 +1190,8 @@ def test_ug_non_pullback_reference_exit_hint_does_not_gate_sell_events(monkeypat
 
 def test_ug_pullback_noncanonical_reference_exit_hint_is_ignored(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("UG", "UG_PULLBACK", "AAA")
-    active_cycles = {key: _ug_cycle(reference_exit_signal="UG_SELL_PBS")}
+    key: tuple[str, str, str] = ("UG", "UG_PULLBACK", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _ug_cycle(reference_exit_signal="UG_SELL_PBS")}
     metrics = _ug_sell_metrics(date="2026-03-18")
     metrics["ug_mr_short_ready"] = True
     metrics["ug_pbs_ready"] = False
@@ -988,8 +1222,8 @@ def test_ug_trim_state_survives_open_cycle_round_trip(monkeypatch) -> None:
 
 def test_trend_tp_hits_update_cycle_state(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("TREND", "TF_BREAKOUT", "AAA")
-    active_cycles = {key: _trend_cycle()}
+    key: tuple[str, str, str] = ("TREND", "TF_BREAKOUT", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _trend_cycle()}
     metrics = _trend_sell_metrics(date="2026-03-11", family="TF_BREAKOUT")
     metrics["high"] = 96.0
     metrics["close"] = 94.0
@@ -1011,8 +1245,8 @@ def test_trend_tp_hits_update_cycle_state(monkeypatch) -> None:
 
 def test_trend_trailing_break_closes_cycle(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("TREND", "TF_BREAKOUT", "AAA")
-    active_cycles = {key: _trend_cycle(tp1_level=120.0, tp2_level=130.0, trailing_level=90.0, protected_stop_level=90.0)}
+    key: tuple[str, str, str] = ("TREND", "TF_BREAKOUT", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _trend_cycle(tp1_level=120.0, tp2_level=130.0, trailing_level=90.0, protected_stop_level=90.0)}
     metrics = _trend_sell_metrics(date="2026-03-12", family="TF_BREAKOUT")
     metrics["close"] = 89.0
     metrics["high"] = 89.5
@@ -1032,8 +1266,8 @@ def test_trend_trailing_break_closes_cycle(monkeypatch) -> None:
 
 def test_trend_momentum_end_closes_cycle(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("TREND", "TF_MOMENTUM", "AAA")
-    active_cycles = {key: _trend_cycle(family="TF_MOMENTUM", tp1_level=120.0, tp2_level=130.0)}
+    key: tuple[str, str, str] = ("TREND", "TF_MOMENTUM", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {key: _trend_cycle(family="TF_MOMENTUM", tp1_level=120.0, tp2_level=130.0)}
     metrics = _trend_sell_metrics(date="2026-03-24", family="TF_BREAKOUT")
     metrics["rsi14"] = 49.0
     metrics["macd_hist"] = -0.2
@@ -1057,8 +1291,8 @@ def test_trend_momentum_end_closes_cycle(monkeypatch) -> None:
 
 def test_trend_resistance_reject_uses_canonical_code(monkeypatch) -> None:
     engine = _engine_for_unit(monkeypatch)
-    key = ("TREND", "TF_REGULAR_PULLBACK", "AAA")
-    active_cycles = {
+    key: tuple[str, str, str] = ("TREND", "TF_REGULAR_PULLBACK", "AAA")
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {
         key: _trend_cycle(
             family="TF_REGULAR_PULLBACK",
             tp1_level=120.0,
@@ -1099,13 +1333,9 @@ def test_tf_sell_contract_uses_resistance_reject_only() -> None:
         screen_stage="TEST",
     )
 
-    transformed = signal_engine._transform_signal_rows(
-        [row],
-        contract_version=signal_engine._CONTRACT_VERSION_V2,
-    )[0]
+    transformed = signal_engine._transform_signal_rows([row])[0]
 
     assert transformed["signal_code"] == "TF_SELL_RESISTANCE_REJECT"
-    assert transformed["deprecated_alias_code"] == ""
     assert signal_engine._signal_code_label("TF_SELL_PBS") == "TF_SELL_PBS"
     assert signal_engine._signal_code_label("TF_SELL_SUB200") == "TF_SELL_SUB200"
 
@@ -1413,7 +1643,7 @@ def test_trend_level_and_addon_state_rows_emit_from_active_cycle(monkeypatch) ->
             "add_on_count": 0,
         }
     )
-    active_cycles = {("TREND", "TF_BREAKOUT", "AAA"): cycle}
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {("TREND", "TF_BREAKOUT", "AAA"): cycle}
 
     level_rows = engine._build_level_state_rows(active_cycles, {"AAA": metrics})
     addon_rows = engine._build_trend_addon_state_rows(active_cycles, {"AAA": metrics}, {})
@@ -1657,7 +1887,7 @@ def test_ug_combo_rows_emit_trend_and_pullback_context(monkeypatch) -> None:
             "tight_active": True,
         }
     )
-    active_cycles = {("UG", "UG_BREAKOUT", "AAA"): _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="")}
+    active_cycles: dict[tuple[str, str, str], dict[str, Any]] = {("UG", "UG_BREAKOUT", "AAA"): _ug_cycle(family="UG_BREAKOUT", reference_exit_signal="")}
 
     rows = engine._ug_strategy_combo_rows(
         symbol="AAA",

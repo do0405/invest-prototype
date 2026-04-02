@@ -1,9 +1,12 @@
 from __future__ import annotations
 
+import json
 import numpy as np
 import pandas as pd
 
+from screeners import leader_core_bridge
 from screeners.weinstein_stage2 import screener as weinstein_screener
+from screeners.leader_core_bridge import build_industry_key
 from screeners.weinstein_stage2.screener import (
     GroupContext,
     MarketContext,
@@ -65,14 +68,81 @@ def _market_context() -> MarketContext:
 
 def _group_context() -> GroupContext:
     return GroupContext(
+        industry_key=build_industry_key("Tech", "Software"),
         group_name="Tech",
-        group_state="GROUP_STRONG",
+        group_state="STRONG",
         breadth150_group=68.0,
         group_mrs=5.0,
         group_rp_ma52_slope=0.01,
         group_score=100.0,
+        group_overlay_score=82.0,
         data_available=True,
     )
+
+
+def _write_leader_core_artifacts(root, *, as_of: str) -> str:
+    compat_market_root = root / "market_intel_compat" / "us"
+    compat_market_root.mkdir(parents=True, exist_ok=True)
+    industry_key = build_industry_key("Tech", "Software")
+    summary = {
+        "market": "us",
+        "as_of": as_of,
+        "schema_version": leader_core_bridge.LEADER_CORE_SCHEMA_VERSION,
+        "engine_version": leader_core_bridge.LEADER_CORE_ENGINE_VERSION,
+        "leader_health_score": 70.0,
+        "leader_health_status": "HEALTHY",
+        "confirmed_count": 1,
+        "imminent_count": 0,
+        "broken_count": 0,
+    }
+    group_rows = [
+        {
+            "market": "us",
+            "as_of": as_of,
+            "schema_version": leader_core_bridge.LEADER_CORE_SCHEMA_VERSION,
+            "engine_version": leader_core_bridge.LEADER_CORE_ENGINE_VERSION,
+            "industry_key": industry_key,
+            "group_strength_score": 86.0,
+            "group_state": "STRONG",
+            "rank": 1.0,
+            "leaders": ["BBB"],
+        }
+    ]
+    (compat_market_root / "leader_market_summary.json").write_text(
+        json.dumps(summary, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (compat_market_root / "industry_rotation.json").write_text(
+        json.dumps(group_rows, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    (compat_market_root / "leaders.json").write_text("[]", encoding="utf-8")
+    (compat_market_root / "market_context.json").write_text(
+        json.dumps(
+            {
+                "market": "us",
+                "as_of": as_of,
+                "schema_version": leader_core_bridge.MARKET_CONTEXT_SCHEMA_VERSION,
+                "engine_version": "compat_market_context_v1",
+                "regime_state": "uptrend",
+                "top_state": "risk_on",
+                "market_state": "uptrend",
+                "breadth_state": "broad_participation",
+                "concentration_state": "diversified",
+                "leadership_state": "growth_ai",
+                "prototype_market_alias": "RISK_ON",
+                "market_alignment_score": 80.0,
+                "breadth_support_score": 74.0,
+                "rotation_support_score": 86.0,
+                "leader_health_score": 70.0,
+                "leader_health_status": "HEALTHY",
+            },
+            ensure_ascii=False,
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+    return str(compat_market_root)
 
 
 def _stage1_base_closes() -> np.ndarray:
@@ -342,6 +412,7 @@ def test_run_persists_pattern_excluded_and_included_outputs(monkeypatch) -> None
             np.concatenate([np.linspace(700_000, 500_000, len(_stage1_base_closes())), np.array([520_000.0, 2_600_000.0])]),
         ),
     }
+    benchmark_daily = _benchmark_daily()
 
     monkeypatch.setattr(weinstein_screener, "ensure_market_dirs", lambda market: None)
     monkeypatch.setattr(weinstein_screener, "get_weinstein_stage2_results_dir", lambda market: str(output_root))
@@ -350,13 +421,47 @@ def test_run_persists_pattern_excluded_and_included_outputs(monkeypatch) -> None
     monkeypatch.setattr(
         weinstein_screener,
         "load_benchmark_data",
-        lambda *args, **kwargs: ("SPY", _benchmark_daily()),
+        lambda *args, **kwargs: ("SPY", benchmark_daily.copy()),
+    )
+    compat_market_root = _write_leader_core_artifacts(
+        output_root,
+        as_of=str(pd.Timestamp(benchmark_daily["date"].iloc[-1]).date()),
+    )
+    monkeypatch.setattr(
+        leader_core_bridge,
+        "get_market_intel_compat_root",
+        lambda market: compat_market_root,
     )
 
     result = weinstein_screener.run_weinstein_stage2_screening(market="us")
 
     assert not result.empty
     assert "phase_bucket" in result.columns
+    assert "breadth150_market" not in result.columns
+    assert "breadth150_group" not in result.columns
+    assert "group_mrs" not in result.columns
+    assert "group_rp_ma52_slope" not in result.columns
+    assert "group_overlay_score" not in result.columns
+    assert "group_score" not in result.columns
+    assert "market_score" not in result.columns
     assert (output_root / "pattern_excluded_pool.csv").exists()
     assert (output_root / "pattern_included_candidates.csv").exists()
     assert (output_root / "actual_data_calibration.json").exists()
+
+    group_rankings = pd.read_csv(output_root / "group_rankings.csv")
+    assert "group_strength_score" in group_rankings.columns
+    assert "group_state" in group_rankings.columns
+    assert "group_overlay_score" not in group_rankings.columns
+    assert "breadth150_group" not in group_rankings.columns
+    assert "group_mrs" not in group_rankings.columns
+    assert "group_rp_ma52_slope" not in group_rankings.columns
+    assert "group_score" not in group_rankings.columns
+
+    with open(output_root / "market_summary.json", "r", encoding="utf-8") as handle:
+        summary = json.load(handle)
+    assert summary["market_alias"] == "RISK_ON"
+    assert summary["market_alignment_score"] == 80.0
+    assert summary["breadth_support_score"] == 74.0
+    assert summary["rotation_support_score"] == 86.0
+    assert summary["leader_health_score"] == 70.0
+    assert "breadth150_market" not in summary

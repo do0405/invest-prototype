@@ -47,7 +47,6 @@ US_SUPPLEMENTAL_SEED_FILENAMES: tuple[str, ...] = (
 )
 
 US_BROAD_SEED_FILENAMES: tuple[str, ...] = ("broad_us_seed.csv",)
-US_LEGACY_BROAD_SEED_FILENAMES: tuple[str, ...] = ("nasdaq_symbols.csv",)
 US_OFFICIAL_SYMBOL_DIRECTORY_URLS: dict[str, str] = {
     "nasdaqlisted": "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
     "otherlisted": "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt",
@@ -407,20 +406,6 @@ def load_us_symbol_universe(
             if symbols:
                 discovered.update(symbols)
                 loaded_broad = True
-        if not loaded_broad:
-            for filename in US_LEGACY_BROAD_SEED_FILENAMES:
-                symbols = _load_existing_seed_file(
-                    data_dir,
-                    filename,
-                    progress=progress,
-                    label="Legacy broad seed loaded",
-                )
-                if symbols:
-                    discovered.update(symbols)
-                    _emit_progress(
-                        progress,
-                        f"[Universe] Legacy broad seed alias active - file={filename}, logical_name=broad_us_seed.csv",
-                    )
 
     for filename in US_SUPPLEMENTAL_SEED_FILENAMES:
         discovered.update(

@@ -2,7 +2,14 @@ from __future__ import annotations
 
 import os
 
-from config import DATA_KR_DIR, DATA_US_DIR, EXTERNAL_DATA_DIR, RESULTS_DIR, STOCK_METADATA_PATH
+from config import (
+    BASE_DIR,
+    DATA_KR_DIR,
+    DATA_US_DIR,
+    EXTERNAL_DATA_DIR,
+    RESULTS_DIR,
+    STOCK_METADATA_PATH,
+)
 from .market_data_contract import normalize_market
 
 
@@ -64,6 +71,17 @@ def get_market_results_root(market: str) -> str:
 
 def get_market_screeners_root(market: str) -> str:
     return os.path.join(get_market_results_root(market), "screeners")
+
+
+def get_market_intel_compat_root(market: str) -> str:
+    base_root = os.environ.get("MARKET_INTEL_COMPAT_RESULTS_ROOT") or os.path.join(
+        BASE_DIR, "..", "market-intel-core", "results", "compat", "invest_prototype"
+    )
+    return os.path.join(os.path.abspath(base_root), market_key(market))
+
+
+def get_augment_results_dir(market: str) -> str:
+    return os.path.join(get_market_screeners_root(market), "augment")
 
 
 
@@ -196,6 +214,7 @@ def ensure_market_dirs(market: str, *, include_signal_dirs: bool = False) -> Non
     directories: list[str] = [
         get_market_results_root(market),
         get_market_screeners_root(market),
+        get_augment_results_dir(market),
         get_markminervini_results_dir(market),
         get_qullamaggie_results_dir(market),
         get_leader_lagging_results_dir(market),

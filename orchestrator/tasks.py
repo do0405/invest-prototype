@@ -19,6 +19,7 @@ __all__ = [
     "run_kr_ohlcv_collection",
     "run_all_screening_processes",
     "run_market_analysis_pipeline",
+    "run_screening_augment_processes",
     "run_signal_engine_processes",
     "run_leader_lagging_screening",
     "run_stock_metadata_collection",
@@ -417,10 +418,10 @@ def run_tradingview_preset_screeners(*, market: str) -> Any:
 def run_signal_engine_task(*, market: str) -> Any:
     normalized_market = require_market_key(market)
     try:
-        from screeners.signals import run_signal_scan
+        from screeners.signals import run_multi_screener_signal_scan
 
         print(f"\n[Task] Multi-screener signal engine started ({normalized_market})")
-        result = run_signal_scan(market=normalized_market)
+        result = run_multi_screener_signal_scan(market=normalized_market)
         print(f"[Task] Multi-screener signal engine completed ({normalized_market})")
         return result
     except Exception as exc:
@@ -451,6 +452,43 @@ def run_signal_engine_processes(markets: Optional[list[str]] = None) -> dict[str
     except Exception as exc:
         return _unexpected_process_summary("Signal engine process", exc)
 
+
+
+def run_screening_augment_task(*, market: str) -> Any:
+    normalized_market = require_market_key(market)
+    try:
+        from screeners.augment import run_screening_augment
+
+        print(f"\n[Task] Screening augment started ({normalized_market})")
+        result = run_screening_augment(market=normalized_market)
+        print(f"[Task] Screening augment completed ({normalized_market})")
+        return result
+    except Exception as exc:
+        print(f"[Task] Screening augment failed ({normalized_market}): {exc}")
+        print(traceback.format_exc())
+        return {"error": str(exc), "market": normalized_market}
+
+
+def run_screening_augment_processes(markets: Optional[list[str]] = None) -> dict[str, Any]:
+    target_markets = _normalize_markets(markets)
+    print("\n[Task] Screening augment process started")
+    try:
+        outcomes: list[TaskStepOutcome] = []
+        total_steps = len(target_markets)
+        for index, market in enumerate(target_markets, start=1):
+            outcomes.append(
+                _run_timed_step(
+                    index,
+                    total_steps,
+                    "Screening augment",
+                    market,
+                    lambda market=market: run_screening_augment_task(market=market),
+                )
+            )
+
+        return _build_process_summary("Screening augment process", outcomes)
+    except Exception as exc:
+        return _unexpected_process_summary("Screening augment process", exc)
 
 
 def run_weinstein_stage2_screening(*, market: str) -> Any:
@@ -532,14 +570,18 @@ def run_market_analysis_pipeline(
     skip_data: bool = False,
     markets: Optional[list[str]] = None,
     include_signals: bool = False,
+    enable_augment: bool = False,
 ) -> dict[str, Any]:
     target_markets = _normalize_markets(markets)
     print(
         "\n[Task] Market analysis pipeline started - "
-        f"markets={target_markets}, skip_data={skip_data}, include_signals={include_signals}"
+        f"markets={target_markets}, skip_data={skip_data}, include_signals={include_signals}, "
+        f"enable_augment={enable_augment}"
     )
     screening_summary = run_all_screening_processes(skip_data=skip_data, markets=target_markets)
     summaries = [screening_summary]
+    if enable_augment:
+        summaries.append(run_screening_augment_processes(markets=target_markets))
     if include_signals:
         summaries.append(run_signal_engine_processes(markets=target_markets))
     return _combine_process_summaries("Market analysis pipeline", summaries)

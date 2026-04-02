@@ -100,15 +100,27 @@ def _install_main_runtime_stubs(monkeypatch, calls: list[object]) -> None:
         "run_signal_engine_processes",
         lambda **kwargs: calls.append(("run_signal_engine_processes", kwargs)) or {"ok": True, "failed_steps": 0},
     )
+    setattr(
+        fake_tasks,
+        "run_screening_augment_processes",
+        lambda **kwargs: calls.append(("run_screening_augment_processes", kwargs)) or {"ok": True, "failed_steps": 0},
+    )
 
-    def _fake_run_market_analysis_pipeline(*, skip_data=False, markets=None, include_signals=False):  # noqa: ANN202
+    def _fake_run_market_analysis_pipeline(*, skip_data=False, markets=None, include_signals=False, enable_augment=False):  # noqa: ANN202
         calls.append(
             (
                 "run_market_analysis_pipeline",
-                {"skip_data": skip_data, "markets": markets, "include_signals": include_signals},
+                {
+                    "skip_data": skip_data,
+                    "markets": markets,
+                    "include_signals": include_signals,
+                    "enable_augment": enable_augment,
+                },
             )
         )
         calls.append(("run_all_screening_processes", {"skip_data": skip_data, "markets": markets}))
+        if enable_augment:
+            calls.append(("run_screening_augment_processes", {"markets": markets}))
         if include_signals:
             calls.append(("run_signal_engine_processes", {"markets": markets}))
         return {"ok": True, "failed_steps": 0}
@@ -153,6 +165,65 @@ def test_main_all_runs_signal_engine_after_screening(monkeypatch):
     signals_index = calls.index(("run_signal_engine_processes", {"markets": ["kr"]}))
 
     assert screening_index < signals_index
+
+
+def test_main_enable_augment_is_rejected_for_non_screening_tasks(monkeypatch):
+    calls: list[object] = []
+    _install_main_runtime_stubs(monkeypatch, calls)
+
+    monkeypatch.setattr(sys, "argv", ["main.py", "--task", "signals", "--market", "us", "--enable-augment"])
+
+    with pytest.raises(SystemExit) as exc_info:
+        main_module.main()
+
+    assert exc_info.value.code == 2
+    assert not any(
+        call
+        for call in calls
+        if isinstance(call, tuple) and call[0] == "run_screening_augment_processes"
+    )
+
+
+def test_main_screening_enable_augment_dispatches_market_pipeline(monkeypatch):
+    calls: list[object] = []
+    _install_main_runtime_stubs(monkeypatch, calls)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["main.py", "--task", "screening", "--market", "both", "--skip-data", "--enable-augment"],
+    )
+
+    main_module.main()
+
+    assert (
+        "run_market_analysis_pipeline",
+        {
+            "skip_data": True,
+            "markets": ["us", "kr"],
+            "include_signals": False,
+            "enable_augment": True,
+        },
+    ) in calls
+
+
+def test_main_all_enable_augment_runs_between_screening_and_signals(monkeypatch):
+    calls: list[object] = []
+    _install_main_runtime_stubs(monkeypatch, calls)
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["main.py", "--task", "all", "--market", "us", "--skip-data", "--enable-augment"],
+    )
+
+    main_module.main()
+
+    screening_index = calls.index(("run_all_screening_processes", {"skip_data": True, "markets": ["us"]}))
+    augment_index = calls.index(("run_screening_augment_processes", {"markets": ["us"]}))
+    signals_index = calls.index(("run_signal_engine_processes", {"markets": ["us"]}))
+
+    assert screening_index < augment_index < signals_index
 
 
 

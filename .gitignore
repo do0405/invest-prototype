@@ -65,6 +65,8 @@ pids
 coverage/
 *.lcov
 .pytest_cache/
+.sixth/
+.vercel/
 
 # Dependency directories
 jspm_packages/

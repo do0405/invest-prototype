@@ -42,3 +42,23 @@ def test_collect_cleanup_candidates_reports_only_matching_paths():
         shutil.rmtree(root, ignore_errors=True)
 
 
+def test_collect_cleanup_candidates_ignores_virtualenv_and_git_paths():
+    root = runtime_root("_test_runtime_hygiene_excluded")
+    _reset_dir(root)
+    try:
+        (root / ".venv" / "pkg" / "__pycache__").mkdir(parents=True, exist_ok=True)
+        (root / ".git" / "hooks" / "__pycache__").mkdir(parents=True, exist_ok=True)
+        (root / "screeners" / "__pycache__").mkdir(parents=True, exist_ok=True)
+
+        (root / ".venv" / "pkg" / "__pycache__" / "a.pyc").write_text("x", encoding="utf-8")
+        (root / ".git" / "hooks" / "__pycache__" / "b.pyc").write_text("y", encoding="utf-8")
+        (root / "screeners" / "__pycache__" / "c.pyc").write_text("z", encoding="utf-8")
+
+        report = collect_cleanup_candidates(root=root, patterns=("**/__pycache__",))
+
+        paths = {row["path"] for row in report["candidates"]}
+        assert "screeners/__pycache__" in paths
+        assert ".venv/pkg/__pycache__" not in paths
+        assert ".git/hooks/__pycache__" not in paths
+    finally:
+        shutil.rmtree(root, ignore_errors=True)

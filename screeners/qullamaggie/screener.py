@@ -21,6 +21,7 @@ from utils.market_runtime import (
 from utils.progress_runtime import is_progress_tick, progress_interval
 from utils.screener_utils import create_screener_summary, save_screening_results, track_new_tickers
 from utils.typing_utils import frame_keyed_records, row_to_record
+from screeners.leader_core_bridge import load_market_truth_snapshot
 
 from .core import MarketRegime, QullamaggieAnalyzer, _safe_bool, _safe_float
 from .earnings_data_collector import EarningsDataCollector
@@ -92,7 +93,11 @@ def _feature_to_snapshot(feature_row: dict[str, Any], regime: MarketRegime, mark
         "setup_score": round(setup_score, 2),
         "final_priority_score": round(final_priority_score, 2),
         "regime_state": regime.regime_state,
-        "regime_score": round(regime.regime_score, 2),
+        "market_alias": regime.market_alias,
+        "market_alignment_score": round(regime.market_alignment_score, 2),
+        "breadth_support_score": round(regime.breadth_support_score, 2),
+        "rotation_support_score": round(regime.rotation_support_score, 2),
+        "leader_health_score": _safe_float(regime.leader_health_score),
         "reason_codes": reasons,
         "fail_codes": [],
         "data_flags": data_flags,
@@ -128,7 +133,11 @@ def _feature_to_patternless_pool_row(feature_row: dict[str, Any], regime: Market
         "pivot_price": feature_row.get("pivot_price"),
         "stop_price": feature_row.get("stop_price"),
         "regime_state": regime.regime_state,
-        "regime_score": round(regime.regime_score, 2),
+        "market_alias": regime.market_alias,
+        "market_alignment_score": round(regime.market_alignment_score, 2),
+        "breadth_support_score": round(regime.breadth_support_score, 2),
+        "rotation_support_score": round(regime.rotation_support_score, 2),
+        "leader_health_score": _safe_float(regime.leader_health_score),
     }
 
 
@@ -181,12 +190,13 @@ def _build_context(
         price_policy=PricePolicy.SPLIT_ADJUSTED,
     )
     benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(market)
-    regime = _ANALYZER.compute_market_regime(
+    as_of_date = str(pd.Timestamp(benchmark_daily["date"].iloc[-1]).date()) if not benchmark_daily.empty else ""
+    market_truth = load_market_truth_snapshot(market, as_of_date=as_of_date)
+    regime = _ANALYZER.build_market_regime_from_truth(
         market=market,
         benchmark_symbol=benchmark_symbol,
+        market_truth=market_truth,
         benchmark_daily=benchmark_daily,
-        feature_table=feature_table,
-        calibration=calibration,
     )
     return {
         "market": market,
@@ -330,12 +340,11 @@ class QullamaggieScreener:
             "market_regime": {
                 "benchmark_symbol": regime.benchmark_symbol,
                 "regime_state": regime.regime_state,
-                "regime_score": regime.regime_score,
-                "market_trend_score": regime.market_trend_score,
-                "breadth_score": regime.breadth_score,
-                "opportunity_score": regime.opportunity_score,
-                "focus_list_density": regime.focus_list_density,
-                "breakout_success_proxy": regime.breakout_success_proxy,
+                "market_alias": regime.market_alias,
+                "market_alignment_score": regime.market_alignment_score,
+                "breadth_support_score": regime.breadth_support_score,
+                "rotation_support_score": regime.rotation_support_score,
+                "leader_health_score": regime.leader_health_score,
                 "reason_codes": list(regime.reason_codes),
                 "data_flags": list(regime.data_flags),
             },
