@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-01-27,0.16,0.35,,,yfinance_earnings_dates:AAL,AAL
+2025-10-23,-0.17,-0.28,,,yfinance_earnings_dates:AAL,AAL
+2025-07-24,0.91,0.78,,,yfinance_earnings_dates:AAL,AAL
+2025-04-24,-0.59,-0.67,,,yfinance_earnings_dates:AAL,AAL

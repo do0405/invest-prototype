@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-GDE,,[],False,2026-03-13T22:31:50.676518+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+GDE,GDE,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:17:23.769965+00:00

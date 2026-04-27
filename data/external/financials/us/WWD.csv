@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-WWD,WWD,[],False,-3.0434782608695583,19.484702093397747,False,False,0.11956626583499454,7.304356562940983,False,False,True,True,False,False,-2.8367351387486104,18.537634293282856,0,0,2026-03-13T01:30:52.058541+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+WWD,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:WWD:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:WWD:[Errno 22] Invalid argument""]",True,2026-04-18T22:06:06.920368+00:00

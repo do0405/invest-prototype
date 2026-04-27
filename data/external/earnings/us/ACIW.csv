@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-26,0.9,1.01,,,yfinance_earnings_dates:ACIW,ACIW
+2025-11-06,1.09,0.99,,,yfinance_earnings_dates:ACIW,ACIW
+2025-08-07,0.35,0.27,,,yfinance_earnings_dates:ACIW,ACIW
+2025-05-08,0.51,0.34,,,yfinance_earnings_dates:ACIW,ACIW

@@ -1,0 +1,17 @@
+symbol,met_count,rs_score,provider_symbol,fin_met_count,fetch_status,unavailable_reason,has_error,rs_percentile,fin_percentile,total_percentile
+ADEA,7,91.5,ADEA,8,complete,,False,62.5,96.875,159.375
+ADCT,7,87.58,ADCT,8,complete,,False,50.0,96.875,146.875
+ADAG,7,96.08,ADAG,7,complete,,False,87.5,87.5,175.0
+AAOI,7,97.39,AAOI,6,complete,,False,100.0,68.75,168.75
+AAUC,7,95.42,AAUC,6,complete,,False,81.25,68.75,150.0
+AAAU,7,90.2,AAAU,6,soft_unavailable,ineligible:etf,True,56.25,68.75,125.0
+ADTN,7,76.47,ADTN,6,complete,,False,12.5,68.75,81.25
+ABEQ,7,71.24,ABEQ,6,soft_unavailable,ineligible:etf,True,6.25,68.75,75.0
+ABUS,7,80.39,ABUS,5,complete,,False,18.75,50.0,68.75
+AA,7,93.46,AA,4,complete,,False,75.0,37.5,112.5
+ADI,7,85.62,ADI,4,complete,,False,37.5,37.5,75.0
+ABEV,7,82.35,ABEV,4,complete,,False,25.0,37.5,62.5
+ADM,7,86.27,ADM,3,complete,,False,43.75,21.875,65.625
+ABX,7,83.01,ABX,3,complete,,False,31.25,21.875,53.125
+ABOS,7,96.73,ABOS,2,complete,,False,93.75,12.5,106.25
+ACLX,7,92.16,ACLX,1,complete,,False,68.75,6.25,75.0

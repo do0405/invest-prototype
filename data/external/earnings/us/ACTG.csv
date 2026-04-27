@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-03-11,0.03,-0.14,,,yfinance_earnings_dates:ACTG,ACTG
+2025-11-05,-0.01,-0.14,,,yfinance_earnings_dates:ACTG,ACTG
+2025-08-06,-0.06,-0.05,,,yfinance_earnings_dates:ACTG,ACTG
+2025-05-08,0.34,-0.05,,,yfinance_earnings_dates:ACTG,ACTG

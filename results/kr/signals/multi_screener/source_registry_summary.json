@@ -1,0 +1,27 @@
+{
+  "market": "KR",
+  "as_of_date": "2026-04-21",
+  "market_truth_source": "local_standalone",
+  "core_overlay_applied": false,
+  "registry_symbols": 2,
+  "signal_universe_symbols": 4,
+  "buy_eligible_symbols": 4,
+  "disposition_counts": {
+    "buy_eligible": 4
+  },
+  "stage_counts": {
+    "INTEGRATED": 4
+  },
+  "source_tag_counts": {
+    "MM_INTEGRATED": 4
+  },
+  "primary_source_tag_counts": {
+    "MM_INTEGRATED": 4
+  },
+  "primary_source_style_counts": {
+    "LEADERSHIP": 4
+  },
+  "source_style_counts": {
+    "LEADERSHIP": 4
+  }
+}

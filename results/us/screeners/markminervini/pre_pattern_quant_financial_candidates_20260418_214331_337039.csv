@@ -1,0 +1,2 @@
+symbol,cond1,cond2,cond3,cond4,cond5,cond6,cond7,cond8,bars,tv_median20,distance_to_52w_high,met_count,close,volume,date,rs_score,rs_benchmark,recommended_rs_pass,recommended_distance_to_high_pass,met_count_fin,rs_score_fin,provider_symbol,fin_met_count,fetch_status,unavailable_reason,has_error,rs_percentile,fin_percentile,total_percentile,total_met_count
+AA,True,True,True,True,True,True,True,True,330,353562364.55955505,0.13315712824337467,7,65.62000274658203,10622300.0,2026-04-17,100.0,SPY,True,True,7,100.0,AA,4,complete,,False,100.0,100.0,200.0,11

@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+EWJV,EWJV,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-18T22:21:16.069154+00:00

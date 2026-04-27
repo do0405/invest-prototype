@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-03-09,0.38,0.38,,,yfinance_earnings_dates:ACCO,ACCO
+2025-10-30,0.21,0.22,,,yfinance_earnings_dates:ACCO,ACCO
+2025-07-31,0.28,0.29,,,yfinance_earnings_dates:ACCO,ACCO
+2025-05-01,-0.02,-0.04,,,yfinance_earnings_dates:ACCO,ACCO

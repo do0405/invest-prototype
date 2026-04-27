@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-25,0.14,0.14,,,yfinance_earnings_dates:ACAD,ACAD
+2025-11-05,0.42,0.15,,,yfinance_earnings_dates:ACAD,ACAD
+2025-08-06,0.16,0.14,,,yfinance_earnings_dates:ACAD,ACAD
+2025-05-07,0.11,0.11,,,yfinance_earnings_dates:ACAD,ACAD

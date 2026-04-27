@@ -1220,17 +1220,9 @@ class QullamaggieAnalyzer:
         return 20.0
 
     def _candidate_stage(self, *, tier: str, setup_family: str, passed: bool, universe_ready: bool) -> str:
-        if tier == "Tier 1":
-            return "DAILY_FOCUS"
-        if tier == "Tier 2":
-            return "WEEKLY_FOCUS"
         if passed:
-            return "WIDE_LIST"
-        if universe_ready:
-            return "UNIVERSE"
-        if setup_family == "EP":
-            return "EP_WATCH"
-        return "UNIVERSE"
+            return "PATTERN_INCLUDED"
+        return ""
 
     def _execution_quality(
         self,
@@ -1408,7 +1400,7 @@ class QullamaggieAnalyzer:
 
         fail_codes: list[str] = []
         if not universe_ready:
-            fail_codes.append("OUTSIDE_BREAKOUT_UNIVERSE")
+            fail_codes.append("OUTSIDE_BREAKOUT_POOL")
         if not prior_run_pass:
             fail_codes.append("PRIOR_RUN_TOO_WEAK")
         if not base_length_pass:
@@ -1682,7 +1674,7 @@ class QullamaggieAnalyzer:
 
         fail_codes: list[str] = []
         if not universe_ready:
-            fail_codes.append("OUTSIDE_EP_UNIVERSE")
+            fail_codes.append("OUTSIDE_EP_POOL")
         if not gap_pass:
             fail_codes.append("NO_GAP_CONFIRMATION")
         if not volume_pass_watch:
@@ -1709,6 +1701,12 @@ class QullamaggieAnalyzer:
             data_flags.append("EARNINGS_RATE_LIMITED")
         elif earnings_fetch_status == "soft_unavailable":
             data_flags.append("EARNINGS_SOFT_UNAVAILABLE")
+        elif earnings_fetch_status == "scheduled_undecided":
+            data_flags.append("EARNINGS_EVENT_UNDECIDED")
+        elif earnings_fetch_status == "no_event_announced":
+            data_flags.append("EARNINGS_EVENT_NOT_ANNOUNCED")
+        elif earnings_fetch_status == "not_expected":
+            data_flags.append("EARNINGS_NOT_EXPECTED")
         elif earnings_fetch_status == "delisted":
             data_flags.append("EARNINGS_DELISTED")
         elif earnings_fetch_status == "failed":
@@ -1842,7 +1840,7 @@ class QullamaggieAnalyzer:
             "symbol": str(symbol).upper(),
             "market": self.market_profile(market).market_code,
             "setup_family": "PARABOLIC_SHORT",
-            "candidate_stage": "LEGACY_WATCH",
+            "candidate_stage": "PATTERN_INCLUDED" if passed else "",
             "stock_grade": str(feature_row.get("stock_grade") or self.stock_grade(feature_row.get("a_pp_score"))),
             "setup_grade": self.setup_grade(short_score, watch=not passed),
             "regime_state": regime_ctx.regime_state,

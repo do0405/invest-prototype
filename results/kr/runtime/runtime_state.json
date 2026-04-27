@@ -1,0 +1,19 @@
+{
+  "market": "kr",
+  "as_of_date": "2026-04-21",
+  "latest_completed_session": "2026-04-24",
+  "benchmark_as_of_date": "2026-04-21",
+  "freshness_status": "stale_benchmark",
+  "freshness_reason": "benchmark_older_than_latest_completed_session",
+  "run_id": "kr:2026-04-24T23:14:10",
+  "started_at": "2026-04-24T23:14:10",
+  "last_progress_at": "2026-04-24T23:14:11",
+  "current_stage": "Multi-screener signal engine",
+  "current_symbol": "",
+  "current_chunk": "",
+  "status": "failed",
+  "last_successful_stage": "",
+  "last_error_code": "failed",
+  "last_error_detail": "missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\kr\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.",
+  "last_retryable_error": ""
+}

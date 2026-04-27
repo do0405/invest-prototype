@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+UTI,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:UTI:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:UTI:[Errno 22] Invalid argument""]",True,2026-04-18T22:13:14.287689+00:00

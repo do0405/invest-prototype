@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,quarterly_revenue_growth,quarterly_net_income_growth,roe,debt_to_equity,cached_at
+EMF,EMF,complete,,yahooquery,,[],False,-40.01741141791573,-40.33698020111436,15.741261992945773,0.06138147157297312,2026-04-26T15:15:49.861047+00:00

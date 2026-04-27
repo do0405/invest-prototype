@@ -1,0 +1,58 @@
+[
+  {
+    "threshold_key": "leader_rs_rank_min",
+    "base_value": 85.0,
+    "tuned_value": 85.0,
+    "delta": 0.0,
+    "applied": false,
+    "reason_codes": "insufficient_candidate_sample"
+  },
+  {
+    "threshold_key": "leader_group_strength_min",
+    "base_value": 70.0,
+    "tuned_value": 70.0,
+    "delta": 0.0,
+    "applied": false,
+    "reason_codes": "insufficient_candidate_sample"
+  },
+  {
+    "threshold_key": "leader_distance_to_high_max",
+    "base_value": 0.2,
+    "tuned_value": 0.2,
+    "delta": 0.0,
+    "applied": false,
+    "reason_codes": "insufficient_candidate_sample"
+  },
+  {
+    "threshold_key": "leader_confirmed_score_min",
+    "base_value": 78.0,
+    "tuned_value": 78.0,
+    "delta": 0.0,
+    "applied": false,
+    "reason_codes": "insufficient_candidate_sample"
+  },
+  {
+    "threshold_key": "leader_emerging_score_min",
+    "base_value": 72.0,
+    "tuned_value": 72.0,
+    "delta": 0.0,
+    "applied": false,
+    "reason_codes": "insufficient_candidate_sample"
+  },
+  {
+    "threshold_key": "leader_extended_distance_to_high_max",
+    "base_value": 0.03,
+    "tuned_value": 0.03,
+    "delta": 0.0,
+    "applied": false,
+    "reason_codes": "insufficient_candidate_sample"
+  },
+  {
+    "threshold_key": "leader_extended_pivot_proximity_max",
+    "base_value": 25.0,
+    "tuned_value": 25.0,
+    "delta": 0.0,
+    "applied": false,
+    "reason_codes": "insufficient_candidate_sample"
+  }
+]

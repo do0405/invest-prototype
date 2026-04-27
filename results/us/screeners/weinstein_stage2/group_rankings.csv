@@ -1,0 +1,145 @@
+industry_key,group_name,group_state,group_truth_source,group_strength_score,member_count
+basic_materials__aluminum,Aluminum,UNKNOWN,local_proxy,50.0,4
+energy__oil_&_gas_drilling,Oil & Gas Drilling,UNKNOWN,local_proxy,50.0,9
+energy__oil_&_gas_equipment_&_services,Oil & Gas Equipment & Services,UNKNOWN,local_proxy,50.0,51
+energy__oil_&_gas_midstream,Oil & Gas Midstream,UNKNOWN,local_proxy,50.0,57
+industrials__tools_&_accessories,Tools & Accessories,UNKNOWN,local_proxy,50.0,10
+technology__semiconductor_equipment_&_materials,Semiconductor Equipment & Materials,UNKNOWN,local_proxy,50.0,30
+real_estate__reit_-_industrial,REIT - Industrial,UNKNOWN,local_proxy,50.0,17
+financial_services__financial_conglomerates,Financial Conglomerates,UNKNOWN,local_proxy,50.0,8
+communication_services__publishing,Publishing,UNKNOWN,local_proxy,50.0,9
+basic_materials__chemicals,Chemicals,UNKNOWN,local_proxy,50.0,19
+energy__oil_&_gas_integrated,Oil & Gas Integrated,UNKNOWN,local_proxy,50.0,19
+basic_materials__copper,Copper,UNKNOWN,local_proxy,50.0,6
+consumer_cyclical__lodging,Lodging,UNKNOWN,local_proxy,50.0,12
+technology__semiconductors,Semiconductors,UNKNOWN,local_proxy,50.0,70
+financial_services__banks_-_regional,Banks - Regional,UNKNOWN,local_proxy,50.0,376
+financial_services__shell_companies,Shell Companies,UNKNOWN,local_proxy,50.0,255
+industrials__rental_&_leasing_services,Rental & Leasing Services,UNKNOWN,local_proxy,50.0,23
+utilities__utilities_-_diversified,Utilities - Diversified,UNKNOWN,local_proxy,50.0,7
+energy__oil_&_gas_refining_&_marketing,Oil & Gas Refining & Marketing,UNKNOWN,local_proxy,50.0,19
+industrials__trucking,Trucking,UNKNOWN,local_proxy,50.0,16
+industrials__marine_shipping,Marine Shipping,UNKNOWN,local_proxy,50.0,39
+technology__communication_equipment,Communication Equipment,UNKNOWN,local_proxy,50.0,46
+financial_services__banks_-_diversified,Banks - Diversified,UNKNOWN,local_proxy,50.0,19
+energy__oil_&_gas_e&p,Oil & Gas E&P,UNKNOWN,local_proxy,50.0,79
+basic_materials__other_precious_metals_&_mining,Other Precious Metals & Mining,UNKNOWN,local_proxy,50.0,18
+basic_materials__specialty_chemicals,Specialty Chemicals,UNKNOWN,local_proxy,50.0,59
+basic_materials__silver,Silver,UNKNOWN,local_proxy,50.0,7
+technology__electronics_&_computer_distribution,Electronics & Computer Distribution,UNKNOWN,local_proxy,50.0,9
+basic_materials__gold,Gold,UNKNOWN,local_proxy,50.0,54
+industrials__engineering_&_construction,Engineering & Construction,UNKNOWN,local_proxy,50.0,54
+technology__electronic_components,Electronic Components,UNKNOWN,local_proxy,50.0,47
+real_estate__reit_-_retail,REIT - Retail,UNKNOWN,local_proxy,50.0,32
+utilities__utilities_-_regulated_gas,Utilities - Regulated Gas,UNKNOWN,local_proxy,50.0,16
+industrials__conglomerates,Conglomerates,UNKNOWN,local_proxy,50.0,29
+industrials__specialty_industrial_machinery,Specialty Industrial Machinery,UNKNOWN,local_proxy,50.0,75
+industrials__integrated_freight_&_logistics,Integrated Freight & Logistics,UNKNOWN,local_proxy,50.0,31
+communication_services__telecom_services,Telecom Services,UNKNOWN,local_proxy,50.0,60
+technology__scientific_&_technical_instruments,Scientific & Technical Instruments,UNKNOWN,local_proxy,50.0,34
+energy__uranium,Uranium,UNKNOWN,local_proxy,50.0,13
+financial_services__insurance_-_reinsurance,Insurance - Reinsurance,UNKNOWN,local_proxy,50.0,8
+industrials__airports_&_air_services,Airports & Air Services,UNKNOWN,local_proxy,50.0,8
+industrials__farm_&_heavy_construction_machinery,Farm & Heavy Construction Machinery,UNKNOWN,local_proxy,50.0,26
+healthcare__medical_distribution,Medical Distribution,UNKNOWN,local_proxy,50.0,12
+communication_services__broadcasting,Broadcasting,UNKNOWN,local_proxy,50.0,16
+industrials__specialty_business_services,Specialty Business Services,UNKNOWN,local_proxy,50.0,46
+basic_materials__other_industrial_metals_&_mining,Other Industrial Metals & Mining,UNKNOWN,local_proxy,50.0,55
+industrials__aerospace_&_defense,Aerospace & Defense,UNKNOWN,local_proxy,50.0,83
+consumer_cyclical__auto_parts,Auto Parts,UNKNOWN,local_proxy,50.0,55
+real_estate__reit_-_specialty,REIT - Specialty,UNKNOWN,local_proxy,50.0,20
+communication_services__electronic_gaming_&_multimedia,Electronic Gaming & Multimedia,UNKNOWN,local_proxy,50.0,25
+real_estate__real_estate_-_development,Real Estate - Development,UNKNOWN,local_proxy,50.0,15
+communication_services__internet_content_&_information,Internet Content & Information,UNKNOWN,local_proxy,50.0,75
+real_estate__reit_-_healthcare_facilities,REIT - Healthcare Facilities,UNKNOWN,local_proxy,50.0,21
+"consumer_cyclical__furnishings,_fixtures_&_appliances","Furnishings, Fixtures & Appliances",UNKNOWN,local_proxy,50.0,33
+consumer_cyclical__travel_services,Travel Services,UNKNOWN,local_proxy,50.0,20
+consumer_cyclical__luxury_goods,Luxury Goods,UNKNOWN,local_proxy,50.0,11
+technology__computer_hardware,Computer Hardware,UNKNOWN,local_proxy,50.0,41
+communication_services__advertising_agencies,Advertising Agencies,UNKNOWN,local_proxy,50.0,43
+consumer_defensive__discount_stores,Discount Stores,UNKNOWN,local_proxy,50.0,9
+healthcare__medical_devices,Medical Devices,UNKNOWN,local_proxy,50.0,148
+utilities__utilities_-_regulated_electric,Utilities - Regulated Electric,UNKNOWN,local_proxy,50.0,44
+consumer_cyclical__restaurants,Restaurants,UNKNOWN,local_proxy,50.0,53
+consumer_cyclical__department_stores,Department Stores,UNKNOWN,local_proxy,50.0,4
+technology__solar,Solar,UNKNOWN,local_proxy,50.0,22
+communication_services__entertainment,Entertainment,UNKNOWN,local_proxy,50.0,52
+industrials__waste_management,Waste Management,UNKNOWN,local_proxy,50.0,19
+technology__information_technology_services,Information Technology Services,UNKNOWN,local_proxy,50.0,72
+financial_services__insurance_brokers,Insurance Brokers,UNKNOWN,local_proxy,50.0,23
+industrials__railroads,Railroads,UNKNOWN,local_proxy,50.0,12
+consumer_cyclical__apparel_manufacturing,Apparel Manufacturing,UNKNOWN,local_proxy,50.0,24
+industrials__industrial_distribution,Industrial Distribution,UNKNOWN,local_proxy,50.0,22
+unknown__unknown,unknown__unknown,UNKNOWN,local_proxy,50.0,6178
+financial_services__insurance_-_life,Insurance - Life,UNKNOWN,local_proxy,50.0,22
+industrials__building_products_&_equipment,Building Products & Equipment,UNKNOWN,local_proxy,50.0,37
+consumer_defensive__food_distribution,Food Distribution,UNKNOWN,local_proxy,50.0,13
+basic_materials__steel,Steel,UNKNOWN,local_proxy,50.0,22
+utilities__utilities_-_independent_power_producers,Utilities - Independent Power Producers,UNKNOWN,local_proxy,50.0,8
+industrials__metal_fabrication,Metal Fabrication,UNKNOWN,local_proxy,50.0,19
+consumer_cyclical__footwear_&_accessories,Footwear & Accessories,UNKNOWN,local_proxy,50.0,15
+technology__software_-_infrastructure,Software - Infrastructure,UNKNOWN,local_proxy,50.0,174
+utilities__utilities_-_renewable,Utilities - Renewable,UNKNOWN,local_proxy,50.0,23
+industrials__electrical_equipment_&_parts,Electrical Equipment & Parts,UNKNOWN,local_proxy,50.0,48
+healthcare__medical_care_facilities,Medical Care Facilities,UNKNOWN,local_proxy,50.0,51
+healthcare__drug_manufacturers_-_specialty_&_generic,Drug Manufacturers - Specialty & Generic,UNKNOWN,local_proxy,50.0,83
+consumer_cyclical__leisure,Leisure,UNKNOWN,local_proxy,50.0,33
+utilities__utilities_-_regulated_water,Utilities - Regulated Water,UNKNOWN,local_proxy,50.0,14
+consumer_cyclical__apparel_retail,Apparel Retail,UNKNOWN,local_proxy,50.0,32
+financial_services__asset_management,Asset Management,UNKNOWN,local_proxy,50.0,510
+financial_services__capital_markets,Capital Markets,UNKNOWN,local_proxy,50.0,93
+consumer_cyclical__packaging_&_containers,Packaging & Containers,UNKNOWN,local_proxy,50.0,23
+energy__thermal_coal,Thermal Coal,UNKNOWN,local_proxy,50.0,6
+healthcare__medical_instruments_&_supplies,Medical Instruments & Supplies,UNKNOWN,local_proxy,50.0,58
+industrials__consulting_services,Consulting Services,UNKNOWN,local_proxy,50.0,25
+technology__consumer_electronics,Consumer Electronics,UNKNOWN,local_proxy,50.0,19
+industrials__security_&_protection_services,Security & Protection Services,UNKNOWN,local_proxy,50.0,24
+consumer_defensive__farm_products,Farm Products,UNKNOWN,local_proxy,50.0,26
+healthcare__drug_manufacturers_-_general,Drug Manufacturers - General,UNKNOWN,local_proxy,50.0,21
+healthcare__diagnostics_&_research,Diagnostics & Research,UNKNOWN,local_proxy,50.0,50
+industrials__pollution_&_treatment_controls,Pollution & Treatment Controls,UNKNOWN,local_proxy,50.0,18
+consumer_cyclical__internet_retail,Internet Retail,UNKNOWN,local_proxy,50.0,43
+consumer_cyclical__resorts_&_casinos,Resorts & Casinos,UNKNOWN,local_proxy,50.0,18
+real_estate__reit_-_hotel_&_motel,REIT - Hotel & Motel,UNKNOWN,local_proxy,50.0,18
+technology__software_-_application,Software - Application,UNKNOWN,local_proxy,50.0,234
+consumer_defensive__tobacco,Tobacco,UNKNOWN,local_proxy,50.0,11
+consumer_cyclical__auto_manufacturers,Auto Manufacturers,UNKNOWN,local_proxy,50.0,32
+real_estate__reit_-_mortgage,REIT - Mortgage,UNKNOWN,local_proxy,50.0,49
+basic_materials__agricultural_inputs,Agricultural Inputs,UNKNOWN,local_proxy,50.0,17
+consumer_cyclical__specialty_retail,Specialty Retail,UNKNOWN,local_proxy,50.0,49
+financial_services__financial_data_&_stock_exchanges,Financial Data & Stock Exchanges,UNKNOWN,local_proxy,50.0,15
+basic_materials__coking_coal,Coking Coal,UNKNOWN,local_proxy,50.0,6
+consumer_defensive__beverages_-_brewers,Beverages - Brewers,UNKNOWN,local_proxy,50.0,7
+consumer_defensive__confectioners,Confectioners,UNKNOWN,local_proxy,50.0,5
+financial_services__mortgage_finance,Mortgage Finance,UNKNOWN,local_proxy,50.0,13
+real_estate__real_estate_services,Real Estate Services,UNKNOWN,local_proxy,50.0,49
+consumer_cyclical__gambling,Gambling,UNKNOWN,local_proxy,50.0,13
+consumer_defensive__beverages_-_non-alcoholic,Beverages - Non-Alcoholic,UNKNOWN,local_proxy,50.0,16
+industrials__airlines,Airlines,UNKNOWN,local_proxy,50.0,18
+healthcare__health_information_services,Health Information Services,UNKNOWN,local_proxy,50.0,56
+financial_services__insurance_-_property_&_casualty,Insurance - Property & Casualty,UNKNOWN,local_proxy,50.0,48
+healthcare__healthcare_plans,Healthcare Plans,UNKNOWN,local_proxy,50.0,11
+financial_services__insurance_-_diversified,Insurance - Diversified,UNKNOWN,local_proxy,50.0,13
+consumer_cyclical__residential_construction,Residential Construction,UNKNOWN,local_proxy,50.0,21
+consumer_cyclical__recreational_vehicles,Recreational Vehicles,UNKNOWN,local_proxy,50.0,16
+consumer_defensive__education_&_training_services,Education & Training Services,UNKNOWN,local_proxy,50.0,45
+financial_services__credit_services,Credit Services,UNKNOWN,local_proxy,50.0,53
+consumer_defensive__grocery_stores,Grocery Stores,UNKNOWN,local_proxy,50.0,13
+basic_materials__building_materials,Building Materials,UNKNOWN,local_proxy,50.0,18
+real_estate__reit_-_diversified,REIT - Diversified,UNKNOWN,local_proxy,50.0,19
+basic_materials__lumber_&_wood_production,Lumber & Wood Production,UNKNOWN,local_proxy,50.0,6
+financial_services__insurance_-_specialty,Insurance - Specialty,UNKNOWN,local_proxy,50.0,17
+healthcare__biotechnology,Biotechnology,UNKNOWN,local_proxy,50.0,627
+consumer_defensive__household_&_personal_products,Household & Personal Products,UNKNOWN,local_proxy,50.0,33
+industrials__business_equipment_&_supplies,Business Equipment & Supplies,UNKNOWN,local_proxy,50.0,5
+real_estate__reit_-_residential,REIT - Residential,UNKNOWN,local_proxy,50.0,22
+consumer_defensive__packaged_foods,Packaged Foods,UNKNOWN,local_proxy,50.0,66
+consumer_cyclical__auto_&_truck_dealerships,Auto & Truck Dealerships,UNKNOWN,local_proxy,50.0,28
+consumer_cyclical__personal_services,Personal Services,UNKNOWN,local_proxy,50.0,15
+industrials__staffing_&_employment_services,Staffing & Employment Services,UNKNOWN,local_proxy,50.0,18
+real_estate__reit_-_office,REIT - Office,UNKNOWN,local_proxy,50.0,23
+consumer_cyclical__textile_manufacturing,Textile Manufacturing,UNKNOWN,local_proxy,50.0,5
+consumer_defensive__beverages_-_wineries_&_distilleries,Beverages - Wineries & Distilleries,UNKNOWN,local_proxy,50.0,11
+consumer_cyclical__home_improvement_retail,Home Improvement Retail,UNKNOWN,local_proxy,50.0,7
+healthcare__pharmaceutical_retailers,Pharmaceutical Retailers,UNKNOWN,local_proxy,50.0,7
+basic_materials__paper_&_paper_products,Paper & Paper Products,UNKNOWN,local_proxy,50.0,5

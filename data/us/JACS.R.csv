@@ -1,1 +1,1 @@
-date,symbol,open,high,low,close,volume
+date,symbol,open,high,low,close,adj_close,volume,dividends,stock_splits,split_factor

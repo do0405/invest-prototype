@@ -2,8 +2,11 @@ from __future__ import annotations
 
 import json
 import os
+import threading
+import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable, Mapping
 
 import numpy as np
 import pandas as pd
@@ -19,8 +22,18 @@ from utils.indicator_helpers import (
     traded_value_series,
 )
 from utils.actual_data_calibration import bounded_quantile_value
-from utils.io_utils import ensure_dir
-from utils.market_data_contract import PricePolicy, load_benchmark_data, load_local_ohlcv_frame
+from utils.io_utils import ensure_dir, write_dataframe_csv_with_fallback, write_dataframe_json_with_fallback, write_json_with_fallback
+from utils.market_data_contract import (
+    OhlcvFreshnessSummary,
+    PricePolicy,
+    SCREENING_OHLCV_READ_COLUMNS,
+    _runtime_worker_count,
+    describe_ohlcv_freshness,
+    load_benchmark_data,
+    load_local_ohlcv_frame,
+    load_local_ohlcv_frames_ordered,
+)
+from utils.screening_cache import feature_row_cache_get_or_compute, resolve_ohlcv_source_path
 from utils.market_runtime import (
     ensure_market_dirs,
     get_benchmark_candidates,
@@ -28,14 +41,21 @@ from utils.market_runtime import (
     get_primary_benchmark_symbol,
     get_stock_metadata_path,
     is_index_symbol,
+    limit_runtime_symbols,
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
-from utils.typing_utils import frame_keyed_records, row_to_record, series_to_str_text_dict
+from utils.runtime_context import RuntimeContext, runtime_context_has_explicit_as_of
+from utils.typing_utils import frame_keyed_records, series_to_str_text_dict
+from screeners.leader_lagging import algorithms as leader_algorithms
+from screeners.leader_lagging import followers as follower_algorithms
+from screeners.leader_lagging import quality as leader_quality
+from screeners.leader_lagging import tuning as leader_tuning
 from screeners.leader_core_bridge import (
     MarketTruthSnapshot,
     annotate_frame_with_leader_core,
     build_industry_key,
+    empty_leader_core_snapshot,
     load_market_truth_snapshot,
     shared_market_alias_to_leader_lagging_state,
 )
@@ -51,6 +71,13 @@ def _safe_float(value: Any) -> float | None:
     if np.isnan(casted) or np.isinf(casted):
         return None
     return casted
+
+
+def _safe_text(value: Any) -> str:
+    if value is None or pd.isna(value):
+        return ""
+    text = str(value).strip()
+    return text if text else ""
 
 
 def _clamp(value: float | None, low: float = 0.0, high: float = 1.0) -> float:
@@ -115,6 +142,17 @@ def _safe_divide(numerator: float | None, denominator: float | None) -> float | 
     return numerator / denominator
 
 
+def _max_drawdown(series: pd.Series) -> float | None:
+    numeric = pd.to_numeric(series, errors="coerce").dropna()
+    if numeric.empty:
+        return None
+    rolling_peak = numeric.cummax().replace(0, np.nan)
+    drawdowns = 1.0 - (numeric / rolling_peak)
+    if drawdowns.dropna().empty:
+        return None
+    return _safe_float(drawdowns.max())
+
+
 def _coalesce(value: float | None, default: float) -> float:
     return default if value is None else float(value)
 
@@ -130,12 +168,16 @@ def _unique(items: list[str]) -> list[str]:
     return list(dict.fromkeys([item for item in items if item]))
 
 
+def _tag_csv(items: list[str]) -> str:
+    return ",".join(_unique(items))
+
+
 def _leader_phase_bucket(label: str) -> str:
-    if label == "Emerging Leader":
+    if label in {"emerging_leader", "Emerging Leader"}:
         return "FORMING"
-    if label == "Confirmed Leader":
+    if label in {"strong_leader", "Confirmed Leader"}:
         return "RECENT_OR_ACTIONABLE"
-    if label == "Extended Leader":
+    if label in {"extended_leader", "Extended Leader"}:
         return "COMPLETED_NOT_FRESH"
     return "NONE"
 
@@ -221,6 +263,10 @@ class MarketContext:
 
 
 class LeaderLaggingAnalyzer:
+    DEFAULT_FOLLOWER_MAX_LEADERS_PER_INDUSTRY = 5
+    DEFAULT_FOLLOWER_MAX_PAIRS_PER_CANDIDATE = 3
+    DEFAULT_FOLLOWER_ANALYSIS_WORKER_CAP = 4
+
     MARKET_PROFILES: dict[str, MarketProfile] = {
         "us": MarketProfile(
             market_code="US",
@@ -238,8 +284,155 @@ class LeaderLaggingAnalyzer:
         ),
     }
 
+    def __init__(self) -> None:
+        self.last_follower_lag_pruning: dict[str, Any] = {}
+
     def market_profile(self, market: str) -> MarketProfile:
         return self.MARKET_PROFILES.get(market_key(market), self.MARKET_PROFILES["us"])
+
+    @staticmethod
+    def _env_positive_int(env_var: str, default: int) -> int:
+        raw_value = str(os.environ.get(env_var) or "").strip()
+        if raw_value:
+            try:
+                value = int(raw_value)
+            except ValueError:
+                value = int(default)
+            if value > 0:
+                return value
+        return int(default)
+
+    @staticmethod
+    def _follower_analysis_mode() -> str:
+        mode = str(os.environ.get("INVEST_PROTO_FOLLOWER_ANALYSIS_MODE") or "balanced").strip().lower()
+        return "full" if mode == "full" else "balanced"
+
+    @staticmethod
+    def _leader_follower_sort_key(record: Mapping[str, Any]) -> tuple[float, float, float, float, float, str]:
+        return (
+            -(_safe_float(record.get("leader_sort_score")) or 0.0),
+            -(_safe_float(record.get("leader_score")) or 0.0),
+            -(_safe_float(record.get("rs_rank")) or 0.0),
+            -(_safe_float(record.get("event_proxy_score")) or 0.0),
+            -(_safe_float(record.get("traded_value_20d")) or 0.0),
+            _safe_text(record.get("symbol")),
+        )
+
+    def _follower_hard_precondition(
+        self,
+        candidate: Mapping[str, Any],
+        calibration: Mapping[str, float],
+    ) -> tuple[bool, list[str]]:
+        candidate_industry_rs_pct = _safe_float(candidate.get("industry_rs_pct")) or 0.0
+        candidate_distance_to_high = _coalesce(_safe_float(candidate.get("distance_to_52w_high")), 1.0)
+        candidate_rs_rank = _safe_float(candidate.get("rs_rank")) or 0.0
+        candidate_delta_rs_rank = _safe_float(candidate.get("delta_rs_rank_qoq")) or -999.0
+        candidate_traded_value_20d = _safe_float(candidate.get("traded_value_20d")) or 0.0
+        traded_value_floor = self.market_profile(candidate.get("market", "us")).traded_value_floor
+
+        checks = [
+            ("weak_group_rs", candidate_industry_rs_pct >= calibration["follower_group_rs_min"]),
+            ("below_50dma", bool(candidate.get("close_gt_50"))),
+            ("too_far_from_high", candidate_distance_to_high <= calibration["follower_distance_to_high_max"]),
+            (
+                "outside_follower_rs_rank_band",
+                calibration["follower_rs_rank_min"] <= candidate_rs_rank < calibration["follower_rs_rank_max"],
+            ),
+            ("no_positive_delta_rs_rank", candidate_delta_rs_rank > 0.0),
+            ("insufficient_traded_value", candidate_traded_value_20d >= traded_value_floor),
+        ]
+        failed = [reason for reason, passed in checks if not passed]
+        return not failed, failed
+
+    def _prefilter_reject_follower_row(
+        self,
+        candidate: Mapping[str, Any],
+        *,
+        reasons: list[str],
+    ) -> dict[str, Any]:
+        symbol = _safe_text(candidate.get("symbol"))
+        reject_reasons = _tag_csv(["prefilter_fail", *reasons])
+        return {
+            "ticker": symbol,
+            "symbol": symbol,
+            "linked_leader": "",
+            "market": candidate.get("market"),
+            "sector": candidate.get("sector"),
+            "industry": candidate.get("industry"),
+            "industry_key": candidate.get("industry_key"),
+            "group_name": candidate.get("group_name"),
+            "follower_score": 0.0,
+            "pair_link_score": 0.0,
+            "peer_lead_score": 0.0,
+            "best_lag_days": None,
+            "lagged_corr": None,
+            "lag_profile_sample_count": 0,
+            "lag_profile_stability_score": 0.0,
+            "pair_evidence_confidence": 0.0,
+            "follower_confidence_score": 0.0,
+            "rs_rank": _round_or_none(_safe_float(candidate.get("rs_rank"))),
+            "delta_rs_rank_qoq": _round_or_none(_safe_float(candidate.get("delta_rs_rank_qoq"))),
+            "rs_line_20d_slope": _round_or_none(_safe_float(candidate.get("rs_line_20d_slope"))),
+            "leader_gap_20d": None,
+            "leader_gap_60d": None,
+            "propagation_ratio": None,
+            "propagation_state": "unknown",
+            "catchup_room_score": 0.0,
+            "top_reason_1": "PREFILTER_FAIL",
+            "top_reason_2": "",
+            "reason_codes": ["PREFILTER_FAIL"],
+            "follower_reject_reason_codes": reject_reasons,
+            "underreaction_score": 0.0,
+            "rs_inflection_score": 0.0,
+            "structure_preservation_score": 0.0,
+            "sympathy_freshness_score": 0.0,
+            "link_evidence_tags": "",
+            "group_strength_score": _round_or_none(_safe_float(candidate.get("group_strength_score"))),
+            "trend_integrity_score": _round_or_none(_safe_float(candidate.get("trend_integrity_score"))),
+            "volume_demand_score": _round_or_none(_safe_float(candidate.get("volume_demand_score"))),
+            "liquidity_quality_score": _round_or_none(_safe_float(candidate.get("liquidity_quality_score"))),
+            "as_of_ts": candidate.get("as_of_ts"),
+            "hard_precondition_pass": False,
+            "hygiene_pass": False,
+            "risk_flag": "PREFILTER_FAIL",
+        }
+
+    def _follower_pair_pre_score(self, candidate: Mapping[str, Any], leader: Mapping[str, Any]) -> float:
+        same_industry = 100.0 if str(candidate.get("industry") or "") == str(leader.get("industry") or "") and str(candidate.get("industry") or "") else 0.0
+        same_group = 100.0 if str(candidate.get("group_name") or "") == str(leader.get("group_name") or "") and str(candidate.get("group_name") or "") else 0.0
+        leader_ret_20d = _safe_float(leader.get("ret_20d")) or 0.0
+        leader_ret_60d = _safe_float(leader.get("ret_60d")) or 0.0
+        candidate_ret_20d = _safe_float(candidate.get("ret_20d")) or 0.0
+        candidate_ret_60d = _safe_float(candidate.get("ret_60d")) or 0.0
+        return _weighted_mean(
+            [
+                (same_industry, 0.20),
+                (same_group, 0.12),
+                ((_score_ratio(leader_ret_20d - candidate_ret_20d, 0.08, 0.00) * 100.0), 0.24),
+                ((_score_ratio(leader_ret_60d - candidate_ret_60d, 0.18, 0.00) * 100.0), 0.18),
+                ((_score_ratio(_safe_float(candidate.get("delta_rs_rank_qoq")) or 0.0, 8.0, 0.0) * 100.0), 0.12),
+                (_safe_float(leader.get("event_proxy_score")), 0.14),
+            ]
+        )
+
+    def _rank_follower_peers(
+        self,
+        candidate: Mapping[str, Any],
+        peers: list[dict[str, Any]],
+        *,
+        max_pairs: int,
+        balanced: bool,
+    ) -> list[dict[str, Any]]:
+        if not balanced:
+            return peers
+        scored = sorted(
+            peers,
+            key=lambda leader: (
+                -self._follower_pair_pre_score(candidate, leader),
+                *self._leader_follower_sort_key(leader),
+            ),
+        )
+        return scored[:max_pairs]
 
     def default_actual_data_calibration(self) -> dict[str, float]:
         return {
@@ -314,117 +507,14 @@ class LeaderLaggingAnalyzer:
         *,
         end_offset: int = 0,
     ) -> float | None:
-        stock_components = [
-            (self._compute_subperiod_return(stock_series, end_offset, 63), 0.40),
-            (self._compute_subperiod_return(stock_series, end_offset, 126), 0.20),
-            (self._compute_subperiod_return(stock_series, end_offset, 189), 0.20),
-            (self._compute_subperiod_return(stock_series, end_offset, 252), 0.20),
-        ]
-        benchmark_components = [
-            (self._compute_subperiod_return(benchmark_series, end_offset, 63), 0.40),
-            (self._compute_subperiod_return(benchmark_series, end_offset, 126), 0.20),
-            (self._compute_subperiod_return(benchmark_series, end_offset, 189), 0.20),
-            (self._compute_subperiod_return(benchmark_series, end_offset, 252), 0.20),
-        ]
-        if not any(value is not None for value, _ in stock_components):
-            return None
-        if not any(value is not None for value, _ in benchmark_components):
-            return None
-
-        # Use excess weighted return instead of dividing by benchmark return so
-        # down or flat benchmark windows do not invert relative-strength order.
-        weighted_stock = _weighted_mean(stock_components)
-        weighted_benchmark = _weighted_mean(benchmark_components)
-        if weighted_stock is None or weighted_benchmark is None:
-            return None
-        return (weighted_stock - weighted_benchmark) * 100.0
-
-    def _estimate_structure(self, daily: pd.DataFrame) -> dict[str, float | None]:
-        if len(daily) < 60:
-            return {
-                "base_length": None,
-                "base_tightness": None,
-                "volatility_contraction": None,
-                "range_compression": None,
-                "pivot_proximity": None,
-                "breakout_volume_expansion": None,
-                "structure_quality_score": None,
-                "recent_pivot_high": None,
-            }
-
-        atr20 = _safe_float(_rolling_atr(daily, 20).iloc[-1])
-        atr60 = _safe_float(_rolling_atr(daily, 60).iloc[-1])
-        volatility_contraction = None
-        atr_ratio = _safe_divide(atr20, atr60)
-        if atr_ratio is not None:
-            volatility_contraction = 1.0 - min(atr_ratio, 2.0)
-
-        best_length = None
-        best_score = -1.0
-        best_high = None
-        best_tightness = None
-        for length in (15, 20, 25, 30, 40, 50, 60):
-            window = daily.iloc[-length:].copy()
-            base_high = _safe_float(window["high"].max())
-            base_low = _safe_float(window["low"].min())
-            if base_high is None or base_high == 0 or base_low is None or base_high <= base_low:
-                continue
-            depth = (base_high - base_low) / base_high
-            tightness = 1.0 - depth
-            close_last = _safe_float(window["adj_close"].iloc[-1])
-            if close_last is None:
-                continue
-            close_pos = (close_last - base_low) / max(base_high - base_low, 1e-9)
-            score = (
-                (_score_inverse(depth, 0.15, 0.40) * 0.45)
-                + (_score_ratio(close_pos, 0.70, 0.30) * 0.30)
-                + (_score_range(float(length), 20.0, 45.0, 10.0, 70.0) * 0.25)
-            )
-            if score > best_score:
-                best_score = score
-                best_length = float(length)
-                best_high = base_high
-                best_tightness = tightness
-
-        range_10 = _safe_float((((daily["high"] - daily["low"]) / daily["adj_close"].replace(0, np.nan)).tail(10).mean()))
-        range_40 = _safe_float((((daily["high"] - daily["low"]) / daily["adj_close"].replace(0, np.nan)).tail(40).mean()))
-        range_compression = None
-        range_ratio = _safe_divide(range_10, range_40)
-        if range_ratio is not None:
-            range_compression = 1.0 - min(range_ratio, 2.0)
-
-        recent_high = _safe_float(daily["high"].tail(30).max())
-        close = _safe_float(daily["adj_close"].iloc[-1])
-        pivot_proximity = None
-        if recent_high is not None and recent_high != 0 and close is not None:
-            close_to_recent_high = _safe_divide(close, recent_high)
-            if close_to_recent_high is not None:
-                pivot_proximity = 1.0 - min(abs(close_to_recent_high - 1.0) / 0.10, 1.0)
-
-        breakout_volume_expansion = None
-        avg_volume_20 = _safe_float(rolling_average_volume(daily, 20, min_periods=5).iloc[-1])
-        latest_volume = _safe_float(daily["volume"].iloc[-1])
-        if latest_volume is not None and avg_volume_20 is not None and avg_volume_20 != 0:
-            breakout_volume_expansion = latest_volume / avg_volume_20
-
-        structure_quality_score = _weighted_mean(
-            [
-                ((_safe_float(best_tightness) or 0.0) * 100.0, 0.35),
-                ((_safe_float(volatility_contraction) or 0.0) * 100.0, 0.25),
-                ((_safe_float(range_compression) or 0.0) * 100.0, 0.20),
-                ((_safe_float(pivot_proximity) or 0.0) * 100.0, 0.20),
-            ]
+        return leader_algorithms.benchmark_relative_weighted_rs(
+            stock_series,
+            benchmark_series,
+            end_offset=end_offset,
         )
-        return {
-            "base_length": best_length,
-            "base_tightness": (_safe_float(best_tightness) or 0.0) * 100.0 if best_tightness is not None else None,
-            "volatility_contraction": (_safe_float(volatility_contraction) or 0.0) * 100.0 if volatility_contraction is not None else None,
-            "range_compression": (_safe_float(range_compression) or 0.0) * 100.0 if range_compression is not None else None,
-            "pivot_proximity": (_safe_float(pivot_proximity) or 0.0) * 100.0 if pivot_proximity is not None else None,
-            "breakout_volume_expansion": breakout_volume_expansion,
-            "structure_quality_score": structure_quality_score,
-            "recent_pivot_high": best_high,
-        }
+
+    def _estimate_structure(self, daily: pd.DataFrame) -> dict[str, Any]:
+        return leader_algorithms.estimate_structure(daily)
 
     def compute_symbol_features(
         self,
@@ -434,11 +524,12 @@ class LeaderLaggingAnalyzer:
         daily_frame: pd.DataFrame,
         benchmark_daily: pd.DataFrame,
         metadata: dict[str, Any] | None = None,
+        benchmark_is_normalized: bool = False,
     ) -> dict[str, Any]:
         profile = self.market_profile(market)
         metadata = dict(metadata or {})
         daily = self.normalize_daily_frame(daily_frame)
-        benchmark = self.normalize_daily_frame(benchmark_daily)
+        benchmark = benchmark_daily if benchmark_is_normalized else self.normalize_daily_frame(benchmark_daily)
         if daily.empty or benchmark.empty:
             return {
                 "symbol": symbol,
@@ -458,7 +549,8 @@ class LeaderLaggingAnalyzer:
         aligned["traded_value_20d"] = rolling_traded_value(aligned, 20, close_col="adj_close", min_periods=5)
         aligned["traded_value_50d"] = rolling_traded_value(aligned, 50, close_col="adj_close", min_periods=10)
         aligned["daily_return"] = aligned["adj_close"].pct_change()
-        aligned["rs_line_sma252"] = rolling_sma(aligned["rs_line"], 252, min_periods=80)
+        aligned["benchmark_return"] = aligned["benchmark_adj_close"].pct_change()
+        aligned["rs_line_sma200"] = rolling_sma(aligned["rs_line"], 200, min_periods=80)
         aligned["hhv_252"] = rolling_max(aligned["adj_close"], 252, min_periods=60)
         aligned["llv_252"] = rolling_min(aligned["adj_close"], 252, min_periods=60)
 
@@ -473,14 +565,10 @@ class LeaderLaggingAnalyzer:
         rs_line = pd.to_numeric(aligned["rs_line"], errors="coerce")
         rs_line_last = _safe_float(rs_line.iloc[-1])
         rs_line_20d_slope = self._compute_subperiod_return(rs_line, 0, 20)
-        mansfield_rs = None
-        rs_line_sma252 = _safe_float(latest["rs_line_sma252"])
-        rs_line_relative = _safe_divide(rs_line_last, rs_line_sma252)
-        if rs_line_relative is not None:
-            mansfield_rs = 100.0 * (rs_line_relative - 1.0)
-
-        mansfield_series = 100.0 * (rs_line / aligned["rs_line_sma252"].replace(0, np.nan) - 1.0)
-        mansfield_rs_slope = self._compute_subperiod_return(mansfield_series.ffill(), 0, 20)
+        rs_line_sma200 = _safe_float(latest["rs_line_sma200"])
+        benchmark_relative_strength = _safe_divide(rs_line_last, rs_line_sma200)
+        benchmark_relative_series = rs_line / aligned["rs_line_sma200"].replace(0, np.nan)
+        benchmark_relative_strength_slope = self._compute_subperiod_return(benchmark_relative_series.ffill(), 0, 20)
         weighted_rs_raw = self._benchmark_relative_weighted_rs(
             aligned["adj_close"],
             aligned["benchmark_adj_close"],
@@ -490,6 +578,10 @@ class LeaderLaggingAnalyzer:
             aligned["adj_close"],
             aligned["benchmark_adj_close"],
             end_offset=63,
+        )
+        rs_proxy_profile = leader_algorithms.rs_rank_proxy_profile_from_history(
+            aligned["adj_close"],
+            aligned["benchmark_adj_close"],
         )
         mom_12_1 = None
         if len(aligned) > 273:
@@ -525,6 +617,8 @@ class LeaderLaggingAnalyzer:
         low_ratio = _safe_divide(close, llv_252)
         if low_ratio is not None:
             distance_from_52w_low = low_ratio - 1.0
+
+        hidden_rs_profile = leader_algorithms.hidden_rs_profile_from_aligned(aligned)
 
         ma200_slope_20d = None
         if len(aligned) >= 221:
@@ -615,16 +709,29 @@ class LeaderLaggingAnalyzer:
             "close_gt_200": bool(close is not None and ma200 is not None and close > ma200),
             "weighted_rs_raw": weighted_rs_raw,
             "weighted_rs_prev_raw": weighted_rs_prev_raw,
+            "rs_rank_proxy_raw": rs_proxy_profile.get("rs_rank_proxy"),
+            "rs_proxy_sample_count": rs_proxy_profile.get("rs_proxy_sample_count"),
+            "rs_proxy_component_coverage": rs_proxy_profile.get("rs_proxy_component_coverage"),
+            "rs_proxy_confidence": rs_proxy_profile.get("rs_proxy_confidence"),
             "mom_12_1": mom_12_1,
+            "rs_line": rs_line_last,
+            "rs_line_slope": rs_line_20d_slope,
             "rs_line_20d_slope": rs_line_20d_slope,
             "rs_line_65d_high_flag": rs_line_65d_high_flag,
             "rs_line_250d_high_flag": rs_line_250d_high_flag,
             "rs_new_high_before_price_flag": rs_new_high_before_price_flag,
             "rs_line_distance_to_high": rs_line_distance_to_high,
-            "mansfield_rs": mansfield_rs,
-            "mansfield_rs_slope": mansfield_rs_slope,
+            "benchmark_relative_strength": benchmark_relative_strength,
+            "benchmark_relative_strength_slope": benchmark_relative_strength_slope,
+            "hidden_rs_raw": hidden_rs_profile.get("hidden_rs_raw"),
+            "hidden_rs_weak_day_count": hidden_rs_profile.get("hidden_rs_weak_day_count"),
+            "hidden_rs_down_day_excess_return": hidden_rs_profile.get("hidden_rs_down_day_excess_return"),
+            "hidden_rs_drawdown_resilience": hidden_rs_profile.get("hidden_rs_drawdown_resilience"),
+            "hidden_rs_weak_window_excess_return": hidden_rs_profile.get("hidden_rs_weak_window_excess_return"),
+            "hidden_rs_confidence": hidden_rs_profile.get("hidden_rs_confidence"),
             "distance_to_52w_high": distance_to_52w_high,
             "distance_from_52w_low": distance_from_52w_low,
+            "distance_from_ma50": distance_from_ma50,
             "ret_20d": self._compute_subperiod_return(aligned["adj_close"], 0, 20),
             "ret_60d": self._compute_subperiod_return(aligned["adj_close"], 0, 60),
             "ret_120d": self._compute_subperiod_return(aligned["adj_close"], 0, 120),
@@ -648,6 +755,25 @@ class LeaderLaggingAnalyzer:
             "breakout_volume_expansion": structure["breakout_volume_expansion"],
             "structure_quality_score": structure["structure_quality_score"],
             "recent_pivot_high": structure["recent_pivot_high"],
+            "box_high": structure["box_high"],
+            "box_low": structure["box_low"],
+            "box_valid": bool(structure["box_valid"]),
+            "breakout_confirmed": bool(structure["breakout_confirmed"]),
+            "structure_readiness_score": structure["structure_readiness_score"],
+            "breakout_confirmation_score": structure["breakout_confirmation_score"],
+            "dry_volume_ratio": structure.get("dry_volume_ratio"),
+            "box_touch_count": structure.get("box_touch_count"),
+            "support_hold_count": structure.get("support_hold_count"),
+            "dry_volume_score": structure.get("dry_volume_score"),
+            "failed_breakout_risk_score": structure.get("failed_breakout_risk_score"),
+            "breakout_quality_score": structure.get("breakout_quality_score"),
+            "structure_confidence": structure.get("structure_confidence"),
+            "base_depth_pct": structure.get("base_depth_pct"),
+            "loose_base_risk_score": structure.get("loose_base_risk_score"),
+            "support_violation_count": structure.get("support_violation_count"),
+            "breakout_failure_count": structure.get("breakout_failure_count"),
+            "breakout_volume_quality_score": structure.get("breakout_volume_quality_score"),
+            "structure_reject_reason_codes": structure.get("structure_reject_reason_codes"),
             "event_gap_up_flag": event_gap_up_flag,
             "event_proxy_score": event_proxy_score,
             "market_cap": _safe_float(metadata.get("market_cap")),
@@ -676,6 +802,9 @@ class LeaderLaggingAnalyzer:
             table.loc[table["industry"].fillna("").astype(str).str.strip() == "", "industry"] = table["group_name"]
         return table
 
+    def _source_evidence_tags_from_row(self, row: pd.Series) -> str:
+        return leader_algorithms.source_evidence_tags_from_row(row)
+
     def finalize_feature_table(self, feature_table: pd.DataFrame) -> pd.DataFrame:
         if feature_table.empty:
             return feature_table
@@ -683,6 +812,10 @@ class LeaderLaggingAnalyzer:
         for column in (
             "weighted_rs_raw",
             "weighted_rs_prev_raw",
+            "rs_rank_proxy_raw",
+            "rs_proxy_sample_count",
+            "rs_proxy_component_coverage",
+            "rs_proxy_confidence",
             "mom_12_1",
             "traded_value_20d",
             "illiq",
@@ -692,15 +825,47 @@ class LeaderLaggingAnalyzer:
             "ret_252d",
             "trend_integrity_score",
             "structure_quality_score",
+            "structure_readiness_score",
+            "breakout_confirmation_score",
+            "box_touch_count",
+            "support_hold_count",
+            "dry_volume_score",
+            "failed_breakout_risk_score",
+            "breakout_quality_score",
+            "structure_confidence",
+            "base_depth_pct",
+            "loose_base_risk_score",
+            "support_violation_count",
+            "breakout_failure_count",
+            "breakout_volume_quality_score",
             "event_proxy_score",
+            "benchmark_relative_strength",
+            "benchmark_relative_strength_slope",
+            "hidden_rs_raw",
+            "hidden_rs_weak_day_count",
+            "hidden_rs_down_day_excess_return",
+            "hidden_rs_drawdown_resilience",
+            "hidden_rs_weak_window_excess_return",
+            "hidden_rs_confidence",
+            "distance_from_ma50",
+            "distance_to_52w_high",
+            "rvol",
         ):
             table[column] = _numeric_frame_column(table, column)
 
         table["rs_rank"] = _percentile_series(table["weighted_rs_raw"])
+        table["rs_rank_true"] = table["rs_rank"]
         table["prev_rs_rank"] = _percentile_series(table["weighted_rs_prev_raw"])
         rank_delta = table["rs_rank"] - table["prev_rs_rank"]
         raw_delta = table["weighted_rs_raw"].fillna(0.0) - table["weighted_rs_prev_raw"].fillna(0.0)
         table["delta_rs_rank_qoq"] = np.where(rank_delta.abs() >= 0.5, rank_delta, raw_delta)
+        table["weighted_rs_score"] = table["weighted_rs_raw"]
+        table["rs_rank_proxy"] = table["rs_rank_proxy_raw"].where(
+            table["rs_rank_proxy_raw"].notna(),
+            table["weighted_rs_raw"].apply(
+                lambda value: 1.0 + (98.0 * _clamp(((_safe_float(value) or 0.0) + 30.0) / 60.0))
+            ),
+        )
         table["rs_rank_score"] = table["rs_rank"]
         table["traded_value_score"] = _zscore_to_percent(_winsorized_zscore(table["traded_value_20d"]), higher_is_better=True)
         table["illiq_score"] = _zscore_to_percent(_winsorized_zscore(table["illiq"]), higher_is_better=False)
@@ -711,14 +876,61 @@ class LeaderLaggingAnalyzer:
             0.5 * _zscore_to_percent(_winsorized_zscore(table["ret_120d"] - table["ret_20d"].fillna(0.0)), higher_is_better=True)
             + 0.5 * _zscore_to_percent(_winsorized_zscore(table["mom_12_1"]), higher_is_better=True)
         )
+        table["momentum_persistence_score"] = table["norm_momentum_score"]
+        table["near_high_leadership_score"] = table["distance_to_52w_high"].apply(
+            lambda value: _clamp(1.0 - _coalesce(_safe_float(value), 1.0)) * 100.0
+        )
+        table["hidden_rs_score"] = _zscore_to_percent(_winsorized_zscore(table["hidden_rs_raw"]), higher_is_better=True)
         table["rs_line_score"] = table.apply(
             lambda row: _weighted_mean(
                 [
                     ((_score_ratio(_safe_float(row.get("rs_line_20d_slope")), 0.05, -0.05) * 100.0), 0.30),
                     ((_score_inverse(_safe_float(row.get("rs_line_distance_to_high")), 0.02, 0.20) * 100.0), 0.20),
-                    ((_score_ratio(_safe_float(row.get("mansfield_rs")), 0.05, -0.10) * 100.0), 0.20),
+                    ((_score_ratio((_safe_float(row.get("benchmark_relative_strength")) or 0.0) - 1.0, 0.05, -0.10) * 100.0), 0.20),
                     (100.0 if bool(row.get("rs_line_250d_high_flag")) else 0.0, 0.15),
                     (100.0 if bool(row.get("rs_new_high_before_price_flag")) else 0.0, 0.15),
+                ]
+            ),
+            axis=1,
+        )
+        table["rs_quality_score"] = table.apply(
+            lambda row: _weighted_mean(
+                [
+                    (_safe_float(row.get("rs_rank_true")), 0.45),
+                    (_safe_float(row.get("rs_line_score")), 0.35),
+                    ((_score_ratio((_safe_float(row.get("benchmark_relative_strength")) or 0.0) - 1.0, 0.05, -0.10) * 100.0), 0.20),
+                ]
+            ),
+            axis=1,
+        )
+        table["leadership_freshness_score"] = table.apply(
+            lambda row: _weighted_mean(
+                [
+                    (100.0 if bool(row.get("rs_new_high_before_price_flag")) else 20.0, 0.45),
+                    ((_score_ratio(_safe_float(row.get("rs_line_slope")), 0.04, -0.02) * 100.0), 0.30),
+                    ((_score_ratio(_safe_float(row.get("delta_rs_rank_qoq")), 8.0, -5.0) * 100.0), 0.25),
+                ]
+            ),
+            axis=1,
+        )
+        table["extension_risk_score"] = table.apply(
+            lambda row: _weighted_mean(
+                [
+                    ((_score_ratio(_safe_float(row.get("ret_20d")), 0.25, 0.05) * 100.0), 0.30),
+                    ((_score_ratio(_safe_float(row.get("distance_from_ma50")), 0.18, 0.04) * 100.0), 0.30),
+                    ((_score_inverse(_safe_float(row.get("distance_to_52w_high")), 0.02, 0.15) * 100.0), 0.20),
+                    ((_score_ratio(_safe_float(row.get("rvol")), 2.50, 1.00) * 100.0), 0.20),
+                ]
+            ),
+            axis=1,
+        )
+        table["early_leader_score"] = table.apply(
+            lambda row: _weighted_mean(
+                [
+                    (_safe_float(row.get("rs_quality_score")), 0.35),
+                    (_safe_float(row.get("leadership_freshness_score")), 0.35),
+                    (_safe_float(row.get("hidden_rs_score")), 0.15),
+                    (100.0 - (_safe_float(row.get("extension_risk_score")) or 0.0), 0.15),
                 ]
             ),
             axis=1,
@@ -734,10 +946,22 @@ class LeaderLaggingAnalyzer:
             ),
             axis=1,
         )
+        table["leader_rs_state"] = table.apply(leader_algorithms.leader_rs_state_from_row, axis=1)
+        table["fading_risk_score"] = table.apply(
+            lambda row: _weighted_mean(
+                [
+                    ((_score_ratio(-(_safe_float(row.get("delta_rs_rank_qoq")) or 0.0), 8.0, -2.0) * 100.0), 0.35),
+                    ((_score_ratio(-(_safe_float(row.get("rs_line_slope")) or 0.0), 0.03, -0.01) * 100.0), 0.30),
+                    (100.0 - (_safe_float(row.get("structure_readiness_score")) or 0.0), 0.20),
+                    (_safe_float(row.get("extension_risk_score")), 0.15),
+                ]
+            ),
+            axis=1,
+        )
+        table["source_evidence_tags"] = table.apply(self._source_evidence_tags_from_row, axis=1)
         table["risk_flag"] = table.apply(
             lambda row: "EXTENDED"
-            if _coalesce(_safe_float(row.get("distance_to_52w_high")), 1.0) <= 0.03
-            and _coalesce(_safe_float(row.get("pivot_proximity")), 0.0) < 20.0
+            if (_safe_float(row.get("extension_risk_score")) or 0.0) >= 75.0
             else "",
             axis=1,
         )
@@ -757,30 +981,30 @@ class LeaderLaggingAnalyzer:
         group_table = (
             table.groupby("industry_key", dropna=False)
             .agg(
-                sector=("sector", lambda values: next((str(item) for item in values if str(item)), "")),
-                industry=("industry", lambda values: next((str(item) for item in values if str(item)), "")),
-                group_name=("group_name", lambda values: next((str(item) for item in values if str(item)), "")),
+                sector=("sector", lambda values: next((text for item in values if (text := _safe_text(item))), "")),
+                industry=("industry", lambda values: next((text for item in values if (text := _safe_text(item))), "")),
+                group_name=("group_name", lambda values: next((text for item in values if (text := _safe_text(item))), "")),
                 group_member_count=("symbol", "count"),
                 group_return_20d=("ret_20d", "mean"),
                 group_return_60d=("ret_60d", "mean"),
-                group_mansfield_rs=("mansfield_rs", "mean"),
+                group_benchmark_relative_strength=("benchmark_relative_strength", "mean"),
                 group_rs_slope_20d=("rs_line_20d_slope", "mean"),
                 group_pct_above_50dma=("close_gt_50", "mean"),
                 group_new_high_share=("distance_to_52w_high", lambda s: float((pd.to_numeric(s, errors="coerce") <= 0.08).mean())),
                 core_group_strength_score=("core_group_strength_score", lambda values: next((value for value in (_safe_float(item) for item in values) if value is not None), None)),
                 core_group_rank=("core_group_rank", lambda values: next((value for value in (_safe_float(item) for item in values) if value is not None), None)),
-                core_group_state=("core_group_state", lambda values: next((str(item) for item in values if str(item)), "")),
+                core_group_state=("core_group_state", lambda values: next((text for item in values if (text := _safe_text(item))), "")),
             )
             .reset_index()
         )
         group_table["group_return_20d_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_return_20d"]), higher_is_better=True)
         group_table["group_return_60d_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_return_60d"]), higher_is_better=True)
-        group_table["group_mansfield_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_mansfield_rs"]), higher_is_better=True)
+        group_table["group_relative_strength_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_benchmark_relative_strength"]), higher_is_better=True)
         group_table["group_rs_slope_score"] = _zscore_to_percent(_winsorized_zscore(group_table["group_rs_slope_20d"]), higher_is_better=True)
         group_table["group_overlay_score"] = group_table.apply(
             lambda row: _weighted_mean(
                 [
-                    (_safe_float(row.get("group_mansfield_score")), 0.25),
+                    (_safe_float(row.get("group_relative_strength_score")), 0.25),
                     (_safe_float(row.get("group_return_20d_score")), 0.20),
                     (_safe_float(row.get("group_return_60d_score")), 0.15),
                     (_safe_float(row.get("group_rs_slope_score")), 0.15),
@@ -790,11 +1014,17 @@ class LeaderLaggingAnalyzer:
             ),
             axis=1,
         )
-        group_table["group_strength_score"] = group_table["core_group_strength_score"].fillna(0.0)
+        group_table["group_strength_score"] = pd.to_numeric(
+            group_table["core_group_strength_score"],
+            errors="coerce",
+        ).fillna(0.0)
         group_table["industry_rs_pct"] = group_table["group_strength_score"]
         group_table["sector_rs_pct"] = group_table["group_overlay_score"]
-        group_table["group_state"] = group_table["core_group_state"].fillna("")
-        group_table["group_rank"] = group_table["core_group_rank"].fillna(999.0)
+        group_table["group_state"] = group_table["core_group_state"].map(_safe_text)
+        group_table["group_rank"] = pd.to_numeric(
+            group_table["core_group_rank"],
+            errors="coerce",
+        ).fillna(999.0)
         group_table = group_table.sort_values(
             ["group_strength_score", "group_overlay_score", "group_return_60d"],
             ascending=[False, False, False],
@@ -900,12 +1130,15 @@ class LeaderLaggingAnalyzer:
         if regime_score >= 75.0:
             regime_state = "Risk-On"
             score_multiplier = 1.0
+            market_alias = "RISK_ON"
         elif regime_score >= 55.0:
             regime_state = "Neutral"
             score_multiplier = 0.88
+            market_alias = "NEUTRAL"
         else:
             regime_state = "Risk-Off"
             score_multiplier = 0.70
+            market_alias = "RISK_OFF"
 
         if trend_score >= 70.0:
             reasons.append("BENCHMARK_UPTREND")
@@ -926,6 +1159,11 @@ class LeaderLaggingAnalyzer:
             top_group_share=_round_or_none(top_group_share),
             score_multiplier=score_multiplier,
             reason_codes=tuple(_unique(reasons)),
+            market_alignment_score=_round_or_none(regime_score),
+            breadth_support_score=_round_or_none(breadth_score),
+            rotation_support_score=_round_or_none(trend_score),
+            leader_health_score=_round_or_none(top_group_share if top_group_share is not None else breadth_score),
+            market_alias=market_alias,
         )
 
     def build_actual_data_calibration(
@@ -1038,91 +1276,6 @@ class LeaderLaggingAnalyzer:
             )
 
         return calibration
-
-    def _assign_leader_labels(
-        self,
-        leaders: pd.DataFrame,
-        *,
-        calibration: dict[str, float],
-    ) -> tuple[pd.DataFrame, dict[str, float]]:
-        if leaders.empty:
-            return leaders, calibration
-
-        eligible = leaders[leaders["hard_gate_pass"].fillna(False)].copy()
-        calibrated = dict(calibration)
-        calibrated["leader_group_strength_min"] = bounded_quantile_value(
-            eligible["group_strength_score"],
-            0.55,
-            calibrated["leader_group_strength_min"],
-            lower=60.0,
-            upper=85.0,
-        )
-        calibrated["leader_rs_line_score_min"] = bounded_quantile_value(
-            eligible["rs_line_score"],
-            0.55,
-            calibrated["leader_rs_line_score_min"],
-            lower=55.0,
-            upper=85.0,
-        )
-        calibrated["leader_confirmed_score_min"] = bounded_quantile_value(
-            eligible["leader_score"],
-            0.75,
-            calibrated["leader_confirmed_score_min"],
-            lower=70.0,
-            upper=90.0,
-        )
-        calibrated["leader_emerging_score_min"] = bounded_quantile_value(
-            eligible["leader_score"],
-            0.50,
-            calibrated["leader_emerging_score_min"],
-            lower=60.0,
-            upper=84.0,
-        )
-        calibrated["leader_tier1_boost_min"] = bounded_quantile_value(
-            eligible["tier1_boost_count"],
-            0.60,
-            calibrated["leader_tier1_boost_min"],
-            lower=2.0,
-            upper=4.0,
-        )
-
-        labeled = leaders.copy()
-        labels: list[str] = []
-        risk_flags: list[str] = []
-        for _, row in labeled.iterrows():
-            warnings = [flag for flag in str(row.get("risk_flag") or "").split(",") if flag]
-            hard_gate = bool(row.get("hard_gate_pass"))
-            extended = bool(row.get("extended_flag"))
-            leader_score = _safe_float(row.get("leader_score")) or 0.0
-            tier1_boosts = _safe_float(row.get("tier1_boost_count")) or 0.0
-            rs_line_score = _safe_float(row.get("rs_line_score")) or 0.0
-            group_strength = _safe_float(row.get("group_strength_score")) or 0.0
-
-            if not hard_gate:
-                label = "Too Weak, Reject"
-                warnings.append("HARD_GATE_FAIL")
-            elif extended and leader_score >= calibrated["leader_emerging_score_min"]:
-                label = "Extended Leader"
-                warnings.append("EXTENDED")
-            elif (
-                leader_score >= calibrated["leader_confirmed_score_min"]
-                and tier1_boosts >= calibrated["leader_tier1_boost_min"]
-                and rs_line_score >= calibrated["leader_rs_line_score_min"]
-                and group_strength >= calibrated["leader_group_strength_min"]
-            ):
-                label = "Confirmed Leader"
-            elif leader_score >= calibrated["leader_emerging_score_min"]:
-                label = "Emerging Leader"
-            else:
-                label = "Too Weak, Reject"
-
-            labels.append(label)
-            risk_flags.append(",".join(_unique(warnings)))
-
-        labeled["label"] = labels
-        labeled["phase_bucket"] = labeled["label"].map(_leader_phase_bucket).fillna("NONE")
-        labeled["risk_flag"] = risk_flags
-        return labeled, calibrated
 
     def _assign_follower_labels(
         self,
@@ -1270,36 +1423,8 @@ class LeaderLaggingAnalyzer:
         breadth_context_score = 100.0 if market_context.regime_state == "Risk-On" else 65.0 if market_context.regime_state == "Neutral" else 35.0
         leader_rows: list[dict[str, Any]] = []
         for _, row in table.iterrows():
-            row_dict = row_to_record(row)
             reasons: list[str] = []
-            warnings: list[str] = []
-            ma50_value = _safe_float(row.get("ma50"))
-            ma150_value = _safe_float(row.get("ma150"))
-            ma200_value = _safe_float(row.get("ma200"))
-            ma200_slope_value = _safe_float(row.get("ma200_slope_20d"))
             rs_rank_value = _safe_float(row.get("rs_rank")) or 0.0
-            industry_rs_pct_value = _safe_float(row.get("industry_rs_pct")) or 0.0
-            distance_to_high_value = _coalesce(_safe_float(row.get("distance_to_52w_high")), 1.0)
-            distance_from_low_value = _safe_float(row.get("distance_from_52w_low")) or 0.0
-            traded_value_20d_value = _safe_float(row.get("traded_value_20d")) or 0.0
-            illiq_score_value = _safe_float(row.get("illiq_score")) or 0.0
-            mansfield_rs_value = _safe_float(row.get("mansfield_rs")) or -1.0
-
-            hard_gate = all(
-                [
-                    bool(row.get("close_gt_50")),
-                    ma50_value is not None and ma150_value is not None and ma50_value > ma150_value,
-                    ma150_value is not None and ma200_value is not None and ma150_value > ma200_value,
-                    (ma200_slope_value or -1.0) > 0,
-                    rs_rank_value >= calibration_map["leader_rs_rank_min"],
-                    industry_rs_pct_value >= calibration_map["leader_group_rs_min"],
-                    distance_to_high_value <= calibration_map["leader_distance_to_high_max"],
-                    distance_from_low_value >= calibration_map["leader_distance_from_low_min"],
-                    traded_value_20d_value >= self.market_profile(row.get("market", "us")).traded_value_floor,
-                    illiq_score_value >= 20.0,
-                    mansfield_rs_value > 0.0,
-                ]
-            )
             tier1_boosts = sum(
                 [
                     rs_rank_value >= 92.0,
@@ -1309,27 +1434,19 @@ class LeaderLaggingAnalyzer:
                     (_safe_float(row.get("group_new_high_share")) or 0.0) >= 0.25,
                 ]
             )
-            leader_score = _weighted_mean(
-                [
-                    (_safe_float(row.get("group_strength_score")), 0.18),
-                    (_safe_float(row.get("trend_integrity_score")), 0.18),
-                    (_safe_float(row.get("structure_quality_score")), 0.14),
-                    (_safe_float(row.get("rs_rank_score")), 0.14),
-                    (_safe_float(row.get("rs_line_score")), 0.10),
-                    (_safe_float(row.get("volume_demand_score")), 0.08),
-                    (_safe_float(row.get("liquidity_quality_score")), 0.08),
-                    (breadth_context_score, 0.05),
-                    (_safe_float(row.get("event_proxy_score")), 0.05),
-                ]
-            ) * market_context.score_multiplier
-
-            extended = bool(
-                _coalesce(_safe_float(row.get("distance_to_52w_high")), 1.0) <= calibration_map["leader_extended_distance_to_high_max"]
-                and (
-                    (_coalesce(_safe_float(row.get("pivot_proximity")), 0.0) < calibration_map["leader_extended_pivot_proximity_max"])
-                    or (_safe_float(row.get("rvol")) or 0.0) >= 2.5
-                )
+            leader_score = leader_algorithms.leader_score_v2(
+                row,
+                breadth_context_score=breadth_context_score,
+                score_multiplier=market_context.score_multiplier,
             )
+            classification = leader_algorithms.classify_leader(
+                row,
+                calibration=calibration_map,
+                traded_value_floor=self.market_profile(row.get("market", "us")).traded_value_floor,
+                leader_score=leader_score,
+            )
+            hard_gate = classification.hard_gate_pass
+            extended = classification.extended_flag
             if (_safe_float(row.get("rs_rank")) or 0.0) >= 95.0:
                 reasons.append("TOP_RS")
             if bool(row.get("rs_new_high_before_price_flag")):
@@ -1340,6 +1457,10 @@ class LeaderLaggingAnalyzer:
                 reasons.append("TIGHT_STRUCTURE")
             if (_safe_float(row.get("volume_demand_score")) or 0.0) >= 70.0:
                 reasons.append("VOLUME_SUPPORT")
+            if (_safe_float(row.get("hidden_rs_score")) or 0.0) >= 65.0:
+                reasons.append("HIDDEN_RS")
+            if bool(row.get("breakout_confirmed")):
+                reasons.append("BREAKOUT_CONFIRMED")
 
             leader_rows.append(
                 {
@@ -1352,6 +1473,12 @@ class LeaderLaggingAnalyzer:
                     "group_name": row.get("group_name"),
                     "leader_score": _round_or_none(leader_score),
                     "rs_rank": _round_or_none(_safe_float(row.get("rs_rank"))),
+                    "weighted_rs_score": _round_or_none(_safe_float(row.get("weighted_rs_score"))),
+                    "rs_rank_true": _round_or_none(_safe_float(row.get("rs_rank_true"))),
+                    "rs_rank_proxy": _round_or_none(_safe_float(row.get("rs_rank_proxy"))),
+                    "rs_proxy_sample_count": int(sample_count) if (sample_count := _safe_float(row.get("rs_proxy_sample_count"))) is not None else None,
+                    "rs_proxy_component_coverage": int(component_coverage) if (component_coverage := _safe_float(row.get("rs_proxy_component_coverage"))) is not None else None,
+                    "rs_proxy_confidence": _round_or_none(_safe_float(row.get("rs_proxy_confidence"))),
                     "rs_line_20d_slope": _round_or_none(_safe_float(row.get("rs_line_20d_slope"))),
                     "rs_new_high_before_price_flag": bool(row.get("rs_new_high_before_price_flag")),
                     "distance_to_52w_high": _round_or_none(_coalesce(_safe_float(row.get("distance_to_52w_high")), 0.0) * 100.0),
@@ -1360,12 +1487,49 @@ class LeaderLaggingAnalyzer:
                     "top_reason_2": reasons[1] if len(reasons) > 1 else "",
                     "reason_codes": _unique(reasons),
                     "hard_gate_pass": hard_gate,
+                    "hybrid_gate_pass": classification.hybrid_gate_pass,
+                    "strict_rs_gate_pass": classification.strict_rs_gate_pass,
                     "extended_flag": extended,
+                    "leader_tier": classification.leader_tier,
+                    "entry_suitability": classification.entry_suitability,
+                    "label": classification.label,
+                    "legacy_label": classification.legacy_label,
+                    "leader_sort_score": _round_or_none(classification.leader_sort_score),
+                    "phase_bucket": classification.phase_bucket,
                     "tier1_boost_count": int(tier1_boosts),
                     "group_strength_score": _round_or_none(_safe_float(row.get("group_strength_score"))),
                     "trend_integrity_score": _round_or_none(_safe_float(row.get("trend_integrity_score"))),
                     "structure_quality_score": _round_or_none(_safe_float(row.get("structure_quality_score"))),
+                    "structure_readiness_score": _round_or_none(_safe_float(row.get("structure_readiness_score"))),
+                    "breakout_confirmation_score": _round_or_none(_safe_float(row.get("breakout_confirmation_score"))),
                     "rs_line_score": _round_or_none(_safe_float(row.get("rs_line_score"))),
+                    "rs_quality_score": _round_or_none(_safe_float(row.get("rs_quality_score"))),
+                    "leadership_freshness_score": _round_or_none(_safe_float(row.get("leadership_freshness_score"))),
+                    "early_leader_score": _round_or_none(_safe_float(row.get("early_leader_score"))),
+                    "momentum_persistence_score": _round_or_none(_safe_float(row.get("momentum_persistence_score"))),
+                    "near_high_leadership_score": _round_or_none(_safe_float(row.get("near_high_leadership_score"))),
+                    "hidden_rs_score": _round_or_none(_safe_float(row.get("hidden_rs_score"))),
+                    "hidden_rs_weak_day_count": int(weak_day_count) if (weak_day_count := _safe_float(row.get("hidden_rs_weak_day_count"))) is not None else None,
+                    "hidden_rs_down_day_excess_return": _round_or_none(_safe_float(row.get("hidden_rs_down_day_excess_return")), 6),
+                    "hidden_rs_drawdown_resilience": _round_or_none(_safe_float(row.get("hidden_rs_drawdown_resilience")), 6),
+                    "hidden_rs_weak_window_excess_return": _round_or_none(_safe_float(row.get("hidden_rs_weak_window_excess_return")), 6),
+                    "hidden_rs_confidence": _round_or_none(_safe_float(row.get("hidden_rs_confidence"))),
+                    "leader_rs_state": row.get("leader_rs_state"),
+                    "fading_risk_score": _round_or_none(_safe_float(row.get("fading_risk_score"))),
+                    "extension_risk_score": _round_or_none(_safe_float(row.get("extension_risk_score"))),
+                    "source_evidence_tags": row.get("source_evidence_tags"),
+                    "box_touch_count": int(box_touch_count) if (box_touch_count := _safe_float(row.get("box_touch_count"))) is not None else None,
+                    "support_hold_count": int(support_hold_count) if (support_hold_count := _safe_float(row.get("support_hold_count"))) is not None else None,
+                    "dry_volume_score": _round_or_none(_safe_float(row.get("dry_volume_score"))),
+                    "failed_breakout_risk_score": _round_or_none(_safe_float(row.get("failed_breakout_risk_score"))),
+                    "breakout_quality_score": _round_or_none(_safe_float(row.get("breakout_quality_score"))),
+                    "structure_confidence": _round_or_none(_safe_float(row.get("structure_confidence"))),
+                    "base_depth_pct": _round_or_none(_safe_float(row.get("base_depth_pct"))),
+                    "loose_base_risk_score": _round_or_none(_safe_float(row.get("loose_base_risk_score"))),
+                    "support_violation_count": int(support_violation_count) if (support_violation_count := _safe_float(row.get("support_violation_count"))) is not None else None,
+                    "breakout_failure_count": int(breakout_failure_count) if (breakout_failure_count := _safe_float(row.get("breakout_failure_count"))) is not None else None,
+                    "breakout_volume_quality_score": _round_or_none(_safe_float(row.get("breakout_volume_quality_score"))),
+                    "structure_reject_reason_codes": row.get("structure_reject_reason_codes"),
                     "volume_demand_score": _round_or_none(_safe_float(row.get("volume_demand_score"))),
                     "liquidity_quality_score": _round_or_none(_safe_float(row.get("liquidity_quality_score"))),
                     "event_proxy_score": _round_or_none(_safe_float(row.get("event_proxy_score"))),
@@ -1379,13 +1543,15 @@ class LeaderLaggingAnalyzer:
         leaders = pd.DataFrame(leader_rows)
         if leaders.empty:
             return leaders
-        leaders, _ = self._assign_leader_labels(leaders, calibration=calibration_map)
-        return leaders.sort_values(["leader_score", "rs_rank"], ascending=[False, False]).reset_index(drop=True)
+        return leaders.sort_values(
+            ["leader_sort_score", "leader_score", "rs_rank"],
+            ascending=[False, False, False],
+        ).reset_index(drop=True)
 
     def _pair_link_score(
         self,
-        candidate: pd.Series,
-        leader: pd.Series,
+        candidate: Mapping[str, Any],
+        leader: Mapping[str, Any],
         corr_score: float | None,
     ) -> float:
         same_industry = 100.0 if str(candidate.get("industry") or "") == str(leader.get("industry") or "") and str(candidate.get("industry") or "") else 0.0
@@ -1402,14 +1568,31 @@ class LeaderLaggingAnalyzer:
             ]
         )
 
-    def _rolling_return_correlation(self, candidate_frame: pd.DataFrame, leader_frame: pd.DataFrame) -> float | None:
-        candidate = self.normalize_daily_frame(candidate_frame)[["date", "adj_close"]].copy()
-        leader = self.normalize_daily_frame(leader_frame)[["date", "adj_close"]].copy()
-        merged = candidate.merge(leader, on="date", suffixes=("_candidate", "_leader"))
-        if len(merged) < 40:
-            return None
-        corr = merged["adj_close_candidate"].pct_change().tail(60).corr(merged["adj_close_leader"].pct_change().tail(60))
-        return _safe_float(corr)
+    def _lagged_return_profile(
+        self,
+        candidate_frame: pd.DataFrame,
+        leader_frame: pd.DataFrame,
+        *,
+        frames_are_normalized: bool = False,
+    ) -> dict[str, Any]:
+        return follower_algorithms.lagged_return_profile(
+            candidate_frame if frames_are_normalized else self.normalize_daily_frame(candidate_frame),
+            leader_frame if frames_are_normalized else self.normalize_daily_frame(leader_frame),
+            frames_are_normalized=frames_are_normalized,
+        )
+
+    def filter_leaders_for_follower_analysis(self, leaders: pd.DataFrame) -> pd.DataFrame:
+        if leaders.empty:
+            return leaders.copy()
+        leader_pool = leaders.copy()
+        mask = pd.Series(True, index=leader_pool.index)
+        if "label" in leader_pool.columns:
+            mask &= leader_pool["label"].fillna("").astype(str) != "reject"
+        if "leader_tier" in leader_pool.columns:
+            mask &= leader_pool["leader_tier"].fillna("").astype(str).isin({"strong", "emerging"})
+        if "entry_suitability" in leader_pool.columns:
+            mask &= leader_pool["entry_suitability"].fillna("").astype(str) != "avoid"
+        return leader_pool.loc[mask].copy()
 
     def analyze_followers(
         self,
@@ -1420,13 +1603,26 @@ class LeaderLaggingAnalyzer:
         market_context: MarketContext,
         frames: dict[str, pd.DataFrame],
         calibration: dict[str, float] | None = None,
+        progress_callback: Callable[[dict[str, Any]], None] | None = None,
+        runtime_context: RuntimeContext | None = None,
     ) -> tuple[pd.DataFrame, pd.DataFrame]:
+        self.last_follower_lag_pruning = {}
         if feature_table.empty or leaders.empty:
             return pd.DataFrame(), pd.DataFrame()
 
         calibration_map = dict(calibration or self.build_actual_data_calibration(feature_table=feature_table, group_table=group_table))
+        mode = self._follower_analysis_mode()
+        balanced_mode = mode == "balanced"
+        max_leaders_per_industry = self._env_positive_int(
+            "INVEST_PROTO_FOLLOWER_MAX_LEADERS_PER_INDUSTRY",
+            self.DEFAULT_FOLLOWER_MAX_LEADERS_PER_INDUSTRY,
+        )
+        max_pairs_per_candidate = self._env_positive_int(
+            "INVEST_PROTO_FOLLOWER_MAX_PAIRS_PER_CANDIDATE",
+            self.DEFAULT_FOLLOWER_MAX_PAIRS_PER_CANDIDATE,
+        )
 
-        leader_pool = leaders.copy()
+        leader_pool = self.filter_leaders_for_follower_analysis(leaders)
         if leader_pool.empty:
             return pd.DataFrame(), pd.DataFrame()
 
@@ -1441,45 +1637,190 @@ class LeaderLaggingAnalyzer:
         follower_rows: list[dict[str, Any]] = []
         pair_rows: list[dict[str, Any]] = []
         breadth_context_score = 100.0 if market_context.regime_state == "Risk-On" else 65.0 if market_context.regime_state == "Neutral" else 35.0
+        leader_records_by_industry: dict[str, list[dict[str, Any]]] = {}
+        leader_records = sorted(leader_pool.to_dict(orient="records"), key=self._leader_follower_sort_key)
+        for leader_record in leader_records:
+            industry_key = _safe_text(leader_record.get("industry_key"))
+            if not industry_key:
+                continue
+            leader_records_by_industry.setdefault(industry_key, []).append(leader_record)
+        leader_pool_before_cap = sum(len(records) for records in leader_records_by_industry.values())
+        if balanced_mode:
+            leader_records_by_industry = {
+                industry_key: records[:max_leaders_per_industry]
+                for industry_key, records in leader_records_by_industry.items()
+            }
+        leader_pool_after_cap = sum(len(records) for records in leader_records_by_industry.values())
+        candidate_records = table.to_dict(orient="records")
+        selected_leader_records = [
+            record
+            for records in leader_records_by_industry.values()
+            for record in records
+        ]
+        relevant_symbols = {
+            _safe_text(record.get("symbol"))
+            for record in [*candidate_records, *selected_leader_records]
+            if _safe_text(record.get("symbol"))
+        }
+        lag_frame_lock = threading.Lock()
+        lag_price_frames: dict[str, pd.DataFrame] = {}
+        lag_frame_prepared_symbols: set[str] = set()
+        lag_frame_cache_hits = 0
+        lag_frame_precompute_seconds = 0.0
 
-        for _, candidate in table.iterrows():
-            symbol = str(candidate.get("symbol"))
+        def _prepare_lag_price_frame(symbol: str) -> pd.DataFrame:
+            nonlocal lag_frame_cache_hits, lag_frame_precompute_seconds
+            symbol_key = _safe_text(symbol).upper()
+            if not symbol_key:
+                return pd.DataFrame()
+            with lag_frame_lock:
+                cached = lag_price_frames.get(symbol_key)
+                if cached is not None:
+                    lag_frame_cache_hits += 1
+                    return cached
+                started = time.perf_counter()
+                normalized = self.normalize_daily_frame(frames.get(symbol_key, pd.DataFrame()))
+                prepared = follower_algorithms.prepare_lag_price_frame(
+                    normalized,
+                    frame_is_normalized=True,
+                )
+                lag_price_frames[symbol_key] = prepared
+                lag_frame_prepared_symbols.add(symbol_key)
+                lag_frame_precompute_seconds += time.perf_counter() - started
+                return prepared
+
+        if not balanced_mode:
+            for symbol in sorted(relevant_symbols):
+                _prepare_lag_price_frame(symbol)
+        total_candidates = len(candidate_records)
+        interval = progress_interval(total_candidates, target_updates=8, min_interval=50)
+        pair_evaluations = 0
+        pair_candidates = 0
+        eligible_candidates = 0
+        skipped_by_prefilter = 0
+        worker_count = _runtime_worker_count(
+            total_candidates,
+            env_var="INVEST_PROTO_FOLLOWER_ANALYSIS_WORKERS",
+            cap=self.DEFAULT_FOLLOWER_ANALYSIS_WORKER_CAP,
+            runtime_context=runtime_context,
+            scope="leader_lagging.follower_analysis",
+        )
+
+        def _emit_follower_progress(index: int, symbol: str) -> None:
+            if progress_callback is None or not is_progress_tick(index, total_candidates, interval):
+                return
+            progress_callback(
+                {
+                    "processed": index,
+                    "total": total_candidates,
+                    "current_symbol": symbol,
+                    "pair_evaluations": pair_evaluations,
+                    "pair_candidates": pair_candidates,
+                    "eligible_candidates": eligible_candidates,
+                    "skipped_by_prefilter": skipped_by_prefilter,
+                    "leader_pool_after_cap": leader_pool_after_cap,
+                    "workers": worker_count,
+                }
+            )
+
+        def _empty_candidate_result(symbol: str) -> dict[str, Any]:
+            return {
+                "symbol": symbol,
+                "follower_rows": [],
+                "pair_rows": [],
+                "pair_candidates": 0,
+                "pair_evaluations": 0,
+                "eligible_candidates": 0,
+                "skipped_by_prefilter": 0,
+            }
+
+        def _analyze_candidate(candidate: dict[str, Any]) -> dict[str, Any]:
+            symbol = _safe_text(candidate.get("symbol"))
+            result = _empty_candidate_result(symbol)
             if symbol in confirmed_symbols:
-                continue
-            peers = leader_pool[leader_pool["industry_key"] == candidate.get("industry_key")].copy()
-            if peers.empty:
-                continue
+                return result
+            peers = leader_records_by_industry.get(_safe_text(candidate.get("industry_key")), [])
+            if not peers:
+                return result
+
+            hard_precondition, prefilter_reasons = self._follower_hard_precondition(candidate, calibration_map)
+            if balanced_mode and not hard_precondition:
+                result["follower_rows"].append(
+                    self._prefilter_reject_follower_row(candidate, reasons=prefilter_reasons)
+                )
+                result["skipped_by_prefilter"] = 1
+                return result
+
+            selected_peers = self._rank_follower_peers(
+                candidate,
+                peers,
+                max_pairs=max_pairs_per_candidate,
+                balanced=balanced_mode,
+            )
+            if not selected_peers:
+                return result
 
             best_payload: dict[str, Any] | None = None
-            for _, leader in peers.iterrows():
-                candidate_frame = frames.get(symbol, pd.DataFrame())
-                leader_frame = frames.get(str(leader.get("symbol")), pd.DataFrame())
-                corr = self._rolling_return_correlation(candidate_frame, leader_frame)
-                corr_score = _score_ratio(corr, 0.70, 0.20) * 100.0
+            candidate_frame = _prepare_lag_price_frame(symbol)
+            result["pair_candidates"] = len(selected_peers)
+            result["eligible_candidates"] = 1
+            for leader in selected_peers:
+                leader_symbol = _safe_text(leader.get("symbol"))
+                leader_frame = _prepare_lag_price_frame(leader_symbol)
+                lag_profile = follower_algorithms.lagged_return_profile_from_price_frames(
+                    candidate_frame,
+                    leader_frame,
+                )
+                result["pair_evaluations"] += 1
+                lagged_corr = _safe_float(lag_profile.get("lagged_corr"))
+                corr_score = _score_ratio(lagged_corr, 0.70, 0.20) * 100.0
                 pair_link_score = self._pair_link_score(candidate, leader, corr_score)
+                lag_evidence_confidence = _safe_float(lag_profile.get("pair_evidence_confidence")) or 0.0
+                pair_evidence_confidence = _weighted_mean(
+                    [
+                        (lag_evidence_confidence, 0.55),
+                        (pair_link_score, 0.30),
+                        (corr_score, 0.15),
+                    ]
+                )
+                peer_lead_score = max(lagged_corr or 0.0, 0.0) * pair_link_score
                 leader_ret_20d = _safe_float(leader.get("ret_20d")) or 0.0
                 candidate_ret_20d = _safe_float(candidate.get("ret_20d")) or 0.0
                 leader_ret_60d = _safe_float(leader.get("ret_60d")) or 0.0
                 candidate_ret_60d = _safe_float(candidate.get("ret_60d")) or 0.0
                 leader_gap_20d = leader_ret_20d - candidate_ret_20d
                 leader_gap_60d = leader_ret_60d - candidate_ret_60d
-                propagation_ratio_20d = None
+                propagation_ratio = None
                 if leader_ret_20d > 0:
-                    propagation_ratio_20d = candidate_ret_20d / leader_ret_20d
-                underreaction_score = _weighted_mean(
+                    propagation_ratio = candidate_ret_20d / leader_ret_20d
+                propagation_state = follower_algorithms.propagation_state(propagation_ratio)
+                structure_preservation_score = _weighted_mean(
                     [
-                        ((_score_range(leader_gap_20d, 0.05, 0.25, 0.0, 0.40) * 100.0), 0.35),
-                        ((_score_range(leader_gap_60d, 0.10, 0.35, 0.0, 0.50) * 100.0), 0.35),
-                        ((_score_range(propagation_ratio_20d, 0.25, 0.80, 0.10, 1.00) * 100.0), 0.30),
+                        (_safe_float(candidate.get("trend_integrity_score")), 0.35),
+                        (_safe_float(candidate.get("structure_readiness_score")), 0.30),
+                        (100.0 if bool(candidate.get("close_gt_50")) else 20.0, 0.20),
+                        ((100.0 - (_safe_float(candidate.get("extension_risk_score")) or 0.0)), 0.15),
                     ]
+                )
+                catchup_score = follower_algorithms.catchup_room_score(
+                    leader_gap_20d,
+                    leader_gap_60d,
+                    propagation_ratio,
                 )
                 rs_inflection_score = _weighted_mean(
                     [
                         ((_score_ratio(_safe_float(candidate.get("rs_line_20d_slope")), 0.03, -0.03) * 100.0), 0.35),
-                        ((_score_ratio(_safe_float(candidate.get("mansfield_rs_slope")), 0.03, -0.03) * 100.0), 0.30),
+                        ((_score_ratio(_safe_float(candidate.get("benchmark_relative_strength_slope")), 0.03, -0.03) * 100.0), 0.30),
                         ((_score_ratio(_safe_float(candidate.get("delta_rs_rank_qoq")), 8.0, -5.0) * 100.0), 0.15),
                         (100.0 if bool(candidate.get("rs_line_65d_high_flag")) else 35.0, 0.10),
                         (100.0 if bool(candidate.get("rs_new_high_before_price_flag")) else 35.0, 0.10),
+                    ]
+                )
+                underreaction_score = _weighted_mean(
+                    [
+                        (catchup_score, 0.55),
+                        (structure_preservation_score, 0.25),
+                        (pair_link_score, 0.20),
                     ]
                 )
                 catalyst_sympathy_score = _weighted_mean(
@@ -1488,16 +1829,25 @@ class LeaderLaggingAnalyzer:
                         ((_score_ratio(_safe_float(candidate.get("ret_20d")), 0.05, -0.05) * 100.0), 0.40),
                     ]
                 )
+                sympathy_freshness_score = _weighted_mean(
+                    [
+                        (100.0 if leader_ret_20d >= 0.08 or (_safe_float(leader.get("event_proxy_score")) or 0.0) >= 65.0 else 35.0, 0.35),
+                        (rs_inflection_score, 0.35),
+                        (100.0 - (_safe_float(candidate.get("extension_risk_score")) or 0.0), 0.30),
+                    ]
+                )
                 follower_score = _weighted_mean(
                     [
-                        (pair_link_score, 0.25),
+                        (pair_link_score, 0.22),
+                        (peer_lead_score, 0.03),
                         (_safe_float(candidate.get("group_strength_score")), 0.18),
-                        (underreaction_score, 0.15),
-                        (_safe_float(candidate.get("trend_integrity_score")), 0.12),
-                        (rs_inflection_score, 0.10),
-                        (_safe_float(candidate.get("volume_demand_score")), 0.08),
-                        (_safe_float(candidate.get("liquidity_quality_score")), 0.07),
-                        (breadth_context_score, 0.05),
+                        (underreaction_score, 0.20),
+                        (structure_preservation_score, 0.12),
+                        (rs_inflection_score, 0.11),
+                        (sympathy_freshness_score, 0.08),
+                        (_safe_float(candidate.get("volume_demand_score")), 0.02),
+                        (_safe_float(candidate.get("liquidity_quality_score")), 0.02),
+                        (breadth_context_score, 0.02),
                     ]
                 ) * market_context.score_multiplier
 
@@ -1505,20 +1855,33 @@ class LeaderLaggingAnalyzer:
                     "linked_leader": leader.get("symbol"),
                     "leader_label": leader.get("label"),
                     "pair_link_score": pair_link_score,
+                    "peer_lead_score": peer_lead_score,
                     "leader_gap_20d": leader_gap_20d,
                     "leader_gap_60d": leader_gap_60d,
-                    "propagation_ratio_20d": propagation_ratio_20d,
+                    "leader_event_return": leader_ret_20d,
+                    "follower_event_return": candidate_ret_20d,
+                    "propagation_ratio": propagation_ratio,
                     "underreaction_score": underreaction_score,
                     "rs_inflection_score": rs_inflection_score,
+                    "structure_preservation_score": structure_preservation_score,
                     "catalyst_sympathy_score": catalyst_sympathy_score,
+                    "sympathy_freshness_score": sympathy_freshness_score,
                     "follower_score": follower_score,
-                    "corr": corr,
+                    "best_lag_days": lag_profile.get("lag_days"),
+                    "lagged_corr": lagged_corr,
+                    "lead_lag_profile": lag_profile.get("lead_lag_profile"),
+                    "lag_profile_sample_count": lag_profile.get("lag_profile_sample_count"),
+                    "lag_profile_stability_score": lag_profile.get("lag_profile_stability_score"),
+                    "pair_evidence_confidence": pair_evidence_confidence,
+                    "catchup_room_score": catchup_score,
+                    "propagation_state": propagation_state,
+                    "follower_reject_reason_codes": lag_profile.get("follower_reject_reason_codes"),
                 }
                 if best_payload is None or (payload["follower_score"] or 0.0) > (best_payload["follower_score"] or 0.0):
                     best_payload = payload
 
             if best_payload is None:
-                continue
+                return result
 
             candidate_industry_rs_pct = _safe_float(candidate.get("industry_rs_pct")) or 0.0
             candidate_distance_to_high = _coalesce(_safe_float(candidate.get("distance_to_52w_high")), 1.0)
@@ -1530,16 +1893,7 @@ class LeaderLaggingAnalyzer:
             best_leader_gap_60d = _safe_float(best_payload.get("leader_gap_60d")) or 0.0
             best_pair_link_score = _safe_float(best_payload.get("pair_link_score")) or 0.0
 
-            hard_precondition = all(
-                [
-                    candidate_industry_rs_pct >= calibration_map["follower_group_rs_min"],
-                    bool(candidate.get("close_gt_50")),
-                    candidate_distance_to_high <= calibration_map["follower_distance_to_high_max"],
-                    calibration_map["follower_rs_rank_min"] <= candidate_rs_rank < calibration_map["follower_rs_rank_max"],
-                    candidate_delta_rs_rank > 0.0,
-                    candidate_traded_value_20d >= self.market_profile(candidate.get("market", "us")).traded_value_floor,
-                ]
-            )
+            hard_precondition, _ = self._follower_hard_precondition(candidate, calibration_map)
             hygiene_pass = all(
                 [
                     bool(candidate.get("close_gt_200")) or candidate_ma200_slope_20d > 0.0,
@@ -1561,6 +1915,33 @@ class LeaderLaggingAnalyzer:
                 reasons.append("STRONG_GROUP")
             if (_safe_float(best_payload.get("catalyst_sympathy_score")) or 0.0) >= 65.0:
                 reasons.append("SYMPATHY_SETUP")
+            link_tags = ["same_industry"]
+            if best_payload.get("best_lag_days") is not None:
+                link_tags.append(f"best_lag_{int(best_payload['best_lag_days'])}")
+            if (_safe_float(best_payload.get("peer_lead_score")) or 0.0) >= 50.0:
+                link_tags.append("positive_peer_lead")
+            if (_safe_float(best_payload.get("pair_evidence_confidence")) or 0.0) >= 50.0:
+                link_tags.append("stable_lag_profile")
+            if (_safe_float(best_payload.get("underreaction_score")) or 0.0) >= calibration_map["follower_underreaction_min"]:
+                link_tags.append("underreaction")
+            if str(best_payload.get("propagation_state") or "") == "early_response":
+                link_tags.append("early_response")
+
+            follower_diagnostics = {
+                "pair_evidence_confidence": best_payload.get("pair_evidence_confidence"),
+                "lag_profile_stability_score": best_payload.get("lag_profile_stability_score"),
+                "catchup_room_score": best_payload.get("catchup_room_score"),
+                "propagation_state": best_payload.get("propagation_state"),
+                "structure_preservation_score": best_payload.get("structure_preservation_score"),
+                "rs_inflection_score": best_payload.get("rs_inflection_score"),
+                "liquidity_quality_score": candidate.get("liquidity_quality_score"),
+                "pair_link_score": best_payload.get("pair_link_score"),
+            }
+            follower_confidence = follower_algorithms.follower_confidence_score(follower_diagnostics)
+            follower_reject_reasons = follower_algorithms.follower_reject_reason_codes(
+                follower_diagnostics,
+                str(best_payload.get("follower_reject_reason_codes") or ""),
+            )
 
             follower_row = {
                 "ticker": symbol,
@@ -1573,18 +1954,30 @@ class LeaderLaggingAnalyzer:
                 "group_name": candidate.get("group_name"),
                 "follower_score": _round_or_none(_safe_float(best_payload.get("follower_score"))),
                 "pair_link_score": _round_or_none(_safe_float(best_payload.get("pair_link_score"))),
+                "peer_lead_score": _round_or_none(_safe_float(best_payload.get("peer_lead_score"))),
+                "best_lag_days": int(best_lag) if (best_lag := _safe_float(best_payload.get("best_lag_days"))) is not None else None,
+                "lagged_corr": _round_or_none(_safe_float(best_payload.get("lagged_corr")), digits=4),
+                "lag_profile_sample_count": int(lag_sample_count) if (lag_sample_count := _safe_float(best_payload.get("lag_profile_sample_count"))) is not None else None,
+                "lag_profile_stability_score": _round_or_none(_safe_float(best_payload.get("lag_profile_stability_score"))),
+                "pair_evidence_confidence": _round_or_none(_safe_float(best_payload.get("pair_evidence_confidence"))),
+                "follower_confidence_score": _round_or_none(follower_confidence),
                 "rs_rank": _round_or_none(_safe_float(candidate.get("rs_rank"))),
                 "delta_rs_rank_qoq": _round_or_none(_safe_float(candidate.get("delta_rs_rank_qoq"))),
                 "rs_line_20d_slope": _round_or_none(_safe_float(candidate.get("rs_line_20d_slope"))),
-                "mansfield_rs_slope": _round_or_none(_safe_float(candidate.get("mansfield_rs_slope"))),
                 "leader_gap_20d": _round_or_none((leader_gap_20d * 100.0) if (leader_gap_20d := _safe_float(best_payload.get("leader_gap_20d"))) is not None else None),
                 "leader_gap_60d": _round_or_none((leader_gap_60d * 100.0) if (leader_gap_60d := _safe_float(best_payload.get("leader_gap_60d"))) is not None else None),
-                "propagation_ratio_20d": _round_or_none(_safe_float(best_payload.get("propagation_ratio_20d"))),
+                "propagation_ratio": _round_or_none(_safe_float(best_payload.get("propagation_ratio"))),
+                "propagation_state": best_payload.get("propagation_state"),
+                "catchup_room_score": _round_or_none(_safe_float(best_payload.get("catchup_room_score"))),
                 "top_reason_1": reasons[0] if reasons else "",
                 "top_reason_2": reasons[1] if len(reasons) > 1 else "",
                 "reason_codes": _unique(reasons),
+                "follower_reject_reason_codes": follower_reject_reasons,
                 "underreaction_score": _round_or_none(_safe_float(best_payload.get("underreaction_score"))),
                 "rs_inflection_score": _round_or_none(_safe_float(best_payload.get("rs_inflection_score"))),
+                "structure_preservation_score": _round_or_none(_safe_float(best_payload.get("structure_preservation_score"))),
+                "sympathy_freshness_score": _round_or_none(_safe_float(best_payload.get("sympathy_freshness_score"))),
+                "link_evidence_tags": _tag_csv(link_tags),
                 "group_strength_score": _round_or_none(_safe_float(candidate.get("group_strength_score"))),
                 "trend_integrity_score": _round_or_none(_safe_float(candidate.get("trend_integrity_score"))),
                 "volume_demand_score": _round_or_none(_safe_float(candidate.get("volume_demand_score"))),
@@ -1594,21 +1987,65 @@ class LeaderLaggingAnalyzer:
                 "hygiene_pass": hygiene_pass,
                 "risk_flag": "",
             }
-            follower_rows.append(follower_row)
-            pair_rows.append(
+            result["follower_rows"].append(follower_row)
+            result["pair_rows"].append(
                 {
                     "leader_symbol": best_payload.get("linked_leader"),
                     "follower_symbol": symbol,
                     "group_name": candidate.get("group_name"),
                     "pair_link_score": _round_or_none(_safe_float(best_payload.get("pair_link_score"))),
+                    "peer_lead_score": follower_row["peer_lead_score"],
                     "follower_score": _round_or_none(_safe_float(best_payload.get("follower_score"))),
                     "leader_gap_20d": follower_row["leader_gap_20d"],
                     "leader_gap_60d": follower_row["leader_gap_60d"],
-                    "propagation_ratio_20d": follower_row["propagation_ratio_20d"],
-                    "corr_60d": _round_or_none(_safe_float(best_payload.get("corr"))),
+                    "lag_days": follower_row["best_lag_days"],
+                    "lead_lag_profile": best_payload.get("lead_lag_profile"),
+                    "lag_profile_sample_count": follower_row["lag_profile_sample_count"],
+                    "lag_profile_stability_score": follower_row["lag_profile_stability_score"],
+                    "leader_event_return": _round_or_none((_safe_float(best_payload.get("leader_event_return")) or 0.0) * 100.0),
+                    "follower_event_return": _round_or_none((_safe_float(best_payload.get("follower_event_return")) or 0.0) * 100.0),
+                    "propagation_ratio": follower_row["propagation_ratio"],
+                    "propagation_state": follower_row["propagation_state"],
+                    "catchup_room_score": follower_row["catchup_room_score"],
+                    "lagged_corr": follower_row["lagged_corr"],
+                    "connection_type": follower_row["link_evidence_tags"],
+                    "pair_evidence_confidence": follower_row["pair_evidence_confidence"],
+                    "pair_confidence": _round_or_none(
+                        _weighted_mean(
+                            [
+                                (_safe_float(best_payload.get("pair_evidence_confidence")), 0.20),
+                                (_safe_float(best_payload.get("pair_link_score")), 0.45),
+                                (_safe_float(best_payload.get("peer_lead_score")), 0.20),
+                                (_safe_float(best_payload.get("underreaction_score")), 0.15),
+                            ]
+                        )
+                    ),
                     "label": "",
                 }
             )
+            return result
+
+        def _accept_candidate_result(index: int, result: dict[str, Any]) -> None:
+            nonlocal pair_evaluations, pair_candidates, eligible_candidates, skipped_by_prefilter
+            follower_rows.extend(result["follower_rows"])
+            pair_rows.extend(result["pair_rows"])
+            pair_evaluations += int(result["pair_evaluations"])
+            pair_candidates += int(result["pair_candidates"])
+            eligible_candidates += int(result["eligible_candidates"])
+            skipped_by_prefilter += int(result["skipped_by_prefilter"])
+            _emit_follower_progress(index, str(result.get("symbol") or ""))
+
+        if worker_count <= 1:
+            for index, candidate in enumerate(candidate_records, start=1):
+                _accept_candidate_result(index, _analyze_candidate(candidate))
+        else:
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                futures = [
+                    executor.submit(_analyze_candidate, candidate)
+                    for candidate in candidate_records
+                ]
+                for index, future in enumerate(futures, start=1):
+                    _accept_candidate_result(index, future.result())
 
         followers = pd.DataFrame(follower_rows)
         pairs = pd.DataFrame(pair_rows)
@@ -1620,18 +2057,70 @@ class LeaderLaggingAnalyzer:
             followers = followers.sort_values(["follower_score", "pair_link_score"], ascending=[False, False]).reset_index(drop=True)
         if not pairs.empty:
             pairs = pairs.sort_values(["follower_score", "pair_link_score"], ascending=[False, False]).reset_index(drop=True)
+        self.last_follower_lag_pruning = {
+            "mode": mode,
+            "total_candidates": int(total_candidates),
+            "eligible_candidates": int(eligible_candidates),
+            "skipped_by_prefilter": int(skipped_by_prefilter),
+            "leader_pool_before_cap": int(leader_pool_before_cap),
+            "leader_pool_after_cap": int(leader_pool_after_cap),
+            "max_leaders_per_industry": int(max_leaders_per_industry) if balanced_mode else None,
+            "max_pairs_per_candidate": int(max_pairs_per_candidate) if balanced_mode else None,
+            "pair_candidates": int(pair_candidates),
+            "pair_evaluations": int(pair_evaluations),
+            "workers": int(worker_count),
+            "lag_frame_precompute_symbols": int(len(lag_frame_prepared_symbols)),
+            "lag_frame_precompute_seconds": round(float(lag_frame_precompute_seconds), 6),
+            "lag_frame_cache_hits": int(lag_frame_cache_hits),
+        }
+        if runtime_context is not None:
+            runtime_context.add_runtime_metric(
+                "feature_analysis",
+                "leader_lagging_lag_frame_precompute_seconds",
+                float(lag_frame_precompute_seconds),
+            )
+            runtime_context.set_runtime_metric(
+                "feature_analysis",
+                "leader_lagging_lag_frame_precompute_symbols",
+                int(len(lag_frame_prepared_symbols)),
+            )
         return followers, pairs
 
 
 class LeaderLaggingScreener:
-    def __init__(self, *, market: str = "us") -> None:
+    def __init__(
+        self,
+        *,
+        market: str = "us",
+        standalone: bool = False,
+        runtime_context: RuntimeContext | None = None,
+    ) -> None:
         self.market = market_key(market)
+        self.standalone = bool(standalone)
+        self.runtime_context = runtime_context
+        self._active_as_of_date: str | None = None
+        self._explicit_replay_as_of = False
         ensure_market_dirs(self.market)
         from utils.market_runtime import get_leader_lagging_results_dir
 
         self.results_dir = get_leader_lagging_results_dir(self.market)
         ensure_dir(self.results_dir)
         self.analyzer = LeaderLaggingAnalyzer()
+
+    def _emit_progress(
+        self,
+        *,
+        current_symbol: str = "",
+        current_chunk: str = "",
+    ) -> None:
+        if self.runtime_context is None:
+            return
+        self.runtime_context.update_runtime_state(
+            current_stage="Leader / lagging",
+            current_symbol=current_symbol,
+            current_chunk=current_chunk,
+            status="running",
+        )
 
     def _load_metadata_map(self) -> dict[str, dict[str, Any]]:
         metadata_path = get_stock_metadata_path(self.market)
@@ -1648,28 +2137,76 @@ class LeaderLaggingScreener:
         if not os.path.isdir(data_dir):
             return {}
         frames: dict[str, pd.DataFrame] = {}
-        candidate_files = [name for name in sorted(os.listdir(data_dir)) if name.endswith(".csv")]
+        active_as_of = self._active_as_of_date
+        candidate_files = limit_runtime_symbols(
+            [
+                name
+                for name in sorted(os.listdir(data_dir))
+                if name.endswith(".csv")
+                and not is_index_symbol(self.market, os.path.splitext(name)[0].upper())
+            ]
+        )
         interval = progress_interval(len(candidate_files), target_updates=8, min_interval=50)
         print(f"[LeaderLagging] Frame load started ({self.market}) - files={len(candidate_files)}")
+        freshness_reports = []
+        explicit_replay = bool(self._explicit_replay_as_of)
+        frame_symbols = [
+            os.path.splitext(name)[0].strip().upper()
+            for name in candidate_files
+            if os.path.splitext(name)[0].strip()
+        ]
+        frame_load_started = time.perf_counter()
+        frame_map = load_local_ohlcv_frames_ordered(
+            self.market,
+            frame_symbols,
+            as_of=active_as_of,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
+            runtime_context=self.runtime_context,
+            required_columns=SCREENING_OHLCV_READ_COLUMNS,
+            worker_scope="leader_lagging.frame_load",
+            load_frame_fn=load_local_ohlcv_frame,
+        )
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "leader_lagging.frame_load_seconds",
+                time.perf_counter() - frame_load_started,
+            )
         for index, name in enumerate(candidate_files, start=1):
-            if not name.endswith(".csv"):
-                continue
             symbol = os.path.splitext(name)[0].upper()
-            if not symbol or is_index_symbol(self.market, symbol):
+            if not symbol:
                 if is_progress_tick(index, len(candidate_files), interval):
                     print(
                         f"[LeaderLagging] Frame load progress ({self.market}) - "
                         f"processed={index}/{len(candidate_files)}, loaded={len(frames)}"
                     )
                 continue
-            frame = load_local_ohlcv_frame(self.market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
+            frame = frame_map.get(symbol, pd.DataFrame())
+            freshness_reports.append(
+                describe_ohlcv_freshness(
+                    frame,
+                    market=self.market,
+                    symbol=symbol,
+                    as_of=active_as_of,
+                    latest_completed_session=active_as_of,
+                    explicit_as_of=explicit_replay,
+                )
+            )
             if not frame.empty:
                 frames[symbol] = frame
             if is_progress_tick(index, len(candidate_files), interval):
+                self._emit_progress(
+                    current_symbol=symbol,
+                    current_chunk=f"frame_load:{index}/{len(candidate_files)}",
+                )
                 print(
                     f"[LeaderLagging] Frame load progress ({self.market}) - "
                     f"processed={index}/{len(candidate_files)}, loaded={len(frames)}"
                 )
+        if self.runtime_context is not None:
+            self.runtime_context.update_data_freshness(
+                "leader_lagging",
+                OhlcvFreshnessSummary.from_reports(freshness_reports),
+            )
         return frames
 
     def _persist(
@@ -1680,8 +2217,17 @@ class LeaderLaggingScreener:
         followers: pd.DataFrame,
         pairs: pd.DataFrame,
         group_table: pd.DataFrame,
+        leader_quality_diagnostics: pd.DataFrame,
+        leader_quality_summary: dict[str, Any],
+        leader_candidate_quality_diagnostics: pd.DataFrame,
+        leader_candidate_quality_summary: dict[str, Any],
+        leader_threshold_tuning_report: pd.DataFrame,
+        leader_threshold_tuning_summary: dict[str, Any],
         market_context: MarketContext,
         actual_data_calibration: dict[str, Any],
+        *,
+        market_truth_source: str,
+        core_overlay_applied: bool,
     ) -> None:
         outputs = {
             "pattern_excluded_pool": pattern_excluded_pool,
@@ -1689,6 +2235,9 @@ class LeaderLaggingScreener:
             "leaders": leaders,
             "followers": followers,
             "leader_follower_pairs": pairs,
+            "leader_quality_diagnostics": leader_quality_diagnostics,
+            "leader_candidate_quality_diagnostics": leader_candidate_quality_diagnostics,
+            "leader_threshold_tuning_report": leader_threshold_tuning_report,
             "group_dashboard": group_table[[
                 "industry_key",
                 "sector",
@@ -1703,12 +2252,40 @@ class LeaderLaggingScreener:
         for stem, frame in outputs.items():
             csv_path = os.path.join(self.results_dir, f"{stem}.csv")
             json_path = os.path.join(self.results_dir, f"{stem}.json")
-            frame.to_csv(csv_path, index=False)
-            frame.to_json(json_path, orient="records", indent=2, force_ascii=False)
+            write_dataframe_csv_with_fallback(
+                frame,
+                csv_path,
+                index=False,
+                runtime_context=self.runtime_context,
+                metric_label=f"leader_lagging.{stem}.csv",
+            )
+            write_dataframe_json_with_fallback(
+                frame,
+                json_path,
+                orient="records",
+                indent=2,
+                force_ascii=False,
+                runtime_context=self.runtime_context,
+                metric_label=f"leader_lagging.{stem}.json",
+            )
 
+        runtime_state = (
+            dict(self.runtime_context.runtime_state)
+            if self.runtime_context is not None and isinstance(self.runtime_context.runtime_state, dict)
+            else {}
+        )
+        market_truth_mode = str(runtime_state.get("market_truth_mode") or "").strip()
+        if not market_truth_mode:
+            market_truth_mode = "standalone_manual" if market_truth_source == "local_standalone" else "compat"
+        fallback_reason = str(runtime_state.get("fallback_reason") or "").strip()
+        follower_lag_pruning = dict(getattr(self.analyzer, "last_follower_lag_pruning", {}) or {})
         summary = {
             "market": self.market.upper(),
             "benchmark_symbol": market_context.benchmark_symbol,
+            "market_truth_source": market_truth_source,
+            "core_overlay_applied": core_overlay_applied,
+            "market_truth_mode": market_truth_mode,
+            "fallback_reason": fallback_reason,
             "regime_state": market_context.regime_state,
             "market_alias": market_context.market_alias,
             "market_alignment_score": market_context.market_alignment_score,
@@ -1717,60 +2294,194 @@ class LeaderLaggingScreener:
             "leader_health_score": market_context.leader_health_score,
             "reason_codes": list(market_context.reason_codes),
             "actual_data_calibration": actual_data_calibration,
+            "leader_quality": leader_quality_summary,
+            "leader_candidate_quality": leader_candidate_quality_summary,
+            "leader_threshold_tuning": leader_threshold_tuning_summary,
+            "follower_lag_pruning": follower_lag_pruning,
             "counts": {
                 "pattern_excluded_pool": int(len(pattern_excluded_pool)),
                 "pattern_included_candidates": int(len(pattern_included_candidates)),
                 "leaders": int(len(leaders)),
-                "confirmed_leaders": int((leaders["label"] == "Confirmed Leader").sum()) if not leaders.empty else 0,
+                "confirmed_leaders": int((leaders["leader_tier"] == "strong").sum()) if not leaders.empty and "leader_tier" in leaders.columns else 0,
                 "followers": int(len(followers)),
                 "high_quality_followers": int((followers["label"] == "High-Quality Follower").sum()) if not followers.empty else 0,
                 "pairs": int(len(pairs)),
             },
         }
-        with open(os.path.join(self.results_dir, "market_summary.json"), "w", encoding="utf-8") as handle:
-            json.dump(summary, handle, ensure_ascii=False, indent=2)
-        with open(os.path.join(self.results_dir, "actual_data_calibration.json"), "w", encoding="utf-8") as handle:
-            json.dump(actual_data_calibration, handle, ensure_ascii=False, indent=2)
+        write_json_with_fallback(
+            summary,
+            os.path.join(self.results_dir, "market_summary.json"),
+            ensure_ascii=False,
+            indent=2,
+            runtime_context=self.runtime_context,
+            metric_label="leader_lagging.market_summary.json",
+        )
+        write_json_with_fallback(
+            actual_data_calibration,
+            os.path.join(self.results_dir, "actual_data_calibration.json"),
+            ensure_ascii=False,
+            indent=2,
+            runtime_context=self.runtime_context,
+            metric_label="leader_lagging.actual_data_calibration.json",
+        )
+        write_json_with_fallback(
+            leader_quality_summary,
+            os.path.join(self.results_dir, "leader_quality_summary.json"),
+            ensure_ascii=False,
+            indent=2,
+            runtime_context=self.runtime_context,
+            metric_label="leader_lagging.leader_quality_summary.json",
+        )
+        write_json_with_fallback(
+            leader_threshold_tuning_report.to_dict(orient="records"),
+            os.path.join(self.results_dir, "leader_threshold_tuning_report.json"),
+            ensure_ascii=False,
+            indent=2,
+            runtime_context=self.runtime_context,
+            metric_label="leader_lagging.leader_threshold_tuning_report.json",
+        )
+        write_json_with_fallback(
+            leader_candidate_quality_summary,
+            os.path.join(self.results_dir, "leader_candidate_quality_summary.json"),
+            ensure_ascii=False,
+            indent=2,
+            runtime_context=self.runtime_context,
+            metric_label="leader_lagging.leader_candidate_quality_summary.json",
+        )
 
     def run(self) -> dict[str, Any]:
         metadata_map = self._load_metadata_map()
+        requested_as_of = (
+            _safe_text(self.runtime_context.as_of_date)
+            if self.runtime_context is not None
+            else ""
+        )
+        benchmark_started = time.perf_counter()
+        benchmark_symbol, benchmark_daily = load_benchmark_data(
+            self.market,
+            get_benchmark_candidates(self.market),
+            as_of=requested_as_of or None,
+            allow_yfinance_fallback=True,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
+        )
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "leader_lagging.benchmark_load_seconds",
+                time.perf_counter() - benchmark_started,
+            )
+        benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(self.market)
+        benchmark_daily = self.analyzer.normalize_daily_frame(benchmark_daily)
+        benchmark_as_of = (
+            _as_date_str(benchmark_daily["date"].iloc[-1]) if not benchmark_daily.empty else None
+        ) or None
+        self._explicit_replay_as_of = runtime_context_has_explicit_as_of(self.runtime_context)
+        self._active_as_of_date = requested_as_of or benchmark_as_of
+        if self.runtime_context is not None and self._active_as_of_date:
+            self.runtime_context.set_as_of_date(self._active_as_of_date)
         frames = self._load_frames()
         print(
             f"[LeaderLagging] Inputs ready ({self.market}) - "
             f"metadata={len(metadata_map)}, frames={len(frames)}"
         )
-        benchmark_symbol, benchmark_daily = load_benchmark_data(
-            self.market,
-            get_benchmark_candidates(self.market),
-            allow_yfinance_fallback=True,
-            price_policy=PricePolicy.SPLIT_ADJUSTED,
-        )
-        benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(self.market)
-        benchmark_daily = self.analyzer.normalize_daily_frame(benchmark_daily)
         print(f"[LeaderLagging] Feature analysis started ({self.market}) - benchmark={benchmark_symbol}")
 
         feature_rows: list[dict[str, Any]] = []
         total_symbols = len(frames)
         interval = progress_interval(total_symbols, target_updates=8, min_interval=50)
-        for index, (symbol, frame) in enumerate(frames.items(), start=1):
-            feature_rows.append(
-                self.analyzer.compute_symbol_features(
+        symbols_in_order = list(frames.keys())
+        worker_count = _runtime_worker_count(
+            total_symbols,
+            env_var="INVEST_PROTO_SYMBOL_ANALYSIS_WORKERS",
+            runtime_context=self.runtime_context,
+            scope="leader_lagging.feature_analysis",
+        )
+
+        def _compute_features(symbol: str) -> dict[str, Any]:
+            metadata = metadata_map.get(symbol)
+
+            def _compute() -> dict[str, Any]:
+                return self.analyzer.compute_symbol_features(
                     symbol=symbol,
                     market=self.market,
-                    daily_frame=frame,
+                    daily_frame=frames[symbol],
                     benchmark_daily=benchmark_daily,
-                    metadata=metadata_map.get(symbol),
+                    metadata=metadata,
+                    benchmark_is_normalized=True,
                 )
+
+            return feature_row_cache_get_or_compute(
+                namespace="leader_lagging_features",
+                market=self.market,
+                symbol=symbol,
+                as_of=self._active_as_of_date or "",
+                feature_version="leader_lagging_features_v1",
+                source_path=resolve_ohlcv_source_path(self.market, symbol),
+                compute_fn=_compute,
+                runtime_context=self.runtime_context,
+                extra_key={
+                    "benchmark_symbol": benchmark_symbol,
+                    "benchmark_as_of": benchmark_as_of,
+                    "metadata": metadata,
+                },
             )
+
+        feature_started = time.perf_counter()
+        if self.runtime_context is not None:
+            self.runtime_context.add_runtime_metric("feature_analysis", "symbols", total_symbols)
+        if worker_count <= 1:
+            features_by_symbol = {
+                symbol: _compute_features(symbol)
+                for symbol in symbols_in_order
+            }
+        else:
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                future_by_symbol = {
+                    symbol: executor.submit(_compute_features, symbol)
+                    for symbol in symbols_in_order
+                }
+                features_by_symbol = {
+                    symbol: future_by_symbol[symbol].result()
+                    for symbol in symbols_in_order
+                }
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "leader_lagging.feature_analysis_seconds",
+                time.perf_counter() - feature_started,
+            )
+
+        for index, symbol in enumerate(symbols_in_order, start=1):
+            feature_rows.append(features_by_symbol[symbol])
             if is_progress_tick(index, total_symbols, interval):
+                self._emit_progress(
+                    current_symbol=symbol,
+                    current_chunk=f"feature_analysis:{index}/{total_symbols}",
+                )
                 print(
                     f"[LeaderLagging] Feature analysis progress ({self.market}) - "
                     f"processed={index}/{total_symbols}, features={len(feature_rows)}"
                 )
         feature_table = self.analyzer.finalize_feature_table(pd.DataFrame(feature_rows))
-        as_of_date = str(feature_table["as_of_ts"].dropna().max()) if not feature_table.empty and "as_of_ts" in feature_table.columns and not feature_table["as_of_ts"].dropna().empty else _as_date_str(benchmark_daily["date"].iloc[-1]) or ""
-        market_truth = load_market_truth_snapshot(self.market, as_of_date=as_of_date)
-        feature_table = annotate_frame_with_leader_core(feature_table, market_truth.leader_core)
+        as_of_date = self._active_as_of_date or ""
+        if self.standalone:
+            market_truth = None
+            leader_core = empty_leader_core_snapshot(self.market, as_of_date)
+            market_truth_source = "local_standalone"
+            core_overlay_applied = False
+        else:
+            market_truth = load_market_truth_snapshot(self.market, as_of_date=as_of_date)
+            leader_core = market_truth.leader_core
+            market_truth_source = "market_intel_compat"
+            core_overlay_applied = True
+        runtime_state = (
+            dict(self.runtime_context.runtime_state)
+            if self.runtime_context is not None and isinstance(self.runtime_context.runtime_state, dict)
+            else {}
+        )
+        market_truth_mode = str(runtime_state.get("market_truth_mode") or "").strip()
+        if not market_truth_mode:
+            market_truth_mode = "standalone_manual" if market_truth_source == "local_standalone" else "compat"
+        fallback_reason = str(runtime_state.get("fallback_reason") or "").strip()
+        feature_table = annotate_frame_with_leader_core(feature_table, leader_core)
         group_table = self.analyzer.compute_group_table(feature_table)
         actual_data_calibration = self.analyzer.build_actual_data_calibration(
             feature_table=feature_table,
@@ -1780,6 +2491,7 @@ class LeaderLaggingScreener:
             f"[LeaderLagging] Relationship analysis started ({self.market}) - "
             f"features={len(feature_table)}, groups={len(group_table)}"
         )
+        relationship_started = time.perf_counter()
         market_context = self.analyzer.compute_market_context(
             market=self.market,
             benchmark_symbol=benchmark_symbol,
@@ -1794,77 +2506,190 @@ class LeaderLaggingScreener:
             market_context=market_context,
             calibration=actual_data_calibration,
         )
-        if not leaders.empty:
+        leader_candidates = leaders.copy()
+        leader_candidate_quality_diagnostics, leader_candidate_quality_summary = leader_quality.build_leader_quality_artifacts(
+            feature_table=feature_table,
+            leaders=leader_candidates,
+            group_table=group_table,
+            calibration=actual_data_calibration,
+        )
+        tuned_calibration, leader_threshold_tuning_report, leader_threshold_tuning_summary = (
+            leader_tuning.build_leader_threshold_tuning(
+                base_calibration=actual_data_calibration,
+                candidate_quality_diagnostics=leader_candidate_quality_diagnostics,
+                standalone=self.standalone,
+                enabled=leader_tuning.leader_tuning_runtime_enabled(),
+            )
+        )
+        actual_data_calibration = dict(tuned_calibration)
+        actual_data_calibration["leader_tuning_enabled"] = bool(
+            leader_threshold_tuning_summary.get("policy_enabled")
+        )
+        actual_data_calibration["leader_tuning_applied"] = bool(
+            leader_threshold_tuning_summary.get("leader_tuning_applied")
+        )
+        actual_data_calibration["leader_tuning_eligible"] = bool(
+            leader_threshold_tuning_summary.get("eligible")
+        )
+        actual_data_calibration["leader_tuning_reason_codes"] = str(
+            leader_threshold_tuning_summary.get("reason_codes") or ""
+        )
+        actual_data_calibration["leader_tuning_adjustments"] = dict(
+            leader_threshold_tuning_summary.get("adjustments") or {}
+        )
+        if bool(leader_threshold_tuning_summary.get("leader_tuning_applied")):
+            leaders = self.analyzer.analyze_leaders(
+                feature_table=feature_table,
+                group_table=group_table,
+                market_context=market_context,
+                calibration=actual_data_calibration,
+            )
+            leader_candidates = leaders.copy()
+            leader_candidate_quality_diagnostics, leader_candidate_quality_summary = leader_quality.build_leader_quality_artifacts(
+                feature_table=feature_table,
+                leaders=leader_candidates,
+                group_table=group_table,
+                calibration=actual_data_calibration,
+            )
+        if not leaders.empty and not leader_candidate_quality_diagnostics.empty:
+            quality_columns = [
+                "symbol",
+                "leader_confidence_score",
+                "confidence_bucket",
+                "low_confidence_reason_codes",
+                "reject_reason_codes",
+                "extended_reason_codes",
+                "threshold_proximity_codes",
+                "threshold_margin_min",
+                "rs_rank_true_threshold_distance",
+                "structure_threshold_distance",
+                "extension_threshold_distance",
+            ]
+            available_quality_columns = [
+                column for column in quality_columns if column in leader_candidate_quality_diagnostics.columns
+            ]
             leaders = leaders.merge(
-                feature_table[[
-                    "symbol",
-                    "core_group_state",
-                    "core_group_strength_score",
-                    "core_group_rank",
-                    "core_leader_state",
-                    "core_breakdown_status",
-                    "core_leader_score",
-                ]].drop_duplicates(subset=["symbol"]),
+                leader_candidate_quality_diagnostics[available_quality_columns].drop_duplicates(subset=["symbol"]),
                 on="symbol",
                 how="left",
             )
-            leaders["leader_overlay_score"] = leaders["leader_score"]
-            leaders["leader_score"] = leaders["core_leader_score"]
-            leaders["group_state"] = leaders["core_group_state"].fillna("")
-            leaders["group_strength_score"] = leaders["core_group_strength_score"].where(leaders["core_group_strength_score"].notna(), leaders["group_strength_score"])
-            leaders["group_rank"] = leaders["core_group_rank"].where(leaders["core_group_rank"].notna(), leaders["group_rank"])
-            leaders["leader_state"] = leaders["core_leader_state"].fillna("")
-            leaders["breakdown_status"] = leaders["core_breakdown_status"].fillna("")
-            leaders = leaders[
-                leaders["leader_state"].isin(["CONFIRMED", "EMERGING"])
-                & (leaders["breakdown_status"] == "OK")
-            ].copy()
-            leaders = leaders.drop(columns=[
+        if not leaders.empty:
+            overlay_columns = feature_table[[
+                "symbol",
                 "core_group_state",
                 "core_group_strength_score",
                 "core_group_rank",
                 "core_leader_state",
                 "core_breakdown_status",
                 "core_leader_score",
-            ])
-            leaders = leaders.sort_values(["leader_overlay_score", "leader_score", "rs_rank"], ascending=[False, False, False]).reset_index(drop=True)
-
-        followers, pairs = self.analyzer.analyze_followers(
-            feature_table=feature_table,
-            leaders=leaders,
-            group_table=group_table,
-            market_context=market_context,
-            frames=frames,
-            calibration=actual_data_calibration,
-        )
-        if not followers.empty:
-            followers = followers.merge(
-                feature_table[[
-                    "symbol",
+            ]].drop_duplicates(subset=["symbol"])
+            leaders = leaders.merge(overlay_columns, on="symbol", how="left")
+            if self.standalone:
+                leaders["leader_state"] = leaders.get("core_leader_state", pd.Series("", index=leaders.index)).fillna("")
+                leaders["breakdown_status"] = leaders.get("core_breakdown_status", pd.Series("", index=leaders.index)).fillna("")
+                leaders = leaders.drop(columns=[
                     "core_group_state",
                     "core_group_strength_score",
                     "core_group_rank",
                     "core_leader_state",
                     "core_breakdown_status",
                     "core_leader_score",
-                ]].drop_duplicates(subset=["symbol"]),
-                on="symbol",
-                how="left",
+                ])
+                leaders = leaders.sort_values(["leader_sort_score", "leader_score", "rs_rank"], ascending=[False, False, False]).reset_index(drop=True)
+            else:
+                leaders["leader_overlay_score"] = leaders["leader_score"]
+                leaders["leader_score"] = leaders["core_leader_score"]
+                leaders["group_state"] = leaders["core_group_state"].fillna("")
+                leaders["group_strength_score"] = leaders["core_group_strength_score"].where(leaders["core_group_strength_score"].notna(), leaders["group_strength_score"])
+                leaders["group_rank"] = leaders["core_group_rank"].where(leaders["core_group_rank"].notna(), leaders["group_rank"])
+                leaders["leader_state"] = leaders["core_leader_state"].fillna("")
+                leaders["breakdown_status"] = leaders["core_breakdown_status"].fillna("")
+                leaders = leaders[
+                    leaders["leader_state"].isin(["CONFIRMED", "EMERGING"])
+                    & (leaders["breakdown_status"] == "OK")
+                ].copy()
+                leaders = leaders.drop(columns=[
+                    "core_group_state",
+                    "core_group_strength_score",
+                    "core_group_rank",
+                    "core_leader_state",
+                    "core_breakdown_status",
+                    "core_leader_score",
+                ])
+                leaders = leaders.sort_values(["leader_sort_score", "leader_overlay_score", "leader_score", "rs_rank"], ascending=[False, False, False, False]).reset_index(drop=True)
+
+        follower_leader_pool = self.analyzer.filter_leaders_for_follower_analysis(leaders)
+        follower_analysis_started = time.perf_counter()
+
+        def _follower_progress_callback(payload: dict[str, Any]) -> None:
+            processed = int(payload.get("processed") or 0)
+            total = int(payload.get("total") or 0)
+            pair_evaluations = int(payload.get("pair_evaluations") or 0)
+            pair_candidates = int(payload.get("pair_candidates") or 0)
+            eligible_candidates = int(payload.get("eligible_candidates") or 0)
+            skipped_by_prefilter = int(payload.get("skipped_by_prefilter") or 0)
+            workers = int(payload.get("workers") or 1)
+            current_symbol = _safe_text(payload.get("current_symbol"))
+            self._emit_progress(
+                current_symbol=current_symbol,
+                current_chunk=f"follower_analysis:{processed}/{total}",
             )
-            followers["group_state"] = followers["core_group_state"].fillna("")
-            followers["group_strength_score"] = followers["core_group_strength_score"].where(followers["core_group_strength_score"].notna(), followers["group_strength_score"])
-            existing_group_rank = (
-                followers["group_rank"]
-                if "group_rank" in followers.columns
-                else pd.Series(np.nan, index=followers.index, dtype="float64")
+            print(
+                f"[LeaderLagging] Follower analysis progress ({self.market}) - "
+                f"processed={processed}/{total}, eligible={eligible_candidates}, "
+                f"skipped_prefilter={skipped_by_prefilter}, pair_candidates={pair_candidates}, "
+                f"pair_evals={pair_evaluations}, workers={workers}"
             )
-            followers["group_rank"] = followers["core_group_rank"].where(
-                followers["core_group_rank"].notna(),
-                existing_group_rank,
+
+        followers, pairs = self.analyzer.analyze_followers(
+            feature_table=feature_table,
+            leaders=follower_leader_pool,
+            group_table=group_table,
+            market_context=market_context,
+            frames=frames,
+            calibration=actual_data_calibration,
+            progress_callback=_follower_progress_callback,
+            runtime_context=self.runtime_context,
+        )
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "leader_lagging.follower_analysis_seconds",
+                time.perf_counter() - follower_analysis_started,
             )
-            followers["leader_state"] = followers["core_leader_state"].fillna("")
-            followers["breakdown_status"] = followers["core_breakdown_status"].fillna("")
-            followers["leader_score"] = followers["core_leader_score"]
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "leader_lagging.relationship_analysis_seconds",
+                time.perf_counter() - relationship_started,
+            )
+        if not followers.empty:
+            overlay_columns = feature_table[[
+                "symbol",
+                "core_group_state",
+                "core_group_strength_score",
+                "core_group_rank",
+                "core_leader_state",
+                "core_breakdown_status",
+                "core_leader_score",
+            ]].drop_duplicates(subset=["symbol"])
+            followers = followers.merge(overlay_columns, on="symbol", how="left")
+            if self.standalone:
+                followers["leader_state"] = followers["core_leader_state"].fillna("")
+                followers["breakdown_status"] = followers["core_breakdown_status"].fillna("")
+            else:
+                followers["group_state"] = followers["core_group_state"].fillna("")
+                followers["group_strength_score"] = followers["core_group_strength_score"].where(followers["core_group_strength_score"].notna(), followers["group_strength_score"])
+                existing_group_rank = (
+                    followers["group_rank"]
+                    if "group_rank" in followers.columns
+                    else pd.Series(np.nan, index=followers.index, dtype="float64")
+                )
+                followers["group_rank"] = followers["core_group_rank"].where(
+                    followers["core_group_rank"].notna(),
+                    existing_group_rank,
+                )
+                followers["leader_state"] = followers["core_leader_state"].fillna("")
+                followers["breakdown_status"] = followers["core_breakdown_status"].fillna("")
+                followers["leader_score"] = followers["core_leader_score"]
             followers = followers.drop(columns=[
                 "core_group_state",
                 "core_group_strength_score",
@@ -1888,7 +2713,7 @@ class LeaderLaggingScreener:
             pool_table["leader_state"] = pool_table.get("core_leader_state", pd.Series("", index=pool_table.index)).fillna("")
             pool_table["breakdown_status"] = pool_table.get("core_breakdown_status", pd.Series("", index=pool_table.index)).fillna("")
             pool_table["leader_score"] = pool_table.get("core_leader_score", pd.Series(pd.NA, index=pool_table.index))
-            for column in ("group_strength_score", "group_rank", "delta_rs_rank_qoq", "mansfield_rs_slope"):
+            for column in ("group_strength_score", "group_rank", "delta_rs_rank_qoq", "benchmark_relative_strength_slope"):
                 if column not in pool_table.columns:
                     pool_table[column] = pd.NA
             broad_pool = pool_table[
@@ -1917,7 +2742,7 @@ class LeaderLaggingScreener:
                     "liquidity_quality_score",
                     "distance_to_52w_high",
                     "rs_line_20d_slope",
-                    "mansfield_rs_slope",
+                    "benchmark_relative_strength_slope",
                     "as_of_ts",
                 ]
             ].copy()
@@ -1936,12 +2761,51 @@ class LeaderLaggingScreener:
             ).reset_index(drop=True)
 
         if not leaders.empty:
-            leaders = leaders[leaders["label"] != "Too Weak, Reject"].reset_index(drop=True)
+            leaders = leaders[leaders["label"] != "reject"].reset_index(drop=True)
         if not followers.empty:
             followers = followers[followers["label"] != "Too Weak, Reject"].reset_index(drop=True)
         if not pairs.empty:
             valid_follower_symbols = set(followers["symbol"].astype(str))
             pairs = pairs[pairs["follower_symbol"].astype(str).isin(valid_follower_symbols)].reset_index(drop=True)
+
+        leader_quality_diagnostics, leader_quality_summary = leader_quality.build_leader_quality_artifacts(
+            feature_table=feature_table,
+            leaders=leaders,
+            group_table=group_table,
+            calibration=actual_data_calibration,
+        )
+        if not leaders.empty and not leader_quality_diagnostics.empty:
+            quality_columns = [
+                "symbol",
+                "leader_confidence_score",
+                "confidence_bucket",
+                "low_confidence_reason_codes",
+                "reject_reason_codes",
+                "extended_reason_codes",
+                "threshold_proximity_codes",
+                "threshold_margin_min",
+                "rs_rank_true_threshold_distance",
+                "structure_threshold_distance",
+                "extension_threshold_distance",
+            ]
+            available_quality_columns = [
+                column for column in quality_columns if column in leader_quality_diagnostics.columns
+            ]
+            leaders = (
+                leaders.drop(
+                    columns=[
+                        column
+                        for column in available_quality_columns
+                        if column in leaders.columns and column != "symbol"
+                    ],
+                    errors="ignore",
+                )
+                .merge(
+                    leader_quality_diagnostics[available_quality_columns].drop_duplicates(subset=["symbol"]),
+                    on="symbol",
+                    how="left",
+                )
+            )
 
         pattern_included_candidates = pd.concat(
             [
@@ -1960,6 +2824,7 @@ class LeaderLaggingScreener:
                 ascending=[True, False, True],
             ).drop(columns=["_sort_score"]).reset_index(drop=True)
 
+        persist_started = time.perf_counter()
         self._persist(
             broad_pool,
             pattern_included_candidates,
@@ -1967,9 +2832,22 @@ class LeaderLaggingScreener:
             followers,
             pairs,
             group_table,
+            leader_quality_diagnostics,
+            leader_quality_summary,
+            leader_candidate_quality_diagnostics,
+            leader_candidate_quality_summary,
+            leader_threshold_tuning_report,
+            leader_threshold_tuning_summary,
             market_context,
             actual_data_calibration,
+            market_truth_source=market_truth_source,
+            core_overlay_applied=core_overlay_applied,
         )
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "leader_lagging.persist_outputs_seconds",
+                time.perf_counter() - persist_started,
+            )
         print(
             f"[LeaderLagging] Outputs saved ({self.market}) - "
             f"leaders={len(leaders)}, followers={len(followers)}, pairs={len(pairs)}"
@@ -1980,6 +2858,9 @@ class LeaderLaggingScreener:
             "leaders": leaders.to_dict(orient="records"),
             "followers": followers.to_dict(orient="records"),
             "pairs": pairs.to_dict(orient="records"),
+            "leader_quality_diagnostics": leader_quality_diagnostics.to_dict(orient="records"),
+            "leader_candidate_quality_diagnostics": leader_candidate_quality_diagnostics.to_dict(orient="records"),
+            "leader_threshold_tuning_report": leader_threshold_tuning_report.to_dict(orient="records"),
             "group_dashboard": group_table[[
                 "industry_key",
                 "sector",
@@ -1991,9 +2872,16 @@ class LeaderLaggingScreener:
                 "group_rank",
             ]].to_dict(orient="records"),
             "actual_data_calibration": actual_data_calibration,
+            "leader_quality_summary": leader_quality_summary,
+            "leader_candidate_quality_summary": leader_candidate_quality_summary,
+            "leader_threshold_tuning_summary": leader_threshold_tuning_summary,
             "market_summary": {
                 "market": self.market.upper(),
                 "benchmark_symbol": market_context.benchmark_symbol,
+                "market_truth_source": market_truth_source,
+                "core_overlay_applied": core_overlay_applied,
+                "market_truth_mode": market_truth_mode,
+                "fallback_reason": fallback_reason,
                 "regime_state": market_context.regime_state,
                 "market_alias": market_context.market_alias,
                 "market_alignment_score": market_context.market_alignment_score,
@@ -2001,12 +2889,25 @@ class LeaderLaggingScreener:
                 "rotation_support_score": market_context.rotation_support_score,
                 "leader_health_score": market_context.leader_health_score,
                 "reason_codes": list(market_context.reason_codes),
+                "leader_quality": leader_quality_summary,
+                "leader_candidate_quality": leader_candidate_quality_summary,
+                "leader_threshold_tuning": leader_threshold_tuning_summary,
+                "follower_lag_pruning": dict(getattr(self.analyzer, "last_follower_lag_pruning", {}) or {}),
             },
         }
 
 
-def run_leader_lagging_screening(*, market: str = "us") -> dict[str, Any]:
-    return LeaderLaggingScreener(market=market).run()
+def run_leader_lagging_screening(
+    *,
+    market: str = "us",
+    standalone: bool = False,
+    runtime_context: RuntimeContext | None = None,
+) -> dict[str, Any]:
+    return LeaderLaggingScreener(
+        market=market,
+        standalone=standalone,
+        runtime_context=runtime_context,
+    ).run()
 
 
 def main() -> None:

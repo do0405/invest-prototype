@@ -2,16 +2,28 @@ from __future__ import annotations
 
 import json
 import os
+import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from typing import Any
 
 import numpy as np
 import pandas as pd
 
-from utils.actual_data_calibration import bounded_quantile_value
+from utils.exchange_calendar import expected_week_final_session
 from utils.indicator_helpers import normalize_indicator_frame, rolling_sma
-from utils.io_utils import ensure_dir
-from utils.market_data_contract import PricePolicy, load_benchmark_data, load_local_ohlcv_frame
+from utils.io_utils import ensure_dir, write_dataframe_csv_with_fallback, write_dataframe_json_with_fallback, write_json_with_fallback
+from utils.market_data_contract import (
+    OhlcvFreshnessSummary,
+    PricePolicy,
+    SCREENING_OHLCV_READ_COLUMNS,
+    describe_ohlcv_freshness,
+    load_benchmark_data,
+    load_local_ohlcv_frames_ordered,
+    load_local_ohlcv_frame,
+    _runtime_worker_count,
+)
+from utils.screening_cache import feature_row_cache_get_or_compute, resolve_ohlcv_source_path
 from utils.market_runtime import (
     ensure_market_dirs,
     get_benchmark_candidates,
@@ -20,14 +32,17 @@ from utils.market_runtime import (
     get_stock_metadata_path,
     get_weinstein_stage2_results_dir,
     is_index_symbol,
+    limit_runtime_symbols,
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
+from utils.runtime_context import RuntimeContext, runtime_context_has_explicit_as_of
 from utils.typing_utils import is_na_like, series_to_str_text_dict, series_value_counts_to_int_dict, to_float_or_none
 from screeners.leader_core_bridge import (
     LeaderCoreSnapshot,
     MarketTruthSnapshot,
     build_industry_key,
+    empty_leader_core_snapshot,
     load_market_truth_snapshot,
     shared_market_alias_to_weinstein_state,
 )
@@ -113,6 +128,23 @@ def _score_ratio(value: float | None, good_min: float, bad_min: float) -> float:
     return _clamp((value - bad_min) / max(good_min - bad_min, 1e-9))
 
 
+def _runtime_market_truth_metadata(
+    runtime_context: RuntimeContext | None,
+    *,
+    standalone: bool,
+) -> tuple[str, str]:
+    runtime_state = (
+        dict(runtime_context.runtime_state)
+        if runtime_context is not None and isinstance(runtime_context.runtime_state, dict)
+        else {}
+    )
+    market_truth_mode = str(runtime_state.get("market_truth_mode") or "").strip()
+    if not market_truth_mode:
+        market_truth_mode = "standalone_manual" if standalone else "compat"
+    fallback_reason = str(runtime_state.get("fallback_reason") or "").strip()
+    return market_truth_mode, fallback_reason
+
+
 @dataclass(frozen=True)
 class BaseWindow:
     start_idx: int
@@ -158,6 +190,7 @@ class GroupContext:
     group_overlay_score: float | None
     data_available: bool
     assumption_flags: tuple[str, ...] = ()
+    group_truth_source: str = ""
 
 
 @dataclass(frozen=True)
@@ -197,7 +230,7 @@ class WeinsteinStage2Analyzer:
     SMALL_BAND = 0.02
     FLAT_THRESHOLD = 0.0025
     TURNING_UP_THRESHOLD = -0.0005
-    PRE_STAGE2_MAX_PCT = 5.0
+    BASE_PROXIMITY_MAX_PCT = 5.0
     RETEST_MAX_AGE = 8
     CONTINUATION_MIN_WEEKS = 4
     CONTINUATION_MAX_WEEKS = 16
@@ -205,13 +238,23 @@ class WeinsteinStage2Analyzer:
     def _normalize_daily_frame(self, frame: pd.DataFrame) -> pd.DataFrame:
         return normalize_indicator_frame(frame, price_policy=PricePolicy.SPLIT_ADJUSTED)
 
-    def build_weekly_bars(self, frame: pd.DataFrame) -> pd.DataFrame:
+    def _expected_week_final_session(
+        self,
+        week_key: pd.Period,
+        *,
+        market: str,
+    ) -> pd.Timestamp:
+        return expected_week_final_session(week_key, market=market)
+
+    def build_weekly_bars(self, frame: pd.DataFrame, *, market: str = "us") -> pd.DataFrame:
         daily = self._normalize_daily_frame(frame)
         if daily.empty:
             return pd.DataFrame(
                 columns=["week_key", "bar_end_date", "open", "high", "low", "close", "volume", "session_count"]
             )
 
+        latest_daily_date = pd.Timestamp(daily["date"].max()).normalize()
+        current_week_key = latest_daily_date.to_period("W-SUN")
         daily["week_key"] = daily["date"].dt.to_period("W-SUN")
         weekly = (
             daily.groupby("week_key", sort=True)
@@ -227,6 +270,15 @@ class WeinsteinStage2Analyzer:
             .reset_index()
         )
         weekly = weekly.dropna(subset=["bar_end_date", "open", "high", "low", "close"]).copy()
+        if not weekly.empty:
+            last_week_key = weekly.iloc[-1]["week_key"]
+            last_bar_end = pd.Timestamp(weekly.iloc[-1]["bar_end_date"]).normalize()
+            expected_final_session = self._expected_week_final_session(
+                last_week_key,
+                market=market,
+            )
+            if last_week_key == current_week_key and last_bar_end < expected_final_session:
+                weekly = weekly.iloc[:-1].copy()
         if weekly.empty:
             return weekly
 
@@ -969,11 +1021,8 @@ class WeinsteinStage2Analyzer:
     def _timing_priority(self, timing_state: str) -> tuple[int, str]:
         mapping = {
             "BREAKOUT_WEEK": (100, "P1"),
-            "PRE_STAGE2_HIGH": (95, "P1"),
             "FRESH_STAGE2_W1": (90, "P2"),
-            "PRE_STAGE2_MEDIUM": (85, "P2"),
             "FRESH_STAGE2_W2": (75, "P3"),
-            "PRE_STAGE2_LOW": (65, "S1"),
             "RETEST_B": (55, "S1"),
             "BASE": (25, "WATCH"),
             "TOO_LATE_FOR_PRIMARY": (0, "EXCLUDED"),
@@ -989,6 +1038,34 @@ class WeinsteinStage2Analyzer:
             return "MEDIUM"
         return "LOW"
 
+    def _group_is_vetoed(self, group_context: GroupContext) -> bool:
+        group_truth_source = str(group_context.group_truth_source or "").strip()
+        if group_truth_source != "local_proxy":
+            return group_context.group_state == "WEAK"
+        if not group_context.data_available:
+            return False
+        group_overlay_score = _safe_float(group_context.group_overlay_score)
+        if group_overlay_score is not None and group_overlay_score < 35.0:
+            return True
+
+        weak_signals = 0
+        available_signals = 0
+        if group_context.breadth150_group is not None:
+            available_signals += 1
+            if group_context.breadth150_group < 40.0:
+                weak_signals += 1
+        if group_context.group_mrs is not None:
+            available_signals += 1
+            if group_context.group_mrs < 0.0:
+                weak_signals += 1
+        if group_context.group_rp_ma52_slope is not None:
+            available_signals += 1
+            if group_context.group_rp_ma52_slope < 0.0:
+                weak_signals += 1
+        if available_signals < 2:
+            return False
+        return weak_signals >= 2
+
     def analyze_symbol(
         self,
         *,
@@ -998,6 +1075,7 @@ class WeinsteinStage2Analyzer:
         benchmark_symbol: str,
         benchmark_daily: pd.DataFrame,
         market_context: MarketContext,
+        benchmark_weekly: pd.DataFrame | None = None,
         group_context: GroupContext | None = None,
         exchange: str = "",
         sector: str = "",
@@ -1005,21 +1083,23 @@ class WeinsteinStage2Analyzer:
     ) -> dict[str, Any]:
         normalized_market = market_key(market)
         daily = self._normalize_daily_frame(daily_frame)
-        weekly = self.build_weekly_bars(daily)
-        benchmark_weekly = self.build_weekly_bars(benchmark_daily)
+        weekly = self.build_weekly_bars(daily, market=market)
+        if benchmark_weekly is None:
+            benchmark_weekly = self.build_weekly_bars(benchmark_daily, market=market)
         daily_trend = self._daily_trend_snapshot(daily)
 
         default_group = group_context or GroupContext(
             industry_key=build_industry_key(sector, industry_group),
             group_name=industry_group or sector or "Unknown",
-            group_state="WEAK",
+            group_state="UNKNOWN",
             breadth150_group=None,
             group_mrs=None,
             group_rp_ma52_slope=None,
-            group_score=0.0,
+            group_score=50.0,
             group_overlay_score=None,
             data_available=False,
             assumption_flags=("missing_core_group",),
+            group_truth_source="missing",
         )
 
         assumption_flags: list[str] = list(market_context.assumption_flags) + list(default_group.assumption_flags)
@@ -1074,6 +1154,7 @@ class WeinsteinStage2Analyzer:
                 "base_duration_weeks": None,
                 "base_quality_score": None,
                 "group_name": default_group.group_name,
+                "group_truth_source": default_group.group_truth_source,
                 "retest_signal": False,
                 "retest_volume_lighter": False,
                 "breakout_level": None,
@@ -1151,7 +1232,7 @@ class WeinsteinStage2Analyzer:
                 else None
             )
 
-        group_is_weak = default_group.group_state == "WEAK"
+        group_is_weak = self._group_is_vetoed(default_group)
         rejection_reason = ""
         timing_state = "EXCLUDE"
         breakout_age_weeks = breakout_signal.breakout_age_weeks if breakout_signal is not None else None
@@ -1213,7 +1294,7 @@ class WeinsteinStage2Analyzer:
                 active_base is not None
                 and stock_stage == "STAGE_1"
                 and percent_to_stage2 is not None
-                and percent_to_stage2 <= self.PRE_STAGE2_MAX_PCT
+                and percent_to_stage2 <= self.BASE_PROXIMITY_MAX_PCT
                 and latest_close is not None
                 and ma30w is not None
                 and latest_close < active_base.base_high * (1.0 + self.BREAKOUT_BUFFER)
@@ -1224,12 +1305,8 @@ class WeinsteinStage2Analyzer:
                 and weekly_trend_ok
                 and daily_trend_ok
             ):
-                if percent_to_stage2 <= 1.0:
-                    timing_state = "PRE_STAGE2_HIGH"
-                elif percent_to_stage2 <= 2.0:
-                    timing_state = "PRE_STAGE2_MEDIUM"
-                else:
-                    timing_state = "PRE_STAGE2_LOW"
+                timing_state = "BASE"
+                rejection_reason = "base_waiting_for_breakout"
             elif active_base is not None and stock_stage == "STAGE_1":
                 timing_state = "BASE"
                 rejection_reason = "base_not_close_enough_to_breakout"
@@ -1245,7 +1322,7 @@ class WeinsteinStage2Analyzer:
         relative_strength_score = round(rs_score_unit * 100.0, 2)
         if timing_state in {"BREAKOUT_WEEK", "FRESH_STAGE2_W1", "FRESH_STAGE2_W2"}:
             volume_quality_score = round(_score_ratio(current_volume_ratio, 2.0, 1.1) * 100.0, 2)
-        elif timing_state.startswith("PRE_STAGE2"):
+        elif timing_state == "BASE":
             recent_volume_ratio = _safe_float(weekly.loc[latest_idx, "volume_ratio_4w"])
             volume_quality_score = round(_score_inverse(recent_volume_ratio, 1.0, 1.4) * 100.0, 2)
         else:
@@ -1305,6 +1382,7 @@ class WeinsteinStage2Analyzer:
             "base_duration_weeks": base_duration_weeks,
             "base_quality_score": _safe_float(base_quality_score),
             "group_name": default_group.group_name,
+            "group_truth_source": default_group.group_truth_source,
             "retest_signal": retest_signal,
             "retest_volume_lighter": retest_volume_lighter,
             "breakout_level": breakout_signal.breakout_level if breakout_signal is not None else None,
@@ -1346,6 +1424,7 @@ class WeinsteinStage2Analyzer:
         benchmark_daily: pd.DataFrame,
         daily_frames: dict[str, pd.DataFrame],
         market_truth: MarketTruthSnapshot | None = None,
+        benchmark_weekly: pd.DataFrame | None = None,
     ) -> MarketContext:
         assumption_flags: list[str] = []
         above_flags = []
@@ -1361,7 +1440,8 @@ class WeinsteinStage2Analyzer:
         if breadth150_market is None:
             assumption_flags.append("missing_market_breadth")
 
-        benchmark_weekly = self.build_weekly_bars(benchmark_daily)
+        if benchmark_weekly is None:
+            benchmark_weekly = self.build_weekly_bars(benchmark_daily, market=market)
         benchmark_close = _safe_float(benchmark_weekly["close"].iloc[-1]) if not benchmark_weekly.empty else None
         ma30w = _safe_float(benchmark_weekly["ma30w"].iloc[-1]) if not benchmark_weekly.empty else None
         ma30w_slope_4w = _pct_slope(benchmark_weekly["ma30w"], len(benchmark_weekly) - 1, 4) if len(benchmark_weekly) >= 5 else None
@@ -1400,10 +1480,13 @@ class WeinsteinStage2Analyzer:
 
         if market_state == "MARKET_STAGE2_FAVORABLE":
             market_score = 100.0 if breadth150_market is not None and breadth150_market >= 60 else 80.0
+            market_alias = "RISK_ON"
         elif market_state == "MARKET_STAGE4_RISK":
             market_score = 10.0
+            market_alias = "RISK_OFF"
         else:
             market_score = 60.0
+            market_alias = "NEUTRAL"
 
         return MarketContext(
             benchmark_symbol=benchmark_symbol,
@@ -1414,6 +1497,11 @@ class WeinsteinStage2Analyzer:
             ma30w_slope_4w=_safe_float(ma30w_slope_4w),
             market_score=market_score,
             assumption_flags=tuple(sorted(set(assumption_flags))),
+            market_alignment_score=_safe_float(market_score),
+            breadth_support_score=_safe_float(breadth150_market),
+            rotation_support_score=_safe_float(market_score),
+            leader_health_score=_safe_float(market_score),
+            market_alias=market_alias,
         )
 
     def compute_group_contexts(
@@ -1422,6 +1510,7 @@ class WeinsteinStage2Analyzer:
         market: str,
         daily_frames: dict[str, pd.DataFrame],
         benchmark_daily: pd.DataFrame,
+        benchmark_weekly: pd.DataFrame | None = None,
         sector_map: dict[str, str],
         industry_map: dict[str, str],
         leader_core: LeaderCoreSnapshot,
@@ -1434,7 +1523,8 @@ class WeinsteinStage2Analyzer:
             groups.setdefault(industry_key, []).append(symbol)
             labels[industry_key] = (str(sector or ""), industry)
 
-        benchmark_weekly = self.build_weekly_bars(benchmark_daily)
+        if benchmark_weekly is None:
+            benchmark_weekly = self.build_weekly_bars(benchmark_daily, market=market)
         contexts: dict[str, GroupContext] = {}
         ranking_rows: list[dict[str, Any]] = []
 
@@ -1442,9 +1532,10 @@ class WeinsteinStage2Analyzer:
             sector, industry = labels.get(industry_key, ("", ""))
             display_name = industry or sector or industry_key
             core_row = leader_core.groups_by_key.get(industry_key)
-            core_state = str((core_row or {}).get("group_state") or "WEAK").upper()
-            core_score = _safe_float((core_row or {}).get("group_strength_score")) or 0.0
+            core_state = str((core_row or {}).get("group_state") or "UNKNOWN").upper()
+            core_score = _safe_float((core_row or {}).get("group_strength_score"))
             assumption_flags: list[str] = []
+            group_truth_source = "compat_core" if core_row is not None else "missing"
             if core_row is None:
                 assumption_flags.append("missing_core_group")
 
@@ -1456,17 +1547,25 @@ class WeinsteinStage2Analyzer:
                     breadth150_group=None,
                     group_mrs=None,
                     group_rp_ma52_slope=None,
-                    group_score=core_score,
+                    group_score=core_score if core_score is not None else 50.0,
                     group_overlay_score=None,
                     data_available=False,
                     assumption_flags=tuple(assumption_flags + ["missing_group_data"]),
+                    group_truth_source=group_truth_source,
                 )
                 continue
 
+            available_members = [
+                symbol
+                for symbol in members
+                if symbol in daily_frames
+                and isinstance(daily_frames.get(symbol), pd.DataFrame)
+                and not daily_frames[symbol].empty
+            ]
             above_flags: list[bool] = []
             normalized_closes: list[pd.DataFrame] = []
-            for symbol in members:
-                daily = self._normalize_daily_frame(daily_frames.get(symbol, pd.DataFrame()))
+            for symbol in available_members:
+                daily = self._normalize_daily_frame(daily_frames[symbol])
                 if daily.empty or len(daily) < 60:
                     continue
                 if len(daily) >= 150:
@@ -1496,7 +1595,7 @@ class WeinsteinStage2Analyzer:
                 group_series["high"] = group_series["close"]
                 group_series["low"] = group_series["close"]
                 group_series["volume"] = 0.0
-                group_weekly = self.build_weekly_bars(group_series)
+                group_weekly = self.build_weekly_bars(group_series, market=market)
                 group_weekly, _, _ = self._compute_rs_features(group_weekly, benchmark_weekly)
                 latest_idx = len(group_weekly) - 1
                 group_mrs = _safe_float(group_weekly.loc[latest_idx, "mrs"]) if latest_idx >= 0 else None
@@ -1515,29 +1614,40 @@ class WeinsteinStage2Analyzer:
             else:
                 assumption_flags.append("missing_group_data")
 
+            resolved_group_state = core_state
+            resolved_group_score = core_score if core_score is not None else 50.0
+            resolved_group_truth_source = group_truth_source
+            if core_row is None:
+                resolved_group_state = "UNKNOWN"
+                resolved_group_score = 50.0
+                if overlay_available:
+                    resolved_group_truth_source = "local_proxy"
+
             contexts[industry_key] = GroupContext(
                 industry_key=industry_key,
                 group_name=display_name,
-                group_state=core_state,
+                group_state=resolved_group_state,
                 breadth150_group=breadth150_group,
                 group_mrs=group_mrs,
                 group_rp_ma52_slope=group_rp_ma52_slope,
-                group_score=core_score,
+                group_score=resolved_group_score,
                 group_overlay_score=group_overlay_score,
                 data_available=overlay_available,
                 assumption_flags=tuple(assumption_flags),
+                group_truth_source=resolved_group_truth_source,
             )
             ranking_rows.append(
                 {
                     "industry_key": industry_key,
                     "group_name": display_name,
-                    "group_state": core_state,
-                    "group_score": core_score,
+                    "group_state": resolved_group_state,
+                    "group_score": resolved_group_score,
                     "group_overlay_score": group_overlay_score,
                     "breadth150_group": breadth150_group,
                     "group_mrs": group_mrs,
                     "group_rp_ma52_slope": group_rp_ma52_slope,
                     "member_count": len(members),
+                    "group_truth_source": resolved_group_truth_source,
                 }
             )
 
@@ -1551,96 +1661,47 @@ class WeinsteinStage2Analyzer:
 
 
 class WeinsteinStage2Screener:
-    def __init__(self, *, market: str = "us") -> None:
+    def __init__(
+        self,
+        *,
+        market: str = "us",
+        standalone: bool = False,
+        runtime_context: RuntimeContext | None = None,
+    ) -> None:
         self.market = market_key(market)
+        self.standalone = bool(standalone)
+        self.runtime_context = runtime_context
+        self._active_as_of_date: str | None = None
+        self._explicit_replay_as_of = False
         ensure_market_dirs(self.market)
         self.results_dir = get_weinstein_stage2_results_dir(self.market)
         ensure_dir(self.results_dir)
         self.analyzer = WeinsteinStage2Analyzer()
 
+    def _emit_progress(
+        self,
+        *,
+        current_symbol: str = "",
+        current_chunk: str = "",
+    ) -> None:
+        if self.runtime_context is None:
+            return
+        self.runtime_context.update_runtime_state(
+            current_stage="Weinstein Stage 2",
+            current_symbol=current_symbol,
+            current_chunk=current_chunk,
+            status="running",
+        )
+
     def _derive_actual_data_calibration(self, results_df: pd.DataFrame) -> dict[str, float]:
-        calibration = {
-            "pre_stage2_high_max_pct": 1.0,
-            "pre_stage2_medium_max_pct": 2.0,
-            "pre_stage2_low_max_pct": 5.0,
-        }
-        if results_df.empty or "percent_to_stage2" not in results_df.columns:
-            return calibration
-
-        base_pool = results_df[
-            (results_df["stock_stage"] == "STAGE_1")
-            & pd.to_numeric(results_df["percent_to_stage2"], errors="coerce").notna()
-            & (pd.to_numeric(results_df["percent_to_stage2"], errors="coerce") >= 0.0)
-        ].copy()
-        if base_pool.empty:
-            return calibration
-
-        calibration["pre_stage2_high_max_pct"] = bounded_quantile_value(
-            base_pool["percent_to_stage2"],
-            0.20,
-            calibration["pre_stage2_high_max_pct"],
-            lower=0.5,
-            upper=2.0,
-            positive_only=True,
-        )
-        calibration["pre_stage2_medium_max_pct"] = bounded_quantile_value(
-            base_pool["percent_to_stage2"],
-            0.40,
-            calibration["pre_stage2_medium_max_pct"],
-            lower=max(calibration["pre_stage2_high_max_pct"] + 0.3, 1.2),
-            upper=4.0,
-            positive_only=True,
-        )
-        calibration["pre_stage2_low_max_pct"] = bounded_quantile_value(
-            base_pool["percent_to_stage2"],
-            0.70,
-            calibration["pre_stage2_low_max_pct"],
-            lower=max(calibration["pre_stage2_medium_max_pct"] + 0.5, 2.0),
-            upper=8.0,
-            positive_only=True,
-        )
-        calibration["pre_stage2_medium_max_pct"] = max(
-            calibration["pre_stage2_medium_max_pct"],
-            calibration["pre_stage2_high_max_pct"] + 0.3,
-        )
-        calibration["pre_stage2_low_max_pct"] = max(
-            calibration["pre_stage2_low_max_pct"],
-            calibration["pre_stage2_medium_max_pct"] + 0.5,
-        )
-        return calibration
+        return {}
 
     def _apply_actual_data_calibration(
         self,
         results_df: pd.DataFrame,
         calibration: dict[str, float],
     ) -> pd.DataFrame:
-        if results_df.empty:
-            return results_df
-
-        table = results_df.copy()
-        stage1_mask = (
-            table["stock_stage"].astype(str) == "STAGE_1"
-        ) & table["timing_state"].astype(str).isin(["BASE", "PRE_STAGE2_HIGH", "PRE_STAGE2_MEDIUM", "PRE_STAGE2_LOW"])
-
-        for index in table[stage1_mask].index:
-            percent_to_stage2 = _safe_float(table.at[index, "percent_to_stage2"])
-            if percent_to_stage2 is None:
-                table.at[index, "timing_state"] = "BASE"
-                table.at[index, "rejection_reason"] = "base_not_close_enough_to_breakout"
-                continue
-            if percent_to_stage2 <= calibration["pre_stage2_high_max_pct"]:
-                table.at[index, "timing_state"] = "PRE_STAGE2_HIGH"
-                table.at[index, "rejection_reason"] = ""
-            elif percent_to_stage2 <= calibration["pre_stage2_medium_max_pct"]:
-                table.at[index, "timing_state"] = "PRE_STAGE2_MEDIUM"
-                table.at[index, "rejection_reason"] = ""
-            elif percent_to_stage2 <= calibration["pre_stage2_low_max_pct"]:
-                table.at[index, "timing_state"] = "PRE_STAGE2_LOW"
-                table.at[index, "rejection_reason"] = ""
-            else:
-                table.at[index, "timing_state"] = "BASE"
-                table.at[index, "rejection_reason"] = "base_not_close_enough_to_breakout"
-        return table
+        return results_df
 
     def _load_metadata(self) -> pd.DataFrame:
         metadata_path = get_stock_metadata_path(self.market)
@@ -1660,26 +1721,76 @@ class WeinsteinStage2Screener:
         if not os.path.isdir(data_dir):
             return {}
         frames: dict[str, pd.DataFrame] = {}
-        candidate_files = [name for name in sorted(os.listdir(data_dir)) if name.endswith(".csv")]
+        active_as_of = self._active_as_of_date
+        candidate_files = limit_runtime_symbols(
+            [
+                name
+                for name in sorted(os.listdir(data_dir))
+                if name.endswith(".csv")
+                and not is_index_symbol(self.market, os.path.splitext(name)[0].upper())
+            ]
+        )
         interval = progress_interval(len(candidate_files), target_updates=8, min_interval=50)
         print(f"[Weinstein] Frame load started ({self.market}) - files={len(candidate_files)}")
+        freshness_reports = []
+        explicit_replay = bool(self._explicit_replay_as_of)
+        frame_symbols = [
+            os.path.splitext(name)[0].strip().upper()
+            for name in candidate_files
+            if os.path.splitext(name)[0].strip()
+        ]
+        frame_load_started = time.perf_counter()
+        frame_map = load_local_ohlcv_frames_ordered(
+            self.market,
+            frame_symbols,
+            as_of=active_as_of,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
+            runtime_context=self.runtime_context,
+            required_columns=SCREENING_OHLCV_READ_COLUMNS,
+            worker_scope="weinstein.frame_load",
+            load_frame_fn=load_local_ohlcv_frame,
+        )
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "weinstein.frame_load_seconds",
+                time.perf_counter() - frame_load_started,
+            )
         for index, name in enumerate(candidate_files, start=1):
             symbol = os.path.splitext(name)[0].strip().upper()
-            if not symbol or is_index_symbol(self.market, symbol):
+            if not symbol:
                 if is_progress_tick(index, len(candidate_files), interval):
                     print(
                         f"[Weinstein] Frame load progress ({self.market}) - "
                         f"processed={index}/{len(candidate_files)}, loaded={len(frames)}"
                     )
                 continue
-            frame = load_local_ohlcv_frame(self.market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
+            frame = frame_map.get(symbol, pd.DataFrame())
+            freshness_reports.append(
+                describe_ohlcv_freshness(
+                    frame,
+                    market=self.market,
+                    symbol=symbol,
+                    as_of=active_as_of,
+                    latest_completed_session=active_as_of,
+                    explicit_as_of=explicit_replay,
+                )
+            )
             if not frame.empty:
                 frames[symbol] = frame
             if is_progress_tick(index, len(candidate_files), interval):
+                self._emit_progress(
+                    current_symbol=symbol,
+                    current_chunk=f"frame_load:{index}/{len(candidate_files)}",
+                )
                 print(
                     f"[Weinstein] Frame load progress ({self.market}) - "
                     f"processed={index}/{len(candidate_files)}, loaded={len(frames)}"
                 )
+        if self.runtime_context is not None:
+            self.runtime_context.update_data_freshness(
+                "weinstein_stage2",
+                OhlcvFreshnessSummary.from_reports(freshness_reports),
+            )
         return frames
 
     def _persist_outputs(
@@ -1690,7 +1801,6 @@ class WeinsteinStage2Screener:
         actual_data_calibration: dict[str, float],
     ) -> None:
         structural_pool = pd.DataFrame()
-        pattern_included = pd.DataFrame()
         if not results_df.empty and {"stock_stage", "rp", "mrs", "rs_proxy", "timing_state", "early_stage2_score", "symbol"}.issubset(results_df.columns):
             structural_pool = results_df[
                 results_df["stock_stage"].isin(["STAGE_1", "STAGE_2", "STAGE_2A", "STAGE_2B"])
@@ -1705,23 +1815,13 @@ class WeinsteinStage2Screener:
                     ["early_stage2_score", "timing_state", "symbol"],
                     ascending=[False, True, True],
                 ).reset_index(drop=True)
-            pattern_included = results_df[~results_df["timing_state"].isin(["EXCLUDE", "FAIL"])].copy()
-            if not pattern_included.empty:
-                pattern_included = pattern_included.sort_values(
-                    ["early_stage2_score", "timing_state", "symbol"],
-                    ascending=[False, True, True],
-                ).reset_index(drop=True)
         outputs = {
             "all_results": results_df,
             "pattern_excluded_pool": structural_pool,
-            "pattern_included_candidates": pattern_included,
             "primary_candidates": results_df[results_df["timing_state"].isin(
-                ["PRE_STAGE2_HIGH", "PRE_STAGE2_MEDIUM", "BREAKOUT_WEEK", "FRESH_STAGE2_W1", "FRESH_STAGE2_W2"]
+                ["BREAKOUT_WEEK", "FRESH_STAGE2_W1", "FRESH_STAGE2_W2"]
             )].copy(),
-            "secondary_candidates": results_df[results_df["timing_state"].isin(["PRE_STAGE2_LOW", "RETEST_B"])].copy(),
-            "pre_stage2_candidates": results_df[results_df["timing_state"].isin(
-                ["PRE_STAGE2_HIGH", "PRE_STAGE2_MEDIUM", "PRE_STAGE2_LOW"]
-            )].copy(),
+            "secondary_candidates": results_df[results_df["timing_state"] == "RETEST_B"].copy(),
             "breakout_week_candidates": results_df[results_df["timing_state"] == "BREAKOUT_WEEK"].copy(),
             "fresh_stage2_candidates": results_df[results_df["timing_state"].isin(
                 ["FRESH_STAGE2_W1", "FRESH_STAGE2_W2"]
@@ -1734,14 +1834,40 @@ class WeinsteinStage2Screener:
         for stem, frame in outputs.items():
             csv_path = os.path.join(self.results_dir, f"{stem}.csv")
             json_path = os.path.join(self.results_dir, f"{stem}.json")
-            frame.to_csv(csv_path, index=False)
-            frame.to_json(json_path, orient="records", indent=2, force_ascii=False)
+            write_dataframe_csv_with_fallback(
+                frame,
+                csv_path,
+                index=False,
+                runtime_context=self.runtime_context,
+                metric_label=f"weinstein.{stem}.csv",
+            )
+            write_dataframe_json_with_fallback(
+                frame,
+                json_path,
+                orient="records",
+                indent=2,
+                force_ascii=False,
+                runtime_context=self.runtime_context,
+                metric_label=f"weinstein.{stem}.json",
+            )
 
         summary_path = os.path.join(self.results_dir, "market_summary.json")
-        with open(summary_path, "w", encoding="utf-8") as handle:
-            json.dump(market_summary, handle, ensure_ascii=False, indent=2)
-        with open(os.path.join(self.results_dir, "actual_data_calibration.json"), "w", encoding="utf-8") as handle:
-            json.dump(actual_data_calibration, handle, ensure_ascii=False, indent=2)
+        write_json_with_fallback(
+            market_summary,
+            summary_path,
+            ensure_ascii=False,
+            indent=2,
+            runtime_context=self.runtime_context,
+            metric_label="weinstein.market_summary.json",
+        )
+        write_json_with_fallback(
+            actual_data_calibration,
+            os.path.join(self.results_dir, "actual_data_calibration.json"),
+            ensure_ascii=False,
+            indent=2,
+            runtime_context=self.runtime_context,
+            metric_label="weinstein.actual_data_calibration.json",
+        )
 
     def run(self) -> pd.DataFrame:
         metadata = self._load_metadata()
@@ -1753,58 +1879,171 @@ class WeinsteinStage2Screener:
             f"rows={len(metadata)}, has_exchange={'exchange' in metadata.columns}"
         )
 
-        frames = self._load_daily_frames()
-        print(f"[Weinstein] Daily frames loaded ({self.market}) - symbols={len(frames)}")
+        requested_as_of = (
+            str(self.runtime_context.as_of_date or "").strip()
+            if self.runtime_context is not None
+            else ""
+        )
+        benchmark_started = time.perf_counter()
         benchmark_symbol, benchmark_daily = load_benchmark_data(
             self.market,
             get_benchmark_candidates(self.market),
+            as_of=requested_as_of or None,
             allow_yfinance_fallback=True,
             price_policy=PricePolicy.SPLIT_ADJUSTED,
         )
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "weinstein.benchmark_load_seconds",
+                time.perf_counter() - benchmark_started,
+            )
         benchmark_symbol = benchmark_symbol or get_primary_benchmark_symbol(self.market)
+        benchmark_as_of = (
+            _date_str(pd.to_datetime(benchmark_daily["date"].iloc[-1], errors="coerce"))
+            if not benchmark_daily.empty
+            else None
+        )
+        self._explicit_replay_as_of = runtime_context_has_explicit_as_of(self.runtime_context)
+        self._active_as_of_date = requested_as_of or benchmark_as_of
+        if self.runtime_context is not None and self._active_as_of_date:
+            self.runtime_context.set_as_of_date(self._active_as_of_date)
+        frames = self._load_daily_frames()
+        print(f"[Weinstein] Daily frames loaded ({self.market}) - symbols={len(frames)}")
         print(f"[Weinstein] Market context build started ({self.market}) - benchmark={benchmark_symbol}")
-        as_of_date = _date_str(pd.to_datetime(benchmark_daily["date"].iloc[-1], errors="coerce")) or ""
-        market_truth = load_market_truth_snapshot(self.market, as_of_date=as_of_date)
+        market_context_started = time.perf_counter()
+        benchmark_weekly = self.analyzer.build_weekly_bars(benchmark_daily, market=self.market)
+        as_of_date = self._active_as_of_date or ""
+        if self.standalone:
+            market_truth = None
+            leader_core = empty_leader_core_snapshot(self.market, as_of_date)
+            market_truth_source = "local_standalone"
+            core_overlay_applied = False
+        else:
+            market_truth = load_market_truth_snapshot(self.market, as_of_date=as_of_date)
+            leader_core = market_truth.leader_core
+            market_truth_source = "market_intel_compat"
+            core_overlay_applied = True
+        market_truth_mode, fallback_reason = _runtime_market_truth_metadata(
+            self.runtime_context,
+            standalone=self.standalone,
+        )
         market_context = self.analyzer.compute_market_context(
             market=self.market,
             benchmark_symbol=benchmark_symbol,
             benchmark_daily=benchmark_daily,
             daily_frames=frames,
             market_truth=market_truth,
+            benchmark_weekly=benchmark_weekly,
         )
-        leader_core = market_truth.leader_core
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "weinstein.market_breadth_seconds",
+                time.perf_counter() - market_context_started,
+            )
+        group_context_started = time.perf_counter()
         group_contexts, group_rankings = self.analyzer.compute_group_contexts(
             market=self.market,
             daily_frames=frames,
             benchmark_daily=benchmark_daily,
+            benchmark_weekly=benchmark_weekly,
             sector_map=sector_map,
             industry_map=industry_map,
             leader_core=leader_core,
         )
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "weinstein.group_context_seconds",
+                time.perf_counter() - group_context_started,
+            )
+            self.runtime_context.add_timing(
+                "weinstein.market_context_seconds",
+                time.perf_counter() - market_context_started,
+            )
 
         rows: list[dict[str, Any]] = []
         total_symbols = len(frames)
         interval = progress_interval(total_symbols, target_updates=8, min_interval=50)
         print(f"[Weinstein] Symbol analysis started ({self.market}) - symbols={total_symbols}")
-        for index, (symbol, frame) in enumerate(frames.items(), start=1):
+        symbols_in_order = list(frames.keys())
+        worker_count = _runtime_worker_count(
+            total_symbols,
+            env_var="INVEST_PROTO_SYMBOL_ANALYSIS_WORKERS",
+            runtime_context=self.runtime_context,
+            scope="weinstein.symbol_analysis",
+        )
+
+        def _analyze_symbol(symbol: str) -> dict[str, Any]:
+            frame = frames[symbol]
             sector = str(sector_map.get(symbol, "") or "")
             industry_group = str(industry_map.get(symbol, "") or "")
             industry_key = build_industry_key(sector, industry_group)
-            rows.append(
-                self.analyzer.analyze_symbol(
+            group_context = group_contexts.get(industry_key)
+
+            def _compute() -> dict[str, Any]:
+                return self.analyzer.analyze_symbol(
                     symbol=symbol,
                     market=self.market,
                     daily_frame=frame,
                     benchmark_symbol=benchmark_symbol,
                     benchmark_daily=benchmark_daily,
                     market_context=market_context,
-                    group_context=group_contexts.get(industry_key),
+                    benchmark_weekly=benchmark_weekly,
+                    group_context=group_context,
                     exchange=str(exchange_map.get(symbol, "") or ""),
                     sector=sector,
                     industry_group=industry_group,
                 )
+
+            return feature_row_cache_get_or_compute(
+                namespace="weinstein_stage2_symbol_analysis",
+                market=self.market,
+                symbol=symbol,
+                as_of=self._active_as_of_date or "",
+                feature_version="weinstein_stage2_symbol_analysis_v1",
+                source_path=resolve_ohlcv_source_path(self.market, symbol),
+                compute_fn=_compute,
+                runtime_context=self.runtime_context,
+                extra_key={
+                    "benchmark_symbol": benchmark_symbol,
+                    "benchmark_as_of": benchmark_as_of,
+                    "exchange": exchange_map.get(symbol, ""),
+                    "sector": sector,
+                    "industry_group": industry_group,
+                    "market_state": getattr(market_context, "market_state", ""),
+                    "market_alignment_score": getattr(market_context, "market_alignment_score", None),
+                    "group_state": getattr(group_context, "group_state", ""),
+                    "group_strength_score": getattr(group_context, "group_strength_score", None),
+                },
             )
+
+        analysis_started = time.perf_counter()
+        if self.runtime_context is not None:
+            self.runtime_context.add_runtime_metric("feature_analysis", "symbols", total_symbols)
+        if worker_count <= 1:
+            analyzed_by_symbol = {symbol: _analyze_symbol(symbol) for symbol in symbols_in_order}
+        else:
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                future_by_symbol = {
+                    symbol: executor.submit(_analyze_symbol, symbol)
+                    for symbol in symbols_in_order
+                }
+                analyzed_by_symbol = {
+                    symbol: future_by_symbol[symbol].result()
+                    for symbol in symbols_in_order
+                }
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "weinstein.symbol_analysis_seconds",
+                time.perf_counter() - analysis_started,
+            )
+
+        for index, symbol in enumerate(symbols_in_order, start=1):
+            rows.append(analyzed_by_symbol[symbol])
             if is_progress_tick(index, total_symbols, interval):
+                self._emit_progress(
+                    current_symbol=symbol,
+                    current_chunk=f"symbol_analysis:{index}/{total_symbols}",
+                )
                 print(
                     f"[Weinstein] Symbol analysis progress ({self.market}) - "
                     f"processed={index}/{total_symbols}, rows={len(rows)}"
@@ -1816,9 +2055,6 @@ class WeinsteinStage2Screener:
         if not results_df.empty:
             phase_map = {
                 "BASE": "FORMING",
-                "PRE_STAGE2_HIGH": "FORMING",
-                "PRE_STAGE2_MEDIUM": "FORMING",
-                "PRE_STAGE2_LOW": "FORMING",
                 "BREAKOUT_WEEK": "RECENT_BREAKOUT",
                 "FRESH_STAGE2_W1": "RECENT_BREAKOUT",
                 "FRESH_STAGE2_W2": "RECENT_BREAKOUT",
@@ -1830,16 +2066,13 @@ class WeinsteinStage2Screener:
             results_df["phase_bucket"] = results_df["timing_state"].map(phase_map).fillna("NONE")
             timing_rank = {
                 "BREAKOUT_WEEK": 0,
-                "PRE_STAGE2_HIGH": 1,
-                "FRESH_STAGE2_W1": 2,
-                "PRE_STAGE2_MEDIUM": 3,
-                "FRESH_STAGE2_W2": 4,
-                "PRE_STAGE2_LOW": 5,
-                "RETEST_B": 6,
-                "BASE": 7,
-                "TOO_LATE_FOR_PRIMARY": 8,
-                "FAIL": 9,
-                "EXCLUDE": 10,
+                "FRESH_STAGE2_W1": 1,
+                "FRESH_STAGE2_W2": 2,
+                "RETEST_B": 3,
+                "BASE": 4,
+                "TOO_LATE_FOR_PRIMARY": 5,
+                "FAIL": 6,
+                "EXCLUDE": 7,
             }
             results_df["timing_rank"] = results_df["timing_state"].map(timing_rank).fillna(999)
             results_df = results_df.sort_values(
@@ -1851,13 +2084,17 @@ class WeinsteinStage2Screener:
             results_df = results_df.drop(columns=["breadth150_market", "breadth150_group", "group_mrs", "group_rp_ma52_slope", "group_overlay_score", "group_score", "market_score"], errors="ignore")
         if not group_rankings.empty:
             group_rankings = group_rankings.rename(columns={"group_score": "group_strength_score"})
-            group_rankings = group_rankings[["industry_key", "group_name", "group_state", "group_strength_score", "member_count"]].copy()
+            group_rankings = group_rankings[["industry_key", "group_name", "group_state", "group_truth_source", "group_strength_score", "member_count"]].copy()
         else:
-            group_rankings = pd.DataFrame(columns=["industry_key", "group_name", "group_state", "group_strength_score", "member_count"])
+            group_rankings = pd.DataFrame(columns=["industry_key", "group_name", "group_state", "group_truth_source", "group_strength_score", "member_count"])
 
         market_summary = {
             "market": self.market,
             "benchmark_symbol": benchmark_symbol,
+            "market_truth_source": market_truth_source,
+            "core_overlay_applied": core_overlay_applied,
+            "market_truth_mode": market_truth_mode,
+            "fallback_reason": fallback_reason,
             "market_state": market_context.market_state,
             "market_alias": market_context.market_alias,
             "market_alignment_score": market_context.market_alignment_score,
@@ -1872,13 +2109,28 @@ class WeinsteinStage2Screener:
             "symbol_count": int(len(results_df)),
             "state_counts": series_value_counts_to_int_dict(results_df["timing_state"]) if not results_df.empty else {},
         }
+        persist_started = time.perf_counter()
         self._persist_outputs(results_df, group_rankings, market_summary, actual_data_calibration)
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(
+                "weinstein.persist_outputs_seconds",
+                time.perf_counter() - persist_started,
+            )
         print(
             f"[Weinstein] Outputs saved ({self.market}) - "
-            f"results={len(results_df)}, primary={int(market_summary['state_counts'].get('PRE_STAGE2_HIGH', 0)) + int(market_summary['state_counts'].get('PRE_STAGE2_MEDIUM', 0))}"
+            f"results={len(results_df)}, primary={int(market_summary['state_counts'].get('BREAKOUT_WEEK', 0)) + int(market_summary['state_counts'].get('FRESH_STAGE2_W1', 0)) + int(market_summary['state_counts'].get('FRESH_STAGE2_W2', 0))}"
         )
         return results_df
 
 
-def run_weinstein_stage2_screening(*, market: str = "us") -> pd.DataFrame:
-    return WeinsteinStage2Screener(market=market).run()
+def run_weinstein_stage2_screening(
+    *,
+    market: str = "us",
+    standalone: bool = False,
+    runtime_context: RuntimeContext | None = None,
+) -> pd.DataFrame:
+    return WeinsteinStage2Screener(
+        market=market,
+        standalone=standalone,
+        runtime_context=runtime_context,
+    ).run()

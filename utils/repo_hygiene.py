@@ -15,7 +15,12 @@ from typing import Iterable, Sequence
 
 DEFAULT_PATTERNS: tuple[str, ...] = (
     ".pytest_cache",
+    ".pytest_cache_local",
     ".pytest_tmp",
+    ".pytest_tmp_*",
+    ".runtime_eval",
+    ".runtime_eval/*",
+    ".runtime_eval/**/*",
     "artifacts_*",
     "provider_*",
     "logs/*",
@@ -30,7 +35,14 @@ DEFAULT_PATTERNS: tuple[str, ...] = (
     "results/_test_runtime_*",
 )
 
-_DEFAULT_EXCLUDED_DIRS = {".git", ".venv", "venv", "env", "ENV", "node_modules"}
+_DEFAULT_EXCLUDED_DIRS = {".git", "venv", "env", "ENV", "node_modules"}
+_DEFAULT_EXCLUDED_PREFIXES = (
+    ".venv",
+    ".pytest_cache",
+    ".pytest_tmp",
+    ".runtime_eval",
+    ".tmp_py312",
+)
 
 
 def _to_iso(ts: float) -> str:
@@ -68,7 +80,11 @@ def _is_excluded_candidate(root: Path, candidate: Path) -> bool:
         relative = candidate.relative_to(root)
     except ValueError:
         return True
-    return any(part in _DEFAULT_EXCLUDED_DIRS for part in relative.parts)
+    return any(
+        part in _DEFAULT_EXCLUDED_DIRS
+        or any(part.startswith(prefix) for prefix in _DEFAULT_EXCLUDED_PREFIXES)
+        for part in relative.parts
+    )
 
 
 def collect_cleanup_candidates(

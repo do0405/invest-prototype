@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+OBIO,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:OBIO:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:OBIO:[Errno 22] Invalid argument""]",True,2026-04-18T22:13:54.877495+00:00

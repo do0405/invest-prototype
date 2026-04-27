@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import shutil
 from types import SimpleNamespace
 from typing import Any
 
@@ -11,6 +12,7 @@ from screeners.qullamaggie.core import MarketRegime, QullamaggieAnalyzer
 from screeners.qullamaggie import screener as qullamaggie_screener
 from tests._paths import runtime_root
 from utils.screener_utils import save_screening_results as real_save_screening_results
+from utils.runtime_context import RuntimeContext
 
 
 def _row_record(row: pd.Series) -> dict[str, Any]:
@@ -177,7 +179,7 @@ def test_breakout_analyzer_identifies_actionable_candidate() -> None:
     assert result["setup_family"] == "BREAKOUT"
     assert result["stock_grade"] in {"A++", "A+"}
     assert result["setup_score"] is not None and result["setup_score"] >= 70.0
-    assert result["candidate_stage"] in {"DAILY_FOCUS", "WEEKLY_FOCUS", "WIDE_LIST"}
+    assert result["candidate_stage"] == "PATTERN_INCLUDED"
     assert "TIGHT_BASE" in result["reason_codes"]
 
 
@@ -206,7 +208,7 @@ def test_breakout_analyzer_requires_universe_gate_before_passing() -> None:
     )
 
     assert result["passed"] is False
-    assert "OUTSIDE_BREAKOUT_UNIVERSE" in result["fail_codes"]
+    assert "OUTSIDE_BREAKOUT_POOL" in result["fail_codes"]
 
 
 def test_episode_pivot_analyzer_promotes_core_when_event_is_present() -> None:
@@ -268,7 +270,7 @@ def test_episode_pivot_requires_universe_gate_before_passing() -> None:
     )
 
     assert result["passed"] is False
-    assert "OUTSIDE_EP_UNIVERSE" in result["fail_codes"]
+    assert "OUTSIDE_EP_POOL" in result["fail_codes"]
 
 
 def test_breakout_universe_requires_multi_horizon_relative_strength() -> None:
@@ -290,13 +292,15 @@ def test_breakout_universe_requires_multi_horizon_relative_strength() -> None:
     assert bool(calibrated.iloc[0]["breakout_universe_pass"]) is False
 
 
-def test_run_qullamaggie_screening_builds_watchlists(monkeypatch) -> None:
+def test_run_qullamaggie_screening_writes_pattern_included_without_focus_lists(monkeypatch) -> None:
     frames = {
         "AAA": _breakout_daily(),
         "BBB": _leader_daily(),
         "CCC": _steady_daily(),
     }
     output_root = runtime_root("_test_runtime_qullamaggie_watchlists")
+    if output_root.exists():
+        shutil.rmtree(output_root, ignore_errors=True)
     output_root.mkdir(parents=True, exist_ok=True)
 
     monkeypatch.setattr(qullamaggie_screener, "_load_market_symbols", lambda market: sorted(frames))
@@ -309,7 +313,7 @@ def test_run_qullamaggie_screening_builds_watchlists(monkeypatch) -> None:
     monkeypatch.setattr(qullamaggie_screener, "create_screener_summary", lambda **kwargs: None)
     monkeypatch.setattr(
         qullamaggie_screener,
-        "load_market_truth_snapshot",
+        "_load_market_truth_snapshot",
         lambda *args, **kwargs: SimpleNamespace(
             market="us",
             as_of="2026-04-02",
@@ -355,18 +359,264 @@ def test_run_qullamaggie_screening_builds_watchlists(monkeypatch) -> None:
     assert result["breakout"][0]["rotation_support_score"] == 84.0
     assert result["breakout"][0]["leader_health_score"] == 74.0
     assert "regime_score" not in result["breakout"][0]
-    assert len(result["universe_list"]) >= 1
     assert len(result["pattern_excluded_pool"]) >= 1
     assert len(result["pattern_included_candidates"]) >= 1
-    assert len(result["wide_list"]) >= 1
+    assert "universe_list" not in result
+    assert "wide_list" not in result
     assert result["actual_data_calibration"]["breakout_min_compression_score"] >= 58.0
-    assert len(result["weekly_focus"]) >= 1
+    assert "weekly_focus" not in result
+    assert "daily_focus" not in result
     assert "position_size_hint" not in result["breakout"][0]
     assert (output_root / "pattern_excluded_pool.csv").exists()
     assert (output_root / "pattern_included_candidates.csv").exists()
+    assert not (output_root / "universe_list.csv").exists()
+    assert not (output_root / "wide_list.csv").exists()
+    assert not (output_root / "weekly_focus_list.csv").exists()
+    assert not (output_root / "daily_focus_list.csv").exists()
     assert (output_root / "pre_pattern_quant_financial_candidates.csv").exists()
     assert any(output_root.glob("pre_pattern_quant_financial_candidates_*.csv"))
     assert (output_root / "actual_data_calibration.json").exists()
+
+
+def test_run_qullamaggie_screening_supports_standalone_without_compat(monkeypatch) -> None:
+    frames = {
+        "AAA": _breakout_daily(),
+        "BBB": _leader_daily(),
+        "CCC": _steady_daily(),
+    }
+    output_root = runtime_root("_test_runtime_qullamaggie_standalone")
+    output_root.mkdir(parents=True, exist_ok=True)
+
+    monkeypatch.setattr(qullamaggie_screener, "_load_market_symbols", lambda market: sorted(frames))
+    monkeypatch.setattr(qullamaggie_screener, "load_local_ohlcv_frame", lambda market, symbol, **kwargs: frames[symbol].copy())
+    monkeypatch.setattr(qullamaggie_screener, "load_benchmark_data", lambda *args, **kwargs: ("SPY", _benchmark_daily(len(_breakout_daily()))))
+    monkeypatch.setattr(qullamaggie_screener, "ensure_market_dirs", lambda market: None)
+    monkeypatch.setattr(qullamaggie_screener, "get_qullamaggie_results_dir", lambda market: str(output_root))
+    monkeypatch.setattr(qullamaggie_screener, "save_screening_results", real_save_screening_results)
+    monkeypatch.setattr(qullamaggie_screener, "track_new_tickers", lambda **kwargs: [])
+    monkeypatch.setattr(qullamaggie_screener, "create_screener_summary", lambda **kwargs: None)
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "_load_market_truth_snapshot",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("compat market truth should not be read in standalone mode")),
+    )
+    real_build_context = qullamaggie_screener._build_context
+
+    def _patched_build_context(*args, **kwargs):  # noqa: ANN002, ANN003
+        context = real_build_context(*args, **kwargs)
+        if "AAA" in context.get("feature_map", {}):
+            context["feature_map"]["AAA"] = {
+                **context["feature_map"]["AAA"],
+                "breakout_universe_pass": True,
+            }
+        return context
+
+    monkeypatch.setattr(qullamaggie_screener, "_build_context", _patched_build_context)
+
+    result = qullamaggie_screener.run_qullamaggie_screening(setup_type="breakout", market="us", standalone=True)
+
+    assert result["market_regime"]["market_truth_source"] == "local_standalone"
+    assert result["market_regime"]["core_overlay_applied"] is False
+    assert result["market_regime"]["market_alias"] in {"RISK_ON", "NEUTRAL", "RISK_OFF"}
+    assert result["market_regime"]["market_alignment_score"] is not None
+    assert len(result["breakout"]) >= 1
+
+
+def test_run_qullamaggie_screening_scopes_local_frames_to_benchmark_as_of(monkeypatch) -> None:
+    frames = {
+        "AAA": _breakout_daily(),
+        "BBB": _leader_daily(),
+        "CCC": _steady_daily(),
+    }
+    output_root = runtime_root("_test_runtime_qullamaggie_local_asof")
+    output_root.mkdir(parents=True, exist_ok=True)
+    truncated_benchmark = _benchmark_daily(len(_breakout_daily())).iloc[:-5].copy()
+    expected_as_of = str(pd.Timestamp(truncated_benchmark["date"].iloc[-1]).date())
+    observed_as_of: list[str | None] = []
+    runtime_context = RuntimeContext(market="us")
+
+    monkeypatch.setattr(qullamaggie_screener, "_load_market_symbols", lambda market: sorted(frames))
+
+    def _capture_frame(market, symbol, **kwargs):  # noqa: ANN001, ANN202
+        observed_as_of.append(kwargs.get("as_of"))
+        return frames[str(symbol).upper()].copy()
+
+    monkeypatch.setattr(qullamaggie_screener, "load_local_ohlcv_frame", _capture_frame)
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "load_benchmark_data",
+        lambda *args, **kwargs: ("SPY", truncated_benchmark.copy()),
+    )
+    monkeypatch.setattr(qullamaggie_screener, "ensure_market_dirs", lambda market: None)
+    monkeypatch.setattr(qullamaggie_screener, "get_qullamaggie_results_dir", lambda market: str(output_root))
+    monkeypatch.setattr(qullamaggie_screener, "save_screening_results", real_save_screening_results)
+    monkeypatch.setattr(qullamaggie_screener, "track_new_tickers", lambda **kwargs: [])
+    monkeypatch.setattr(qullamaggie_screener, "create_screener_summary", lambda **kwargs: None)
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "_load_market_truth_snapshot",
+        lambda *args, **kwargs: SimpleNamespace(
+            market="us",
+            as_of=expected_as_of,
+            market_alias="RISK_ON",
+            market_state="uptrend",
+            breadth_state="broad_participation",
+            rotation_support_score=84.0,
+            leader_health_score=74.0,
+            market_alignment_score=82.0,
+            breadth_support_score=79.0,
+        ),
+    )
+
+    qullamaggie_screener.run_qullamaggie_screening(
+        setup_type="breakout",
+        market="us",
+        runtime_context=runtime_context,
+    )
+
+    assert observed_as_of
+    assert set(observed_as_of) == {expected_as_of}
+    freshness = runtime_context.runtime_state["data_freshness"]["stages"]["qullamaggie"]
+    assert freshness["counts"]["future_or_partial"] == len(frames)
+    assert freshness["mode"] == "default_completed_session"
+
+
+def test_qullamaggie_frame_load_uses_ordered_runtime_cache(monkeypatch) -> None:
+    frames = {
+        "AAA": _breakout_daily(),
+        "BBB": _leader_daily(),
+    }
+    runtime_context = RuntimeContext(market="us")
+    calls: list[dict[str, object]] = []
+
+    monkeypatch.setattr(qullamaggie_screener, "_load_market_symbols", lambda market: ["BBB", "AAA"])
+
+    def _ordered_loader(market, symbols, **kwargs):  # noqa: ANN001, ANN202
+        calls.append(
+            {
+                "market": market,
+                "symbols": tuple(symbols),
+                "as_of": kwargs.get("as_of"),
+                "runtime_context": kwargs.get("runtime_context"),
+                "load_frame_fn": kwargs.get("load_frame_fn"),
+            }
+        )
+        return {symbol: frames[symbol].copy() for symbol in symbols}
+
+    monkeypatch.setattr(qullamaggie_screener, "load_local_ohlcv_frames_ordered", _ordered_loader)
+
+    screener = qullamaggie_screener.QullamaggieScreener(
+        market="us",
+        runtime_context=runtime_context,
+    )
+    loaded = screener._load_frames(as_of_date="2026-03-12")
+
+    assert calls == [
+        {
+            "market": "us",
+            "symbols": ("BBB", "AAA"),
+            "as_of": "2026-03-12",
+            "runtime_context": runtime_context,
+            "load_frame_fn": qullamaggie_screener.load_local_ohlcv_frame,
+        }
+    ]
+    assert list(loaded) == ["BBB", "AAA"]
+
+
+def test_qullamaggie_setup_scan_passes_original_frame_without_copy(monkeypatch) -> None:
+    frame = _breakout_daily()
+    seen_frame_ids: list[int] = []
+
+    monkeypatch.setattr(qullamaggie_screener, "load_benchmark_data", lambda *args, **kwargs: ("SPY", _benchmark_daily()))
+    monkeypatch.setattr(qullamaggie_screener, "_load_metadata_map", lambda market: {})
+    monkeypatch.setattr(
+        qullamaggie_screener.QullamaggieScreener,
+        "_load_frames",
+        lambda self, **kwargs: {"AAA": frame},
+    )
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "_build_context",
+        lambda *args, **kwargs: {
+            "market": "us",
+            "as_of_date": "2026-04-02",
+            "feature_table": pd.DataFrame(),
+            "feature_map": {},
+            "calibration": {},
+            "frames": {"AAA": frame},
+            "metadata_map": {},
+            "benchmark_symbol": "SPY",
+            "benchmark_daily": _benchmark_daily(),
+            "regime": _core_regime(),
+            "market_truth_source": "local_standalone",
+            "core_overlay_applied": False,
+            "earnings_collector": None,
+        },
+    )
+    monkeypatch.setattr(
+        qullamaggie_screener.QullamaggieScreener,
+        "_persist_results",
+        lambda self, results: None,
+    )
+
+    def _record_frame(symbol: str, candidate_frame: pd.DataFrame, *args, **kwargs):  # noqa: ANN001, ANN202
+        seen_frame_ids.append(id(candidate_frame))
+        return {"symbol": symbol, "passed": False}
+
+    monkeypatch.setattr(qullamaggie_screener, "screen_breakout_setup", _record_frame)
+    monkeypatch.setattr(qullamaggie_screener, "screen_episode_pivot_setup", _record_frame)
+    monkeypatch.setattr(qullamaggie_screener, "screen_parabolic_short_setup", _record_frame)
+
+    screener = qullamaggie_screener.QullamaggieScreener(market="us", standalone=True)
+    screener.run(setup_type=None)
+
+    assert seen_frame_ids == [id(frame), id(frame), id(frame)]
+
+
+def test_qullamaggie_setup_scan_short_circuits_failed_episode_universe(monkeypatch) -> None:
+    frame = _breakout_daily()
+
+    monkeypatch.setattr(qullamaggie_screener, "load_benchmark_data", lambda *args, **kwargs: ("SPY", _benchmark_daily()))
+    monkeypatch.setattr(qullamaggie_screener, "_load_metadata_map", lambda market: {})
+    monkeypatch.setattr(
+        qullamaggie_screener.QullamaggieScreener,
+        "_load_frames",
+        lambda self, **kwargs: {"AAA": frame},
+    )
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "_build_context",
+        lambda *args, **kwargs: {
+            "market": "us",
+            "as_of_date": "2026-04-02",
+            "feature_table": pd.DataFrame(),
+            "feature_map": {"AAA": {"symbol": "AAA", "ep_universe_pass": False}},
+            "calibration": {},
+            "frames": {"AAA": frame},
+            "metadata_map": {},
+            "benchmark_symbol": "SPY",
+            "benchmark_daily": _benchmark_daily(),
+            "regime": _core_regime(),
+            "market_truth_source": "local_standalone",
+            "core_overlay_applied": False,
+            "earnings_collector": None,
+        },
+    )
+    monkeypatch.setattr(
+        qullamaggie_screener.QullamaggieScreener,
+        "_persist_results",
+        lambda self, results: None,
+    )
+    monkeypatch.setattr(
+        qullamaggie_screener,
+        "screen_episode_pivot_setup",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("failed EP universe should not run analyzer")),
+    )
+
+    screener = qullamaggie_screener.QullamaggieScreener(market="us", standalone=True)
+    result = screener.run(setup_type="episode_pivot")
+
+    assert result["episode_pivot"] == []
 
 
 def test_episode_pivot_skips_earnings_fetch_until_technical_prefilter_passes() -> None:
@@ -473,13 +723,13 @@ def test_episode_pivot_does_not_treat_unavailable_earnings_payload_as_event_data
     assert "EVENT_PROXY_PRESENT" not in result["reason_codes"]
 
 
-def test_universe_list_requires_hard_universe_pass(monkeypatch) -> None:
+def test_patternless_outputs_require_hard_universe_pass(monkeypatch) -> None:
     output_root = runtime_root("_test_runtime_qullamaggie_universe_gate")
     output_root.mkdir(parents=True, exist_ok=True)
 
     monkeypatch.setattr(qullamaggie_screener, "ensure_market_dirs", lambda market: None)
     monkeypatch.setattr(qullamaggie_screener, "get_qullamaggie_results_dir", lambda market: str(output_root))
-    monkeypatch.setattr(qullamaggie_screener.QullamaggieScreener, "_load_frames", lambda self: {})
+    monkeypatch.setattr(qullamaggie_screener.QullamaggieScreener, "_load_frames", lambda self, **kwargs: {})
     monkeypatch.setattr(
         qullamaggie_screener,
         "_build_context",
@@ -521,5 +771,6 @@ def test_universe_list_requires_hard_universe_pass(monkeypatch) -> None:
     screener = qullamaggie_screener.QullamaggieScreener(market="us", enable_earnings_filter=False)
     result = screener.run(setup_type="breakout")
 
-    assert result["universe_list"] == []
+    assert "universe_list" not in result
+    assert "wide_list" not in result
     assert result["pattern_excluded_pool"] == []

@@ -73,6 +73,50 @@ def test_rate_limit_increases_future_interval_scale(monkeypatch):
     assert waited == pytest.approx(2.0)
     assert sleeps == [pytest.approx(2.0)]
     assert state["adaptive_interval_scale"]["test"] == pytest.approx(0.72)
+    assert state["success_streak"]["test"] == 0
+    assert state["rate_limit_count"]["test"] == 1
+
+
+def test_success_feedback_gradually_reduces_interval_scale(monkeypatch):
+    current = {"value": 10.0}
+
+    def _monotonic() -> float:
+        return current["value"]
+
+    monkeypatch.setattr(throttle.time, "monotonic", _monotonic)
+    throttle.reset_yahoo_throttle_state()
+
+    throttle.wait_for_yahoo_request_slot("test", min_interval=1.0)
+    for _ in range(4):
+        throttle.record_yahoo_request_success("test")
+
+    state = throttle.get_yahoo_throttle_state()
+
+    assert state["adaptive_interval_scale"]["test"] == pytest.approx(0.52)
+    assert state["success_streak"]["test"] == 4
+    assert state["success_count"]["test"] == 4
+    assert state["rate_limit_count"].get("test", 0) == 0
+
+
+def test_timeout_feedback_backs_off_and_resets_success_streak(monkeypatch):
+    current = {"value": 10.0}
+
+    def _monotonic() -> float:
+        return current["value"]
+
+    monkeypatch.setattr(throttle.time, "monotonic", _monotonic)
+    throttle.reset_yahoo_throttle_state()
+
+    throttle.wait_for_yahoo_request_slot("test", min_interval=1.0)
+    throttle.record_yahoo_request_success("test")
+    throttle.record_yahoo_request_failure("test", reason="timeout", cooldown_seconds=3.0)
+    state = throttle.get_yahoo_throttle_state()
+
+    assert state["adaptive_interval_scale"]["test"] == pytest.approx(0.70)
+    assert state["success_streak"]["test"] == 0
+    assert state["rate_limit_count"]["test"] == 1
+    assert state["last_rate_limit_source"] == "test"
+    assert state["cooldown_in"] == pytest.approx(3.0)
 
 
 def test_interval_scale_does_not_decay_after_idle_period(monkeypatch):

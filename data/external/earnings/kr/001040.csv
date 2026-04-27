@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2023-05-15,180.0,2215.63,,,yfinance_earnings_dates:001040.KS,001040.KS
+2023-03-13,-2136.0,3113.39,,,yfinance_earnings_dates:001040.KS,001040.KS
+2022-11-14,2368.0,4302.98,,,yfinance_earnings_dates:001040.KS,001040.KS
+2022-08-16,3329.0,3978.0,,,yfinance_earnings_dates:001040.KS,001040.KS

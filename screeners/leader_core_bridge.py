@@ -46,6 +46,16 @@ class MarketTruthSnapshot:
     leader_health_status: str
 
 
+@dataclass(frozen=True)
+class CompatAvailabilityProbeResult:
+    market: str
+    as_of_date: str
+    status: str
+    root: str
+    summary_path: str
+    market_context_path: str
+
+
 def _safe_text(value: Any) -> str:
     text = str(value or "").strip()
     return "" if not text or text.lower() == "nan" else text
@@ -62,6 +72,166 @@ def _safe_float(value: Any) -> float | None:
         return None
 
 
+def _weighted_mean(items: list[tuple[float | None, float]]) -> float | None:
+    total_weight = 0.0
+    total_value = 0.0
+    for value, weight in items:
+        if value is None:
+            continue
+        total_value += float(value) * float(weight)
+        total_weight += float(weight)
+    if total_weight <= 0.0:
+        return None
+    return total_value / total_weight
+
+
+def _benchmark_close_series(benchmark_daily: pd.DataFrame) -> pd.Series:
+    if benchmark_daily.empty:
+        return pd.Series(dtype=float)
+    for column in ("adj_close", "close"):
+        if column in benchmark_daily.columns:
+            return pd.to_numeric(benchmark_daily[column], errors="coerce").dropna().reset_index(drop=True)
+    return pd.Series(dtype=float)
+
+
+def _market_alias_from_score(score: float) -> str:
+    if score >= 70.0:
+        return "RISK_ON"
+    if score >= 45.0:
+        return "NEUTRAL"
+    return "RISK_OFF"
+
+
+def _leader_health_status(score: float) -> str:
+    if score >= 70.0:
+        return "HEALTHY"
+    if score >= 45.0:
+        return "MIXED"
+    return "WEAK"
+
+
+def _benchmark_trend_score(benchmark_daily: pd.DataFrame) -> float:
+    closes = _benchmark_close_series(benchmark_daily)
+    if closes.empty:
+        return 55.0
+
+    ma50 = closes.rolling(50, min_periods=20).mean()
+    ma200 = closes.rolling(200, min_periods=80).mean()
+    close = _safe_float(closes.iloc[-1])
+    ma50_now = _safe_float(ma50.iloc[-1]) if not ma50.empty else None
+    ma200_now = _safe_float(ma200.iloc[-1]) if not ma200.empty else None
+    ma200_prev = _safe_float(ma200.iloc[-21]) if len(ma200) >= 21 else None
+    slope_up = None
+    if ma200_now is not None and ma200_prev is not None:
+        slope_up = 100.0 if ma200_now > ma200_prev else 0.0
+
+    score = _weighted_mean(
+        [
+            (100.0 if close is not None and ma50_now is not None and close > ma50_now else 0.0, 0.35),
+            (100.0 if ma50_now is not None and ma200_now is not None and ma50_now > ma200_now else 0.0, 0.35),
+            (slope_up, 0.30),
+        ]
+    )
+    return round(float(score if score is not None else 55.0), 2)
+
+
+def empty_leader_core_snapshot(
+    market: str,
+    as_of: str,
+    *,
+    leader_health_score: float | None = None,
+    leader_health_status: str | None = None,
+) -> LeaderCoreSnapshot:
+    score = round(float(leader_health_score if leader_health_score is not None else 55.0), 2)
+    status = _safe_text(leader_health_status).upper() or _leader_health_status(score)
+    return LeaderCoreSnapshot(
+        market=market_key(market),
+        as_of=_safe_text(as_of),
+        summary={
+            "market": market_key(market),
+            "as_of": _safe_text(as_of),
+            "schema_version": LEADER_CORE_SCHEMA_VERSION,
+            "engine_version": "local_standalone_v1",
+            "leader_health_score": score,
+            "leader_health_status": status,
+            "confirmed_count": 0,
+            "imminent_count": 0,
+            "broken_count": 0,
+            "market_truth_source": "local_standalone",
+            "core_overlay_applied": False,
+        },
+        groups_by_key={},
+        leaders_by_symbol={},
+    )
+
+
+def build_local_market_truth_snapshot(
+    market: str,
+    *,
+    as_of_date: str,
+    benchmark_symbol: str,
+    benchmark_daily: pd.DataFrame,
+) -> MarketTruthSnapshot:
+    trend_score = _benchmark_trend_score(benchmark_daily)
+    market_alias = _market_alias_from_score(trend_score)
+    top_state = "risk_on" if market_alias == "RISK_ON" else "neutral" if market_alias == "NEUTRAL" else "risk_off"
+    market_state = "uptrend" if market_alias == "RISK_ON" else "neutral" if market_alias == "NEUTRAL" else "downtrend"
+    health_status = _leader_health_status(trend_score)
+    reason_codes = ["LOCAL_STANDALONE", "BENCHMARK_ONLY", "NO_CORE_OVERLAY"]
+    if market_alias == "RISK_ON":
+        reason_codes.append("BENCHMARK_UPTREND")
+    elif market_alias == "RISK_OFF":
+        reason_codes.append("BENCHMARK_DOWNTREND")
+
+    leader_core = empty_leader_core_snapshot(
+        market,
+        as_of_date,
+        leader_health_score=trend_score,
+        leader_health_status=health_status,
+    )
+    payload = {
+        "market": market_key(market),
+        "as_of": _safe_text(as_of_date),
+        "schema_version": MARKET_CONTEXT_SCHEMA_VERSION,
+        "engine_version": "local_standalone_v1",
+        "benchmark_symbol": _safe_text(benchmark_symbol).upper(),
+        "prototype_market_alias": market_alias,
+        "regime_state": market_state,
+        "top_state": top_state,
+        "market_state": market_state,
+        "breadth_state": "benchmark_only",
+        "concentration_state": "local_unknown",
+        "leadership_state": "local_screeners",
+        "market_alignment_score": trend_score,
+        "breadth_support_score": trend_score,
+        "rotation_support_score": trend_score,
+        "leader_health_score": trend_score,
+        "leader_health_status": health_status,
+        "reason_codes": list(reason_codes),
+        "data_flags": ["LOCAL_STANDALONE", "BENCHMARK_ONLY", "NO_CORE_OVERLAY"],
+        "market_truth_source": "local_standalone",
+        "core_overlay_applied": False,
+    }
+    return MarketTruthSnapshot(
+        market=market_key(market),
+        as_of=_safe_text(as_of_date),
+        leader_core=leader_core,
+        market_context=payload,
+        market_alias=market_alias,
+        regime_state=market_state,
+        top_state=top_state,
+        market_state=market_state,
+        breadth_state="benchmark_only",
+        concentration_state="local_unknown",
+        leadership_state="local_screeners",
+        market_alignment_score=trend_score,
+        breadth_support_score=trend_score,
+        rotation_support_score=trend_score,
+        leader_health_score=trend_score,
+        leader_health_status=health_status,
+    )
+
+
 def build_industry_key(sector: Any, industry: Any) -> str:
     sector_text = _safe_text(sector).lower() or "unknown"
     industry_text = _safe_text(industry).lower() or "unknown"
@@ -69,7 +239,7 @@ def build_industry_key(sector: Any, industry: Any) -> str:
 
 
 def _read_json(path: str) -> Any:
-    with open(path, "r", encoding="utf-8") as handle:
+    with open(path, "r", encoding="utf-8-sig") as handle:
         return json.load(handle)
 
 
@@ -81,6 +251,65 @@ def _resolve_root(
     return compat_root_resolver(normalized_market)
 
 
+def probe_market_intel_compat_availability(
+    market: str,
+    *,
+    as_of_date: str,
+    compat_root_resolver: Callable[[str], str] | None = None,
+) -> CompatAvailabilityProbeResult:
+    resolver = compat_root_resolver or get_market_intel_compat_root
+    normalized_market = market_key(market)
+    root = _resolve_root(normalized_market, resolver)
+    summary_path = os.path.join(root, "leader_market_summary.json")
+    market_context_path = os.path.join(root, "market_context.json")
+    if not os.path.exists(summary_path) or not os.path.exists(market_context_path):
+        return CompatAvailabilityProbeResult(
+            market=normalized_market,
+            as_of_date=_safe_text(as_of_date),
+            status="missing",
+            root=root,
+            summary_path=summary_path,
+            market_context_path=market_context_path,
+        )
+
+    try:
+        summary_payload = _read_json(summary_path)
+        market_context_payload = _read_json(market_context_path)
+    except Exception:
+        return CompatAvailabilityProbeResult(
+            market=normalized_market,
+            as_of_date=_safe_text(as_of_date),
+            status="schema_mismatch",
+            root=root,
+            summary_path=summary_path,
+            market_context_path=market_context_path,
+        )
+
+    if not isinstance(summary_payload, dict) or not isinstance(market_context_payload, dict):
+        status = "schema_mismatch"
+    elif (
+        _safe_text(summary_payload.get("schema_version")) != LEADER_CORE_SCHEMA_VERSION
+        or _safe_text(market_context_payload.get("schema_version")) != MARKET_CONTEXT_SCHEMA_VERSION
+    ):
+        status = "schema_mismatch"
+    elif (
+        _safe_text(summary_payload.get("as_of")) != _safe_text(as_of_date)
+        or _safe_text(market_context_payload.get("as_of")) != _safe_text(as_of_date)
+    ):
+        status = "stale"
+    else:
+        status = "compat"
+
+    return CompatAvailabilityProbeResult(
+        market=normalized_market,
+        as_of_date=_safe_text(as_of_date),
+        status=status,
+        root=root,
+        summary_path=summary_path,
+        market_context_path=market_context_path,
+    )
+
+
 def _require_summary(
     *,
     root: str,
@@ -88,7 +317,11 @@ def _require_summary(
 ) -> dict[str, Any]:
     summary_path = os.path.join(root, "leader_market_summary.json")
     if not os.path.exists(summary_path):
-        raise ValueError(f"missing leader core artifact summary: {summary_path}")
+        raise ValueError(
+            "missing leader core artifact summary: "
+            f"{summary_path}. Generate market-intel-core compat artifacts, "
+            "set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone."
+        )
     payload = _read_json(summary_path)
     if not isinstance(payload, dict):
         raise ValueError("leader core artifact summary payload is invalid")
@@ -118,7 +351,11 @@ def _load_leader_rows(*, root: str) -> list[dict[str, Any]]:
 def _load_group_rows(*, root: str, as_of_date: str) -> list[dict[str, Any]]:
     groups_path = os.path.join(root, "industry_rotation.json")
     if not os.path.exists(groups_path):
-        raise ValueError(f"missing leader core group artifact: {groups_path}")
+        raise ValueError(
+            "missing leader core group artifact: "
+            f"{groups_path}. Generate market-intel-core compat artifacts, "
+            "set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone."
+        )
     payload = _read_json(groups_path)
     if not isinstance(payload, list):
         raise ValueError("leader core industry rotation payload is invalid")
@@ -138,7 +375,11 @@ def _require_market_context(
 ) -> dict[str, Any]:
     context_path = os.path.join(root, "market_context.json")
     if not os.path.exists(context_path):
-        raise ValueError(f"missing market truth artifact: {context_path}")
+        raise ValueError(
+            "missing market truth artifact: "
+            f"{context_path}. Generate market-intel-core compat artifacts, "
+            "set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone."
+        )
     payload = _read_json(context_path)
     if not isinstance(payload, dict):
         raise ValueError("market truth artifact payload is invalid")
@@ -244,9 +485,11 @@ def load_leader_core_registry_entries(
         breakdown_status = _safe_text(row.get("breakdown_status")).upper()
         if leader_state not in _BUYABLE_LEADER_STATES:
             continue
-        buy_eligible = breakdown_status == "OK"
-        watch_only = breakdown_status == "IMMINENT"
-        if not buy_eligible and not watch_only:
+        source_buy_eligible = breakdown_status == "OK"
+        source_disposition = (
+            "buy_eligible" if breakdown_status == "OK" else "watch_only"
+        )
+        if breakdown_status not in {"OK", "IMMINENT"}:
             continue
 
         industry_key = _safe_text(row.get("industry_key"))
@@ -254,6 +497,8 @@ def load_leader_core_registry_entries(
             symbol,
             {
                 "symbol": symbol,
+                "source_disposition": source_disposition,
+                "source_buy_eligible": False,
                 "buy_eligible": False,
                 "watch_only": False,
                 "screen_stage": MIC_LEADER_CORE_STAGE,
@@ -265,13 +510,18 @@ def load_leader_core_registry_entries(
                 "as_of_ts": _safe_text(row.get("as_of")) or _safe_text(as_of_date),
             },
         )
-        entry["buy_eligible"] = bool(entry["buy_eligible"] or buy_eligible)
-        entry["watch_only"] = bool(entry["watch_only"] or watch_only)
+        entry["source_buy_eligible"] = bool(
+            entry.get("source_buy_eligible") or source_buy_eligible
+        )
+        entry["source_disposition"] = source_disposition
+        entry["buy_eligible"] = bool(entry.get("source_buy_eligible"))
+        entry["watch_only"] = source_disposition == "watch_only"
         entry["source_records"].append(
             {
                 "source_tag": MIC_LEADER_CORE_SOURCE_TAG,
                 "screen_stage": MIC_LEADER_CORE_STAGE,
-                "buy_eligible": buy_eligible,
+                "source_buy_eligible": source_buy_eligible,
+                "source_disposition": source_disposition,
             }
         )
         entry["industry_key"] = industry_key
@@ -314,31 +564,34 @@ def annotate_frame_with_leader_core(
     existing_key = table[industry_key_column].astype(str).str.strip()
     table[industry_key_column] = existing_key.where(existing_key != "", derived_key)
 
+    def _payload_map(payload: object) -> dict[str, object]:
+        return payload if isinstance(payload, dict) else {}
+
     leader_payloads = table[symbol_column].map(snapshot.leaders_by_symbol)
     table["core_leader_state"] = leader_payloads.map(
-        lambda payload: _safe_text((payload or {}).get("leader_state")).upper()
+        lambda payload: _safe_text(_payload_map(payload).get("leader_state")).upper()
     )
     table["core_breakdown_status"] = leader_payloads.map(
-        lambda payload: _safe_text((payload or {}).get("breakdown_status")).upper()
+        lambda payload: _safe_text(_payload_map(payload).get("breakdown_status")).upper()
     )
     table["core_leader_score"] = leader_payloads.map(
-        lambda payload: _safe_float((payload or {}).get("leader_score"))
+        lambda payload: _safe_float(_payload_map(payload).get("leader_score"))
     )
     table["leader_core_buyable"] = (table["core_leader_state"].isin(sorted(_BUYABLE_LEADER_STATES))) & (
         table["core_breakdown_status"] == "OK"
     )
-    table["leader_core_watch_only"] = (table["core_leader_state"].isin(sorted(_BUYABLE_LEADER_STATES))) & (
+    table["leader_core_imminent"] = (table["core_leader_state"].isin(sorted(_BUYABLE_LEADER_STATES))) & (
         table["core_breakdown_status"] == "IMMINENT"
     )
 
     group_payloads = table[industry_key_column].map(snapshot.groups_by_key)
     table["core_group_state"] = group_payloads.map(
-        lambda payload: _safe_text((payload or {}).get("group_state")).upper()
+        lambda payload: _safe_text(_payload_map(payload).get("group_state")).upper()
     )
     table["core_group_strength_score"] = group_payloads.map(
-        lambda payload: _safe_float((payload or {}).get("group_strength_score"))
+        lambda payload: _safe_float(_payload_map(payload).get("group_strength_score"))
     )
-    table["core_group_rank"] = group_payloads.map(lambda payload: _safe_float((payload or {}).get("rank")))
+    table["core_group_rank"] = group_payloads.map(lambda payload: _safe_float(_payload_map(payload).get("rank")))
     table["core_group_present"] = group_payloads.map(lambda payload: isinstance(payload, dict) and bool(payload))
 
     return table

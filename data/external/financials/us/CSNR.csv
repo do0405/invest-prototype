@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-CSNR,,[],False,2026-03-13T22:38:34.767102+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+CSNR,CSNR,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:15:50.188110+00:00

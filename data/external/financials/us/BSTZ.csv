@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,roe,debt_to_equity,cached_at
+BSTZ,BSTZ,complete,,yahooquery,,[],False,-87.63008039161517,0.013771106044051514,2026-04-26T15:15:17.742039+00:00

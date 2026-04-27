@@ -9,6 +9,7 @@ from typing import Any, Callable
 
 import requests
 
+from data_collectors.kr_reference_sources import fetch_kr_listing_symbols
 from utils.calc_utils import clean_tickers
 from utils.io_utils import safe_filename
 
@@ -420,7 +421,7 @@ def load_us_symbol_universe(
     if stock_metadata_path:
         metadata_symbols = _read_symbols_from_csv(stock_metadata_path)
         discovered.update(metadata_symbols)
-        _emit_progress(progress, f"[Universe] Metadata seed loaded - count={len(metadata_symbols)}")
+        _emit_progress(progress, f"[Universe] Metadata cache seed loaded - count={len(metadata_symbols)}")
 
     discovered.update(US_ALWAYS_INCLUDE_SYMBOLS)
     cleaned = clean_tickers(list(discovered))
@@ -443,64 +444,6 @@ def _existing_numeric_kr_symbols(data_dir: str) -> set[str]:
     }
 
 
-def _resolve_kr_business_day_yyyymmdd(stock_module: Any, as_of: datetime | None) -> str:
-    day = as_of or datetime.now(UTC)
-    day_str = day.strftime("%Y%m%d")
-    resolver = getattr(stock_module, "get_nearest_business_day_in_a_week", None)
-    if resolver is None:
-        return day_str
-    try:
-        resolved = str(resolver(day_str) or "").strip()
-    except Exception:
-        return day_str
-    return resolved or day_str
-
-
-def _load_kr_seed_symbols(
-    *,
-    stock_module: Any | None,
-    include_kosdaq: bool,
-    include_etf: bool,
-    include_etn: bool,
-    as_of: datetime | None,
-) -> set[str]:
-    if stock_module is None:
-        return set()
-    client = stock_module
-
-    getter = getattr(client, "get_market_ticker_list", None)
-    if getter is None:
-        return set()
-
-    as_of_yyyymmdd = _resolve_kr_business_day_yyyymmdd(client, as_of)
-    market_buckets: list[str] = ["KOSPI"]
-    if include_kosdaq:
-        market_buckets.append("KOSDAQ")
-    if include_etf:
-        market_buckets.append("ETF")
-    if include_etn:
-        market_buckets.append("ETN")
-
-    discovered: set[str] = set()
-    for market_name in market_buckets:
-        try:
-            tickers = getter(as_of_yyyymmdd, market=market_name)
-        except TypeError:
-            try:
-                tickers = getter(as_of_yyyymmdd, market_name)
-            except Exception:
-                continue
-        except Exception:
-            continue
-
-        for raw in tickers or []:
-            symbol = str(raw or "").strip().upper()
-            if symbol.isdigit() and len(symbol) == 6:
-                discovered.add(symbol)
-
-    return discovered
-
-
 def load_kr_symbol_universe(
     *,
     data_dir: str,
@@ -508,20 +451,16 @@ def load_kr_symbol_universe(
     include_kosdaq: bool = True,
     include_etf: bool = True,
     include_etn: bool = True,
-    stock_module: Any | None = None,
     fdr_module: Any | None = None,
-    as_of: datetime | None = None,
 ) -> list[str]:
-    del fdr_module
     discovered: set[str] = set()
     discovered.update(_existing_numeric_kr_symbols(data_dir))
     discovered.update(
-        _load_kr_seed_symbols(
-            stock_module=stock_module,
+        fetch_kr_listing_symbols(
             include_kosdaq=include_kosdaq,
             include_etf=include_etf,
             include_etn=include_etn,
-            as_of=as_of,
+            fdr_module=fdr_module,
         )
     )
     if stock_metadata_path:

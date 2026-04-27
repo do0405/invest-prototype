@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 import shutil
 from pathlib import Path
 
@@ -44,6 +45,13 @@ def test_load_us_symbol_universe_includes_seed_symbols_and_indexes(monkeypatch):
     assert "SOXL" in universe
     assert "SPY" in universe
     assert "^VIX" in universe
+
+
+def test_load_kr_symbol_universe_signature_removes_legacy_compat_params() -> None:
+    parameters = inspect.signature(su.load_kr_symbol_universe).parameters
+
+    assert "stock_module" not in parameters
+    assert "as_of" not in parameters
 
 
 def test_update_symbol_list_writes_new_csvs_to_existing_data_us_dir(monkeypatch):
@@ -215,3 +223,49 @@ def test_list_symbols_from_existing_us_csv_filters_special_issues_and_recovers_s
     assert "SPY" in symbols
     assert "CON" in symbols
     assert "IVR$C" not in symbols
+
+
+def test_load_kr_symbol_universe_prefers_fdr_listings_and_keeps_local_additions():
+    runtime_root = runtime_test_root("_test_runtime_kr_symbol_universe_fdr")
+    _reset_runtime_dir(runtime_root)
+
+    kr_dir = runtime_root / "kr"
+    kr_dir.mkdir(parents=True, exist_ok=True)
+    (kr_dir / "000001.csv").write_text("date,symbol,close\n", encoding="utf-8")
+    (kr_dir / "INVALID.csv").write_text("date,symbol,close\n2026-04-18,INVALID,10\n", encoding="utf-8")
+
+    metadata_path = runtime_root / "stock_metadata_kr.csv"
+    _write_minimal_csv(
+        metadata_path,
+        [
+            {"symbol": "030200"},
+            {"symbol": "ABC123"},
+        ],
+    )
+
+    class _FDR:
+        @staticmethod
+        def StockListing(name: str) -> pd.DataFrame:
+            mapping = {
+                "KOSPI": pd.DataFrame(
+                    [
+                        {"Code": "005930", "Name": "Samsung Electronics", "Market": "KOSPI"},
+                        {"Code": "INVALID", "Name": "Ignore", "Market": "KOSPI"},
+                    ]
+                ),
+                "KOSDAQ": pd.DataFrame([{"Code": "035720", "Name": "Kakao", "Market": "KOSDAQ"}]),
+                "ETF/KR": pd.DataFrame([{"Code": "069500", "Name": "KODEX 200", "Market": "ETF"}]),
+                "ETN/KR": pd.DataFrame([{"Code": "530065", "Name": "Example ETN", "Market": "ETN"}]),
+            }
+            return mapping.get(name, pd.DataFrame())
+
+    universe = su.load_kr_symbol_universe(
+        data_dir=str(kr_dir),
+        stock_metadata_path=str(metadata_path),
+        include_kosdaq=True,
+        include_etf=True,
+        include_etn=True,
+        fdr_module=_FDR(),
+    )
+
+    assert universe == ["000001", "005930", "030200", "035720", "069500", "530065"]

@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-GOAU,,[],False,2026-03-13T01:35:04.540676+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+GOAU,GOAU,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-18T22:13:35.365085+00:00

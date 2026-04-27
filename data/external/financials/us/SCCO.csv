@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-SCCO,SCCO,[],False,16.53782492641291,25.4067219268645,True,True,14.582654783406864,17.375408889744083,True,True,True,True,True,False,18.08414590104731,28.373015873015873,0,0,2026-03-13T01:26:45.731090+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+SCCO,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:SCCO:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:SCCO:[Errno 22] Invalid argument""]",True,2026-04-18T22:05:39.609251+00:00

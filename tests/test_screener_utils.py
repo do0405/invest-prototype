@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 import json
 from pathlib import Path
 
@@ -29,8 +30,10 @@ def test_save_screening_results_keeps_latest_and_snapshot_history():
     first = [{"symbol": "AAA", "score": 1}, {"symbol": "BBB", "score": 2}]
     second = [{"symbol": "BBB", "score": 3}]
 
-    first_paths = save_screening_results(first, str(root), "sample_results", include_timestamp=True, incremental_update=True)
-    second_paths = save_screening_results(second, str(root), "sample_results", include_timestamp=True, incremental_update=True)
+    assert "incremental_update" not in inspect.signature(save_screening_results).parameters
+
+    first_paths = save_screening_results(first, str(root), "sample_results", include_timestamp=True)
+    second_paths = save_screening_results(second, str(root), "sample_results", include_timestamp=True)
 
     csv_path = root / "sample_results.csv"
     json_path = root / "sample_results.json"

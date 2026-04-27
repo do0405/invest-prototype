@@ -1,0 +1,147 @@
+{
+  "market": "us",
+  "as_of_date": "2026-04-24",
+  "latest_completed_session": "2026-04-24",
+  "benchmark_as_of_date": "2026-04-24",
+  "freshness_status": "ok",
+  "freshness_reason": "benchmark_matches_latest_completed_session",
+  "run_id": "us:2026-04-27T11:25:50",
+  "started_at": "2026-04-27T11:25:50",
+  "last_progress_at": "2026-04-27T12:12:51",
+  "market_truth_mode": "standalone_manual",
+  "fallback_reason": "",
+  "compat_availability": "manual",
+  "market_truth_probe_as_of": "2026-04-24",
+  "effective_standalone": true,
+  "status": "ok",
+  "current_stage": "New ticker tracking",
+  "current_symbol": "",
+  "current_chunk": "",
+  "data_freshness": {
+    "counts": {
+      "closed": 10904,
+      "stale": 1344,
+      "future_or_partial": 0,
+      "empty": 1076
+    },
+    "stages": {
+      "markminervini_technical": {
+        "counts": {
+          "closed": 10904,
+          "stale": 1344,
+          "future_or_partial": 0,
+          "empty": 1076
+        },
+        "target_date": "2026-04-24",
+        "latest_completed_session": "2026-04-24",
+        "mode": "default_completed_session",
+        "examples": [
+          {
+            "market": "us",
+            "symbol": "AAAC",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACBR",
+            "status": "stale",
+            "latest_date": "2026-03-11",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACBU",
+            "status": "stale",
+            "latest_date": "2026-03-11",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACIU",
+            "status": "stale",
+            "latest_date": "2026-03-11",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACIW",
+            "status": "stale",
+            "latest_date": "2025-08-19",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACT",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACT.U",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACT.W",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AAEQ",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AAM",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          }
+        ]
+      }
+    }
+  },
+  "last_successful_stage": "New ticker tracking",
+  "last_error_code": "",
+  "last_error_detail": "",
+  "last_retryable_error": ""
+}

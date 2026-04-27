@@ -1,0 +1,32 @@
+[
+  {
+    "industry_key":"basic_materials__aluminum",
+    "sector":"Basic Materials",
+    "industry":"Aluminum",
+    "group_name":"Aluminum",
+    "group_member_count":1,
+    "group_strength_score":0.0,
+    "group_state":"",
+    "group_rank":1.0
+  },
+  {
+    "industry_key":"unknown__unknown",
+    "sector":"FALLBACK_CLUSTER",
+    "industry":"CLUSTER_2_0",
+    "group_name":"CLUSTER_2_0",
+    "group_member_count":2,
+    "group_strength_score":0.0,
+    "group_state":"",
+    "group_rank":2.0
+  },
+  {
+    "industry_key":"healthcare__diagnostics_&_research",
+    "sector":"Healthcare",
+    "industry":"Diagnostics & Research",
+    "group_name":"Diagnostics & Research",
+    "group_member_count":1,
+    "group_strength_score":0.0,
+    "group_state":"",
+    "group_rank":3.0
+  }
+]

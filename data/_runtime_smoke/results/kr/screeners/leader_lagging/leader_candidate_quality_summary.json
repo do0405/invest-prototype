@@ -1,0 +1,36 @@
+{
+  "leader_count": 4,
+  "label_counts": {
+    "reject": 4
+  },
+  "leader_tier_counts": {
+    "reject": 4
+  },
+  "entry_suitability_counts": {
+    "avoid": 4
+  },
+  "confidence_bucket_counts": {
+    "high": 4
+  },
+  "component_null_share": {
+    "rs_rank_true": 0.0,
+    "rs_proxy_confidence": 0.0,
+    "hidden_rs_confidence": 0.0,
+    "structure_confidence": 0.0,
+    "liquidity_quality_score": 0.0,
+    "trend_integrity_score": 0.0,
+    "structure_readiness_score": 0.0,
+    "extension_risk_score": 0.0
+  },
+  "top_10_leader_score_spread": 1.88,
+  "threshold_near_count": 0,
+  "low_confidence_count": 0,
+  "reject_reason_counts": {
+    "group_fail": 4,
+    "near_high_fail": 4,
+    "liquidity_fail": 1,
+    "rs_fail": 3,
+    "trend_fail": 2
+  },
+  "extended_reason_counts": {}
+}

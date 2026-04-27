@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+BAMA,BAMA,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-18T22:31:08.701115+00:00

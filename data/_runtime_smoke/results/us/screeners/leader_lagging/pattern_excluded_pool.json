@@ -1,0 +1,28 @@
+[
+  {
+    "symbol":"AA",
+    "market":"US",
+    "sector":"Basic Materials",
+    "industry":"Aluminum",
+    "industry_key":"basic_materials__aluminum",
+    "group_name":"Aluminum",
+    "group_state":"",
+    "rs_rank":100.0,
+    "delta_rs_rank_qoq":-22.99488177,
+    "group_strength_score":0.0,
+    "group_rank":1.0,
+    "leader_state":"",
+    "breakdown_status":"",
+    "leader_score":null,
+    "trend_integrity_score":100.0,
+    "structure_quality_score":34.3075468533,
+    "volume_demand_score":82.682465952,
+    "liquidity_quality_score":69.1664752807,
+    "distance_to_52w_high":10.49,
+    "rs_line_20d_slope":0.0395288215,
+    "benchmark_relative_strength_slope":-0.0398838694,
+    "as_of_ts":"2026-04-17",
+    "setup_scope":"LEADER_CANDIDATE_POOL",
+    "phase_bucket":"FORMING"
+  }
+]

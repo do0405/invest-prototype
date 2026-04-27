@@ -1,0 +1,4 @@
+industry_key,sector,industry,group_name,group_member_count,group_strength_score,group_state,group_rank
+basic_materials__aluminum,Basic Materials,Aluminum,Aluminum,1,0.0,,1.0
+unknown__unknown,FALLBACK_CLUSTER,CLUSTER_2_0,CLUSTER_2_0,2,0.0,,2.0
+healthcare__diagnostics_&_research,Healthcare,Diagnostics & Research,Diagnostics & Research,1,0.0,,3.0

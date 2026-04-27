@@ -1,0 +1,21 @@
+{
+  "market": "kr",
+  "benchmark_symbol": "KOSPI",
+  "market_truth_source": "local_standalone",
+  "core_overlay_applied": false,
+  "market_state": "MARKET_STAGE4_RISK",
+  "market_alias": "RISK_OFF",
+  "market_alignment_score": 10.0,
+  "breadth_support_score": 12.5,
+  "rotation_support_score": 10.0,
+  "leader_health_score": 10.0,
+  "benchmark_close": 6191.92,
+  "benchmark_ma30w": 4694.222,
+  "benchmark_ma30w_slope_4w": 0.01836064440401325,
+  "assumption_flags": [],
+  "actual_data_calibration": {},
+  "symbol_count": 8,
+  "state_counts": {
+    "EXCLUDE": 8
+  }
+}

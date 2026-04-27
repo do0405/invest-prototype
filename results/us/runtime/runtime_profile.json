@@ -1,0 +1,931 @@
+{
+  "run_id": "us:Full screening process:2026-04-27T11:25:50",
+  "label": "Full screening process",
+  "market": "us",
+  "as_of_date": "2026-04-24",
+  "freshness_status": "ok",
+  "freshness_reason": "benchmark_matches_latest_completed_session",
+  "benchmark_as_of_date": "2026-04-24",
+  "latest_completed_session": "2026-04-24",
+  "market_truth_mode": "standalone_manual",
+  "fallback_reason": "",
+  "generated_at": "2026-04-27T12:12:51",
+  "started_at": "2026-04-27T11:25:50",
+  "last_progress_at": "2026-04-27T12:12:51",
+  "elapsed_seconds": 2820.604523,
+  "last_stage": "New ticker tracking",
+  "last_stage_status": "ok",
+  "last_successful_stage": "New ticker tracking",
+  "last_error_code": "",
+  "last_error_detail": "",
+  "current_symbol": "",
+  "current_chunk": "",
+  "last_retryable_error": "",
+  "cooldown_snapshot": {},
+  "status_counts": {
+    "ok": 4
+  },
+  "cache_stats": {
+    "misses": 13324,
+    "hits": 0
+  },
+  "timings": {
+    "markminervini.frame_load_seconds": 1242.97348
+  },
+  "collector_diagnostics": {},
+  "rows_read": 0,
+  "rows_written": 12602,
+  "data_freshness": {
+    "counts": {
+      "closed": 10904,
+      "stale": 1344,
+      "future_or_partial": 0,
+      "empty": 1076
+    },
+    "stages": {
+      "markminervini_technical": {
+        "counts": {
+          "closed": 10904,
+          "stale": 1344,
+          "future_or_partial": 0,
+          "empty": 1076
+        },
+        "target_date": "2026-04-24",
+        "latest_completed_session": "2026-04-24",
+        "mode": "default_completed_session",
+        "examples": [
+          {
+            "market": "us",
+            "symbol": "AAAC",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACBR",
+            "status": "stale",
+            "latest_date": "2026-03-11",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACBU",
+            "status": "stale",
+            "latest_date": "2026-03-11",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACIU",
+            "status": "stale",
+            "latest_date": "2026-03-11",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACIW",
+            "status": "stale",
+            "latest_date": "2025-08-19",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "latest_row_older_than_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACT",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACT.U",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AACT.W",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AAEQ",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          },
+          {
+            "market": "us",
+            "symbol": "AAM",
+            "status": "empty",
+            "latest_date": "",
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "reason": "missing_latest_or_target_date"
+          }
+        ]
+      }
+    }
+  },
+  "steps": [
+    {
+      "ok": true,
+      "label": "Mark Minervini technical",
+      "market": "us",
+      "elapsed_seconds": 1620.347727800021,
+      "summary": "rows=2387",
+      "error": "",
+      "status": "ok",
+      "status_counts": {
+        "ok": 1
+      },
+      "timings": {
+        "markminervini.frame_load_seconds": 1242.97348
+      },
+      "cache_stats": {
+        "misses": 13324,
+        "hits": 0
+      },
+      "runtime_metrics": {
+        "worker_budget": {
+          "markminervini.frame_load": {
+            "total_items": 13324,
+            "workers": 2,
+            "env_var": "INVEST_PROTO_LOCAL_FRAME_WORKERS",
+            "cap": 2,
+            "stage_parallel": 1
+          }
+        },
+        "frame_load": {
+          "csv_reads": 13324,
+          "csv_seconds": 1165.516952,
+          "parquet_misses": 12248,
+          "files": 12248,
+          "rows": 3643647
+        },
+        "output_persist": {
+          "files": 2,
+          "rows": 4774,
+          "bytes": 1513068,
+          "seconds": 2.978431,
+          "examples": [
+            {
+              "path": "E:\\side project\\invest-prototype-main\\results\\us\\screeners\\markminervini\\with_rs.csv",
+              "rows": 2387,
+              "bytes": 351720,
+              "seconds": 2.927255,
+              "kind": "csv",
+              "label": "markminervini.technical.csv"
+            },
+            {
+              "path": "E:\\side project\\invest-prototype-main\\results\\us\\screeners\\markminervini\\with_rs.json",
+              "rows": 2387,
+              "bytes": 1161348,
+              "seconds": 0.051176,
+              "kind": "json",
+              "label": "markminervini.technical.json"
+            }
+          ]
+        }
+      },
+      "rows_read": 0,
+      "rows_written": 2387,
+      "retryable": false,
+      "error_code": "",
+      "error_detail": "",
+      "started_at": "2026-04-27T11:25:50",
+      "finished_at": "2026-04-27T11:52:50",
+      "current_symbol": "",
+      "current_chunk": "",
+      "as_of_date": "2026-04-24",
+      "freshness_status": "ok",
+      "freshness_reason": "benchmark_matches_latest_completed_session",
+      "benchmark_as_of_date": "2026-04-24",
+      "latest_completed_session": "2026-04-24",
+      "data_freshness": {
+        "counts": {
+          "closed": 10904,
+          "stale": 1344,
+          "future_or_partial": 0,
+          "empty": 1076
+        },
+        "stages": {
+          "markminervini_technical": {
+            "counts": {
+              "closed": 10904,
+              "stale": 1344,
+              "future_or_partial": 0,
+              "empty": 1076
+            },
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "examples": [
+              {
+                "market": "us",
+                "symbol": "AAAC",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBR",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIW",
+                "status": "stale",
+                "latest_date": "2025-08-19",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.U",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.W",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAEQ",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAM",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              }
+            ]
+          }
+        }
+      },
+      "collector_diagnostics": {},
+      "cooldown_snapshot": {},
+      "last_retryable_error": "",
+      "market_truth_mode": "standalone_manual",
+      "fallback_reason": ""
+    },
+    {
+      "ok": true,
+      "label": "Advanced financial",
+      "market": "us",
+      "elapsed_seconds": 0.9007509000366554,
+      "summary": "rows=2387",
+      "error": "",
+      "status": "ok",
+      "status_counts": {
+        "ok": 1
+      },
+      "timings": {},
+      "cache_stats": {
+        "misses": 0,
+        "hits": 0
+      },
+      "runtime_metrics": {},
+      "rows_read": 0,
+      "rows_written": 2387,
+      "retryable": false,
+      "error_code": "",
+      "error_detail": "",
+      "started_at": "2026-04-27T11:52:50",
+      "finished_at": "2026-04-27T11:52:51",
+      "current_symbol": "",
+      "current_chunk": "",
+      "as_of_date": "2026-04-24",
+      "freshness_status": "ok",
+      "freshness_reason": "benchmark_matches_latest_completed_session",
+      "benchmark_as_of_date": "2026-04-24",
+      "latest_completed_session": "2026-04-24",
+      "data_freshness": {
+        "counts": {
+          "closed": 10904,
+          "stale": 1344,
+          "future_or_partial": 0,
+          "empty": 1076
+        },
+        "stages": {
+          "markminervini_technical": {
+            "counts": {
+              "closed": 10904,
+              "stale": 1344,
+              "future_or_partial": 0,
+              "empty": 1076
+            },
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "examples": [
+              {
+                "market": "us",
+                "symbol": "AAAC",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBR",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIW",
+                "status": "stale",
+                "latest_date": "2025-08-19",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.U",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.W",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAEQ",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAM",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              }
+            ]
+          }
+        }
+      },
+      "collector_diagnostics": {},
+      "cooldown_snapshot": {},
+      "last_retryable_error": "",
+      "market_truth_mode": "standalone_manual",
+      "fallback_reason": ""
+    },
+    {
+      "ok": true,
+      "label": "Integrated screening",
+      "market": "us",
+      "elapsed_seconds": 1197.9583684999961,
+      "summary": "rows=2387",
+      "error": "",
+      "status": "ok",
+      "status_counts": {
+        "ok": 1
+      },
+      "timings": {},
+      "cache_stats": {
+        "misses": 0,
+        "hits": 0
+      },
+      "runtime_metrics": {},
+      "rows_read": 0,
+      "rows_written": 2387,
+      "retryable": false,
+      "error_code": "",
+      "error_detail": "",
+      "started_at": "2026-04-27T11:52:51",
+      "finished_at": "2026-04-27T12:12:49",
+      "current_symbol": "",
+      "current_chunk": "",
+      "as_of_date": "2026-04-24",
+      "freshness_status": "ok",
+      "freshness_reason": "benchmark_matches_latest_completed_session",
+      "benchmark_as_of_date": "2026-04-24",
+      "latest_completed_session": "2026-04-24",
+      "data_freshness": {
+        "counts": {
+          "closed": 10904,
+          "stale": 1344,
+          "future_or_partial": 0,
+          "empty": 1076
+        },
+        "stages": {
+          "markminervini_technical": {
+            "counts": {
+              "closed": 10904,
+              "stale": 1344,
+              "future_or_partial": 0,
+              "empty": 1076
+            },
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "examples": [
+              {
+                "market": "us",
+                "symbol": "AAAC",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBR",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIW",
+                "status": "stale",
+                "latest_date": "2025-08-19",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.U",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.W",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAEQ",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAM",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              }
+            ]
+          }
+        }
+      },
+      "collector_diagnostics": {},
+      "cooldown_snapshot": {},
+      "last_retryable_error": "",
+      "market_truth_mode": "standalone_manual",
+      "fallback_reason": ""
+    },
+    {
+      "ok": true,
+      "label": "New ticker tracking",
+      "market": "us",
+      "elapsed_seconds": 1.3976757999043912,
+      "summary": "rows=5441",
+      "error": "",
+      "status": "ok",
+      "status_counts": {
+        "ok": 1
+      },
+      "timings": {},
+      "cache_stats": {
+        "misses": 0,
+        "hits": 0
+      },
+      "runtime_metrics": {},
+      "rows_read": 0,
+      "rows_written": 5441,
+      "retryable": false,
+      "error_code": "",
+      "error_detail": "",
+      "started_at": "2026-04-27T12:12:49",
+      "finished_at": "2026-04-27T12:12:51",
+      "current_symbol": "",
+      "current_chunk": "",
+      "as_of_date": "2026-04-24",
+      "freshness_status": "ok",
+      "freshness_reason": "benchmark_matches_latest_completed_session",
+      "benchmark_as_of_date": "2026-04-24",
+      "latest_completed_session": "2026-04-24",
+      "data_freshness": {
+        "counts": {
+          "closed": 10904,
+          "stale": 1344,
+          "future_or_partial": 0,
+          "empty": 1076
+        },
+        "stages": {
+          "markminervini_technical": {
+            "counts": {
+              "closed": 10904,
+              "stale": 1344,
+              "future_or_partial": 0,
+              "empty": 1076
+            },
+            "target_date": "2026-04-24",
+            "latest_completed_session": "2026-04-24",
+            "mode": "default_completed_session",
+            "examples": [
+              {
+                "market": "us",
+                "symbol": "AAAC",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBR",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACBU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIU",
+                "status": "stale",
+                "latest_date": "2026-03-11",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACIW",
+                "status": "stale",
+                "latest_date": "2025-08-19",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "latest_row_older_than_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.U",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AACT.W",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAEQ",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              },
+              {
+                "market": "us",
+                "symbol": "AAM",
+                "status": "empty",
+                "latest_date": "",
+                "target_date": "2026-04-24",
+                "latest_completed_session": "2026-04-24",
+                "mode": "default_completed_session",
+                "reason": "missing_latest_or_target_date"
+              }
+            ]
+          }
+        }
+      },
+      "collector_diagnostics": {},
+      "cooldown_snapshot": {},
+      "last_retryable_error": "",
+      "market_truth_mode": "standalone_manual",
+      "fallback_reason": ""
+    }
+  ],
+  "runtime_metrics": {
+    "worker_budget": {
+      "markminervini.frame_load": {
+        "total_items": 13324,
+        "workers": 2,
+        "env_var": "INVEST_PROTO_LOCAL_FRAME_WORKERS",
+        "cap": 2,
+        "stage_parallel": 1
+      }
+    },
+    "frame_load": {
+      "csv_reads": 13324,
+      "csv_seconds": 1165.516952,
+      "parquet_misses": 12248,
+      "files": 12248,
+      "rows": 3643647
+    },
+    "output_persist": {
+      "files": 2,
+      "rows": 4774,
+      "bytes": 1513068,
+      "seconds": 2.978431,
+      "examples": [
+        {
+          "path": "E:\\side project\\invest-prototype-main\\results\\us\\screeners\\markminervini\\with_rs.csv",
+          "rows": 2387,
+          "bytes": 351720,
+          "seconds": 2.927255,
+          "kind": "csv",
+          "label": "markminervini.technical.csv"
+        },
+        {
+          "path": "E:\\side project\\invest-prototype-main\\results\\us\\screeners\\markminervini\\with_rs.json",
+          "rows": 2387,
+          "bytes": 1161348,
+          "seconds": 0.051176,
+          "kind": "json",
+          "label": "markminervini.technical.json"
+        }
+      ]
+    }
+  },
+  "frame_load": {
+    "csv_reads": 13324,
+    "csv_seconds": 1165.516952,
+    "parquet_misses": 12248,
+    "files": 12248,
+    "rows": 3643647,
+    "seconds": 1242.97348
+  },
+  "feature_analysis": {},
+  "output_persist": {
+    "files": 2,
+    "rows": 4774,
+    "bytes": 1513068,
+    "seconds": 2.978431,
+    "examples": [
+      {
+        "path": "E:\\side project\\invest-prototype-main\\results\\us\\screeners\\markminervini\\with_rs.csv",
+        "rows": 2387,
+        "bytes": 351720,
+        "seconds": 2.927255,
+        "kind": "csv",
+        "label": "markminervini.technical.csv"
+      },
+      {
+        "path": "E:\\side project\\invest-prototype-main\\results\\us\\screeners\\markminervini\\with_rs.json",
+        "rows": 2387,
+        "bytes": 1161348,
+        "seconds": 0.051176,
+        "kind": "json",
+        "label": "markminervini.technical.json"
+      }
+    ]
+  },
+  "augment": {},
+  "worker_budget": {
+    "markminervini.frame_load": {
+      "total_items": 13324,
+      "workers": 2,
+      "env_var": "INVEST_PROTO_LOCAL_FRAME_WORKERS",
+      "cap": 2,
+      "stage_parallel": 1
+    }
+  }
+}

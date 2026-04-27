@@ -1,0 +1,75 @@
+{
+  "schema_version": 3,
+  "market": "US",
+  "as_of_date": "2026-04-17",
+  "registry": {
+    "AA": {
+      "symbol": "AA",
+      "source_disposition": "buy_eligible",
+      "source_buy_eligible": true,
+      "buy_eligible": true,
+      "watch_only": false,
+      "screen_stage": "INTEGRATED",
+      "source_tags": [
+        "MM_INTEGRATED"
+      ],
+      "source_records": [
+        {
+          "source_tag": "MM_INTEGRATED",
+          "screen_stage": "INTEGRATED",
+          "source_buy_eligible": true,
+          "source_disposition": "buy_eligible"
+        }
+      ],
+      "sector": "",
+      "industry": "",
+      "group_name": "",
+      "as_of_ts": "2026-04-17",
+      "industry_key": "",
+      "group_state": "",
+      "leader_state": "",
+      "breakdown_status": "",
+      "group_strength_score": null,
+      "leader_score": null,
+      "breakdown_score": null,
+      "market_condition_state": "",
+      "market_condition_reason": "",
+      "market_alignment_score": null,
+      "breadth_support_score": null,
+      "rotation_support_score": null,
+      "leader_health_score": null,
+      "regime_state": "",
+      "top_state": "",
+      "market_state": "",
+      "breadth_state": "",
+      "concentration_state": "",
+      "leadership_state": "",
+      "market_truth_source": "",
+      "core_overlay_applied": null,
+      "primary_source_tag": "MM_INTEGRATED",
+      "primary_source_stage": "INTEGRATED",
+      "source_style_tags": [
+        "LEADERSHIP"
+      ],
+      "primary_source_style": "LEADERSHIP",
+      "source_priority_score": 3.8,
+      "trend_source_bonus": 1.5,
+      "ug_source_bonus": 2.5,
+      "source_overlap_bonus": 0.0
+    }
+  },
+  "source_rows": [
+    {
+      "symbol": "AA",
+      "market": "US",
+      "source_tag": "MM_INTEGRATED",
+      "screen_stage": "INTEGRATED",
+      "relative_path": "markminervini/integrated_results.csv",
+      "as_of_ts": "2026-04-17",
+      "source_buy_eligible": true,
+      "buy_eligible": true,
+      "watch_only": false,
+      "source_disposition": "buy_eligible"
+    }
+  ]
+}

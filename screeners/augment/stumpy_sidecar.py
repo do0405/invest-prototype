@@ -100,11 +100,48 @@ def _pair_key(left: str, right: str) -> tuple[str, str]:
     return ordered[0], ordered[1]
 
 
+def build_runtime_skip_rows(
+    *,
+    source_rows: list[dict[str, Any]],
+    source_tag: str,
+    market: str,
+    window_sizes: tuple[int, ...] = (40, 80, 120),
+    status: str = "RUNTIME_SKIP",
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for item in source_rows:
+        symbol = str(item.get("symbol") or "").strip().upper()
+        if not symbol:
+            continue
+        for window_size in window_sizes:
+            rows.append(
+                {
+                    "symbol": symbol,
+                    "market": str(item.get("market") or market).upper(),
+                    "source_tag": source_tag,
+                    "window_size": int(window_size),
+                    "stumpy_cluster_id": "",
+                    "stumpy_cluster_size": None,
+                    "stumpy_exemplar_symbol": "",
+                    "stumpy_price_motif_score": None,
+                    "stumpy_self_discord_score": None,
+                    "stumpy_volume_overlay_score": None,
+                    "stumpy_shape_label": "SIDEWAYS",
+                    "stumpy_status": str(status or "RUNTIME_SKIP").strip().upper(),
+                }
+            )
+    return sorted(
+        rows,
+        key=lambda row: (str(row.get("symbol") or ""), int(row.get("window_size") or 0)),
+    )
+
+
 def generate_stumpy_summary_rows(
     *,
     source_rows: list[dict[str, Any]],
     source_tag: str,
     market: str,
+    as_of_date: str | None = None,
     window_sizes: tuple[int, ...] = (40, 80, 120),
     load_ohlcv_frame_fn: Callable[..., pd.DataFrame] = load_local_ohlcv_frame,
     distance_fn: Callable[[np.ndarray, np.ndarray], float] | None = None,
@@ -124,7 +161,7 @@ def generate_stumpy_summary_rows(
         loaded_frames[symbol] = load_ohlcv_frame_fn(
             symbol=symbol,
             market=market,
-            as_of=None,
+            as_of=as_of_date,
             price_policy=PricePolicy.SPLIT_ADJUSTED,
         )
 

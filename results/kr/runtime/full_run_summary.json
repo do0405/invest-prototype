@@ -1,0 +1,421 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-04-24T23:14:15",
+  "label": "Full live standalone e2e",
+  "market": "kr",
+  "summary": {
+    "label": "Full live standalone e2e",
+    "ok": false,
+    "status": "failed",
+    "failed_steps": 4,
+    "summaries": [
+      {
+        "label": "Data collection",
+        "ok": false,
+        "failed_steps": 1,
+        "total_steps": 0,
+        "elapsed_seconds": 0.0,
+        "markets": [],
+        "steps": [],
+        "status": "failed",
+        "status_counts": {
+          "failed": 1
+        },
+        "cache_stats": {},
+        "timings": {
+          "process_total_seconds": 0.0
+        },
+        "rows_read": 0,
+        "rows_written": 0,
+        "error": "[Errno 22] Invalid argument"
+      },
+      {
+        "label": "Market analysis pipeline",
+        "ok": false,
+        "status": "failed",
+        "failed_steps": 3,
+        "total_steps": 2,
+        "elapsed_seconds": 735.034979,
+        "summaries": [
+          {
+            "label": "Full screening process",
+            "ok": false,
+            "failed_steps": 1,
+            "total_steps": 0,
+            "elapsed_seconds": 0.0,
+            "markets": [],
+            "steps": [],
+            "status": "failed",
+            "status_counts": {
+              "failed": 1
+            },
+            "cache_stats": {},
+            "timings": {
+              "process_total_seconds": 0.0
+            },
+            "rows_read": 0,
+            "rows_written": 0,
+            "error": "[Errno 22] Invalid argument"
+          },
+          {
+            "label": "Signal engine process",
+            "ok": false,
+            "status": "failed",
+            "failed_steps": 2,
+            "total_steps": 2,
+            "elapsed_seconds": 3.83622,
+            "markets": [
+              "us",
+              "kr"
+            ],
+            "steps": [
+              {
+                "ok": false,
+                "label": "Multi-screener signal engine",
+                "market": "us",
+                "elapsed_seconds": 3.362358999962453,
+                "summary": "error=missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\us\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.",
+                "error": "missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\us\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.",
+                "status": "failed",
+                "status_counts": {
+                  "failed": 1
+                },
+                "timings": {},
+                "cache_stats": {
+                  "hits": 0,
+                  "misses": 1
+                },
+                "rows_read": 0,
+                "rows_written": 0,
+                "retryable": false,
+                "error_code": "failed",
+                "error_detail": "missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\us\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.",
+                "started_at": "2026-04-24T23:14:07",
+                "finished_at": "2026-04-24T23:14:10",
+                "current_symbol": "",
+                "current_chunk": "source_registry",
+                "as_of_date": "2026-04-22",
+                "freshness_status": "stale_benchmark",
+                "freshness_reason": "benchmark_older_than_latest_completed_session",
+                "benchmark_as_of_date": "2026-04-22",
+                "latest_completed_session": "2026-04-23",
+                "data_freshness": {
+                  "counts": {
+                    "closed": 10893,
+                    "stale": 1340,
+                    "future_or_partial": 0,
+                    "empty": 1091
+                  },
+                  "stages": {
+                    "markminervini_technical": {
+                      "counts": {
+                        "closed": 10893,
+                        "stale": 1340,
+                        "future_or_partial": 0,
+                        "empty": 1091
+                      },
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "examples": [
+                        {
+                          "market": "us",
+                          "symbol": "AAAC",
+                          "status": "empty",
+                          "latest_date": "",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "missing_latest_or_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AACBR",
+                          "status": "stale",
+                          "latest_date": "2026-03-11",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "latest_row_older_than_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AACBU",
+                          "status": "stale",
+                          "latest_date": "2026-03-11",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "latest_row_older_than_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AACIU",
+                          "status": "stale",
+                          "latest_date": "2026-03-11",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "latest_row_older_than_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AACIW",
+                          "status": "stale",
+                          "latest_date": "2025-08-19",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "latest_row_older_than_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AACT",
+                          "status": "empty",
+                          "latest_date": "",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "missing_latest_or_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AACT.U",
+                          "status": "empty",
+                          "latest_date": "",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "missing_latest_or_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AACT.W",
+                          "status": "empty",
+                          "latest_date": "",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "missing_latest_or_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AAEQ",
+                          "status": "empty",
+                          "latest_date": "",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "missing_latest_or_target_date"
+                        },
+                        {
+                          "market": "us",
+                          "symbol": "AAM",
+                          "status": "empty",
+                          "latest_date": "",
+                          "target_date": "2026-04-22",
+                          "latest_completed_session": "2026-04-22",
+                          "mode": "default_completed_session",
+                          "reason": "missing_latest_or_target_date"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "collector_diagnostics": {},
+                "cooldown_snapshot": {},
+                "last_retryable_error": ""
+              },
+              {
+                "ok": false,
+                "label": "Multi-screener signal engine",
+                "market": "kr",
+                "elapsed_seconds": 0.31705209997016937,
+                "summary": "error=missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\kr\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.",
+                "error": "missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\kr\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.",
+                "status": "failed",
+                "status_counts": {
+                  "failed": 1
+                },
+                "timings": {},
+                "cache_stats": {
+                  "hits": 1,
+                  "misses": 0
+                },
+                "rows_read": 0,
+                "rows_written": 0,
+                "retryable": false,
+                "error_code": "failed",
+                "error_detail": "missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\kr\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.",
+                "started_at": "2026-04-24T23:14:10",
+                "finished_at": "2026-04-24T23:14:11",
+                "current_symbol": "",
+                "current_chunk": "source_registry",
+                "as_of_date": "2026-04-21",
+                "freshness_status": "stale_benchmark",
+                "freshness_reason": "benchmark_older_than_latest_completed_session",
+                "benchmark_as_of_date": "2026-04-21",
+                "latest_completed_session": "2026-04-24",
+                "data_freshness": {},
+                "collector_diagnostics": {},
+                "cooldown_snapshot": {},
+                "last_retryable_error": ""
+              }
+            ],
+            "status_counts": {
+              "failed": 2
+            },
+            "cache_stats": {
+              "hits": 1,
+              "misses": 1
+            },
+            "timings": {
+              "process_total_seconds": 3.83622
+            },
+            "collector_diagnostics": {},
+            "rows_read": 0,
+            "rows_written": 0,
+            "data_freshness": {
+              "counts": {
+                "closed": 10893,
+                "stale": 1340,
+                "future_or_partial": 0,
+                "empty": 1091
+              },
+              "stages": {
+                "markminervini_technical": {
+                  "counts": {
+                    "closed": 10893,
+                    "stale": 1340,
+                    "future_or_partial": 0,
+                    "empty": 1091
+                  },
+                  "target_date": "2026-04-22",
+                  "latest_completed_session": "2026-04-22",
+                  "mode": "default_completed_session",
+                  "examples": [
+                    {
+                      "market": "us",
+                      "symbol": "AAAC",
+                      "status": "empty",
+                      "latest_date": "",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "missing_latest_or_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AACBR",
+                      "status": "stale",
+                      "latest_date": "2026-03-11",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "latest_row_older_than_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AACBU",
+                      "status": "stale",
+                      "latest_date": "2026-03-11",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "latest_row_older_than_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AACIU",
+                      "status": "stale",
+                      "latest_date": "2026-03-11",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "latest_row_older_than_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AACIW",
+                      "status": "stale",
+                      "latest_date": "2025-08-19",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "latest_row_older_than_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AACT",
+                      "status": "empty",
+                      "latest_date": "",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "missing_latest_or_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AACT.U",
+                      "status": "empty",
+                      "latest_date": "",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "missing_latest_or_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AACT.W",
+                      "status": "empty",
+                      "latest_date": "",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "missing_latest_or_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AAEQ",
+                      "status": "empty",
+                      "latest_date": "",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "missing_latest_or_target_date"
+                    },
+                    {
+                      "market": "us",
+                      "symbol": "AAM",
+                      "status": "empty",
+                      "latest_date": "",
+                      "target_date": "2026-04-22",
+                      "latest_completed_session": "2026-04-22",
+                      "mode": "default_completed_session",
+                      "reason": "missing_latest_or_target_date"
+                    }
+                  ]
+                }
+              }
+            },
+            "error": "us:Multi-screener signal engine:missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\us\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.; kr:Multi-screener signal engine:missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\kr\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone."
+          }
+        ],
+        "status_counts": {
+          "failed": 3
+        },
+        "cache_stats": {
+          "hits": 1,
+          "misses": 1
+        },
+        "timings": {
+          "process_total_seconds": 735.034979
+        },
+        "collector_diagnostics": {},
+        "rows_read": 0,
+        "rows_written": 0,
+        "error": "[Errno 22] Invalid argument; us:Multi-screener signal engine:missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\us\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone.; kr:Multi-screener signal engine:missing leader core artifact summary: E:\\side project\\market-intel-core\\results\\compat\\invest_prototype\\kr\\leader_market_summary.json. Generate market-intel-core compat artifacts, set MARKET_INTEL_COMPAT_RESULTS_ROOT to their root, or run this task with --standalone."
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "market": "kr",
+  "as_of_date": "2026-04-21",
+  "latest_completed_session": "2026-04-22",
+  "benchmark_as_of_date": "2026-04-21",
+  "freshness_status": "stale_benchmark",
+  "freshness_reason": "benchmark_older_than_latest_completed_session",
+  "run_id": "kr:2026-04-22T18:52:45",
+  "started_at": "2026-04-22T18:52:45",
+  "last_progress_at": "2026-04-22T18:52:54",
+  "current_stage": "Source registry snapshot",
+  "current_symbol": "",
+  "current_chunk": "snapshot_write",
+  "status": "ok",
+  "last_successful_stage": "Source registry snapshot",
+  "last_error_code": "",
+  "last_error_detail": "",
+  "last_retryable_error": ""
+}

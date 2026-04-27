@@ -1,0 +1,2 @@
+symbol,met_count,rs_score,provider_symbol,fin_met_count,fetch_status,unavailable_reason,has_error,rs_percentile,fin_percentile,total_percentile
+AA,7,100.0,AA,5,complete,,False,100.0,100.0,200.0

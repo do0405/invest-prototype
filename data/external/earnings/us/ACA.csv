@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-26,1.15,0.92,,,yfinance_earnings_dates:ACA,ACA
+2025-10-30,1.56,1.35,,,yfinance_earnings_dates:ACA,ACA
+2025-08-07,1.27,1.05,,,yfinance_earnings_dates:ACA,ACA
+2025-05-06,0.49,0.18,,,yfinance_earnings_dates:ACA,ACA

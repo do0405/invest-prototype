@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-19,0.52,0.42,,,yfinance_earnings_dates:ACIC,ACIC
+2025-11-05,0.61,0.39,,,yfinance_earnings_dates:ACIC,ACIC
+2025-08-06,0.54,0.38,,,yfinance_earnings_dates:ACIC,ACIC
+2025-05-08,0.43,0.41,,,yfinance_earnings_dates:ACIC,ACIC

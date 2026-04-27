@@ -1,0 +1,15 @@
+[
+  {
+    "symbol":"AA",
+    "met_count":7,
+    "rs_score":100.0,
+    "provider_symbol":"AA",
+    "fin_met_count":5,
+    "fetch_status":"complete",
+    "unavailable_reason":null,
+    "has_error":false,
+    "rs_percentile":100.0,
+    "fin_percentile":100.0,
+    "total_percentile":200.0
+  }
+]

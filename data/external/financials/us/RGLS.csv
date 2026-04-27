@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-RGLS,,[],False,2026-03-14T04:59:22.466698+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+RGLS,RGLS,soft_unavailable,ineligible:metadata_not_found,metadata_skip,,[],True,2026-04-26T15:06:18.327489+00:00

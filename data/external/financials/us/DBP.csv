@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-DBP,,[],False,2026-03-13T01:38:33.895858+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+DBP,DBP,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-18T22:16:37.769429+00:00

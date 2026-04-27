@@ -1,0 +1,8 @@
+threshold_key,base_value,tuned_value,delta,applied,reason_codes
+leader_rs_rank_min,85.0,85.0,0.0,False,insufficient_candidate_sample
+leader_group_strength_min,70.0,70.0,0.0,False,insufficient_candidate_sample
+leader_distance_to_high_max,0.2,0.2,0.0,False,insufficient_candidate_sample
+leader_confirmed_score_min,78.0,78.0,0.0,False,insufficient_candidate_sample
+leader_emerging_score_min,72.0,72.0,0.0,False,insufficient_candidate_sample
+leader_extended_distance_to_high_max,0.03,0.03,0.0,False,insufficient_candidate_sample
+leader_extended_pivot_proximity_max,25.0,25.0,0.0,False,insufficient_candidate_sample

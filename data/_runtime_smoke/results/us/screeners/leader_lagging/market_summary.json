@@ -1,0 +1,154 @@
+{
+  "market": "US",
+  "benchmark_symbol": "SPY",
+  "market_truth_source": "local_standalone",
+  "core_overlay_applied": false,
+  "regime_state": "Risk-On",
+  "market_alias": "RISK_ON",
+  "market_alignment_score": 82.39,
+  "breadth_support_score": 71.06,
+  "rotation_support_score": 91.66,
+  "leader_health_score": 25.0,
+  "reason_codes": [
+    "BENCHMARK_UPTREND",
+    "BREADTH_SUPPORTIVE"
+  ],
+  "actual_data_calibration": {
+    "leader_rs_rank_min": 85.0,
+    "leader_group_rs_min": 75.0,
+    "leader_distance_to_high_max": 0.2,
+    "leader_distance_from_low_min": 0.3,
+    "leader_group_strength_min": 70.0,
+    "leader_rs_line_score_min": 70.0,
+    "leader_confirmed_score_min": 78.0,
+    "leader_emerging_score_min": 72.0,
+    "leader_extended_distance_to_high_max": 0.03,
+    "leader_extended_pivot_proximity_max": 25.0,
+    "leader_tier1_boost_min": 3.0,
+    "follower_group_rs_min": 75.0,
+    "follower_rs_rank_min": 65.0,
+    "follower_rs_rank_max": 90.0,
+    "follower_distance_to_high_max": 0.25,
+    "follower_hygiene_distance_to_high_max": 0.3,
+    "follower_leader_gap_60d_max": 0.5,
+    "follower_pair_link_min": 70.0,
+    "follower_underreaction_min": 70.0,
+    "follower_underreaction_emerging_min": 55.0,
+    "follower_underreaction_watch_min": 40.0,
+    "follower_rs_inflection_min": 60.0,
+    "follower_confirmed_score_min": 78.0,
+    "follower_emerging_score_min": 68.0,
+    "follower_watch_score_min": 58.0,
+    "broad_pool_rs_rank_min": 65.0,
+    "leader_tuning_applied": false,
+    "leader_tuning_eligible": false,
+    "leader_tuning_reason_codes": "insufficient_candidate_sample",
+    "leader_tuning_adjustments": {}
+  },
+  "leader_quality": {
+    "leader_count": 2,
+    "label_counts": {
+      "emerging_leader": 2
+    },
+    "leader_tier_counts": {
+      "emerging": 2
+    },
+    "entry_suitability_counts": {
+      "watch": 2
+    },
+    "confidence_bucket_counts": {
+      "high": 2
+    },
+    "component_null_share": {
+      "rs_rank_true": 0.0,
+      "rs_proxy_confidence": 0.0,
+      "hidden_rs_confidence": 0.0,
+      "structure_confidence": 0.0,
+      "liquidity_quality_score": 0.0,
+      "trend_integrity_score": 0.0,
+      "structure_readiness_score": 0.0,
+      "extension_risk_score": 0.0
+    },
+    "top_10_leader_score_spread": 22.78,
+    "threshold_near_count": 1,
+    "low_confidence_count": 0,
+    "reject_reason_counts": {},
+    "extended_reason_counts": {}
+  },
+  "leader_candidate_quality": {
+    "leader_count": 4,
+    "label_counts": {
+      "emerging_leader": 2,
+      "reject": 2
+    },
+    "leader_tier_counts": {
+      "emerging": 2,
+      "reject": 2
+    },
+    "entry_suitability_counts": {
+      "watch": 2,
+      "avoid": 2
+    },
+    "confidence_bucket_counts": {
+      "high": 3,
+      "medium": 1
+    },
+    "component_null_share": {
+      "rs_rank_true": 0.0,
+      "rs_proxy_confidence": 0.0,
+      "hidden_rs_confidence": 0.0,
+      "structure_confidence": 0.0,
+      "liquidity_quality_score": 0.0,
+      "trend_integrity_score": 0.0,
+      "structure_readiness_score": 0.0,
+      "extension_risk_score": 0.0
+    },
+    "top_10_leader_score_spread": 62.77,
+    "threshold_near_count": 1,
+    "low_confidence_count": 0,
+    "reject_reason_counts": {
+      "liquidity_fail": 1,
+      "rs_fail": 2,
+      "group_fail": 2,
+      "near_high_fail": 1
+    },
+    "extended_reason_counts": {}
+  },
+  "leader_threshold_tuning": {
+    "eligible": false,
+    "leader_tuning_applied": false,
+    "reason_codes": "insufficient_candidate_sample",
+    "candidate_count": 4,
+    "leader_count": 2,
+    "leader_ratio": 0.5,
+    "high_medium_confidence_share": 1.0,
+    "low_confidence_leader_share": 0.0,
+    "component_null_share": {
+      "rs_rank_true": 0.0,
+      "rs_proxy_confidence": 0.0,
+      "hidden_rs_confidence": 0.0,
+      "structure_confidence": 0.0,
+      "liquidity_quality_score": 0.0,
+      "trend_integrity_score": 0.0,
+      "structure_readiness_score": 0.0,
+      "extension_risk_score": 0.0
+    },
+    "reject_reason_counts": {
+      "liquidity_fail": 1,
+      "rs_fail": 2,
+      "group_fail": 2,
+      "near_high_fail": 1
+    },
+    "extended_reason_counts": {},
+    "adjustments": {}
+  },
+  "counts": {
+    "pattern_excluded_pool": 1,
+    "pattern_included_candidates": 2,
+    "leaders": 2,
+    "confirmed_leaders": 0,
+    "followers": 0,
+    "high_quality_followers": 0,
+    "pairs": 0
+  }
+}

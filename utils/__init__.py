@@ -20,10 +20,6 @@ from .relative_strength import (
     calculate_rs_score_enhanced,
     calculate_rs_score,
 )
-from .yfinance_helpers import (
-    fetch_market_cap,
-    fetch_quarterly_eps_growth,
-)
 from .market_data_contract import PricePolicy
 from .indicator_helpers import (
     normalize_indicator_frame,
@@ -78,8 +74,6 @@ __all__ = [
     'check_sp500_condition',
     'calculate_rs_score_enhanced',
     'calculate_rs_score',
-    'fetch_market_cap',
-    'fetch_quarterly_eps_growth',
     'PricePolicy',
     'normalize_indicator_frame',
     'rolling_sma',

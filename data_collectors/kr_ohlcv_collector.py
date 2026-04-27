@@ -1,4 +1,4 @@
-"""KR OHLCV collector using local seed symbols and yfinance only."""
+"""KR OHLCV collector using FinanceDataReader primary fetch with yfinance fallback."""
 
 from __future__ import annotations
 
@@ -6,18 +6,34 @@ import contextlib
 import io
 import logging
 import os
+import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import yfinance as yf
 
 from config import DATA_KR_DIR
+from data_collectors.kr_reference_sources import (
+    fetch_fdr_ohlcv_frame,
+    get_kr_index_reader_symbol,
+    load_fdr_module as load_kr_fdr_module,
+)
 from data_collectors.symbol_universe import load_kr_symbol_universe
-from utils import ensure_dir
 from utils.console_runtime import bootstrap_windows_utf8
+from utils.collector_diagnostics import CollectorDiagnostics
+from utils.collector_run_state import (
+    build_collector_summary,
+    collector_tickers_for_run,
+    load_collector_run_state,
+    record_collector_symbol_status,
+    write_collector_run_state,
+)
+from utils.io_utils import ensure_dir
 from utils.market_data_contract import (
     CANONICAL_OHLCV_COLUMNS,
     LEGACY_MOJIBAKE_ALIASES,
@@ -26,10 +42,10 @@ from utils.market_data_contract import (
     normalize_ohlcv_columns,
     normalize_ohlcv_frame,
 )
-from utils.market_runtime import get_stock_metadata_path, iter_provider_symbols
+from utils.market_runtime import get_collector_run_state_path, get_stock_metadata_path, iter_provider_symbols, limit_runtime_symbols
 from utils.ohlcv_progress import format_us_style_chunk_start, format_us_style_chunk_summary
 from utils.yfinance_runtime import bootstrap_yfinance_cache
-from utils.yahoo_throttle import extend_yahoo_cooldown, wait_for_yahoo_request_slot
+from utils.yahoo_throttle import extend_yahoo_cooldown, record_yahoo_request_success, wait_for_yahoo_request_slot
 
 
 logger = logging.getLogger(__name__)
@@ -63,14 +79,37 @@ for canonical, aliases in LEGACY_MOJIBAKE_ALIASES.items():
         KR_OHLCV_COLUMN_ALIASES[alias] = canonical
 
 KR_OHLCV_CHUNK_SIZE = 10
-KR_OHLCV_CHUNK_PAUSE_SECONDS = 4.0
 KR_OHLCV_REQUEST_DELAY_SECONDS = 0.50
+KR_OHLCV_CHUNK_PAUSE_SECONDS = KR_OHLCV_REQUEST_DELAY_SECONDS
 KR_OHLCV_MAX_RETRIES = 2
 KR_OHLCV_EMPTY_RETRY_DELAY_SECONDS = 1.0
 KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS = 45.0
 KR_OHLCV_REFRESH_OVERLAP_BARS = 2
 KR_OHLCV_TARGET_BARS = 330
 KR_OHLCV_DEFAULT_LOOKBACK_DAYS = 520
+_KR_COLLECTOR_STATE_WRITE_WARNED: set[str] = set()
+_kr_collector_diagnostics_local = threading.local()
+_KR_COLLECTOR_COMPLETED_STATUSES = {"saved", "latest", "kept_existing", "delisted"}
+_KR_COLLECTOR_RETRYABLE_STATUSES = {
+    "failed",
+    "partial",
+    "rate_limited",
+    "soft_unavailable",
+}
+
+
+def _env_int(name: str, default: int) -> int:
+    try:
+        return int(os.getenv(name, str(default)) or default)
+    except (TypeError, ValueError):
+        return default
+
+
+def _kr_fdr_worker_count(total_items: int) -> int:
+    if total_items <= 1:
+        return 1
+    configured = _env_int("INVEST_PROTO_KR_FDR_WORKERS", 4)
+    return max(1, min(configured, total_items))
 
 
 def _normalize_kr_ohlcv_frame(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
@@ -95,8 +134,18 @@ def _normalize_kr_ohlcv_frame(df: pd.DataFrame, ticker: str) -> pd.DataFrame:
     return normalized[list(KR_OHLCV_STORAGE_COLUMNS)]
 
 
+def _active_kr_collector_diagnostics() -> CollectorDiagnostics | None:
+    diagnostics = getattr(_kr_collector_diagnostics_local, "diagnostics", None)
+    return diagnostics if isinstance(diagnostics, CollectorDiagnostics) else None
+
+
 def _resolve_market_day(day: datetime) -> datetime:
+    if day.tzinfo is not None:
+        day = day.astimezone(ZoneInfo("Asia/Seoul")).replace(tzinfo=None)
     current = day.replace(hour=0, minute=0, second=0, microsecond=0)
+    has_intraday_time = any((day.hour, day.minute, day.second, day.microsecond))
+    if has_intraday_time and (day.hour, day.minute) < (15, 30):
+        current -= timedelta(days=1)
     while current.weekday() >= 5:
         current -= timedelta(days=1)
     return current
@@ -128,6 +177,7 @@ def _resolve_kr_universe(
     include_kosdaq: bool,
     include_etf: bool,
     include_etn: bool,
+    fdr_module: Any | None,
 ) -> Tuple[List[str], List[Dict[str, str]]]:
     universe = load_kr_symbol_universe(
         data_dir=target_dir,
@@ -135,14 +185,15 @@ def _resolve_kr_universe(
         include_kosdaq=include_kosdaq,
         include_etf=include_etf,
         include_etn=include_etn,
+        fdr_module=fdr_module,
     )
     diagnostics: List[Dict[str, str]] = []
     if universe:
         diagnostics.append(
             {
-                "source": "local_seed",
+                "source": "fdr_listing",
                 "scope": "universe",
-                "error": "using existing KR csv files and stock_metadata_kr.csv",
+                "error": "using FinanceDataReader listings plus local KR csv files and stock_metadata_kr.csv",
             }
         )
     return universe, diagnostics
@@ -207,6 +258,7 @@ def _fetch_kr_ohlcv_via_yfinance(
 
         normalized = _normalize_kr_ohlcv_frame(history, ticker=ticker)
         if not normalized.empty:
+            record_yahoo_request_success("KR OHLCV")
             return normalized, provider_symbol, None
 
         noisy_output = sink.getvalue().strip()
@@ -214,6 +266,29 @@ def _fetch_kr_ohlcv_via_yfinance(
             last_error = noisy_output
 
     return pd.DataFrame(), None, last_error or "yfinance returned empty frame"
+
+
+def _fetch_kr_ohlcv_via_fdr(
+    *,
+    ticker: str,
+    start_dt: datetime,
+    end_dt: datetime,
+    fdr_module: Any,
+) -> Tuple[pd.DataFrame, Optional[str], Optional[str]]:
+    try:
+        frame = fetch_fdr_ohlcv_frame(
+            ticker,
+            start_yyyymmdd=start_dt.strftime("%Y-%m-%d"),
+            end_yyyymmdd=end_dt.strftime("%Y-%m-%d"),
+            fdr_module=fdr_module,
+        )
+    except Exception as exc:
+        return pd.DataFrame(), None, str(exc)
+
+    normalized = _normalize_kr_ohlcv_frame(frame, ticker=ticker)
+    if not normalized.empty:
+        return normalized, ticker, None
+    return pd.DataFrame(), None, "FinanceDataReader returned empty frame"
 
 
 def _fetch_kr_ohlcv_with_fallback(
@@ -225,13 +300,50 @@ def _fetch_kr_ohlcv_with_fallback(
     stock_client: Any,
     fdr_module: Any | None,
     provider_mode: str = "yfinance_only",
+    fdr_primary_enabled: bool = True,
+    allow_yahoo_fallback: bool = True,
 ) -> Tuple[pd.DataFrame, str, Optional[str]]:
-    del end_yyyymmdd, stock_client, fdr_module, provider_mode
-    normalized, provider_symbol, fetch_error = _fetch_kr_ohlcv_via_yfinance(
-        ticker=ticker,
-        start_dt=start_dt,
-        end_dt=end_dt,
-    )
+    del end_yyyymmdd, stock_client, provider_mode
+    fetch_error: Optional[str] = None
+    diagnostics = _active_kr_collector_diagnostics()
+    fdr_client = fdr_module if fdr_module is not None else load_kr_fdr_module(required=False)
+    if fdr_primary_enabled and fdr_client is not None:
+        if diagnostics is not None:
+            diagnostics.increment("fdr_attempts")
+        fdr_started = time.perf_counter()
+        try:
+            normalized, fdr_symbol, fetch_error = _fetch_kr_ohlcv_via_fdr(
+                ticker=ticker,
+                start_dt=start_dt,
+                end_dt=end_dt,
+                fdr_module=fdr_client,
+            )
+        finally:
+            if diagnostics is not None:
+                diagnostics.add_timing("provider_fetch_seconds", time.perf_counter() - fdr_started)
+        if not normalized.empty:
+            if diagnostics is not None:
+                diagnostics.increment("fdr_successes")
+            return normalized, f"fdr_ohlcv:{fdr_symbol}", None
+    if not allow_yahoo_fallback:
+        return pd.DataFrame(), "needs_yahoo_fallback", fetch_error or "FinanceDataReader returned empty frame"
+    if diagnostics is not None:
+        diagnostics.increment("yahoo_fetch_symbols")
+        if (not fdr_primary_enabled) or fdr_client is not None:
+            diagnostics.increment("yahoo_fallback_symbols")
+    wait_seconds = wait_for_yahoo_request_slot("KR OHLCV", min_interval=KR_OHLCV_REQUEST_DELAY_SECONDS)
+    if diagnostics is not None:
+        diagnostics.add_timing("provider_wait_seconds", float(wait_seconds or 0.0))
+    yahoo_started = time.perf_counter()
+    try:
+        normalized, provider_symbol, fetch_error = _fetch_kr_ohlcv_via_yfinance(
+            ticker=ticker,
+            start_dt=start_dt,
+            end_dt=end_dt,
+        )
+    finally:
+        if diagnostics is not None:
+            diagnostics.add_timing("provider_fetch_seconds", time.perf_counter() - yahoo_started)
     if not normalized.empty:
         return normalized, f"yfinance:{provider_symbol}", None
     return pd.DataFrame(), "unavailable", fetch_error
@@ -246,6 +358,11 @@ def _fetch_yfinance_index_ohlcv(
 ) -> pd.DataFrame:
     sink = io.StringIO()
     try:
+        wait_seconds = wait_for_yahoo_request_slot("KR OHLCV", min_interval=KR_OHLCV_REQUEST_DELAY_SECONDS)
+        diagnostics = _active_kr_collector_diagnostics()
+        if diagnostics is not None:
+            diagnostics.add_timing("provider_wait_seconds", float(wait_seconds or 0.0))
+        provider_started = time.perf_counter()
         with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
             history = yf.Ticker(provider_symbol).history(
                 start=start_dt.strftime("%Y-%m-%d"),
@@ -254,19 +371,43 @@ def _fetch_yfinance_index_ohlcv(
                 auto_adjust=False,
                 actions=True,
             )
+        if diagnostics is not None:
+            diagnostics.add_timing("provider_fetch_seconds", time.perf_counter() - provider_started)
     except Exception:
         return pd.DataFrame()
-    return _normalize_kr_ohlcv_frame(history, ticker=symbol)
+    normalized = _normalize_kr_ohlcv_frame(history, ticker=symbol)
+    if not normalized.empty:
+        record_yahoo_request_success("KR OHLCV")
+    return normalized
+
+
+def _fetch_fdr_index_ohlcv(
+    *,
+    symbol: str,
+    start_dt: datetime,
+    end_dt: datetime,
+    fdr_module: Any | None,
+) -> pd.DataFrame:
+    fdr_client = fdr_module if fdr_module is not None else load_kr_fdr_module(required=True)
+    try:
+        frame = fetch_fdr_ohlcv_frame(
+            get_kr_index_reader_symbol(symbol),
+            start_yyyymmdd=start_dt.strftime("%Y-%m-%d"),
+            end_yyyymmdd=end_dt.strftime("%Y-%m-%d"),
+            fdr_module=fdr_client,
+        )
+    except Exception:
+        return pd.DataFrame()
+    return _normalize_kr_ohlcv_frame(frame, ticker=symbol)
 
 
 def _collect_index_benchmarks(
-    stock_module: Any,
     *,
     start_yyyymmdd: str,
     end_yyyymmdd: str,
     target_dir: str,
+    fdr_module: Any | None = None,
 ) -> list[str]:
-    del stock_module
     start_dt = datetime.strptime(start_yyyymmdd, "%Y%m%d")
     end_dt = datetime.strptime(end_yyyymmdd, "%Y%m%d")
     saved: list[str] = []
@@ -275,12 +416,19 @@ def _collect_index_benchmarks(
         ("KOSDAQ", "^KQ11"),
     ]
     for symbol, provider_symbol in index_specs:
-        normalized = _fetch_yfinance_index_ohlcv(
+        normalized = _fetch_fdr_index_ohlcv(
             symbol=symbol,
-            provider_symbol=provider_symbol,
             start_dt=start_dt,
             end_dt=end_dt,
+            fdr_module=fdr_module,
         )
+        if normalized.empty:
+            normalized = _fetch_yfinance_index_ohlcv(
+                symbol=symbol,
+                provider_symbol=provider_symbol,
+                start_dt=start_dt,
+                end_dt=end_dt,
+            )
         if normalized.empty:
             continue
         out_path = os.path.join(target_dir, f"{symbol}.csv")
@@ -422,13 +570,43 @@ def _format_kr_chunk_summary(chunk_num: int, total_chunks: int, statuses: List[s
     return format_us_style_chunk_summary(chunk_num, total_chunks, statuses)
 
 
+def _collector_data_root_for_output_dir(output_dir: str) -> str:
+    target = os.path.abspath(output_dir)
+    if os.path.basename(target).lower() == "kr":
+        return os.path.dirname(target)
+    return target
+
+
+def _load_kr_collector_run_state(path: str, *, as_of_date: str) -> dict:
+    return load_collector_run_state(
+        path,
+        market="kr",
+        as_of_date=as_of_date,
+        cooldown_snapshot={},
+    )
+
+
+def _write_kr_collector_run_state(path: str, state: dict) -> None:
+    write_collector_run_state(path, state, warned_paths=_KR_COLLECTOR_STATE_WRITE_WARNED)
+
+
+def _record_kr_collector_symbol_status(state: dict, *, symbol: str, status: str) -> dict:
+    return record_collector_symbol_status(
+        state,
+        symbol=symbol,
+        status=status,
+        completed_statuses=_KR_COLLECTOR_COMPLETED_STATUSES,
+        retryable_statuses=_KR_COLLECTOR_RETRYABLE_STATUSES,
+        cooldown_snapshot={},
+    )
+
+
 def collect_kr_ohlcv_csv(
     days: int = KR_OHLCV_DEFAULT_LOOKBACK_DAYS,
     include_kosdaq: bool = True,
     include_etf: bool = True,
     include_etn: bool = True,
     *,
-    stock_module=None,
     fdr_module=None,
     output_dir: Optional[str] = None,
     tickers: Optional[List[str]] = None,
@@ -437,14 +615,15 @@ def collect_kr_ohlcv_csv(
     provider_mode: str = "yfinance_only",
 ) -> Dict[str, object]:
     """Collect KR OHLCV for all tickers and save canonical CSV files."""
+    started_perf = time.perf_counter()
+    diagnostics = CollectorDiagnostics()
     bootstrap_windows_utf8()
     bootstrap_yfinance_cache()
     requested_mode = str(provider_mode or "yfinance_only").strip().lower()
     normalized_provider_mode = "yfinance_only"
     if requested_mode not in {"", "yfinance_only", "yfinance", "yahoo"}:
         print(f"[KR] provider_mode={requested_mode} is ignored; using yfinance_only")
-
-    del stock_module, fdr_module
+    fdr_client = fdr_module if fdr_module is not None else load_kr_fdr_module(required=False)
 
     target_dir = output_dir or DATA_KR_DIR
     ensure_dir(target_dir)
@@ -455,17 +634,19 @@ def collect_kr_ohlcv_csv(
     start_yyyymmdd = start_dt.strftime("%Y%m%d")
 
     universe_errors: List[Dict[str, str]] = []
-    if tickers is not None:
-        universe = sorted({str(ticker or "").strip().upper() for ticker in tickers if str(ticker or "").strip()})
-    else:
-        universe, universe_errors = _resolve_kr_universe(
-            target_dir=target_dir,
-            include_kosdaq=include_kosdaq,
-            include_etf=include_etf,
-            include_etn=include_etn,
-        )
-        for item in universe_errors:
-            print(f"[KR] universe source: {item['source']}/{item['scope']} - {item['error']}")
+    with diagnostics.time_block("universe_resolve_seconds"):
+        if tickers is not None:
+            universe = sorted({str(ticker or "").strip().upper() for ticker in tickers if str(ticker or "").strip()})
+        else:
+            universe, universe_errors = _resolve_kr_universe(
+                target_dir=target_dir,
+                include_kosdaq=include_kosdaq,
+                include_etf=include_etf,
+                include_etn=include_etn,
+                fdr_module=fdr_client,
+            )
+            for item in universe_errors:
+                print(f"[KR] universe source: {item['source']}/{item['scope']} - {item['error']}")
 
     if not universe:
         if tickers is not None:
@@ -473,6 +654,34 @@ def collect_kr_ohlcv_csv(
         raise RuntimeError(
             "KR ticker universe is empty (no numeric symbols found in data/kr or data/stock_metadata_kr.csv)"
         )
+
+    requested_universe = limit_runtime_symbols(universe)
+    state_path = get_collector_run_state_path(
+        "kr",
+        data_dir=_collector_data_root_for_output_dir(target_dir),
+    )
+    with diagnostics.time_block("state_load_seconds"):
+        run_state = _load_kr_collector_run_state(
+            state_path,
+            as_of_date=end_dt.date().isoformat(),
+        )
+
+    def write_state_snapshot() -> None:
+        run_state["diagnostics_snapshot"] = diagnostics.snapshot()
+        with diagnostics.time_block("state_write_seconds"):
+            _write_kr_collector_run_state(state_path, run_state)
+
+    run_state["last_progress_at"] = run_state.get("last_progress_at") or datetime.now().isoformat()
+    write_state_snapshot()
+
+    with diagnostics.time_block("universe_resolve_seconds"):
+        universe = collector_tickers_for_run(
+            requested_universe,
+            run_state,
+            skip_completed=False,
+            terminal_statuses={"delisted"},
+        )
+    print(f"[KR] Runtime data collection scope - symbols={len(universe)}")
 
     status_counts = {
         "saved": 0,
@@ -486,7 +695,14 @@ def collect_kr_ohlcv_csv(
     failed_samples: List[Dict[str, str]] = []
     used_sources: set[str] = set()
 
-    def process_ticker(ticker: str) -> Tuple[str, Optional[str]]:
+    def process_ticker(
+        ticker: str,
+        *,
+        fdr_primary_enabled: bool = True,
+        allow_yahoo_fallback: bool = True,
+    ) -> Tuple[str, Optional[str]]:
+        _kr_collector_diagnostics_local.diagnostics = diagnostics
+        symbol_prepare_started = time.perf_counter()
         out_path = os.path.join(target_dir, f"{ticker}.csv")
         existing: Optional[pd.DataFrame] = None
         last_date: Optional[pd.Timestamp] = None
@@ -520,6 +736,8 @@ def collect_kr_ohlcv_csv(
                 print(f"[KR] Existing file read failed: {ticker} - {exc}")
                 existing = None
 
+        diagnostics.add_timing("symbol_prepare_seconds", time.perf_counter() - symbol_prepare_started)
+
         if fetch_start_dt.date() > end_dt.date():
             last_date_str = last_date.strftime("%Y-%m-%d") if last_date is not None else end_dt.strftime("%Y-%m-%d")
             print(f"[KR] Latest status: {ticker} (last data: {last_date_str})")
@@ -540,8 +758,6 @@ def collect_kr_ohlcv_csv(
         last_error: Optional[str] = None
 
         for attempt in range(KR_OHLCV_MAX_RETRIES):
-            wait_for_yahoo_request_slot("KR OHLCV", min_interval=KR_OHLCV_REQUEST_DELAY_SECONDS)
-
             print(
                 f"[KR] 📊 데이터 요청 중: {ticker} "
                 f"({fetch_start_dt.strftime('%Y-%m-%d')} ~ {end_dt.strftime('%Y-%m-%d')})"
@@ -552,9 +768,14 @@ def collect_kr_ohlcv_csv(
                 end_dt=end_dt,
                 end_yyyymmdd=end_yyyymmdd,
                 stock_client=None,
-                fdr_module=None,
+                fdr_module=fdr_client,
                 provider_mode=normalized_provider_mode,
+                fdr_primary_enabled=fdr_primary_enabled,
+                allow_yahoo_fallback=allow_yahoo_fallback,
             )
+
+            if provider_source == "needs_yahoo_fallback":
+                return "needs_yahoo_fallback", fetch_error
 
             if provider_source != "unavailable":
                 used_sources.add(provider_source.split(":", 1)[0])
@@ -563,7 +784,8 @@ def collect_kr_ohlcv_csv(
                 before_len = len(existing) if existing is not None else 0
                 merged = _merge_kr_ohlcv_frames(existing, normalized)
                 merged = _trim_kr_ohlcv_window(merged, start_dt)
-                merged.to_csv(out_path, index=False)
+                with diagnostics.time_block("merge_write_seconds"):
+                    merged.to_csv(out_path, index=False)
 
                 if before_len > 0:
                     delta = len(merged) - before_len
@@ -588,6 +810,7 @@ def collect_kr_ohlcv_csv(
                         f"[KR] Retry scheduled after rate limit: {ticker} "
                         f"({attempt + 1}/{KR_OHLCV_MAX_RETRIES}, wait={wait:.0f}s)"
                     )
+                    diagnostics.add_timing("retry_sleep_seconds", wait)
                     time.sleep(wait)
                     continue
                 break
@@ -598,6 +821,7 @@ def collect_kr_ohlcv_csv(
                     f"[KR] Empty response, retry scheduled: {ticker} "
                     f"({attempt + 1}/{KR_OHLCV_MAX_RETRIES}, wait={wait:.0f}s)"
                 )
+                diagnostics.add_timing("retry_sleep_seconds", wait)
                 time.sleep(wait)
                 continue
 
@@ -626,7 +850,8 @@ def collect_kr_ohlcv_csv(
                     print(f"[KR] 🚫 공급자 미지원/비활성 심볼: {ticker} - {reason}")
 
                 empty_df = pd.DataFrame(columns=list(KR_OHLCV_STORAGE_COLUMNS))
-                empty_df.to_csv(out_path, index=False)
+                with diagnostics.time_block("merge_write_seconds"):
+                    empty_df.to_csv(out_path, index=False)
                 return "delisted", last_error
 
             if existing is not None and len(existing) > 0:
@@ -644,59 +869,103 @@ def collect_kr_ohlcv_csv(
         print(f"[KR] ⚠️ 신규 데이터 수집 실패, 다음 실행에서 재시도: {ticker}")
         return "failed", last_error
 
+    def record_result(ticker: str, status: str, error: Optional[str]) -> None:
+        status_counts[status] = status_counts.get(status, 0) + 1
+        _record_kr_collector_symbol_status(run_state, symbol=ticker, status=status)
+        if status in {"failed", "rate_limited", "soft_unavailable", "delisted"} and error and len(failed_samples) < max_failed_samples:
+            failed_samples.append({"ticker": ticker, "error": error})
+
     total_chunks = (len(universe) + KR_OHLCV_CHUNK_SIZE - 1) // KR_OHLCV_CHUNK_SIZE
     for chunk_index, offset in enumerate(range(0, len(universe), KR_OHLCV_CHUNK_SIZE), start=1):
         chunk = universe[offset : offset + KR_OHLCV_CHUNK_SIZE]
         print(format_us_style_chunk_start(chunk_index, total_chunks, chunk))
 
         chunk_statuses: List[str] = []
-        for ticker in chunk:
-            status, error = process_ticker(ticker)
-            chunk_statuses.append(status)
-            status_counts[status] += 1
-            if status in {"failed", "rate_limited", "soft_unavailable", "delisted"} and error and len(failed_samples) < max_failed_samples:
-                failed_samples.append({"ticker": ticker, "error": error})
+        fdr_workers = _kr_fdr_worker_count(len(chunk)) if fdr_client is not None else 1
+        if fdr_workers > 1:
+            with ThreadPoolExecutor(max_workers=fdr_workers) as executor:
+                first_pass_results = list(
+                    executor.map(
+                        lambda ticker: process_ticker(
+                            ticker,
+                            fdr_primary_enabled=True,
+                            allow_yahoo_fallback=False,
+                        ),
+                        chunk,
+                    )
+                )
+            fallback_tickers: list[str] = []
+            for ticker, (status, error) in zip(chunk, first_pass_results):
+                if status == "needs_yahoo_fallback":
+                    fallback_tickers.append(ticker)
+                    diagnostics.increment("fdr_fallback_symbols")
+                    continue
+                chunk_statuses.append(status)
+                record_result(ticker, status, error)
+            for ticker in fallback_tickers:
+                status, error = process_ticker(
+                    ticker,
+                    fdr_primary_enabled=False,
+                    allow_yahoo_fallback=True,
+                )
+                chunk_statuses.append(status)
+                record_result(ticker, status, error)
+        else:
+            for ticker in chunk:
+                status, error = process_ticker(ticker)
+                chunk_statuses.append(status)
+                record_result(ticker, status, error)
 
+        write_state_snapshot()
         print(_format_kr_chunk_summary(chunk_index, total_chunks, chunk_statuses))
         if chunk_index < total_chunks:
+            if chunk_statuses and all(status == "latest" for status in chunk_statuses):
+                print("[KR] Chunk pause skipped - all symbols already latest")
+                continue
             pause = KR_OHLCV_RATE_LIMIT_COOLDOWN_SECONDS if "rate_limited" in chunk_statuses else KR_OHLCV_CHUNK_PAUSE_SECONDS
             print(f"⏳ {pause:.1f}초 대기 중...")
+            diagnostics.add_timing("chunk_pause_seconds", pause)
             time.sleep(pause)
 
-    benchmark_files = _collect_index_benchmarks(
-        None,
-        start_yyyymmdd=start_yyyymmdd,
-        end_yyyymmdd=end_yyyymmdd,
-        target_dir=target_dir,
-    )
+    with diagnostics.time_block("index_benchmark_seconds"):
+        benchmark_files = _collect_index_benchmarks(
+            start_yyyymmdd=start_yyyymmdd,
+            end_yyyymmdd=end_yyyymmdd,
+            target_dir=target_dir,
+            fdr_module=fdr_client,
+        )
 
     source_label = "+".join(sorted(used_sources)) if used_sources else "yfinance"
-    return {
-        "schema_version": "1.0",
-        "source": source_label,
-        "market": "kr",
-        "include_kosdaq": bool(include_kosdaq),
-        "include_etf": bool(include_etf),
-        "include_etn": bool(include_etn),
-        "as_of": end_yyyymmdd,
-        "from": start_yyyymmdd,
-        "to": end_yyyymmdd,
-        "total": len(universe),
-        "saved": status_counts["saved"],
-        "latest": status_counts["latest"],
-        "kept_existing": status_counts["kept_existing"],
-        "failed": status_counts["failed"],
-        "soft_unavailable": status_counts["soft_unavailable"],
-        "delisted": status_counts["delisted"],
-        "skipped_empty": status_counts["soft_unavailable"],
-        "rate_limited": status_counts["rate_limited"],
-        "status_counts": status_counts,
-        "failed_samples": failed_samples,
-        "benchmark_files": benchmark_files,
-        "data_dir": target_dir,
-        "sources_used": sorted(used_sources),
-        "provider_mode": normalized_provider_mode,
-    }
+    elapsed_seconds = time.perf_counter() - started_perf
+    run_state["diagnostics_snapshot"] = diagnostics.snapshot()
+    write_state_snapshot()
+    summary = build_collector_summary(
+        market="kr",
+        as_of=end_yyyymmdd,
+        requested_total=len(requested_universe),
+        run_state=run_state,
+        elapsed_seconds=elapsed_seconds,
+        failed_samples=failed_samples,
+        retryable_statuses=_KR_COLLECTOR_RETRYABLE_STATUSES,
+        hard_failure_statuses={"failed"},
+        extra={
+            "source": source_label,
+            "include_kosdaq": bool(include_kosdaq),
+            "include_etf": bool(include_etf),
+            "include_etn": bool(include_etn),
+            "from": start_yyyymmdd,
+            "to": end_yyyymmdd,
+            "skipped_empty": int((run_state.get("status_counts") or {}).get("soft_unavailable", 0) or 0),
+            "benchmark_files": benchmark_files,
+            "data_dir": target_dir,
+            "sources_used": sorted(used_sources),
+            "provider_mode": normalized_provider_mode,
+            "collector_state_path": state_path,
+            "timings": diagnostics.timings(process_total_seconds=elapsed_seconds),
+            "collector_diagnostics": diagnostics.snapshot(),
+        },
+    )
+    return summary
 
 
 if __name__ == "__main__":

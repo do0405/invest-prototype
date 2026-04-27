@@ -1,6 +1,8 @@
 from __future__ import annotations
+from concurrent.futures import ThreadPoolExecutor
 import json
 import os
+import time
 from datetime import datetime
 from typing import Any, Callable, Iterable, Mapping, Sequence
 import numpy as np
@@ -19,17 +21,26 @@ from utils.indicator_helpers import (
 )
 
 from utils.io_utils import safe_filename
-from utils.market_data_contract import PricePolicy, load_local_ohlcv_frame
+from utils.market_data_contract import PricePolicy, load_local_ohlcv_frame, load_local_ohlcv_frames_ordered
+from utils.exchange_calendar import resolve_latest_completed_as_of
 
 from utils.market_runtime import (
     ensure_market_dirs,
+    get_benchmark_candidates,
     get_financial_cache_dir,
+    get_market_data_dir,
+    get_market_source_registry_snapshot_path,
     get_market_screeners_root,
+    get_primary_benchmark_symbol,
+    is_index_symbol,
+    limit_runtime_symbols,
+    results_root_override_active,
     get_signal_engine_results_dir,
     get_peg_imminent_results_dir,
     get_stock_metadata_path,
     market_key,
 )
+from utils.runtime_context import RuntimeContext
 from utils.screener_utils import save_screening_results
 from utils.symbol_normalization import (
     normalize_provider_symbol_value,
@@ -40,6 +51,7 @@ from utils.typing_utils import frame_keyed_records, row_to_record
 
 from . import cycle_store as _cycle_store
 from . import metrics as _signal_metrics
+from . import patterns as _signal_patterns
 from . import source_registry as _source_registry
 from screeners import leader_core_bridge as _market_intel_bridge
 from . import writers as _signal_writers
@@ -47,6 +59,7 @@ from . import writers as _signal_writers
 from screeners.qullamaggie.core import QullamaggieAnalyzer, _safe_bool, _safe_float
 from screeners.source_contracts import (
     CANONICAL_SOURCE_SPECS,
+    normalize_source_disposition as _normalize_source_disposition,
     primary_source_style as _shared_primary_source_style,
     source_engine_bonus as _shared_source_engine_bonus,
     source_priority_score as _shared_source_priority_score,
@@ -73,6 +86,8 @@ _ANALYZER = QullamaggieAnalyzer()
 
 
 _SOURCE_SPECS = CANONICAL_SOURCE_SPECS
+_ALL_SCOPE = "all"
+_SCREENED_SCOPE = "screened"
 
 _FAMILY_STYLE_FIT = {
     "TF_REGULAR_PULLBACK": {
@@ -282,9 +297,225 @@ _LABELS = {
     "UG_COMBO_SQUEEZE": "UG Combo Squeeze | UG_COMBO_SQUEEZE",
 }
 
+_FINAL_CLOSE_SIGNAL_CODES = frozenset(
+    {
+        "TF_SELL_RESISTANCE_REJECT",
+        "TF_SELL_BREAKDOWN",
+        "TF_SELL_CHANNEL_BREAK",
+        "TF_SELL_TRAILING_BREAK",
+        "TF_SELL_MOMENTUM_END",
+        "UG_SELL_PBS",
+        "UG_SELL_BREAKDOWN",
+    }
+)
+
+_TRIM_SIGNAL_CODES = frozenset(
+    {
+        "TF_SELL_TP1",
+        "TF_SELL_TP2",
+        "UG_SELL_MR_SHORT",
+    }
+)
+
+_STATE_SIGNAL_CODES = frozenset(
+    {
+        "TF_SETUP_ACTIVE",
+        "TF_VCP_ACTIVE",
+        "TF_BUILDUP_READY",
+        "TF_AGGRESSIVE_ALERT",
+        "TF_ADDON_READY",
+        "TF_ADDON_SLOT1_READY",
+        "TF_ADDON_SLOT2_READY",
+        "TF_TRAILING_LEVEL",
+        "TF_PROTECTED_STOP_LEVEL",
+        "TF_BREAKEVEN_LEVEL",
+        "TF_TP1_LEVEL",
+        "TF_TP2_LEVEL",
+        "UG_STATE_GREEN",
+        "UG_STATE_ORANGE",
+        "UG_STATE_RED",
+        "UG_NH60",
+        "UG_VOL2X",
+        "UG_W",
+        "UG_VCP",
+        "UG_SQUEEZE",
+        "UG_TIGHT",
+        "UG_COMBO_TREND",
+        "UG_COMBO_PULLBACK",
+        "UG_COMBO_SQUEEZE",
+    }
+)
+
+_OPEN_SIGNAL_CODES = frozenset(
+    {
+        "TF_BUY_REGULAR",
+        "TF_BUY_BREAKOUT",
+        "TF_BUY_PEG_PULLBACK",
+        "TF_BUY_PEG_REBREAK",
+        "TF_BUY_MOMENTUM",
+        "UG_BUY_BREAKOUT",
+        "UG_BUY_SQUEEZE_BREAKOUT",
+        "UG_BUY_PBB",
+        "UG_BUY_MR_LONG",
+    }
+)
+
+_INDICATOR_DOG_RULE_IDS = {
+    "TF_BUY_REGULAR": ("IDOG.TF.REGULAR_PULLBACK",),
+    "TF_BUY_BREAKOUT": ("IDOG.TF.BREAKOUT_BB_VOL",),
+    "TF_BUY_PEG_PULLBACK": ("IDOG.TF.PEG_R50_REBREAK",),
+    "TF_BUY_PEG_REBREAK": ("IDOG.TF.PEG_R50_REBREAK",),
+    "TF_BUY_MOMENTUM": ("IDOG.TF.MOMENTUM_CHASE",),
+    "TF_ADDON_PYRAMID": ("IDOG.TF.PYRAMID_WINNER",),
+    "TF_SELL_BREAKDOWN": ("IDOG.TF.SUPPORT_FAIL_EXIT",),
+    "TF_SELL_CHANNEL_BREAK": ("IDOG.TF.CHANNEL_BREAK_EXIT",),
+    "TF_SELL_TRAILING_BREAK": ("IDOG.TF.TRAILING_RATCHET",),
+    "TF_SELL_TP1": ("IDOG.TF.R_MULTIPLE_TP",),
+    "TF_SELL_TP2": ("IDOG.TF.R_MULTIPLE_TP",),
+    "TF_SELL_MOMENTUM_END": ("IDOG.TF.MOMENTUM_CHASE",),
+    "TF_SELL_RESISTANCE_REJECT": ("IDOG.TF.FAILED_RECLAIM_EXIT",),
+    "TF_SETUP_ACTIVE": ("IDOG.TF.BUILDUP_VCP",),
+    "TF_BUILDUP_READY": ("IDOG.TF.BUILDUP_VCP",),
+    "TF_VCP_ACTIVE": ("IDOG.TF.BUILDUP_VCP",),
+    "TF_AGGRESSIVE_ALERT": ("IDOG.TF.AGGRESSIVE_ALERT",),
+    "TF_ADDON_READY": ("IDOG.TF.ADDON_READY",),
+    "TF_ADDON_SLOT1_READY": ("IDOG.TF.ADDON_READY",),
+    "TF_ADDON_SLOT2_READY": ("IDOG.TF.ADDON_READY",),
+    "TF_TRAILING_LEVEL": ("IDOG.TF.LEVEL_PROVENANCE",),
+    "TF_PROTECTED_STOP_LEVEL": ("IDOG.TF.LEVEL_PROVENANCE",),
+    "TF_BREAKEVEN_LEVEL": ("IDOG.TF.LEVEL_PROVENANCE",),
+    "TF_TP1_LEVEL": ("IDOG.TF.LEVEL_PROVENANCE", "IDOG.TF.R_MULTIPLE_TP"),
+    "TF_TP2_LEVEL": ("IDOG.TF.LEVEL_PROVENANCE", "IDOG.TF.R_MULTIPLE_TP"),
+    "UG_STATE_GREEN": ("IDOG.UG.STATE_TRAFFIC_LIGHT", "IDOG.UG.VALIDATION_SCORE"),
+    "UG_STATE_ORANGE": ("IDOG.UG.STATE_TRAFFIC_LIGHT", "IDOG.UG.VALIDATION_SCORE"),
+    "UG_STATE_RED": ("IDOG.UG.STATE_TRAFFIC_LIGHT", "IDOG.UG.VALIDATION_SCORE"),
+    "UG_NH60": ("IDOG.UG.GP_NH60", "IDOG.UG.VALIDATION_SCORE"),
+    "UG_VOL2X": ("IDOG.UG.GP_VOL2X", "IDOG.UG.VALIDATION_SCORE"),
+    "UG_W": ("IDOG.UG.GP_W", "IDOG.UG.VALIDATION_SCORE"),
+    "UG_VCP": ("IDOG.UG.GP_VCP",),
+    "UG_SQUEEZE": ("IDOG.UG.SIGMA_SQUEEZE",),
+    "UG_TIGHT": ("IDOG.UG.SIGMA_SQUEEZE",),
+    "UG_BUY_BREAKOUT": (
+        "IDOG.UG.VALIDATION_SCORE",
+        "IDOG.UG.GP_NH60",
+        "IDOG.UG.SIGMA_BO",
+    ),
+    "UG_BUY_SQUEEZE_BREAKOUT": (
+        "IDOG.UG.VALIDATION_SCORE",
+        "IDOG.UG.GP_NH60",
+        "IDOG.UG.SIGMA_BO",
+        "IDOG.UG.SIGMA_SQUEEZE",
+    ),
+    "UG_BUY_PBB": ("IDOG.UG.VALIDATION_SCORE", "IDOG.UG.SIGMA_PBB"),
+    "UG_BUY_MR_LONG": ("IDOG.UG.VALIDATION_SCORE", "IDOG.UG.SIGMA_MR_LONG"),
+    "UG_SELL_PBS": ("IDOG.UG.SIGMA_PBS",),
+    "UG_SELL_BREAKDOWN": ("IDOG.UG.VALIDATION_SCORE", "IDOG.UG.SIGMA_BREAKDOWN"),
+    "UG_SELL_MR_SHORT": ("IDOG.UG.SIGMA_MR_SHORT",),
+    "UG_COMBO_TREND": ("IDOG.UG.STATE_TRAFFIC_LIGHT", "IDOG.UG.SIGMA_BO"),
+    "UG_COMBO_PULLBACK": ("IDOG.UG.SIGMA_PBB",),
+    "UG_COMBO_SQUEEZE": ("IDOG.UG.SIGMA_SQUEEZE",),
+}
+
 
 def _safe_text(value: Any) -> str:
     return str(value or "").strip()
+
+
+def _default_cycle_effect(signal_code: Any, action_type: Any, signal_kind: Any) -> str:
+    code = _safe_text(signal_code).upper()
+    action = _safe_text(action_type).upper()
+    kind = _safe_text(signal_kind).upper()
+    if code in _TRIM_SIGNAL_CODES:
+        return "TRIM"
+    if code in _FINAL_CLOSE_SIGNAL_CODES:
+        return "CLOSE"
+    if code == "TF_ADDON_PYRAMID" and action == "BUY":
+        return "ADD"
+    if code in _OPEN_SIGNAL_CODES and action == "BUY":
+        return "OPEN"
+    if code in _STATE_SIGNAL_CODES or kind in {"STATE", "AUX"} or action == "STATE":
+        return "STATE"
+    return "NONE"
+
+
+def _raise_isolated_results_prerequisite_error(
+    *,
+    phase: str,
+    snapshot_path: str,
+    expected_paths: Sequence[str],
+) -> None:
+    examples = ", ".join(str(path) for path in list(expected_paths)[:3])
+    if len(expected_paths) > 3:
+        examples = f"{examples}, ..."
+    raise ValueError(
+        f"{phase} prerequisite screening artifacts are missing under isolated results root. "
+        f"Expected source registry snapshot at {snapshot_path} or at least one screening artifact such as {examples}"
+    )
+
+
+def _indicator_dog_rule_ids_for(signal_code: Any) -> list[str]:
+    return list(_INDICATOR_DOG_RULE_IDS.get(_safe_text(signal_code).upper(), ()))
+
+
+_PUBLIC_PROJECTION_INTERNAL_FIELDS = {
+    "bb_percent_b",
+    "bb_z_score",
+    "pocket_pivot_score",
+    "volume_quality_reason_codes",
+    "ug_pbb_score",
+    "ug_pbs_score",
+    "ug_mr_long_score",
+    "ug_mr_short_score",
+    "band_reversion_reason_codes",
+}
+
+
+def _has_band_reversion_diagnostics(metrics: Mapping[str, Any]) -> bool:
+    return any(
+        key in metrics
+        for key in (
+            "bb_percent_b",
+            "bb_z_score",
+            "ug_pbb_score",
+            "ug_pbs_score",
+            "ug_mr_long_score",
+            "ug_mr_short_score",
+            "band_reversion_reason_codes",
+        )
+    )
+
+
+def _band_reversion_from_metrics(metrics: Mapping[str, Any]) -> dict[str, Any]:
+    return _signal_patterns.score_band_reversion(pd.DataFrame(), metrics)
+
+
+def _never_down_level(
+    candidate: float | None,
+    *references: float | None,
+) -> float | None:
+    values = [value for value in [candidate, *references] if value is not None]
+    if not values:
+        return None
+    return max(values)
+
+
+def _record_position_effect(
+    row: dict[str, Any],
+    *,
+    cycle_effect: str,
+    before: float | None,
+    after: float | None,
+) -> None:
+    row["cycle_effect"] = cycle_effect
+    row["position_units_before"] = (
+        None if before is None else round(float(before), 4)
+    )
+    row["position_units_after"] = None if after is None else round(float(after), 4)
+    row["position_delta_units"] = (
+        None
+        if before is None or after is None
+        else round(float(after) - float(before), 4)
+    )
 
 
 def _coerce_date(value: Any) -> pd.Timestamp | None:
@@ -306,6 +537,40 @@ def _date_to_str(value: Any) -> str | None:
         return None
 
     return parsed.strftime("%Y-%m-%d")
+
+
+def _resolve_runtime_as_of_date(market: str, as_of_date: Any) -> str:
+    explicit = _date_to_str(as_of_date)
+    if explicit:
+        return explicit
+
+    normalized_market = market_key(market)
+    benchmark_as_of = None
+    for candidate in get_benchmark_candidates(normalized_market):
+        try:
+            frame = load_local_ohlcv_frame(
+                normalized_market,
+                candidate,
+                price_policy=PricePolicy.SPLIT_ADJUSTED,
+            )
+        except Exception:
+            continue
+        if frame.empty or "date" not in frame.columns:
+            continue
+        latest = _date_to_str(frame.iloc[-1]["date"])
+        if latest:
+            benchmark_as_of = latest
+            break
+
+    resolution = resolve_latest_completed_as_of(
+        market=normalized_market,
+        explicit_as_of=None,
+        benchmark_as_of=benchmark_as_of,
+    )
+    if resolution.as_of_date:
+        return resolution.as_of_date
+
+    return datetime.now().strftime("%Y-%m-%d")
 
 
 def _next_business_day(value: Any) -> str | None:
@@ -838,6 +1103,205 @@ def _sorted_signal_rows(rows: Iterable[Mapping[str, Any]]) -> list[dict[str, Any
     return [dict(row) for row in sorted(rows, key=sort_key)]
 
 
+def _env_int_default(name: str, default: int) -> int:
+    try:
+        return int(os.getenv(name, str(default)) or default)
+    except (TypeError, ValueError):
+        return default
+
+
+def _resolved_parallel_workers(
+    total_items: int,
+    cap: int = 8,
+    *,
+    env_var: str | None = None,
+) -> int:
+    if total_items <= 1:
+        return 1
+    resolved_cap = _env_int_default(env_var, cap) if env_var else cap
+    return max(1, min(resolved_cap, total_items))
+
+
+def _normalize_scope(value: Any, *, default: str = _SCREENED_SCOPE) -> str:
+    text = _safe_text(value).lower()
+    if text in {_ALL_SCOPE, _SCREENED_SCOPE}:
+        return text
+    return default
+
+
+def _source_buy_eligible(
+    source_entry: Mapping[str, Any],
+    *,
+    symbol: str,
+    peg_ready_map: Mapping[str, Mapping[str, Any]],
+    peg_event_history_map: Mapping[str, Mapping[str, Any]] | None = None,
+) -> bool:
+    peg_history = peg_event_history_map or {}
+    return bool(
+        _normalize_source_disposition(source_entry.get("source_disposition"))
+        == "buy_eligible"
+        or source_entry.get("source_buy_eligible")
+        or source_entry.get("buy_eligible")
+        or symbol in peg_ready_map
+        or symbol in peg_history
+    )
+
+
+def _source_disposition(
+    source_entry: Mapping[str, Any],
+    *,
+    symbol: str,
+    peg_ready_map: Mapping[str, Mapping[str, Any]],
+    peg_event_history_map: Mapping[str, Mapping[str, Any]] | None = None,
+) -> str:
+    peg_history = peg_event_history_map or {}
+    explicit = _normalize_source_disposition(source_entry.get("source_disposition"))
+    if explicit in {"buy_eligible", "watch_only"}:
+        return explicit
+    if bool(source_entry.get("source_buy_eligible") or source_entry.get("buy_eligible")):
+        return "buy_eligible"
+    if bool(source_entry.get("watch_only")):
+        return "watch_only"
+    if symbol in peg_ready_map or symbol in peg_history:
+        return "buy_eligible"
+    return ""
+
+
+def _public_source_disposition(
+    source_entry: Mapping[str, Any],
+    *,
+    symbol: str,
+    scope: str,
+    scope_symbols: set[str],
+    screened_symbols: set[str],
+    peg_ready_map: Mapping[str, Mapping[str, Any]],
+    peg_event_history_map: Mapping[str, Mapping[str, Any]] | None = None,
+) -> str:
+    disposition = _source_disposition(
+        source_entry,
+        symbol=symbol,
+        peg_ready_map=peg_ready_map,
+        peg_event_history_map=peg_event_history_map,
+    )
+    if disposition:
+        return disposition
+    if (
+        _normalize_scope(scope) == _ALL_SCOPE
+        and symbol in scope_symbols
+        and symbol not in screened_symbols
+    ):
+        return "discovery_only"
+    return ""
+
+
+def _scope_local_cycle_map(
+    active_cycles: Mapping[tuple[Any, ...], Mapping[str, Any]],
+    *,
+    scope: str,
+) -> dict[tuple[str, str, str], dict[str, Any]]:
+    normalized_scope = _normalize_scope(scope)
+    localized: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for key, cycle in active_cycles.items():
+        if len(key) >= 4:
+            cycle_scope = _normalize_scope(key[0])
+            engine = _safe_text(key[1])
+            family = _safe_text(key[2])
+            symbol = _safe_text(key[3]).upper()
+        else:
+            cycle_scope = _normalize_scope(cycle.get("scope"))
+            engine = _safe_text(key[0]) if len(key) >= 1 else ""
+            family = _safe_text(key[1]) if len(key) >= 2 else ""
+            symbol = _safe_text(key[2]).upper() if len(key) >= 3 else ""
+        if cycle_scope != normalized_scope or not engine or not family or not symbol:
+            continue
+        localized[(engine, family, symbol)] = {**dict(cycle), "scope": cycle_scope}
+    return localized
+
+
+def _history_rows_for_scope(
+    rows: Iterable[Mapping[str, Any]],
+    *,
+    scope: str,
+) -> list[dict[str, Any]]:
+    normalized_scope = _normalize_scope(scope)
+    selected: list[dict[str, Any]] = []
+    for row in rows:
+        row_scope = _normalize_scope(row.get("scope"))
+        if row_scope != normalized_scope:
+            continue
+        selected.append({**dict(row), "scope": row_scope})
+    return selected
+
+
+def _scope_signal_rows(
+    rows: Iterable[Mapping[str, Any]],
+    *,
+    scope: str,
+    scope_symbols: set[str],
+    screened_symbols: set[str],
+    source_registry: Mapping[str, Mapping[str, Any]],
+    peg_ready_map: Mapping[str, Mapping[str, Any]],
+    peg_event_history_map: Mapping[str, Mapping[str, Any]] | None = None,
+) -> list[dict[str, Any]]:
+    scoped_rows: list[dict[str, Any]] = []
+    normalized_scope = _normalize_scope(scope)
+    for row in rows:
+        updated = dict(row)
+        symbol = _safe_text(updated.get("symbol")).upper()
+        source_entry = source_registry.get(symbol, {})
+        updated["scope"] = normalized_scope
+        updated["is_screened"] = symbol in screened_symbols
+        updated["buy_eligible"] = symbol in scope_symbols
+        updated["source_buy_eligible"] = _source_buy_eligible(
+            source_entry,
+            symbol=symbol,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        updated["source_disposition"] = _public_source_disposition(
+            source_entry,
+            symbol=symbol,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbols,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        scoped_rows.append(updated)
+    return _sorted_signal_rows(scoped_rows)
+
+
+def _default_signal_source_entry(
+    symbol: str,
+    *,
+    peg_ready_map: Mapping[str, Mapping[str, Any]],
+    peg_event_history_map: Mapping[str, Mapping[str, Any]],
+) -> dict[str, Any]:
+    peg_capable = symbol in peg_ready_map or symbol in peg_event_history_map
+    return {
+        "symbol": symbol,
+        "source_disposition": "buy_eligible" if peg_capable else "",
+        "source_buy_eligible": peg_capable,
+        "buy_eligible": peg_capable,
+        "watch_only": False,
+        "screen_stage": "PEG_READY" if peg_capable else "",
+        "source_tags": ["PEG_READY"] if peg_capable else [],
+        "source_overlap_bonus": 0.0,
+    }
+
+
+def _annotate_buy_candidate_row(
+    row: Mapping[str, Any],
+    *,
+    legacy_visible: bool,
+    artifact_action_type: str,
+) -> dict[str, Any]:
+    updated = dict(row)
+    updated["_legacy_visible"] = bool(legacy_visible)
+    updated["_artifact_action_type"] = _safe_text(artifact_action_type).upper()
+    return updated
+
+
 def _history_merge_rows(
     existing_rows: Iterable[Mapping[str, Any]],
     new_rows: Iterable[Mapping[str, Any]],
@@ -858,52 +1322,6 @@ def _history_merge_rows(
             merged[key] = record
 
     return _sorted_signal_rows(merged.values())
-
-
-def _pick_latest_lead_hit(
-    hits: Iterable[Mapping[str, Any]],
-    *,
-    screen_date: str,
-    max_business_days: int,
-) -> dict[str, Any] | None:
-
-    candidates: list[tuple[int, pd.Timestamp, dict[str, Any]]] = []
-
-    for raw in hits:
-
-        signal_date = _date_to_str(raw.get("signal_date"))
-
-        if signal_date is None:
-
-            continue
-
-        business_days = _business_days_between(signal_date, screen_date)
-
-        if (
-            business_days is None
-            or business_days < 1
-            or business_days > max_business_days
-        ):
-
-            continue
-
-        signal_ts = _coerce_date(signal_date)
-
-        if signal_ts is None:
-
-            continue
-
-        candidates.append((business_days, signal_ts, dict(raw)))
-
-    if not candidates:
-
-        return None
-
-    business_days, _, hit = min(candidates, key=lambda item: (item[0], -item[1].value))
-
-    hit["lead_buy_days_before_screen"] = business_days
-
-    return hit
 
 
 _ACTIVE_SIGNAL_CODES = frozenset(_LABELS)
@@ -1077,6 +1495,11 @@ def _build_signal_row(
     reference_target_level: float | None = None,
     reference_exit_signal: str = "",
     contract_version: str = _CONTRACT_VERSION_V2,
+    cycle_effect: str = "",
+    position_units_before: float | None = None,
+    position_units_after: float | None = None,
+    position_delta_units: float | None = None,
+    indicator_dog_rule_ids: Iterable[str] | None = None,
     source_tags: Iterable[str] | None = None,
     reason_codes: Iterable[str] | None = None,
     quality_flags: Iterable[str] | None = None,
@@ -1114,6 +1537,15 @@ def _build_signal_row(
     resolved_source_fit_label = _safe_text(
         source_fit_label
     ) or _family_source_fit_label(float(resolved_source_fit_score or 0.0))
+    resolved_cycle_effect = _safe_text(cycle_effect).upper() or _default_cycle_effect(
+        signal_code, action_type, signal_kind
+    )
+    resolved_indicator_dog_rule_ids = list(
+        dict.fromkeys(
+            _to_list(indicator_dog_rule_ids)
+            or _indicator_dog_rule_ids_for(signal_code)
+        )
+    )
     return {
         "signal_date": signal_day,
         "intended_action_date": _next_business_day(signal_day),
@@ -1240,6 +1672,23 @@ def _build_signal_row(
         ),
         "reference_exit_signal": _safe_text(reference_exit_signal),
         "contract_version": _safe_text(contract_version) or _CONTRACT_VERSION_V2,
+        "cycle_effect": resolved_cycle_effect,
+        "position_units_before": (
+            None
+            if position_units_before is None
+            else round(float(position_units_before), 4)
+        ),
+        "position_units_after": (
+            None
+            if position_units_after is None
+            else round(float(position_units_after), 4)
+        ),
+        "position_delta_units": (
+            None
+            if position_delta_units is None
+            else round(float(position_delta_units), 4)
+        ),
+        "indicator_dog_rule_ids": resolved_indicator_dog_rule_ids,
         "source_tags": resolved_source_tags,
         "reason_codes": list(dict.fromkeys(_to_list(reason_codes))),
         "quality_flags": list(dict.fromkeys(_to_list(quality_flags))),
@@ -1273,13 +1722,25 @@ def _v2_signal_row(row: Mapping[str, Any]) -> dict[str, Any] | None:
     return updated
 
 
+def _strip_internal_signal_fields(row: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        key: value
+        for key, value in dict(row).items()
+        if not key.startswith("_") and key not in _PUBLIC_PROJECTION_INTERNAL_FIELDS
+    }
+
+
 def _transform_signal_rows(
     rows: Iterable[Mapping[str, Any]],
+    *,
+    strip_internal: bool = True,
 ) -> list[dict[str, Any]]:
     transformed: list[dict[str, Any]] = []
     for row in rows:
         updated = _v2_signal_row(row)
         if updated is not None:
+            if strip_internal:
+                updated = _strip_internal_signal_fields(updated)
             transformed.append(updated)
     return _sorted_signal_rows(transformed)
 
@@ -1338,6 +1799,9 @@ def _market_condition_is_strong(state: Any) -> bool:
 def _apply_shared_market_truth_to_registry(
     registry: dict[str, dict[str, Any]],
     market_truth: _market_intel_bridge.MarketTruthSnapshot,
+    *,
+    market_truth_source: str,
+    core_overlay_applied: bool,
 ) -> dict[str, dict[str, Any]]:
     market_state = _market_intel_bridge.shared_market_alias_to_signal_state(market_truth.market_alias)
     market_reason = _market_intel_bridge.market_truth_reason(market_truth)
@@ -1354,6 +1818,8 @@ def _apply_shared_market_truth_to_registry(
         entry["breadth_state"] = market_truth.breadth_state
         entry["concentration_state"] = market_truth.concentration_state
         entry["leadership_state"] = market_truth.leadership_state
+        entry["market_truth_source"] = market_truth_source
+        entry["core_overlay_applied"] = core_overlay_applied
     return registry
 
 
@@ -1611,6 +2077,102 @@ def _apply_update_snapshot_rows(
         updated["conviction_reason"] = _conviction_reason(metrics, updated)
         updated_rows.append(updated)
     return updated_rows
+
+
+def _project_scoped_signal_rows(
+    rows: Iterable[Mapping[str, Any]],
+    *,
+    as_of_date: str,
+    scope_symbols: Iterable[str] | None = None,
+    signal_side: str,
+) -> list[dict[str, Any]]:
+    normalized_scope = (
+        {
+            _safe_text(symbol).upper()
+            for symbol in scope_symbols
+            if _safe_text(symbol)
+        }
+        if scope_symbols is not None
+        else None
+    )
+    normalized_side = _safe_text(signal_side).upper()
+    projected: list[dict[str, Any]] = []
+
+    for row in rows:
+        symbol = _safe_text(row.get("symbol")).upper()
+        if normalized_scope is not None and symbol not in normalized_scope:
+            continue
+        if _date_to_str(row.get("signal_date")) != as_of_date:
+            continue
+
+        updated = dict(row)
+        if normalized_side == "BUY":
+            if _safe_text(updated.get("_artifact_action_type")).upper() != "BUY":
+                continue
+            updated["action_type"] = "BUY"
+        elif _safe_text(updated.get("action_type")).upper() not in {"SELL", "EXIT", "TRIM"}:
+            continue
+
+        projected.append(_strip_internal_signal_fields(updated))
+
+    return _sorted_signal_rows(projected)
+
+
+def _count_signal_rows_by(
+    rows: Iterable[Mapping[str, Any]],
+    field: str,
+    *,
+    default: str,
+) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for row in rows:
+        key = _safe_text(row.get(field)).upper() or default
+        counts[key] = counts.get(key, 0) + 1
+    return dict(sorted(counts.items()))
+
+
+def _build_buy_signal_segment_summary(
+    *,
+    all_rows: Iterable[Mapping[str, Any]],
+    screened_rows: Iterable[Mapping[str, Any]],
+) -> dict[str, Any]:
+    all_list = list(all_rows)
+    screened_list = list(screened_rows)
+    return {
+        "all_total": len(all_list),
+        "screened_total": len(screened_list),
+        "all_only_discovery_total": sum(
+            1
+            for row in all_list
+            if _normalize_scope(row.get("scope")) == _ALL_SCOPE
+            and _safe_text(row.get("source_disposition")).lower() == "discovery_only"
+        ),
+        "all_source_disposition_counts": _count_signal_rows_by(
+            all_list,
+            "source_disposition",
+            default="UNSPECIFIED",
+        ),
+        "all_source_fit_label_counts": _count_signal_rows_by(
+            all_list,
+            "source_fit_label",
+            default="NONE",
+        ),
+        "screened_source_fit_label_counts": _count_signal_rows_by(
+            screened_list,
+            "source_fit_label",
+            default="NONE",
+        ),
+        "all_signal_code_counts": _count_signal_rows_by(
+            all_list,
+            "signal_code",
+            default="UNKNOWN",
+        ),
+        "screened_signal_code_counts": _count_signal_rows_by(
+            screened_list,
+            "signal_code",
+            default="UNKNOWN",
+        ),
+    }
 
 
 class PEGImminentScreener:
@@ -1889,6 +2451,9 @@ def _build_metrics(
     feature_row: Mapping[str, Any],
     source_entry: Mapping[str, Any],
 ) -> dict[str, Any]:
+    if frame.empty:
+        return {"symbol": symbol, "daily": pd.DataFrame()}
+
     daily = normalize_indicator_frame(
         frame, symbol=symbol, price_policy=PricePolicy.SPLIT_ADJUSTED
     )
@@ -1896,6 +2461,24 @@ def _build_metrics(
     if daily.empty:
 
         return {"symbol": symbol, "daily": daily}
+
+    if len(daily) < 2:
+        close = pd.to_numeric(daily["close"], errors="coerce")
+        high = pd.to_numeric(daily["high"], errors="coerce")
+        low = pd.to_numeric(daily["low"], errors="coerce")
+        open_ = pd.to_numeric(daily["open"], errors="coerce")
+        volume = pd.to_numeric(daily["volume"], errors="coerce")
+        return {
+            "symbol": symbol,
+            "market": market,
+            "date": _date_to_str(daily.iloc[-1]["date"]),
+            "daily": daily,
+            "close": _safe_float(close.iloc[-1]),
+            "open": _safe_float(open_.iloc[-1]),
+            "high": _safe_float(high.iloc[-1]),
+            "low": _safe_float(low.iloc[-1]),
+            "volume": _safe_float(volume.iloc[-1]),
+        }
 
     close = pd.to_numeric(daily["close"], errors="coerce")
 
@@ -1956,6 +2539,8 @@ def _build_metrics(
         if avg_volume_20 and latest_volume is not None:
 
             rvol20 = latest_volume / avg_volume_20
+
+    bullish_rvol50 = _signal_patterns.bullish_rvol50(daily)
 
     prev_close = _safe_float(close.iloc[-2]) if len(close) >= 2 else None
 
@@ -2108,25 +2693,21 @@ def _build_metrics(
             * 100.0
         )
 
-    tight_active = bool(
-        (atr_pct_value or 999.0) <= 2.5
-        or (_safe_float(feature_row.get("compression_score")) or 0.0) >= 72.0
-    )
+    tight_active = _signal_patterns.detect_tight_range(daily)
     squeeze_active = bool(
         (bb_width_pct or 999.0) <= 12.0 and (atr_pct_value or 999.0) <= 2.5
     )
-    volume_dry = _dry_volume(daily)
+    volume_dry = _signal_patterns.detect_dry_volume(daily)
 
-    vcp_active = bool(
-        (_safe_float(feature_row.get("compression_score")) or 0.0) >= 68.0
-        and volume_dry
-        and tight_active
-    )
+    vcp_active = False
     nh60 = bool(
         prior_high60 and (_safe_float(close.iloc[-1]) or 0.0) >= prior_high60 * 0.995
     )
 
-    w_active = _detect_double_bottom(daily)
+    w_features = _signal_patterns.detect_w_pattern(daily)
+    w_pending = bool(w_features.get("w_pending"))
+    w_confirmed = bool(w_features.get("w_confirmed"))
+    w_active = bool(w_pending or w_confirmed)
 
     above_200ma = bool(
         _safe_float(sma200.iloc[-1])
@@ -2195,6 +2776,16 @@ def _build_metrics(
         and close_value is not None
         and close_value <= channel_low8
     )
+    vcp_features = _signal_patterns.detect_vcp_features(
+        daily,
+        volume_dry=volume_dry,
+        tight_active=tight_active,
+        bullish_rvol50_value=bullish_rvol50,
+        close_position_pct=close_position_pct,
+        risk_heat=risk_heat,
+    )
+    vcp_active = bool(vcp_features.get("vcp_setup_active"))
+    pocket_pivot_features = _signal_patterns.detect_pocket_pivot(daily)
     atr_pct_series = pd.Series(index=close.index, dtype=float)
     close_abs = close.abs().replace(0, np.nan)
     if not atr14_series.empty:
@@ -2418,7 +3009,7 @@ def _build_metrics(
         and not ema_turn_down
         and breakout_anchor_clear
         and breakout_band_clear
-        and ((_safe_float(rvol20) or 0.0) >= 1.5)
+        and ((_safe_float(bullish_rvol50) or 0.0) >= 1.5)
         and breakout_close_strong
         and breakout_body_strong
         and breakout_energy
@@ -2431,45 +3022,62 @@ def _build_metrics(
         and not breakout_ready
     )
 
-    ug_pbb_ready = bool(
-        alignment_state == "BULLISH"
-        and pullback_profile_pass
-        and support_trend_rising
-        and not ema_turn_down
-        and (bb_zone_hold or bb_zone_reclaim)
-        and (close_position_pct or 0.0) >= 0.55
+    bb_percent_b = None
+    bb_z_score = None
+    if (
+        close_value is not None
+        and lower_band_value is not None
+        and upper_band_value is not None
+        and upper_band_value > lower_band_value
+    ):
+        bb_percent_b = (close_value - lower_band_value) / (
+            upper_band_value - lower_band_value
+        )
+    if (
+        close_value is not None
+        and mid_band_value is not None
+        and upper_band_value is not None
+        and upper_band_value > mid_band_value
+    ):
+        bb_std_proxy = (upper_band_value - mid_band_value) / 2.0
+        if bb_std_proxy > 0:
+            bb_z_score = (close_value - mid_band_value) / bb_std_proxy
+    band_reversion_features = _signal_patterns.score_band_reversion(
+        daily,
+        {
+            "close": close_value,
+            "open": open_value,
+            "high": high_value,
+            "low": low_value,
+            "bb_lower": lower_band_value,
+            "bb_mid": mid_band_value,
+            "bb_upper": upper_band_value,
+            "bb_zone_low": bb_zone_low,
+            "bb_percent_b": bb_percent_b,
+            "bb_z_score": bb_z_score,
+            "rsi14": _safe_float(rsi14.iloc[-1]),
+            "daily_return_pct": daily_return_pct,
+            "close_position_pct": close_position_pct,
+            "above_200ma": above_200ma,
+            "alignment_state": alignment_state,
+            "support_trend_rising": support_trend_rising,
+            "ema_turn_down": ema_turn_down,
+            "pullback_profile_pass": pullback_profile_pass,
+            "risk_heat": risk_heat,
+        },
     )
-
-    ug_mr_long_ready = bool(
-        lower_band_value is not None
-        and close_value is not None
-        and close_value <= (lower_band_value * 1.01)
-        and ((_safe_float(rsi14.iloc[-1]) or 100.0) <= 40.0)
-        and ((_safe_float(daily_return_pct) or 0.0) > 0.0)
-        and (close_position_pct or 0.0) >= 0.55
-    )
-
+    ug_pbb_ready = bool(band_reversion_features.get("pbb_ready"))
+    ug_mr_long_ready = bool(band_reversion_features.get("mr_long_ready"))
     ug_breakdown_risk = bool(
-        bb_zone_low is not None
-        and close_value is not None
-        and close_value <= bb_zone_low
+        band_reversion_features.get("breakdown_risk")
+        or (
+            bb_zone_low is not None
+            and close_value is not None
+            and close_value <= bb_zone_low
+        )
     )
-
-    ug_pbs_ready = bool(
-        mid_band_value is not None
-        and high_value is not None
-        and close_value is not None
-        and high_value >= mid_band_value
-        and close_value < mid_band_value
-        and ((_safe_float(daily_return_pct) or 0.0) < 0.0)
-    )
-
-    ug_mr_short_ready = bool(
-        upper_band_value is not None
-        and high_value is not None
-        and high_value >= upper_band_value
-        and (((_safe_float(daily_return_pct) or 0.0) < 0.0) or risk_heat)
-    )
+    ug_pbs_ready = bool(band_reversion_features.get("pbs_ready"))
+    ug_mr_short_ready = bool(band_reversion_features.get("mr_short_ready"))
 
     momentum_ready = bool(
         liquidity_pass
@@ -2484,7 +3092,7 @@ def _build_metrics(
         and close_value is not None
         and (donchian_high20 or 0.0) > 0.0
         and close_value >= (donchian_high20 or 0.0)
-        and ((_safe_float(rvol20) or 0.0) >= 1.2)
+        and ((_safe_float(bullish_rvol50) or 0.0) >= 1.2)
         and momentum_candle_strong
         and not risk_heat
     )
@@ -2554,6 +3162,7 @@ def _build_metrics(
         "vol_ma50": _safe_float(vol_ma50_series.iloc[-1]),
         "volume_ma50": _safe_float(vol_ma50_series.iloc[-1]),
         "rvol20": rvol20,
+        "bullish_rvol50": bullish_rvol50,
         "donchian_high20": donchian_high20,
         "donchian_low20": donchian_low20,
         "prior_high60": prior_high60,
@@ -2570,6 +3179,8 @@ def _build_metrics(
         "bb_lower": lower_band_value,
         "bb_mid": mid_band_value,
         "bb_upper": upper_band_value,
+        "bb_percent_b": _safe_float(band_reversion_features.get("bb_percent_b")),
+        "bb_z_score": _safe_float(band_reversion_features.get("bb_z_score")),
         "bb_width_pct": bb_width_pct,
         "stock_character": stock_character,
         "ma_system": ma_system,
@@ -2590,8 +3201,15 @@ def _build_metrics(
         "squeeze_active": squeeze_active,
         "tight_active": tight_active,
         "vcp_active": vcp_active,
+        "vcp_setup_active": bool(vcp_features.get("vcp_setup_active")),
+        "vcp_pivot_level": _safe_float(vcp_features.get("vcp_pivot_level")),
+        "vcp_pivot_breakout": bool(vcp_features.get("vcp_pivot_breakout")),
+        "vcp_contraction_count": int(vcp_features.get("vcp_contraction_count") or 0),
         "nh60": nh60,
         "w_active": w_active,
+        "w_pending": w_pending,
+        "w_confirmed": w_confirmed,
+        "w_neckline_level": _safe_float(w_features.get("w_neckline_level")),
         "above_200ma": above_200ma,
         "liquidity_pass": liquidity_pass,
         "risk_heat": risk_heat,
@@ -2599,6 +3217,18 @@ def _build_metrics(
         "build_up_ready": build_up_ready,
         "aggressive_ready": aggressive_ready,
         "volume_dry": volume_dry,
+        "pocket_pivot": bool(pocket_pivot_features.get("pocket_pivot")),
+        "pocket_pivot_ready": bool(pocket_pivot_features.get("pocket_pivot")),
+        "pocket_pivot_signal": bool(pocket_pivot_features.get("pocket_pivot")),
+        "pocket_pivot_down_volume_max": _safe_float(
+            pocket_pivot_features.get("pocket_pivot_down_volume_max")
+        ),
+        "pocket_pivot_score": _safe_float(
+            pocket_pivot_features.get("pocket_pivot_score")
+        ),
+        "volume_quality_reason_codes": list(
+            pocket_pivot_features.get("reason_codes", [])
+        ),
         "bullish_reversal": bullish_reversal,
         "close_position_pct": close_position_pct,
         "body_strength_pct": body_strength_pct,
@@ -2627,10 +3257,21 @@ def _build_metrics(
         "breakout_ready": breakout_ready,
         "breakout_fakeout_risk": breakout_fakeout_risk,
         "ug_pbb_ready": ug_pbb_ready,
+        "ug_pbb_score": _safe_float(band_reversion_features.get("pbb_score")),
         "ug_mr_long_ready": ug_mr_long_ready,
+        "ug_mr_long_score": _safe_float(
+            band_reversion_features.get("mr_long_score")
+        ),
         "ug_breakdown_risk": ug_breakdown_risk,
         "ug_pbs_ready": ug_pbs_ready,
+        "ug_pbs_score": _safe_float(band_reversion_features.get("pbs_score")),
         "ug_mr_short_ready": ug_mr_short_ready,
+        "ug_mr_short_score": _safe_float(
+            band_reversion_features.get("mr_short_score")
+        ),
+        "band_reversion_reason_codes": list(
+            band_reversion_features.get("reason_codes", [])
+        ),
         "recent_low10": recent_low10,
         "zone_width_pct": zone_width_pct,
         "trend_support_anchor": trend_support_anchor,
@@ -2684,7 +3325,7 @@ def _build_metrics(
         "trend_source_bonus": float(source_entry.get("trend_source_bonus") or 0.0),
         "ug_source_bonus": float(source_entry.get("ug_source_bonus") or 0.0),
         "source_overlap_bonus": source_overlap_bonus,
-        "screen_stage": source_entry.get("screen_stage") or "UNIVERSE",
+        "screen_stage": source_entry.get("screen_stage") or "",
         "feature_row": dict(feature_row),
         "quarterly_eps_growth": _safe_float(financial_row.get("quarterly_eps_growth")),
         "annual_eps_growth": _safe_float(financial_row.get("annual_eps_growth")),
@@ -2708,30 +3349,126 @@ class MultiScreenerSignalEngine:
         *,
         market: str = "us",
         as_of_date: str | None = None,
+        standalone: bool = False,
         upcoming_earnings_fetcher: (
             Callable[[str, str | None, int], pd.DataFrame] | None
         ) = None,
         earnings_collector: EarningsDataCollector | None = None,
+        runtime_context: RuntimeContext | None = None,
+        source_registry_snapshot: Mapping[str, Any] | None = None,
     ) -> None:
         self.market = market_key(market)
-        self.as_of_date = _date_to_str(as_of_date) or datetime.now().strftime(
-            "%Y-%m-%d"
+        resolved_as_of = (
+            _date_to_str(as_of_date)
+            or (
+                _date_to_str(runtime_context.as_of_date)
+                if runtime_context is not None
+                else None
+            )
         )
+        self.as_of_date = _resolve_runtime_as_of_date(self.market, resolved_as_of)
+        self.standalone = bool(standalone)
         self.results_dir = get_signal_engine_results_dir(self.market)
         self.screeners_root = get_market_screeners_root(self.market)
-        self.metadata_map = _load_metadata_map(self.market)
-        self.financial_map: dict[str, dict[str, Any]] = {}
+        self.runtime_context = runtime_context
+        if self.runtime_context is not None:
+            self.runtime_context.set_as_of_date(self.as_of_date)
+        self.source_registry_snapshot = dict(source_registry_snapshot or {})
+        cached_metadata_map = (
+            dict(runtime_context.metadata_map)
+            if runtime_context is not None and runtime_context.metadata_map
+            else {}
+        )
+        cached_financial_map = (
+            dict(runtime_context.financial_map)
+            if runtime_context is not None and runtime_context.financial_map
+            else {}
+        )
+        self.metadata_map = cached_metadata_map or _load_metadata_map(self.market)
+        if runtime_context is not None and not runtime_context.metadata_map:
+            runtime_context.metadata_map = dict(self.metadata_map)
+        self.financial_map: dict[str, dict[str, Any]] = cached_financial_map
         self.upcoming_earnings_fetcher = upcoming_earnings_fetcher
         self.earnings_collector = earnings_collector or EarningsDataCollector(
             market=self.market
         )
 
-    def _load_source_registry(self) -> dict[str, dict[str, Any]]:
-        market_truth_snapshot = _market_intel_bridge.load_market_truth_snapshot(
-            self.market,
+    def _add_elapsed_timing(self, label: str, started_at: float) -> None:
+        if self.runtime_context is not None:
+            self.runtime_context.add_timing(label, time.perf_counter() - started_at)
+
+    def _load_local_market_truth_snapshot(self) -> _market_intel_bridge.MarketTruthSnapshot:
+        benchmark_symbol = get_primary_benchmark_symbol(self.market)
+        benchmark_daily = pd.DataFrame()
+        for candidate in get_benchmark_candidates(self.market):
+            try:
+                frame = load_local_ohlcv_frame(
+                    self.market,
+                    candidate,
+                    as_of=self.as_of_date,
+                    price_policy=PricePolicy.SPLIT_ADJUSTED,
+                )
+            except Exception:
+                frame = pd.DataFrame()
+            if not frame.empty:
+                benchmark_symbol = candidate
+                benchmark_daily = frame
+                break
+        return _market_intel_bridge.build_local_market_truth_snapshot(
+            market=self.market,
             as_of_date=self.as_of_date,
+            benchmark_symbol=benchmark_symbol,
+            benchmark_daily=benchmark_daily,
         )
-        self.market_truth_snapshot = market_truth_snapshot
+
+    def _load_source_registry(self) -> dict[str, dict[str, Any]]:
+        active_snapshot: Mapping[str, Any] | None = None
+        snapshot_path = get_market_source_registry_snapshot_path(self.market)
+        if self.source_registry_snapshot:
+            active_snapshot = self.source_registry_snapshot
+        elif self.runtime_context is not None and self.runtime_context.source_registry_snapshot:
+            active_snapshot = self.runtime_context.source_registry_snapshot
+        else:
+            active_snapshot = _source_registry.read_source_registry_snapshot(
+                snapshot_path,
+                market=self.market,
+                as_of_date=self.as_of_date,
+            )
+            if active_snapshot is None and self.runtime_context is not None:
+                self.runtime_context.record_cache_miss("source_registry_snapshot")
+        if active_snapshot is not None:
+            if not _source_registry.snapshot_is_compatible(
+                active_snapshot,
+                market=self.market,
+                as_of_date=self.as_of_date,
+            ):
+                active_snapshot = None
+                if self.runtime_context is not None:
+                    self.runtime_context.source_registry_snapshot = None
+                    self.runtime_context.record_cache_miss("source_registry_snapshot")
+            elif self.runtime_context is not None:
+                self.runtime_context.source_registry_snapshot = dict(active_snapshot)
+                self.runtime_context.record_cache_hit("source_registry_snapshot")
+        if active_snapshot is None and results_root_override_active():
+            existing_paths = _source_registry.existing_source_artifact_paths(
+                screeners_root=self.screeners_root,
+                source_specs=_SOURCE_SPECS,
+            )
+            if not existing_paths:
+                _raise_isolated_results_prerequisite_error(
+                    phase="signals",
+                    snapshot_path=snapshot_path,
+                    expected_paths=_source_registry.expected_source_artifact_paths(
+                        screeners_root=self.screeners_root,
+                        source_specs=_SOURCE_SPECS,
+                    ),
+                )
+        if active_snapshot is not None:
+            snapshot_as_of = _date_to_str(active_snapshot.get("as_of_date"))
+            if snapshot_as_of:
+                self.as_of_date = snapshot_as_of
+                if self.runtime_context is not None:
+                    self.runtime_context.set_as_of_date(snapshot_as_of)
         registry = _source_registry.load_source_registry(
             screeners_root=self.screeners_root,
             market=self.market,
@@ -2744,7 +3481,24 @@ class MultiScreenerSignalEngine:
             source_priority_score=_source_priority_score,
             source_engine_bonus=_source_engine_bonus,
             safe_text=_safe_text,
+            snapshot=active_snapshot,
+            as_of_date=self.as_of_date,
         )
+        if self.standalone:
+            market_truth_snapshot = self._load_local_market_truth_snapshot()
+            self.market_truth_snapshot = market_truth_snapshot
+            return _apply_shared_market_truth_to_registry(
+                registry,
+                market_truth_snapshot,
+                market_truth_source="local_standalone",
+                core_overlay_applied=False,
+            )
+
+        market_truth_snapshot = _market_intel_bridge.load_market_truth_snapshot(
+            self.market,
+            as_of_date=self.as_of_date,
+        )
+        self.market_truth_snapshot = market_truth_snapshot
         market_intel_entries = _market_intel_bridge.load_leader_core_registry_entries(
             self.market,
             as_of_date=self.as_of_date,
@@ -2761,7 +3515,12 @@ class MultiScreenerSignalEngine:
             source_engine_bonus=_source_engine_bonus,
             safe_text=_safe_text,
         )
-        return _apply_shared_market_truth_to_registry(merged, market_truth_snapshot)
+        return _apply_shared_market_truth_to_registry(
+            merged,
+            market_truth_snapshot,
+            market_truth_source="market_intel_compat",
+            core_overlay_applied=True,
+        )
 
     def _load_feature_map(
         self, frames: Mapping[str, pd.DataFrame]
@@ -2772,6 +3531,7 @@ class MultiScreenerSignalEngine:
             market=self.market,
             metadata_map=self.metadata_map,
             frame_keyed_records_fn=frame_keyed_records,
+            max_workers=_resolved_parallel_workers(len(frames)),
         )
 
     def _load_active_cycles(self) -> dict[tuple[str, str, str], dict[str, Any]]:
@@ -2889,26 +3649,81 @@ class MultiScreenerSignalEngine:
 
         return raw_map, ready_map, dict(screener.financial_map)
 
+    def _load_all_symbol_universe(self) -> list[str]:
+        data_dir = get_market_data_dir(self.market)
+        if not os.path.isdir(data_dir):
+            return []
+        symbols = sorted(
+            {
+                os.path.splitext(name)[0].upper()
+                for name in os.listdir(data_dir)
+                if name.endswith(".csv")
+                and not is_index_symbol(self.market, os.path.splitext(name)[0].upper())
+            }
+        )
+        return limit_runtime_symbols(symbols)
+
+    def _build_buy_candidate_bundle(
+        self,
+        *,
+        symbol: str,
+        metrics: Mapping[str, Any],
+        source_entry: Mapping[str, Any],
+        active_cycles: Mapping[tuple[str, str, str], Mapping[str, Any]],
+        peg_ready_map: Mapping[str, Any],
+        raw_peg_map: Mapping[str, Mapping[str, Any]],
+        peg_event_history_map: Mapping[str, Mapping[str, Any]],
+        signal_history: Iterable[Mapping[str, Any]],
+    ) -> dict[str, Any]:
+        peg_context = self._current_peg_context(
+            symbol, metrics, raw_peg_map, peg_event_history_map
+        )
+        return {
+            "peg_context": peg_context,
+            "trend_rows": self._trend_buy_events(
+                symbol=symbol,
+                metrics=metrics,
+                source_entry=source_entry,
+                active_cycles=active_cycles,
+                peg_ready_map=peg_ready_map,
+                peg_context=peg_context,
+            ),
+            "ug_rows": self._ug_buy_events(
+                symbol=symbol,
+                metrics=metrics,
+                source_entry=source_entry,
+                active_cycles=active_cycles,
+                signal_history=signal_history,
+            ),
+        }
+
     def _load_frames(self, symbols: Iterable[str]) -> dict[str, pd.DataFrame]:
 
         frames: dict[str, pd.DataFrame] = {}
 
-        for symbol in sorted(
+        normalized_symbols = sorted(
             {str(item).upper() for item in symbols if str(item).strip()}
-        ):
-
-            frame = load_local_ohlcv_frame(
-                self.market,
-                symbol,
-                as_of=self.as_of_date,
-                price_policy=PricePolicy.SPLIT_ADJUSTED,
-            )
-
-            if frame.empty:
-
-                continue
-
-            frames[symbol] = frame
+        )
+        frame_map = load_local_ohlcv_frames_ordered(
+            self.market,
+            normalized_symbols,
+            as_of=self.as_of_date,
+            price_policy=PricePolicy.SPLIT_ADJUSTED,
+            runtime_context=self.runtime_context,
+            max_workers=_resolved_parallel_workers(len(normalized_symbols)),
+            load_frame_fn=load_local_ohlcv_frame,
+        )
+        for index, symbol in enumerate(normalized_symbols, start=1):
+            frame = frame_map.get(symbol, pd.DataFrame())
+            if not frame.empty:
+                frames[symbol] = frame
+            if self.runtime_context is not None:
+                self.runtime_context.update_runtime_state(
+                    current_stage="Multi-screener signal engine",
+                    current_symbol=symbol,
+                    current_chunk=f"frame_load:{index}/{len(normalized_symbols)}",
+                    status="running",
+                )
 
         return frames
 
@@ -3113,28 +3928,35 @@ class MultiScreenerSignalEngine:
     def _ug_gp_profile(self, metrics: Mapping[str, Any]) -> dict[str, Any]:
         score = 0.0
         reasons: list[str] = []
-        if metrics.get("above_200ma"):
-            score += 18.0
-            reasons.append("GP_ABOVE_200MA")
-        if metrics.get("alignment_state") == "BULLISH":
-            score += 18.0
-            reasons.append("GP_BULLISH_ALIGNMENT")
-        if metrics.get("support_trend_rising"):
-            score += 9.0
-            reasons.append("GP_SUPPORT_TREND")
+        volume_rvol = _safe_float(metrics.get("bullish_rvol50"))
+        if volume_rvol is None:
+            volume_rvol = _safe_float(metrics.get("rvol20")) or 0.0
+        w_score_active = (
+            bool(metrics.get("w_confirmed"))
+            if "w_confirmed" in metrics
+            else bool(metrics.get("w_active"))
+        )
         if metrics.get("nh60"):
-            score += 22.0
-            reasons.append("GP_NH60")
-        if (_safe_float(metrics.get("rvol20")) or 0.0) >= 2.0:
-            score += 18.0
-            reasons.append("GP_VOL2X")
-        if metrics.get("w_active"):
             score += 15.0
+            reasons.append("GP_NH60")
+        if volume_rvol >= 2.0:
+            score += 30.0
+            reasons.append("GP_VOL2X")
+        if w_score_active:
+            score += 25.0
             reasons.append("GP_W")
-        score = max(0.0, min(score, 100.0))
-        if score >= 60.0:
+        active_components = sum(
+            1
+            for active in (
+                metrics.get("nh60"),
+                volume_rvol >= 2.0,
+                w_score_active,
+            )
+            if active
+        )
+        if active_components >= 2:
             health = "GREEN"
-        elif score >= 35.0:
+        elif active_components == 1:
             health = "ORANGE"
         else:
             health = "RED"
@@ -3153,7 +3975,9 @@ class MultiScreenerSignalEngine:
     def _ug_sigma_profile(self, metrics: Mapping[str, Any]) -> dict[str, Any]:
         score = 0.0
         reasons: list[str] = []
-        breakout_signal = bool(metrics.get("breakout_ready"))
+        breakout_signal = bool(
+            metrics.get("breakout_ready") or metrics.get("vcp_pivot_breakout")
+        )
         pbb_signal = bool(metrics.get("ug_pbb_ready"))
         mr_long_signal = bool(metrics.get("ug_mr_long_ready"))
         pbs_risk = bool(metrics.get("ug_pbs_ready"))
@@ -3165,36 +3989,32 @@ class MultiScreenerSignalEngine:
         )
 
         if breakout_signal:
-            score += 34.0
+            score += 10.0
             reasons.append("SIGMA_BO")
         if pbb_signal:
-            score += 28.0
+            score += 15.0
             reasons.append("SIGMA_PBB")
         if mr_long_signal:
-            score += 16.0
+            score += 5.0
             reasons.append("SIGMA_MR_LONG")
         if squeeze_ready:
-            score += 10.0
             reasons.append("SIGMA_SQUEEZE_READY")
         if mr_short_signal:
-            score -= 12.0
             reasons.append("SIGMA_MR_SHORT")
         if pbs_risk:
-            score -= 18.0
             reasons.append("SIGMA_PBS")
         if breakdown_risk:
-            score -= 28.0
-            reasons.append("SIGMA_BREAKDOWN_RISK")
+            score -= 20.0
+            reasons.extend(["SIGMA_BREAKDOWN_RISK", "SIGMA_BREAKDOWN_PENALTY"])
 
-        normalized = max(0.0, min(score + 30.0, 100.0))
-        if breakout_signal or pbb_signal:
-            health = "GREEN"
-        elif squeeze_ready or mr_long_signal:
-            health = "ORANGE"
-        else:
+        if pbs_risk or breakdown_risk:
             health = "RED"
+        elif breakout_signal or pbb_signal or mr_long_signal:
+            health = "GREEN"
+        else:
+            health = "ORANGE"
         return {
-            "score": round(normalized, 2),
+            "score": round(score, 2),
             "health": health,
             "breakout_signal": breakout_signal,
             "pbb_signal": pbb_signal,
@@ -3210,11 +4030,8 @@ class MultiScreenerSignalEngine:
     def _ug_validation_score(self, metrics: Mapping[str, Any]) -> float:
         gp_profile = self._ug_gp_profile(metrics)
         sigma_profile = self._ug_sigma_profile(metrics)
-        return round(
-            (float(gp_profile["score"]) * 0.45)
-            + (float(sigma_profile["score"]) * 0.55),
-            2,
-        )
+        score = float(gp_profile["score"]) + float(sigma_profile["score"])
+        return round(max(0.0, min(score, 100.0)), 2)
 
     def _ug_validation_reason_codes(self, metrics: Mapping[str, Any]) -> list[str]:
         gp_profile = self._ug_gp_profile(metrics)
@@ -3237,8 +4054,7 @@ class MultiScreenerSignalEngine:
         growth_score = growth_profile.get("growth_score")
         effective_growth_score = 50.0 if growth_score is None else float(growth_score)
         dashboard_score = round(
-            (float(gp_profile["score"]) * 0.35)
-            + (float(sigma_profile["score"]) * 0.35)
+            (validation_score * 0.70)
             + (effective_growth_score * 0.30),
             2,
         )
@@ -3298,19 +4114,15 @@ class MultiScreenerSignalEngine:
         gp_profile: Mapping[str, Any] | None = None,
         sigma_profile: Mapping[str, Any] | None = None,
     ) -> str:
-        _ = validation_score
-        gp_profile = gp_profile or self._ug_gp_profile(metrics)
+        _ = gp_profile
         sigma_profile = sigma_profile or self._ug_sigma_profile(metrics)
-        if bool(gp_profile.get("bullish")) and bool(sigma_profile.get("entry_signal")):
-            return "GREEN"
-        if bool(gp_profile.get("bullish")) and bool(
-            sigma_profile.get("squeeze_ready")
-            or metrics.get("build_up_ready")
-            or metrics.get("setup_active")
-            or metrics.get("vcp_active")
-            or metrics.get("squeeze_active")
-            or metrics.get("tight_active")
+        if bool(metrics.get("ug_breakdown_risk")) or bool(
+            sigma_profile.get("breakdown_risk")
         ):
+            return "RED"
+        if validation_score >= 60.0:
+            return "GREEN"
+        if validation_score >= 30.0:
             return "ORANGE"
         return "RED"
 
@@ -3366,7 +4178,6 @@ class MultiScreenerSignalEngine:
         peg_capable = family == "TF_PEG" and (
             symbol in peg_ready_map
             or "PEG_READY" in source_tags
-            or "PEG_ONLY" in source_tags
         )
         if peg_capable and "PEG" not in source_styles:
             source_styles = ["PEG", *source_styles]
@@ -3375,10 +4186,16 @@ class MultiScreenerSignalEngine:
             fit_score = max(fit_score, 95.0)
         fit_label = _family_source_fit_label(fit_score)
         primary_style = source_styles[0] if source_styles else ""
-        buy_capable = bool(source_entry.get("buy_eligible") or peg_capable)
+        source_disposition = _source_disposition(
+            source_entry,
+            symbol=symbol,
+            peg_ready_map=peg_ready_map,
+        )
+        buy_capable = source_disposition == "buy_eligible" or peg_capable
+        watch_capable = source_disposition in {"buy_eligible", "watch_only"} or peg_capable
         return {
             "buy_allowed": buy_capable,
-            "watch_allowed": buy_capable,
+            "watch_allowed": watch_capable,
             "fit_score": fit_score,
             "fit_label": fit_label,
             "primary_style": primary_style,
@@ -3913,7 +4730,7 @@ class MultiScreenerSignalEngine:
         screen_stage = str(
             source_entry.get("screen_stage")
             or metrics.get("screen_stage")
-            or "UNIVERSE"
+            or ""
         )
 
         conviction = self._trend_conviction(metrics)
@@ -3953,30 +4770,30 @@ class MultiScreenerSignalEngine:
         family_profile = self._family_source_profile(
             symbol, family, source_entry, peg_ready_map
         )
-        if family_profile.get("watch_allowed"):
-            pullback_trigger = bool(
-                common_trend
-                and metrics.get("setup_active")
-                and metrics.get("pullback_profile_pass")
-                and trend_reversal_ready
-                and not channel_active
-            )
-            if pullback_trigger:
-                active = active_cycles.get(("TREND", family, symbol))
-                addon_context = (
-                    self._trend_addon_context(
-                        family=family, metrics=metrics, cycle=active
-                    )
-                    if active
-                    else {}
+        pullback_trigger = bool(
+            common_trend
+            and metrics.get("setup_active")
+            and metrics.get("pullback_profile_pass")
+            and trend_reversal_ready
+            and not channel_active
+        )
+        if pullback_trigger:
+            active = active_cycles.get(("TREND", family, symbol))
+            addon_context = (
+                self._trend_addon_context(
+                    family=family, metrics=metrics, cycle=active
                 )
-                if active and not addon_context.get("ready"):
-                    pass
-                else:
-                    action_type = (
-                        "BUY" if family_profile.get("buy_allowed") else "WATCH"
-                    )
-                    events.append(
+                if active
+                else {}
+            )
+            if active and not addon_context.get("ready"):
+                pass
+            else:
+                action_type = (
+                    "BUY" if family_profile.get("buy_allowed") else "WATCH"
+                )
+                events.append(
+                    _annotate_buy_candidate_row(
                         _build_signal_row(
                             signal_date=metrics.get("date"),
                             symbol=symbol,
@@ -4044,66 +4861,74 @@ class MultiScreenerSignalEngine:
                                 *family_profile.get("reason_codes", []),
                             ],
                             quality_flags=quality_flags,
-                        )
+                        ),
+                        legacy_visible=bool(family_profile.get("watch_allowed")),
+                        artifact_action_type="BUY",
                     )
+                )
 
         family = "TF_BREAKOUT"
         family_profile = self._family_source_profile(
             symbol, family, source_entry, peg_ready_map
         )
-        if family_profile.get("watch_allowed"):
-            breakout_anchor = _safe_float(
-                metrics.get("breakout_anchor")
-            ) or _pick_latest(
-                _safe_float(metrics.get("donchian_high20")),
-                _safe_float(metrics.get("prior_high60")),
+        breakout_anchor = _safe_float(
+            metrics.get("breakout_anchor")
+        ) or _pick_latest(
+            _safe_float(metrics.get("donchian_high20")),
+            _safe_float(metrics.get("prior_high60")),
+        )
+        breakout_low, breakout_high = _zone_bounds(
+            breakout_anchor, float(metrics.get("zone_width_pct") or 0.01)
+        )
+        breakout_signal_ready = bool(
+            metrics.get("breakout_ready") or metrics.get("vcp_pivot_breakout")
+        )
+        breakout_trigger = bool(
+            breakout_context
+            and breakout_signal_ready
+            and (metrics.get("setup_active") or metrics.get("build_up_ready"))
+            and (
+                metrics.get("vcp_active")
+                or metrics.get("build_up_ready")
+                or metrics.get("nh60")
             )
-            breakout_low, breakout_high = _zone_bounds(
-                breakout_anchor, float(metrics.get("zone_width_pct") or 0.01)
-            )
-            breakout_trigger = bool(
-                breakout_context
-                and metrics.get("breakout_ready")
-                and (metrics.get("setup_active") or metrics.get("build_up_ready"))
-                and (
-                    metrics.get("vcp_active")
-                    or metrics.get("build_up_ready")
-                    or metrics.get("nh60")
+            and not channel_active
+        )
+        if breakout_trigger:
+            active = active_cycles.get(("TREND", family, symbol))
+            addon_context = (
+                self._trend_addon_context(
+                    family=family, metrics=metrics, cycle=active
                 )
-                and not channel_active
+                if active
+                else {}
             )
-            if breakout_trigger:
-                active = active_cycles.get(("TREND", family, symbol))
-                addon_context = (
-                    self._trend_addon_context(
-                        family=family, metrics=metrics, cycle=active
-                    )
-                    if active
-                    else {}
+            if active and not addon_context.get("ready"):
+                pass
+            else:
+                action_type = (
+                    "BUY" if family_profile.get("buy_allowed") else "WATCH"
                 )
-                if active and not addon_context.get("ready"):
-                    pass
-                else:
-                    action_type = (
-                        "BUY" if family_profile.get("buy_allowed") else "WATCH"
-                    )
-                    reason_codes = [
-                        "BREAKOUT",
-                        "SETUP",
-                        "BB_UPPER_CLEAR",
-                        "RVOL_PASS",
-                        "BODY_STRENGTH",
-                        "CLOSE_STRENGTH",
-                    ]
-                    if metrics.get("vcp_active"):
-                        reason_codes.append("VCP")
-                    if metrics.get("build_up_ready"):
-                        reason_codes.append("BUILDUP")
-                    if metrics.get("nh60"):
-                        reason_codes.append("NEW_HIGH_CONTEXT")
-                    reason_codes.extend(addon_context.get("reason_codes", []))
-                    reason_codes.extend(family_profile.get("reason_codes", []))
-                    events.append(
+                reason_codes = [
+                    "BREAKOUT",
+                    "SETUP",
+                    "BB_UPPER_CLEAR",
+                    "RVOL_PASS",
+                    "BODY_STRENGTH",
+                    "CLOSE_STRENGTH",
+                ]
+                if metrics.get("vcp_active"):
+                    reason_codes.append("VCP")
+                if metrics.get("build_up_ready"):
+                    reason_codes.append("BUILDUP")
+                if metrics.get("nh60"):
+                    reason_codes.append("NEW_HIGH_CONTEXT")
+                if metrics.get("vcp_pivot_breakout"):
+                    reason_codes.append("VCP_PIVOT_BREAKOUT")
+                reason_codes.extend(addon_context.get("reason_codes", []))
+                reason_codes.extend(family_profile.get("reason_codes", []))
+                events.append(
+                    _annotate_buy_candidate_row(
                         _build_signal_row(
                             signal_date=metrics.get("date"),
                             symbol=symbol,
@@ -4159,33 +4984,36 @@ class MultiScreenerSignalEngine:
                             source_tags=metrics.get("source_tags"),
                             reason_codes=reason_codes,
                             quality_flags=quality_flags,
-                        )
+                        ),
+                        legacy_visible=bool(family_profile.get("watch_allowed")),
+                        artifact_action_type="BUY",
                     )
+                )
 
         family = "TF_MOMENTUM"
         family_profile = self._family_source_profile(
             symbol, family, source_entry, peg_ready_map
         )
-        if family_profile.get("watch_allowed"):
-            momentum_trigger = bool(
-                metrics.get("momentum_ready") and not channel_active
-            )
-            if momentum_trigger:
-                active = active_cycles.get(("TREND", family, symbol))
-                addon_context = (
-                    self._trend_addon_context(
-                        family=family, metrics=metrics, cycle=active
-                    )
-                    if active
-                    else {}
+        momentum_trigger = bool(
+            metrics.get("momentum_ready") and not channel_active
+        )
+        if momentum_trigger:
+            active = active_cycles.get(("TREND", family, symbol))
+            addon_context = (
+                self._trend_addon_context(
+                    family=family, metrics=metrics, cycle=active
                 )
-                if active and not addon_context.get("ready"):
-                    pass
-                else:
-                    action_type = (
-                        "BUY" if family_profile.get("buy_allowed") else "WATCH"
-                    )
-                    events.append(
+                if active
+                else {}
+            )
+            if active and not addon_context.get("ready"):
+                pass
+            else:
+                action_type = (
+                    "BUY" if family_profile.get("buy_allowed") else "WATCH"
+                )
+                events.append(
+                    _annotate_buy_candidate_row(
                         _build_signal_row(
                             signal_date=metrics.get("date"),
                             symbol=symbol,
@@ -4249,8 +5077,11 @@ class MultiScreenerSignalEngine:
                                 *family_profile.get("reason_codes", []),
                             ],
                             quality_flags=quality_flags,
-                        )
+                        ),
+                        legacy_visible=bool(family_profile.get("watch_allowed")),
+                        artifact_action_type="BUY",
                     )
+                )
 
         family = "TF_PEG"
         family_profile = self._family_source_profile(
@@ -4286,7 +5117,6 @@ class MultiScreenerSignalEngine:
                     )
                 )
             if peg_context.get("event_day") and peg_context.get("missed"):
-
                 events.append(
                     _build_signal_row(
                         signal_date=metrics.get("date"),
@@ -4311,49 +5141,47 @@ class MultiScreenerSignalEngine:
                         quality_flags=quality_flags,
                     )
                 )
-            if peg_context.get("peg_active"):
+        if peg_context.get("peg_active"):
+            peg_low = _safe_float(peg_context.get("gap_low"))
+            peg_half = _safe_float(peg_context.get("half_gap"))
+            peg_high = _safe_float(peg_context.get("event_high"))
 
-                peg_low = _safe_float(peg_context.get("gap_low"))
+            pullback_trigger = bool(
+                not metrics.get("ema_turn_down")
+                and metrics.get("alignment_state") == "BULLISH"
+                and peg_low is not None
+                and peg_half is not None
+                and low is not None
+                and close is not None
+                and peg_low <= low <= peg_half
+                and close >= peg_half
+            )
 
-                peg_half = _safe_float(peg_context.get("half_gap"))
-
-                peg_high = _safe_float(peg_context.get("event_high"))
-
-                pullback_trigger = bool(
-                    not metrics.get("ema_turn_down")
-                    and metrics.get("alignment_state") == "BULLISH"
-                    and peg_low is not None
-                    and peg_half is not None
-                    and low is not None
-                    and close is not None
-                    and peg_low <= low <= peg_half
-                    and close >= peg_half
+            rebreak_trigger = bool(
+                not metrics.get("ema_turn_down")
+                and metrics.get("alignment_state") == "BULLISH"
+                and peg_high is not None
+                and close is not None
+                and close >= peg_high
+            )
+            active = active_cycles.get(("TREND", family, symbol))
+            addon_context = (
+                self._trend_addon_context(
+                    family=family,
+                    metrics=metrics,
+                    cycle=active,
+                    peg_context=peg_context,
                 )
-
-                rebreak_trigger = bool(
-                    not metrics.get("ema_turn_down")
-                    and metrics.get("alignment_state") == "BULLISH"
-                    and peg_high is not None
-                    and close is not None
-                    and close >= peg_high
-                )
-                active = active_cycles.get(("TREND", family, symbol))
-                addon_context = (
-                    self._trend_addon_context(
-                        family=family,
-                        metrics=metrics,
-                        cycle=active,
-                        peg_context=peg_context,
+                if active
+                else {}
+            )
+            if pullback_trigger:
+                if not active or addon_context.get("ready"):
+                    action_type = (
+                        "BUY" if family_profile.get("buy_allowed") else "WATCH"
                     )
-                    if active
-                    else {}
-                )
-                if pullback_trigger:
-                    if not active or addon_context.get("ready"):
-                        action_type = (
-                            "BUY" if family_profile.get("buy_allowed") else "WATCH"
-                        )
-                        events.append(
+                    events.append(
+                        _annotate_buy_candidate_row(
                             _build_signal_row(
                                 signal_date=metrics.get("date"),
                                 symbol=symbol,
@@ -4416,14 +5244,18 @@ class MultiScreenerSignalEngine:
                                     *family_profile.get("reason_codes", []),
                                 ],
                                 quality_flags=quality_flags,
-                            )
+                            ),
+                            legacy_visible=bool(family_profile.get("watch_allowed")),
+                            artifact_action_type="BUY",
                         )
-                if rebreak_trigger:
-                    if not active or addon_context.get("ready"):
-                        action_type = (
-                            "BUY" if family_profile.get("buy_allowed") else "WATCH"
-                        )
-                        events.append(
+                    )
+            if rebreak_trigger:
+                if not active or addon_context.get("ready"):
+                    action_type = (
+                        "BUY" if family_profile.get("buy_allowed") else "WATCH"
+                    )
+                    events.append(
+                        _annotate_buy_candidate_row(
                             _build_signal_row(
                                 signal_date=metrics.get("date"),
                                 symbol=symbol,
@@ -4485,8 +5317,11 @@ class MultiScreenerSignalEngine:
                                     *family_profile.get("reason_codes", []),
                                 ],
                                 quality_flags=quality_flags,
-                            )
+                            ),
+                            legacy_visible=bool(family_profile.get("watch_allowed")),
+                            artifact_action_type="BUY",
                         )
+                    )
         return events
 
     def _trend_state_rows(
@@ -4501,7 +5336,7 @@ class MultiScreenerSignalEngine:
         screen_stage = str(
             source_entry.get("screen_stage")
             or metrics.get("screen_stage")
-            or "UNIVERSE"
+            or ""
         )
         family_profile = self._family_source_profile(
             symbol, "TF_BREAKOUT", source_entry, peg_ready_map={}
@@ -4673,6 +5508,23 @@ class MultiScreenerSignalEngine:
             if trailing_level is not None or protected_stop_level is not None
             else None
         )
+        daily_frame = (
+            metrics.get("daily")
+            if isinstance(metrics.get("daily"), pd.DataFrame)
+            else pd.DataFrame()
+        )
+        exit_pressure_profile = _signal_patterns.score_exit_pressure(
+            daily_frame,
+            metrics,
+            cycle,
+        )
+        effective_trailing_level = _pick_latest(
+            _safe_float(exit_pressure_profile.get("effective_trailing_level")),
+            effective_trailing_level,
+        )
+        exit_pressure_reason_codes = list(
+            exit_pressure_profile.get("reason_codes", [])
+        )
         tp1_level = _safe_float(cycle.get("tp1_level"))
         tp2_level = _safe_float(cycle.get("tp2_level"))
         support_low = _safe_float(cycle.get("support_zone_low"))
@@ -4738,7 +5590,11 @@ class MultiScreenerSignalEngine:
                     source_fit_score=source_fit_score,
                     source_fit_label=source_fit_label,
                     source_tags=metrics.get("source_tags"),
-                    reason_codes=["SUPPORT_FAIL", *exit_context_codes],
+                    reason_codes=[
+                        "SUPPORT_FAIL",
+                        *exit_pressure_reason_codes,
+                        *exit_context_codes,
+                    ],
                     quality_flags=quality_flags,
                 )
             )
@@ -4815,7 +5671,11 @@ class MultiScreenerSignalEngine:
                     source_fit_score=source_fit_score,
                     source_fit_label=source_fit_label,
                     source_tags=metrics.get("source_tags"),
-                    reason_codes=["TRAILING_BREAK", *exit_context_codes],
+                    reason_codes=[
+                        "TRAILING_BREAK",
+                        *exit_pressure_reason_codes,
+                        *exit_context_codes,
+                    ],
                     quality_flags=quality_flags,
                 )
             )
@@ -4969,14 +5829,10 @@ class MultiScreenerSignalEngine:
                         quality_flags=quality_flags,
                     )
                 )
-        rejection_zone = _safe_float(metrics.get("bb_mid"))
-        if (
-            not channel_active
-            and rejection_zone is not None
-            and close < rejection_zone
-            and (_safe_float(metrics.get("high")) or 0.0) >= rejection_zone
-            and (_safe_float(metrics.get("daily_return_pct")) or 0.0) < 0.0
-        ):
+        rejection_zone = _safe_float(
+            exit_pressure_profile.get("resistance_reject_level")
+        ) or _safe_float(metrics.get("bb_mid"))
+        if bool(exit_pressure_profile.get("resistance_reject")):
             events.append(
                 _build_signal_row(
                     signal_date=metrics.get("date"),
@@ -5004,7 +5860,11 @@ class MultiScreenerSignalEngine:
                     source_fit_score=source_fit_score,
                     source_fit_label=source_fit_label,
                     source_tags=metrics.get("source_tags"),
-                    reason_codes=["PULLBACK_SELL", *exit_context_codes],
+                    reason_codes=[
+                        "PULLBACK_SELL",
+                        *exit_pressure_reason_codes,
+                        *exit_context_codes,
+                    ],
                     quality_flags=quality_flags,
                 )
             )
@@ -5043,7 +5903,7 @@ class MultiScreenerSignalEngine:
         screen_stage = str(
             source_entry.get("screen_stage")
             or metrics.get("screen_stage")
-            or "UNIVERSE"
+            or ""
         )
         family_profile = self._family_source_profile(
             symbol, "UG_BREAKOUT", source_entry, peg_ready_map={}
@@ -5098,9 +5958,13 @@ class MultiScreenerSignalEngine:
             )
         )
 
+        state_volume_rvol = _safe_float(metrics.get("bullish_rvol50"))
+        if state_volume_rvol is None:
+            state_volume_rvol = _safe_float(metrics.get("rvol20")) or 0.0
+
         for active, code in (
             (metrics.get("nh60"), "UG_NH60"),
-            (((_safe_float(metrics.get("rvol20")) or 0.0) >= 2.0), "UG_VOL2X"),
+            (state_volume_rvol >= 2.0, "UG_VOL2X"),
             (metrics.get("w_active"), "UG_W"),
             (metrics.get("vcp_active"), "UG_VCP"),
             (metrics.get("squeeze_active"), "UG_SQUEEZE"),
@@ -5214,7 +6078,7 @@ class MultiScreenerSignalEngine:
         screen_stage = str(
             source_entry.get("screen_stage")
             or metrics.get("screen_stage")
-            or "UNIVERSE"
+            or ""
         )
         dashboard_profile = self._ug_dashboard_profile(metrics)
         validation_score = _safe_float(dashboard_profile.get("validation_score")) or 0.0
@@ -5228,25 +6092,53 @@ class MultiScreenerSignalEngine:
         quality_flags = self._base_quality_flags(metrics)
         recent_squeeze_context = bool(metrics.get("recent_squeeze_ready10"))
         recent_orange_context = bool(metrics.get("recent_orange_ready10"))
+        buy_volume_rvol = _safe_float(metrics.get("bullish_rvol50"))
+        if buy_volume_rvol is None:
+            buy_volume_rvol = _safe_float(metrics.get("rvol20")) or 0.0
+        breakout_signal_ready = bool(
+            metrics.get("breakout_ready") or metrics.get("vcp_pivot_breakout")
+        )
         breakout_condition = bool(
             traffic_light == "GREEN"
             and metrics.get("nh60")
-            and metrics.get("breakout_ready")
+            and breakout_signal_ready
             and not metrics.get("ema_turn_down")
         )
         squeeze_breakout_condition = bool(
             breakout_condition
             and recent_orange_context
             and recent_squeeze_context
-            and ((_safe_float(metrics.get("rvol20")) or 0.0) >= 2.0)
+            and buy_volume_rvol >= 2.0
+        )
+        band_reversion_profile = _band_reversion_from_metrics(metrics)
+        refined_band_gate_present = _has_band_reversion_diagnostics(metrics)
+        pbb_gate_pass = bool(
+            metrics.get("ug_pbb_ready")
+            and (
+                not refined_band_gate_present
+                or band_reversion_profile.get("pbb_ready")
+            )
+        )
+        mr_long_gate_pass = bool(
+            metrics.get("ug_mr_long_ready")
+            and (
+                not refined_band_gate_present
+                or band_reversion_profile.get("mr_long_ready")
+            )
+        )
+        band_reason_codes = list(
+            dict.fromkeys(
+                list(metrics.get("band_reversion_reason_codes", []))
+                + list(band_reversion_profile.get("reason_codes", []))
+            )
         )
         pullback_condition = bool(
-            metrics.get("ug_pbb_ready")
+            pbb_gate_pass
             and metrics.get("pullback_profile_pass")
             and not metrics.get("ema_turn_down")
         )
         mr_long_condition = bool(
-            metrics.get("ug_mr_long_ready")
+            mr_long_gate_pass
             and metrics.get("alignment_state") == "BULLISH"
             and not metrics.get("ema_turn_down")
         )
@@ -5283,9 +6175,10 @@ class MultiScreenerSignalEngine:
                     "SIGMA_BO",
                     (
                         "VOL2X_CONFIRM"
-                        if ((_safe_float(metrics.get("rvol20")) or 0.0) >= 2.0)
+                        if buy_volume_rvol >= 2.0
                         else "RVOL_PASS"
                     ),
+                    *(["VCP_PIVOT_BREAKOUT"] if metrics.get("vcp_pivot_breakout") else []),
                     *(
                         ["SIGMA_SQUEEZE_READY", "UG_ORANGE_CONTEXT"]
                         if squeeze_breakout_condition
@@ -5302,7 +6195,7 @@ class MultiScreenerSignalEngine:
                 _safe_float(metrics.get("bb_lower")),
                 _safe_float(metrics.get("bb_mid")),
                 _safe_float(metrics.get("bb_lower")),
-                ["SIGMA_PBB", "SIGMA_LOWER_BAND_SUPPORT"],
+                ["SIGMA_PBB", "SIGMA_LOWER_BAND_SUPPORT", *band_reason_codes],
                 "ENTRY",
                 "UG_SELL_MR_SHORT_OR_PBS",
             ),
@@ -5313,7 +6206,7 @@ class MultiScreenerSignalEngine:
                 _safe_float(metrics.get("bb_lower")),
                 _safe_float(metrics.get("bb_mid")),
                 _safe_float(metrics.get("bb_lower")),
-                ["SIGMA_MR_LONG"],
+                ["SIGMA_MR_LONG", *band_reason_codes],
                 "ENTRY_SHORT_SWING",
                 "",
             ),
@@ -5323,31 +6216,40 @@ class MultiScreenerSignalEngine:
             family_profile = self._family_source_profile(
                 symbol, family, source_entry, peg_ready_map={}
             )
-            if not family_profile.get("watch_allowed"):
-                continue
+            legacy_visible = bool(family_profile.get("watch_allowed"))
             cooldown_blocked = self._is_ug_cooldown_blocked(
                 symbol, code, active_cycles, signal_history
             )
             if code in {"UG_BUY_BREAKOUT", "UG_BUY_SQUEEZE_BREAKOUT"}:
-                base_action = (
+                legacy_action = (
                     "BUY"
                     if traffic_light == "GREEN" and family_profile.get("buy_allowed")
                     else "WATCH"
                 )
+                artifact_base_action = "BUY" if traffic_light == "GREEN" else "WATCH"
             elif code == "UG_BUY_PBB":
-                base_action = (
+                legacy_action = (
+                    "BUY"
+                    if traffic_light == "GREEN" and family_profile.get("buy_allowed")
+                    else "WATCH"
+                )
+                artifact_base_action = "BUY" if traffic_light == "GREEN" else "WATCH"
+            else:
+                legacy_action = (
                     "BUY"
                     if traffic_light in {"GREEN", "ORANGE"}
                     and family_profile.get("buy_allowed")
                     else "WATCH"
                 )
-            else:
-                base_action = "BUY" if family_profile.get("buy_allowed") else "WATCH"
+                artifact_base_action = (
+                    "BUY" if traffic_light in {"GREEN", "ORANGE"} else "WATCH"
+                )
             row_conviction = (
                 _shift_grade(conviction, -1) if code == "UG_BUY_MR_LONG" else conviction
             )
             events.append(
-                _build_signal_row(
+                _annotate_buy_candidate_row(
+                    _build_signal_row(
                     signal_date=metrics.get("date"),
                     symbol=symbol,
                     market=self.market,
@@ -5355,7 +6257,7 @@ class MultiScreenerSignalEngine:
                     family=family,
                     signal_kind="EVENT",
                     signal_code=code,
-                    action_type="WATCH" if cooldown_blocked else base_action,
+                    action_type="WATCH" if cooldown_blocked else legacy_action,
                     conviction_grade=row_conviction,
                     screen_stage=screen_stage,
                     signal_score=validation_score,
@@ -5400,6 +6302,11 @@ class MultiScreenerSignalEngine:
                     + list(dashboard_profile.get("reason_codes", []))
                     + list(family_profile.get("reason_codes", [])),
                     quality_flags=quality_flags,
+                    ),
+                    legacy_visible=legacy_visible,
+                    artifact_action_type=(
+                        "WATCH" if cooldown_blocked else artifact_base_action
+                    ),
                 )
             )
         return events
@@ -5444,6 +6351,29 @@ class MultiScreenerSignalEngine:
             exit_context_codes.append(f"SOURCE_STYLE_{primary_source_style}")
         if source_fit_label:
             exit_context_codes.append(f"SOURCE_FIT_{source_fit_label}")
+
+        band_reversion_profile = _band_reversion_from_metrics(metrics)
+        refined_band_gate_present = _has_band_reversion_diagnostics(metrics)
+        pbs_gate_pass = bool(
+            metrics.get("ug_pbs_ready")
+            and (
+                not refined_band_gate_present
+                or band_reversion_profile.get("pbs_ready")
+            )
+        )
+        mr_short_gate_pass = bool(
+            metrics.get("ug_mr_short_ready")
+            and (
+                not refined_band_gate_present
+                or band_reversion_profile.get("mr_short_ready")
+            )
+        )
+        band_reason_codes = list(
+            dict.fromkeys(
+                list(metrics.get("band_reversion_reason_codes", []))
+                + list(band_reversion_profile.get("reason_codes", []))
+            )
+        )
 
         if support_low is not None and close <= support_low:
             events.append(
@@ -5499,9 +6429,10 @@ class MultiScreenerSignalEngine:
                 )
             )
         bb_mid = _safe_float(metrics.get("bb_mid"))
-        if metrics.get("ug_pbs_ready") and bb_mid is not None and pbs_allowed:
+        if pbs_gate_pass and bb_mid is not None and pbs_allowed:
             reason_codes = [
                 "SIGMA_PBS",
+                *band_reason_codes,
                 *list(dashboard_profile.get("reason_codes", [])),
                 *exit_context_codes,
             ]
@@ -5555,11 +6486,12 @@ class MultiScreenerSignalEngine:
                     quality_flags=self._base_quality_flags(metrics),
                 )
             )
-        if metrics.get("ug_mr_short_ready") and mr_short_allowed and trim_count < 2:
+        if mr_short_gate_pass and mr_short_allowed and trim_count < 2:
             action_type = "TRIM"
             signal_phase = "TRIM"
             reason_codes = [
                 "SIGMA_MR_SHORT",
+                *band_reason_codes,
                 *list(dashboard_profile.get("reason_codes", [])),
                 *exit_context_codes,
             ]
@@ -5626,9 +6558,11 @@ class MultiScreenerSignalEngine:
         family = _safe_text(family)
         style = _safe_text(primary_source_style).upper()
         fast_character = _is_fast_character(metrics.get("stock_character"))
+        level: float | None
+        mode: str
         if family == "TF_MOMENTUM":
             if style in {"VOLATILITY", "LEADERSHIP"} or fast_character:
-                return (
+                level, mode = (
                     _pick_latest(
                         _safe_float(metrics.get("ema10")),
                         _safe_float(metrics.get("donchian_low20")),
@@ -5636,7 +6570,8 @@ class MultiScreenerSignalEngine:
                     ),
                     "MOMENTUM_RATCHET",
                 )
-            return (
+                return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
+            level, mode = (
                 _pick_latest(
                     _safe_float(metrics.get("fast_ref")),
                     _safe_float(metrics.get("donchian_low20")),
@@ -5644,8 +6579,9 @@ class MultiScreenerSignalEngine:
                 ),
                 "MOMENTUM_SWING",
             )
+            return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
         if family == "TF_PEG":
-            return (
+            level, mode = (
                 _pick_latest(
                     _safe_float(metrics.get("ema10")),
                     _safe_float(metrics.get("ema20")),
@@ -5653,9 +6589,10 @@ class MultiScreenerSignalEngine:
                 ),
                 "PEG_GAP_HOLD",
             )
+            return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
         if family == "TF_REGULAR_PULLBACK":
             if style in {"PULLBACK", "STRUCTURE"} and not fast_character:
-                return (
+                level, mode = (
                     _pick_latest(
                         _safe_float(metrics.get("mid_ref")),
                         _safe_float(metrics.get("slow_ref")),
@@ -5663,7 +6600,8 @@ class MultiScreenerSignalEngine:
                     ),
                     "PULLBACK_CLASSIC",
                 )
-            return (
+                return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
+            level, mode = (
                 _pick_latest(
                     _safe_float(metrics.get("fast_ref")),
                     _safe_float(metrics.get("mid_ref")),
@@ -5671,9 +6609,10 @@ class MultiScreenerSignalEngine:
                 ),
                 "PULLBACK_FAST",
             )
+            return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
         if family == "TF_BREAKOUT":
             if style in {"BREAKOUT", "LEADERSHIP", "TREND"} and fast_character:
-                return (
+                level, mode = (
                     _pick_latest(
                         _safe_float(metrics.get("fast_ref")),
                         _safe_float(metrics.get("mid_ref")),
@@ -5681,7 +6620,8 @@ class MultiScreenerSignalEngine:
                     ),
                     "BREAKOUT_FAST",
                 )
-            return (
+                return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
+            level, mode = (
                 _pick_latest(
                     _safe_float(metrics.get("mid_ref")),
                     _safe_float(metrics.get("slow_ref")),
@@ -5689,8 +6629,9 @@ class MultiScreenerSignalEngine:
                 ),
                 "BREAKOUT_CLASSIC",
             )
+            return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
         if family.startswith("TF_"):
-            return (
+            level, mode = (
                 _pick_latest(
                     _safe_float(metrics.get("fast_ref")),
                     _safe_float(metrics.get("mid_ref")),
@@ -5698,7 +6639,38 @@ class MultiScreenerSignalEngine:
                 ),
                 "TREND_GENERIC",
             )
+            return self._with_atr_trailing_candidate(metrics, level, stop_level, mode)
         return stop_level, ""
+
+    def _with_atr_trailing_candidate(
+        self,
+        metrics: Mapping[str, Any],
+        level: float | None,
+        stop_level: float | None,
+        mode: str,
+    ) -> tuple[float | None, str]:
+        daily_frame = (
+            metrics.get("daily")
+            if isinstance(metrics.get("daily"), pd.DataFrame)
+            else pd.DataFrame()
+        )
+        exit_profile = _signal_patterns.score_exit_pressure(
+            daily_frame,
+            metrics,
+            {
+                "trailing_level": level,
+                "protected_stop_level": stop_level,
+            },
+        )
+        effective_level = _safe_float(exit_profile.get("effective_trailing_level"))
+        chandelier_level = _safe_float(exit_profile.get("chandelier_long_stop"))
+        if (
+            effective_level is not None
+            and chandelier_level is not None
+            and (level is None or effective_level > level)
+        ):
+            return effective_level, f"{mode}_ATR_CHANDELIER"
+        return level, mode
 
     def _compute_trailing_level(
         self,
@@ -5772,9 +6744,15 @@ class MultiScreenerSignalEngine:
         active_cycles: dict[tuple[str, str, str], dict[str, Any]],
         metrics_map: Mapping[str, Mapping[str, Any]],
         peg_context_map: Mapping[str, Mapping[str, Any]] | None = None,
+        *,
+        scope: str = _SCREENED_SCOPE,
     ) -> dict[tuple[str, str, str], dict[str, Any]]:
         peg_context_map = peg_context_map or {}
-        updated = {key: dict(value) for key, value in active_cycles.items()}
+        normalized_scope = _normalize_scope(scope)
+        updated = {
+            key: {**dict(value), "scope": _normalize_scope(value.get("scope"), default=normalized_scope)}
+            for key, value in active_cycles.items()
+        }
         buy_codes = {
             "TF_BUY_REGULAR",
             "TF_BUY_BREAKOUT",
@@ -5785,15 +6763,7 @@ class MultiScreenerSignalEngine:
             *list(_UG_BUY_CODES),
         }
 
-        close_codes = {
-            "TF_SELL_RESISTANCE_REJECT",
-            "TF_SELL_BREAKDOWN",
-            "TF_SELL_CHANNEL_BREAK",
-            "TF_SELL_TRAILING_BREAK",
-            "TF_SELL_MOMENTUM_END",
-            "UG_SELL_PBS",
-            "UG_SELL_BREAKDOWN",
-        }
+        close_codes = set(_FINAL_CLOSE_SIGNAL_CODES)
         for row in events:
             symbol = _safe_text(row.get("symbol")).upper()
             engine = _safe_text(row.get("engine"))
@@ -5820,6 +6790,7 @@ class MultiScreenerSignalEngine:
                         )
                         cycle = {
                             "family_cycle_id": f"{engine}:{family}:{symbol}:{row.get('signal_date')}",
+                            "scope": normalized_scope,
                             "engine": engine,
                             "family": family,
                             "symbol": symbol,
@@ -5882,6 +6853,7 @@ class MultiScreenerSignalEngine:
                         )
                         cycle = {
                             "family_cycle_id": f"{engine}:{family}:{symbol}:{row.get('signal_date')}",
+                            "scope": normalized_scope,
                             "engine": engine,
                             "family": family,
                             "symbol": symbol,
@@ -5925,8 +6897,17 @@ class MultiScreenerSignalEngine:
                             "source_fit_label": row.get("source_fit_label"),
                         }
                     updated[key] = cycle
+                    _record_position_effect(
+                        row,
+                        cycle_effect="OPEN",
+                        before=0.0,
+                        after=_safe_float(cycle.get("current_position_units")) or 1.0,
+                    )
                 else:
                     cycle["last_signal_date"] = row.get("signal_date")
+                    cycle["scope"] = _normalize_scope(
+                        cycle.get("scope"), default=normalized_scope
+                    )
                     primary_source_style = _safe_text(
                         cycle.get("primary_source_style")
                     ) or _safe_text(row.get("primary_source_style"))
@@ -5969,10 +6950,17 @@ class MultiScreenerSignalEngine:
                             break_even_level=_safe_float(cycle.get("break_even_level")),
                             risk_free_armed=_safe_bool(cycle.get("risk_free_armed")),
                         )
+                        cycle["trailing_level"] = _never_down_level(
+                            _safe_float(cycle.get("trailing_level")),
+                            _safe_float(cycle.get("last_trailing_confirmed_level")),
+                        )
                         cycle["trailing_mode"] = trailing_mode
                         if row.get("signal_code") == "TF_ADDON_PYRAMID":
                             next_slot = self._trend_addon_slot(cycle)
                             if next_slot is not None:
+                                position_before = _safe_float(
+                                    cycle.get("current_position_units")
+                                )
                                 add_on_units = (
                                     self._trend_addon_tranche_pct(next_slot) or 0.0
                                 )
@@ -6029,6 +7017,12 @@ class MultiScreenerSignalEngine:
                                 cycle["protected_stop_level"] = (
                                     self._trend_protected_stop_level(cycle)
                                 )
+                                cycle["protected_stop_level"] = _never_down_level(
+                                    _safe_float(cycle.get("protected_stop_level")),
+                                    _safe_float(
+                                        cycle.get("last_protected_stop_level")
+                                    ),
+                                )
                                 cycle["last_trailing_confirmed_level"] = _safe_float(
                                     cycle.get("trailing_level")
                                 )
@@ -6037,6 +7031,14 @@ class MultiScreenerSignalEngine:
                                 )
                                 cycle["last_pyramid_reference_level"] = _safe_float(
                                     cycle.get("protected_stop_level")
+                                )
+                                _record_position_effect(
+                                    row,
+                                    cycle_effect="ADD",
+                                    before=position_before,
+                                    after=_safe_float(
+                                        cycle.get("current_position_units")
+                                    ),
                                 )
                 row["family_cycle_id"] = cycle["family_cycle_id"]
                 if engine == "TREND":
@@ -6087,6 +7089,7 @@ class MultiScreenerSignalEngine:
                         )
                         if current_position_units is None:
                             current_position_units = base_position_units
+                        position_before = current_position_units
                         cycle["base_position_units"] = base_position_units
                         cycle["current_position_units"] = max(
                             current_position_units - (base_position_units * trim_fraction),
@@ -6095,11 +7098,22 @@ class MultiScreenerSignalEngine:
                         row["trim_count"] = cycle.get("trim_count")
                         row["base_position_units"] = cycle.get("base_position_units")
                         row["current_position_units"] = cycle.get("current_position_units")
+                        _record_position_effect(
+                            row,
+                            cycle_effect="TRIM",
+                            before=position_before,
+                            after=_safe_float(cycle.get("current_position_units")),
+                        )
                     else:
                         updated.pop(key, None)
             elif row.get("signal_code") in {"TF_SELL_TP1", "TF_SELL_TP2"}:
                 cycle = updated.get(key)
                 if cycle:
+                    position_before = _safe_float(cycle.get("current_position_units"))
+                    if position_before is None:
+                        position_before = _safe_float(cycle.get("base_position_units")) or 1.0
+                    position_after = max(position_before * 0.5, 0.0)
+                    cycle["current_position_units"] = position_after
                     if row.get("signal_code") == "TF_SELL_TP1":
                         cycle["tp1_hit"] = True
                         cycle["trim_count"] = max(
@@ -6126,10 +7140,32 @@ class MultiScreenerSignalEngine:
                     cycle["protected_stop_level"] = self._trend_protected_stop_level(
                         cycle
                     )
+                    cycle["protected_stop_level"] = _never_down_level(
+                        _safe_float(cycle.get("protected_stop_level")),
+                        _safe_float(cycle.get("last_protected_stop_level")),
+                    )
+                    row["base_position_units"] = cycle.get("base_position_units")
+                    row["current_position_units"] = cycle.get("current_position_units")
+                    row["protected_stop_level"] = cycle.get("protected_stop_level")
+                    _record_position_effect(
+                        row,
+                        cycle_effect="TRIM",
+                        before=position_before,
+                        after=position_after,
+                    )
             elif row.get("signal_code") in close_codes:
                 cycle = updated.get(key)
                 if cycle:
                     row["family_cycle_id"] = cycle.get("family_cycle_id", "")
+                    position_before = _safe_float(cycle.get("current_position_units"))
+                    if position_before is None:
+                        position_before = _safe_float(cycle.get("base_position_units"))
+                    _record_position_effect(
+                        row,
+                        cycle_effect="CLOSE",
+                        before=position_before,
+                        after=0.0 if position_before is not None else None,
+                    )
                     updated.pop(key, None)
 
         for key, cycle in list(updated.items()):
@@ -6211,10 +7247,18 @@ class MultiScreenerSignalEngine:
                 break_even_level=_safe_float(cycle.get("break_even_level")),
                 risk_free_armed=_safe_bool(cycle.get("risk_free_armed")),
             )
+            cycle["trailing_level"] = _never_down_level(
+                _safe_float(cycle.get("trailing_level")),
+                _safe_float(cycle.get("last_trailing_confirmed_level")),
+            )
             cycle["trailing_mode"] = trailing_mode
             cycle["max_add_ons"] = max(_safe_int(cycle.get("max_add_ons")) or 2, 2)
             cycle["add_on_slot"] = max(_safe_int(cycle.get("add_on_slot")) or 0, 0)
             cycle["protected_stop_level"] = self._trend_protected_stop_level(cycle)
+            cycle["protected_stop_level"] = _never_down_level(
+                _safe_float(cycle.get("protected_stop_level")),
+                _safe_float(cycle.get("last_protected_stop_level")),
+            )
             cycle["next_addon_allowed"] = bool(addon_context.get("ready"))
             cycle["addon_block_reason"] = addon_context.get("block_reason")
             cycle["trailing_ratcheted"] = addon_context.get("trailing_ratcheted")
@@ -6485,7 +7529,7 @@ class MultiScreenerSignalEngine:
         screen_stage = str(
             source_entry.get("screen_stage")
             or metrics.get("screen_stage")
-            or "UNIVERSE"
+            or ""
         )
         family_profile = self._family_source_profile(
             symbol, "UG_BREAKOUT", source_entry, peg_ready_map={}
@@ -6623,118 +7667,6 @@ class MultiScreenerSignalEngine:
             )
         return rows
 
-    def _diagnostic_buy_history(
-        self,
-        symbol: str,
-        frame: pd.DataFrame,
-        source_entry: Mapping[str, Any],
-        feature_row: Mapping[str, Any],
-    ) -> dict[str, Any]:
-
-        if len(frame) < 41:
-
-            return {
-                "screen_date": self.as_of_date,
-                "symbol": symbol,
-                "screen_stage": source_entry.get("screen_stage"),
-                "lead_buy_found_10d": False,
-                "lead_buy_date_10d": None,
-                "lead_buy_signal_code_10d": None,
-                "lead_buy_family_10d": None,
-                "lead_buy_days_before_screen_10d": None,
-                "lead_buy_found_15d": False,
-                "lead_buy_date_15d": None,
-                "lead_buy_signal_code_15d": None,
-                "lead_buy_family_15d": None,
-                "lead_buy_days_before_screen_15d": None,
-            }
-
-        historical_hits: list[dict[str, Any]] = []
-
-        start_index = max(39, len(frame) - 16)
-
-        for end_index in range(start_index, len(frame) - 1):
-
-            sliced = frame.iloc[: end_index + 1].copy()
-
-            if len(sliced) < 40:
-
-                continue
-
-            metrics = _build_metrics(
-                symbol=symbol,
-                market=self.market,
-                frame=sliced,
-                metadata=self.metadata_map.get(symbol, {}),
-                financial_row=self.financial_map.get(symbol, {}),
-                feature_row=feature_row,
-                source_entry={**dict(source_entry), "buy_eligible": True},
-            )
-            potential_rows = []
-
-            potential_rows.extend(
-                self._trend_buy_events(
-                    symbol=symbol,
-                    metrics=metrics,
-                    source_entry={**dict(source_entry), "buy_eligible": True},
-                    active_cycles={},
-                    peg_ready_map={},
-                    peg_context={},
-                )
-            )
-
-            potential_rows.extend(
-                self._ug_buy_events(
-                    symbol=symbol,
-                    metrics=metrics,
-                    source_entry={**dict(source_entry), "buy_eligible": True},
-                    active_cycles={},
-                    signal_history=[],
-                )
-            )
-
-            buy_rows = [
-                row for row in potential_rows if row.get("action_type") == "BUY"
-            ]
-
-            historical_hits.extend(
-                {
-                    "signal_date": row.get("signal_date"),
-                    "signal_code": row.get("signal_code"),
-                    "family": row.get("family"),
-                }
-                for row in buy_rows
-            )
-
-        lead10 = _pick_latest_lead_hit(
-            historical_hits, screen_date=self.as_of_date, max_business_days=10
-        )
-
-        lead15 = _pick_latest_lead_hit(
-            historical_hits, screen_date=self.as_of_date, max_business_days=15
-        )
-
-        return {
-            "screen_date": self.as_of_date,
-            "symbol": symbol,
-            "screen_stage": source_entry.get("screen_stage"),
-            "lead_buy_found_10d": bool(lead10),
-            "lead_buy_date_10d": lead10.get("signal_date") if lead10 else None,
-            "lead_buy_signal_code_10d": lead10.get("signal_code") if lead10 else None,
-            "lead_buy_family_10d": lead10.get("family") if lead10 else None,
-            "lead_buy_days_before_screen_10d": (
-                lead10.get("lead_buy_days_before_screen") if lead10 else None
-            ),
-            "lead_buy_found_15d": bool(lead15),
-            "lead_buy_date_15d": lead15.get("signal_date") if lead15 else None,
-            "lead_buy_signal_code_15d": lead15.get("signal_code") if lead15 else None,
-            "lead_buy_family_15d": lead15.get("family") if lead15 else None,
-            "lead_buy_days_before_screen_15d": (
-                lead15.get("lead_buy_days_before_screen") if lead15 else None
-            ),
-            "source_tags": list(source_entry.get("source_tags", [])),
-        }
-
     def _diagnostic_addon_state(
         self,
         symbol: str,
@@ -6787,16 +7719,43 @@ class MultiScreenerSignalEngine:
         peg_ready_map: Mapping[str, Mapping[str, Any]],
         active_cycles: Mapping[tuple[str, str, str], Mapping[str, Any]],
         metrics_map: Mapping[str, Mapping[str, Any]],
+        *,
+        scope: str = _SCREENED_SCOPE,
+        scope_symbols: Iterable[str] | None = None,
+        screened_symbols: Iterable[str] | None = None,
     ) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
-        open_cycle_symbols = {key[2] for key in active_cycles.keys()}
-        all_symbols = sorted(
-            set(source_registry.keys()) | set(peg_ready_map.keys()) | open_cycle_symbols
-        )
+        normalized_scope = _normalize_scope(scope)
+        scope_symbol_set = {
+            _safe_text(symbol).upper()
+            for symbol in (
+                scope_symbols
+                if scope_symbols is not None
+                else (set(source_registry.keys()) | set(peg_ready_map.keys()))
+            )
+            if _safe_text(symbol)
+        }
+        screened_symbol_set = {
+            _safe_text(symbol).upper()
+            for symbol in (
+                screened_symbols
+                if screened_symbols is not None
+                else (set(source_registry.keys()) | set(peg_ready_map.keys()))
+            )
+            if _safe_text(symbol)
+        }
+        open_cycle_symbols = {symbol for (_, _, symbol) in active_cycles.keys()}
+        public_symbol_set = set(screened_symbol_set)
+        all_symbols = sorted(public_symbol_set)
         for symbol in all_symbols:
             source_entry = source_registry.get(symbol, {})
             metrics = metrics_map.get(symbol, {})
             dashboard_profile = self._ug_dashboard_profile(metrics) if metrics else {}
+            source_disposition = _source_disposition(
+                source_entry,
+                symbol=symbol,
+                peg_ready_map=peg_ready_map,
+            )
             source_tags = _sorted_source_tags(source_entry.get("source_tags"))
             if symbol in peg_ready_map and "PEG_READY" not in source_tags:
                 source_tags.append("PEG_READY")
@@ -6810,15 +7769,20 @@ class MultiScreenerSignalEngine:
             rows.append(
                 {
                     "as_of_ts": self.as_of_date,
+                    "scope": normalized_scope,
                     "symbol": symbol,
                     "market": self.market.upper(),
                     "screen_stage": source_entry.get("screen_stage")
-                    or ("PEG_ONLY" if symbol in peg_ready_map else "UNIVERSE"),
-                    "buy_eligible": bool(
-                        source_entry.get("buy_eligible") or symbol in peg_ready_map
+                    or ("PEG_READY" if symbol in peg_ready_map else ""),
+                    "source_disposition": source_disposition,
+                    "buy_eligible": symbol in scope_symbol_set,
+                    "source_buy_eligible": _source_buy_eligible(
+                        source_entry,
+                        symbol=symbol,
+                        peg_ready_map=peg_ready_map,
                     ),
-                    "watch_only": bool(source_entry.get("watch_only"))
-                    and symbol not in peg_ready_map,
+                    "watch_only": source_disposition == "watch_only",
+                    "is_screened": symbol in screened_symbol_set,
                     "peg_ready": symbol in peg_ready_map,
                     "open_cycle": symbol in open_cycle_symbols,
                     "source_count": len(source_tags),
@@ -6899,11 +7863,23 @@ class MultiScreenerSignalEngine:
         primary_source_tag_counts: dict[str, int] = {}
         primary_source_style_counts: dict[str, int] = {}
         source_style_counts: dict[str, int] = {}
+        disposition_counts: dict[str, int] = {}
         buy_eligible_count = 0
-        watch_only_count = 0
+        market_truth_source = ""
+        core_overlay_applied: bool | None = None
+        runtime_state = (
+            dict(self.runtime_context.runtime_state)
+            if self.runtime_context is not None and isinstance(self.runtime_context.runtime_state, dict)
+            else {}
+        )
+        market_truth_mode = str(runtime_state.get("market_truth_mode") or "").strip()
+        if not market_truth_mode:
+            market_truth_mode = "standalone_manual" if self.standalone else "compat"
+        fallback_reason = str(runtime_state.get("fallback_reason") or "").strip()
         for row in signal_universe_rows:
-            stage = _safe_text(row.get("screen_stage")) or "UNIVERSE"
-            stage_counts[stage] = stage_counts.get(stage, 0) + 1
+            stage = _safe_text(row.get("screen_stage"))
+            if stage:
+                stage_counts[stage] = stage_counts.get(stage, 0) + 1
             primary_tag = _safe_text(row.get("primary_source_tag"))
             if primary_tag:
                 primary_source_tag_counts[primary_tag] = (
@@ -6914,10 +7890,15 @@ class MultiScreenerSignalEngine:
                 primary_source_style_counts[primary_style] = (
                     primary_source_style_counts.get(primary_style, 0) + 1
                 )
+            disposition = _normalize_source_disposition(row.get("source_disposition"))
+            if disposition:
+                disposition_counts[disposition] = disposition_counts.get(disposition, 0) + 1
             if _safe_bool(row.get("buy_eligible")):
                 buy_eligible_count += 1
-            if _safe_bool(row.get("watch_only")):
-                watch_only_count += 1
+            if not market_truth_source:
+                market_truth_source = _safe_text(row.get("market_truth_source"))
+            if core_overlay_applied is None and row.get("core_overlay_applied") is not None:
+                core_overlay_applied = bool(row.get("core_overlay_applied"))
             for tag in _to_list(row.get("source_tags")):
                 source_tag_counts[tag] = source_tag_counts.get(tag, 0) + 1
             for style in _to_list(row.get("source_style_tags")):
@@ -6925,10 +7906,14 @@ class MultiScreenerSignalEngine:
         return {
             "market": self.market.upper(),
             "as_of_date": self.as_of_date,
+            "market_truth_source": market_truth_source or ("local_standalone" if self.standalone else "market_intel_compat"),
+            "core_overlay_applied": (not self.standalone) if core_overlay_applied is None else core_overlay_applied,
+            "market_truth_mode": market_truth_mode,
+            "fallback_reason": fallback_reason,
             "registry_symbols": len(source_registry),
             "signal_universe_symbols": len(signal_universe_rows),
             "buy_eligible_symbols": buy_eligible_count,
-            "watch_only_symbols": watch_only_count,
+            "disposition_counts": dict(sorted(disposition_counts.items())),
             "stage_counts": dict(sorted(stage_counts.items())),
             "source_tag_counts": dict(sorted(source_tag_counts.items())),
             "primary_source_tag_counts": dict(
@@ -6940,172 +7925,254 @@ class MultiScreenerSignalEngine:
             "source_style_counts": dict(sorted(source_style_counts.items())),
         }
 
-    def run(self) -> dict[str, Any]:
-        ensure_market_dirs(self.market)
-
-        os.makedirs(self.results_dir, exist_ok=True)
-
-        source_registry = self._load_source_registry()
-
-        raw_peg_map, peg_ready_map, peg_financial_map = self._load_or_run_peg_screen()
-
-        active_cycles = self._load_active_cycles()
-
-        signal_history = self._load_signal_history()
-        state_history = self._load_state_history()
-
-        peg_event_history_rows = self._load_peg_event_history()
-
-        peg_event_history_map = self._latest_peg_event_map(peg_event_history_rows)
-
-        symbols_to_load = set(source_registry)
-
-        symbols_to_load.update(symbol for (_, _, symbol) in active_cycles.keys())
-
-        symbols_to_load.update(peg_ready_map.keys())
-
-        symbols_to_load.update(peg_event_history_map.keys())
-
-        self.financial_map = dict(peg_financial_map)
-        missing_financial_symbols = sorted(symbols_to_load - set(self.financial_map))
-        if missing_financial_symbols:
-            self.financial_map.update(
-                _load_financial_map(self.market, symbols=missing_financial_symbols)
-            )
-
-        frames = self._load_frames(symbols_to_load)
-
-        feature_map = self._load_feature_map(frames)
-
-        metrics_map = _signal_metrics.build_metrics_map(
-            frames=frames,
-            market=self.market,
-            metadata_map=self.metadata_map,
-            financial_map=self.financial_map,
-            feature_map=feature_map,
-            source_registry=source_registry,
-            peg_ready_map=peg_ready_map,
-            peg_event_history_map=peg_event_history_map,
-            build_metrics_fn=_build_metrics,
+    def _run_scope_scan(
+        self,
+        *,
+        scope: str,
+        scope_symbols: set[str],
+        screened_symbol_scope: set[str],
+        source_registry: Mapping[str, Mapping[str, Any]],
+        raw_peg_map: Mapping[str, Mapping[str, Any]],
+        peg_ready_map: Mapping[str, Mapping[str, Any]],
+        peg_event_history_map: Mapping[str, Mapping[str, Any]],
+        active_cycles: Mapping[tuple[Any, ...], Mapping[str, Any]],
+        signal_history: Sequence[Mapping[str, Any]],
+        metrics_map: Mapping[str, Mapping[str, Any]],
+    ) -> dict[str, Any]:
+        normalized_scope = _normalize_scope(scope)
+        scope_active_cycles = _scope_local_cycle_map(
+            active_cycles,
+            scope=normalized_scope,
         )
+        scope_signal_history = _history_rows_for_scope(
+            signal_history,
+            scope=normalized_scope,
+        )
+        open_cycle_symbols = {symbol for (_, _, symbol) in scope_active_cycles.keys()}
+        evaluation_symbols = sorted(scope_symbols | open_cycle_symbols)
 
-        trend_event_rows: list[dict[str, Any]] = []
+        def _scoped_source_entry(symbol: str) -> dict[str, Any]:
+            base_entry = source_registry.get(
+                symbol,
+                _default_signal_source_entry(
+                    symbol=symbol,
+                    peg_ready_map=peg_ready_map,
+                    peg_event_history_map=peg_event_history_map,
+                ),
+            )
+            scoped_entry = dict(base_entry)
+            scoped_entry["source_disposition"] = _source_disposition(
+                scoped_entry,
+                symbol=symbol,
+                peg_ready_map=peg_ready_map,
+                peg_event_history_map=peg_event_history_map,
+            )
+            scoped_entry["source_buy_eligible"] = _source_buy_eligible(
+                scoped_entry,
+                symbol=symbol,
+                peg_ready_map=peg_ready_map,
+                peg_event_history_map=peg_event_history_map,
+            )
+            scoped_entry["buy_eligible"] = symbol in scope_symbols
+            scoped_entry["watch_only"] = (
+                scoped_entry["source_disposition"] == "watch_only"
+            )
+            scoped_entry["is_screened"] = symbol in screened_symbol_scope
+            if not _safe_text(scoped_entry.get("screen_stage")):
+                scoped_entry["screen_stage"] = (
+                    "PEG_READY" if symbol in peg_ready_map else ""
+                )
+            return scoped_entry
+
+        trend_buy_candidate_rows: list[dict[str, Any]] = []
         trend_state_rows: list[dict[str, Any]] = []
-        ug_event_rows: list[dict[str, Any]] = []
+        ug_buy_candidate_rows: list[dict[str, Any]] = []
         ug_state_rows: list[dict[str, Any]] = []
         ug_combo_rows: list[dict[str, Any]] = []
         peg_context_map: dict[str, dict[str, Any]] = {}
+        trend_sell_rows: list[dict[str, Any]] = []
+        ug_sell_rows: list[dict[str, Any]] = []
 
-        for symbol, metrics in metrics_map.items():
+        def _build_state_bundle(symbol: str) -> dict[str, list[dict[str, Any]]]:
+            metrics = metrics_map.get(symbol)
+            if not metrics:
+                return {
+                    "trend_state_rows": [],
+                    "ug_state_rows": [],
+                    "ug_combo_rows": [],
+                }
+            scoped_source_entry = _scoped_source_entry(symbol)
+            return {
+                "trend_state_rows": self._trend_state_rows(
+                    symbol=symbol,
+                    metrics=metrics,
+                    source_entry=scoped_source_entry,
+                ),
+                "ug_state_rows": self._ug_state_rows(
+                    symbol=symbol,
+                    metrics=metrics,
+                    source_entry=scoped_source_entry,
+                ),
+                "ug_combo_rows": self._ug_strategy_combo_rows(
+                    symbol=symbol,
+                    metrics=metrics,
+                    source_entry=scoped_source_entry,
+                    active_cycles=scope_active_cycles,
+                ),
+            }
 
-            source_entry = source_registry.get(
-                symbol,
-                {
-                    "symbol": symbol,
-                    "buy_eligible": symbol in peg_ready_map
-                    or symbol in peg_event_history_map,
-                    "watch_only": False,
-                    "screen_stage": (
-                        "PEG_ONLY"
-                        if (symbol in peg_ready_map or symbol in peg_event_history_map)
-                        else "UNIVERSE"
-                    ),
-                    "source_tags": (
-                        ["PEG_ONLY"]
-                        if (symbol in peg_ready_map or symbol in peg_event_history_map)
-                        else []
-                    ),
-                },
+        state_bundle_map: dict[str, dict[str, list[dict[str, Any]]]] = {}
+        state_worker_count = _resolved_parallel_workers(
+            len(evaluation_symbols),
+            env_var="INVEST_PROTO_SIGNAL_EVENT_WORKERS",
+        )
+        if state_worker_count == 1:
+            for symbol in evaluation_symbols:
+                state_bundle_map[symbol] = _build_state_bundle(symbol)
+        else:
+            with ThreadPoolExecutor(max_workers=state_worker_count) as executor:
+                future_map = {
+                    symbol: executor.submit(_build_state_bundle, symbol)
+                    for symbol in evaluation_symbols
+                }
+                for symbol in evaluation_symbols:
+                    state_bundle_map[symbol] = future_map[symbol].result()
+
+        for symbol in evaluation_symbols:
+            bundle = state_bundle_map[symbol]
+            trend_state_rows.extend(bundle.get("trend_state_rows", []))
+            ug_state_rows.extend(bundle.get("ug_state_rows", []))
+            ug_combo_rows.extend(bundle.get("ug_combo_rows", []))
+
+        buy_candidate_symbols = sorted(
+            symbol for symbol in scope_symbols if symbol in metrics_map
+        )
+        buy_bundle_map: dict[str, dict[str, Any]] = {}
+        buy_worker_count = _resolved_parallel_workers(len(buy_candidate_symbols))
+
+        def _build_buy_bundle(symbol: str) -> dict[str, Any]:
+            metrics = metrics_map[symbol]
+            return self._build_buy_candidate_bundle(
+                symbol=symbol,
+                metrics=metrics,
+                source_entry=_scoped_source_entry(symbol),
+                active_cycles=scope_active_cycles,
+                peg_ready_map=peg_ready_map,
+                raw_peg_map=raw_peg_map,
+                peg_event_history_map=peg_event_history_map,
+                signal_history=scope_signal_history,
             )
-            if (
-                symbol in source_registry
-                or symbol in peg_ready_map
-                or any(key[2] == symbol for key in active_cycles)
-            ):
-                trend_state_rows.extend(
-                    self._trend_state_rows(
-                        symbol=symbol, metrics=metrics, source_entry=source_entry
-                    )
-                )
-                ug_state_rows.extend(
-                    self._ug_state_rows(
-                        symbol=symbol, metrics=metrics, source_entry=source_entry
-                    )
-                )
-                ug_combo_rows.extend(
-                    self._ug_strategy_combo_rows(
+
+        if buy_worker_count == 1:
+            for symbol in buy_candidate_symbols:
+                buy_bundle_map[symbol] = _build_buy_bundle(symbol)
+        else:
+            with ThreadPoolExecutor(max_workers=buy_worker_count) as executor:
+                future_map = {
+                    symbol: executor.submit(_build_buy_bundle, symbol)
+                    for symbol in buy_candidate_symbols
+                }
+                for symbol in buy_candidate_symbols:
+                    buy_bundle_map[symbol] = future_map[symbol].result()
+
+        for symbol in buy_candidate_symbols:
+            bundle = buy_bundle_map[symbol]
+            peg_context_map[symbol] = dict(bundle.get("peg_context", {}))
+            trend_buy_candidate_rows.extend(bundle.get("trend_rows", []))
+            ug_buy_candidate_rows.extend(bundle.get("ug_rows", []))
+
+        cycle_items = list(scope_active_cycles.items())
+
+        def _build_sell_bundle(
+            item: tuple[tuple[Any, ...], Mapping[str, Any]],
+        ) -> dict[str, list[dict[str, Any]]]:
+            key, cycle = item
+            symbol = key[2]
+            metrics = metrics_map.get(symbol)
+            if not metrics:
+                return {"trend_sell_rows": [], "ug_sell_rows": []}
+            if key[0] == "TREND":
+                return {
+                    "trend_sell_rows": self._trend_sell_events(
                         symbol=symbol,
                         metrics=metrics,
-                        source_entry=source_entry,
-                        active_cycles=active_cycles,
-                    )
-                )
-
-            peg_context = self._current_peg_context(
-                symbol, metrics, raw_peg_map, peg_event_history_map
-            )
-
-            peg_context_map[symbol] = peg_context
-
-            trend_event_rows.extend(
-                self._trend_buy_events(
-                    symbol=symbol,
-                    metrics=metrics,
-                    source_entry=source_entry,
-                    active_cycles=active_cycles,
-                    peg_ready_map=peg_ready_map,
-                    peg_context=peg_context,
-                )
-            )
-
-            ug_event_rows.extend(
-                self._ug_buy_events(
-                    symbol=symbol,
-                    metrics=metrics,
-                    source_entry=source_entry,
-                    active_cycles=active_cycles,
-                    signal_history=signal_history,
-                )
-            )
-
-        for key, cycle in active_cycles.items():
-
-            symbol = key[2]
-
-            metrics = metrics_map.get(symbol)
-
-            if not metrics:
-
-                continue
-
-            if key[0] == "TREND":
-
-                trend_event_rows.extend(
-                    self._trend_sell_events(symbol=symbol, metrics=metrics, cycle=cycle)
-                )
-
+                        cycle=cycle,
+                    ),
+                    "ug_sell_rows": [],
+                }
             elif key[0] == "UG":
+                return {
+                    "trend_sell_rows": [],
+                    "ug_sell_rows": self._ug_sell_events(
+                        symbol=symbol,
+                        metrics=metrics,
+                        cycle=cycle,
+                    ),
+                }
+            return {"trend_sell_rows": [], "ug_sell_rows": []}
 
-                ug_event_rows.extend(
-                    self._ug_sell_events(symbol=symbol, metrics=metrics, cycle=cycle)
-                )
+        sell_bundle_map: dict[int, dict[str, list[dict[str, Any]]]] = {}
+        sell_worker_count = _resolved_parallel_workers(
+            len(cycle_items),
+            env_var="INVEST_PROTO_SIGNAL_EVENT_WORKERS",
+        )
+        if sell_worker_count == 1:
+            for index, item in enumerate(cycle_items):
+                sell_bundle_map[index] = _build_sell_bundle(item)
+        else:
+            with ThreadPoolExecutor(max_workers=sell_worker_count) as executor:
+                future_map = {
+                    index: executor.submit(_build_sell_bundle, item)
+                    for index, item in enumerate(cycle_items)
+                }
+                for index in range(len(cycle_items)):
+                    sell_bundle_map[index] = future_map[index].result()
 
-        trend_event_rows = _sorted_signal_rows(trend_event_rows)
+        for index in range(len(cycle_items)):
+            bundle = sell_bundle_map[index]
+            trend_sell_rows.extend(bundle.get("trend_sell_rows", []))
+            ug_sell_rows.extend(bundle.get("ug_sell_rows", []))
+
+        trend_buy_candidate_rows = _sorted_signal_rows(trend_buy_candidate_rows)
+        ug_buy_candidate_rows = _sorted_signal_rows(ug_buy_candidate_rows)
+        trend_sell_rows = _sorted_signal_rows(trend_sell_rows)
+        ug_sell_rows = _sorted_signal_rows(ug_sell_rows)
+        trend_event_rows = _sorted_signal_rows(
+            [
+                row
+                for row in trend_buy_candidate_rows
+                if _safe_bool(row.get("_legacy_visible"))
+            ]
+            + trend_sell_rows
+        )
         trend_state_rows = _sorted_signal_rows(trend_state_rows)
-        ug_event_rows = _sorted_signal_rows(ug_event_rows)
+        ug_event_rows = _sorted_signal_rows(
+            [
+                row
+                for row in ug_buy_candidate_rows
+                if _safe_bool(row.get("_legacy_visible"))
+            ]
+            + ug_sell_rows
+        )
         ug_state_rows = _sorted_signal_rows(ug_state_rows)
         ug_combo_rows = _sorted_signal_rows(ug_combo_rows)
 
         all_events = trend_event_rows + ug_event_rows
         updated_cycles = self._update_cycles(
-            all_events, active_cycles, metrics_map, peg_context_map
+            all_events,
+            scope_active_cycles,
+            metrics_map,
+            peg_context_map,
+            scope=normalized_scope,
         )
         level_state_rows = _sorted_signal_rows(
             self._build_level_state_rows(updated_cycles, metrics_map)
         )
         addon_state_rows = _sorted_signal_rows(
             self._build_trend_addon_state_rows(
-                updated_cycles, metrics_map, peg_context_map
+                updated_cycles,
+                metrics_map,
+                peg_context_map,
             )
         )
         trend_state_rows = _sorted_signal_rows(
@@ -7117,42 +8184,130 @@ class MultiScreenerSignalEngine:
             ]
             + addon_state_rows
         )
-        ug_level_rows = [
-            row for row in level_state_rows if _safe_text(row.get("engine")) == "UG"
-        ]
-        ug_state_rows = _sorted_signal_rows(ug_state_rows + ug_level_rows)
+        ug_state_rows = _sorted_signal_rows(
+            ug_state_rows
+            + [
+                row
+                for row in level_state_rows
+                if _safe_text(row.get("engine")) == "UG"
+            ]
+        )
 
         diagnostics = []
-        for symbol, source_entry in source_registry.items():
-            frame = frames.get(symbol)
-            if frame is None or frame.empty:
+        for symbol in evaluation_symbols:
+            if symbol not in metrics_map:
                 continue
+            scoped_source_entry = _scoped_source_entry(symbol)
             diagnostics.append(
                 {
-                    **self._diagnostic_buy_history(
-                        symbol, frame, source_entry, feature_map.get(symbol, {})
+                    "screen_date": self.as_of_date,
+                    "scope": normalized_scope,
+                    "symbol": symbol,
+                    "market": self.market.upper(),
+                    "screen_stage": scoped_source_entry.get("screen_stage"),
+                    "buy_eligible": symbol in scope_symbols,
+                    "source_buy_eligible": scoped_source_entry.get(
+                        "source_buy_eligible"
                     ),
+                    "is_screened": symbol in screened_symbol_scope,
+                    "source_tags": list(scoped_source_entry.get("source_tags", [])),
                     **self._diagnostic_addon_state(symbol, updated_cycles),
                 }
             )
         diagnostics = sorted(
             diagnostics,
             key=lambda row: (
+                _safe_text(row.get("scope")),
                 _safe_text(row.get("screen_date")),
                 _safe_text(row.get("symbol")).upper(),
-                _safe_text(row.get("screen_stage")),
             ),
+        )
+
+        trend_event_rows = _scope_signal_rows(
+            trend_event_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        trend_state_rows = _scope_signal_rows(
+            trend_state_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        ug_event_rows = _scope_signal_rows(
+            ug_event_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        ug_state_rows = _scope_signal_rows(
+            ug_state_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        ug_combo_rows = _scope_signal_rows(
+            ug_combo_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        trend_buy_candidate_rows = _scope_signal_rows(
+            trend_buy_candidate_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        ug_buy_candidate_rows = _scope_signal_rows(
+            ug_buy_candidate_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        trend_sell_rows = _scope_signal_rows(
+            trend_sell_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+        )
+        ug_sell_rows = _scope_signal_rows(
+            ug_sell_rows,
+            scope=normalized_scope,
+            scope_symbols=scope_symbols,
+            screened_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
         )
 
         all_state_rows = _sorted_signal_rows(
             trend_state_rows + ug_state_rows + ug_combo_rows
         )
-        state_history = self._persist_state_history(state_history, all_state_rows)
-        signal_history = self._persist_signal_history(signal_history, all_events)
-        peg_event_history_rows = self._persist_peg_event_history(
-            peg_event_history_rows, peg_context_map
-        )
-
         trend_event_rows_v2 = _apply_update_overlay_rows(
             _transform_signal_rows(trend_event_rows),
             metrics_map,
@@ -7173,6 +8328,20 @@ class MultiScreenerSignalEngine:
             _transform_signal_rows(ug_combo_rows),
             metrics_map,
         )
+        buy_projection_rows_v2 = _apply_update_overlay_rows(
+            _transform_signal_rows(
+                trend_buy_candidate_rows + ug_buy_candidate_rows,
+                strip_internal=False,
+            ),
+            metrics_map,
+        )
+        sell_projection_rows_v2 = _apply_update_overlay_rows(
+            _transform_signal_rows(
+                trend_sell_rows + ug_sell_rows,
+                strip_internal=False,
+            ),
+            metrics_map,
+        )
         all_signal_rows_v2 = _sorted_signal_rows(
             trend_event_rows_v2
             + trend_state_rows_v2
@@ -7180,15 +8349,306 @@ class MultiScreenerSignalEngine:
             + ug_state_rows_v2
             + ug_combo_rows_v2
         )
-        open_cycle_rows_v2 = _sorted_signal_rows(
+        buy_rows_v1 = _project_scoped_signal_rows(
+            buy_projection_rows_v2,
+            as_of_date=self.as_of_date,
+            signal_side="BUY",
+        )
+        sell_rows_v1 = _project_scoped_signal_rows(
+            sell_projection_rows_v2,
+            as_of_date=self.as_of_date,
+            signal_side="SELL",
+        )
+        open_cycle_rows = _sorted_signal_rows(
             _sanitize_cycle_row(row) for row in updated_cycles.values()
         )
-
         signal_universe_rows = _apply_update_snapshot_rows(
             self._build_signal_universe_rows(
-                source_registry, peg_ready_map, updated_cycles, metrics_map
+                source_registry,
+                peg_ready_map,
+                updated_cycles,
+                metrics_map,
+                scope=normalized_scope,
+                scope_symbols=scope_symbols,
+                screened_symbols=screened_symbol_scope,
             ),
             metrics_map,
+        )
+
+        return {
+            "trend_event_rows_raw": trend_event_rows,
+            "trend_state_rows_raw": trend_state_rows,
+            "ug_event_rows_raw": ug_event_rows,
+            "ug_state_rows_raw": ug_state_rows,
+            "ug_combo_rows_raw": ug_combo_rows,
+            "all_event_rows_raw": _sorted_signal_rows(trend_event_rows + ug_event_rows),
+            "all_state_rows_raw": all_state_rows,
+            "trend_event_rows_v2": trend_event_rows_v2,
+            "trend_state_rows_v2": trend_state_rows_v2,
+            "ug_event_rows_v2": ug_event_rows_v2,
+            "ug_state_rows_v2": ug_state_rows_v2,
+            "ug_combo_rows_v2": ug_combo_rows_v2,
+            "all_signal_rows_v2": all_signal_rows_v2,
+            "buy_rows_v1": buy_rows_v1,
+            "sell_rows_v1": sell_rows_v1,
+            "open_cycle_rows": open_cycle_rows,
+            "diagnostics": diagnostics,
+            "signal_universe_rows": signal_universe_rows,
+            "peg_context_map": peg_context_map,
+        }
+
+    def _run_scope_scans(
+        self,
+        *,
+        all_scope_symbols: set[str],
+        screened_scope_symbols: set[str],
+        source_registry: Mapping[str, Mapping[str, Any]],
+        raw_peg_map: Mapping[str, Mapping[str, Any]],
+        peg_ready_map: Mapping[str, Mapping[str, Any]],
+        peg_event_history_map: Mapping[str, Mapping[str, Any]],
+        active_cycles: Mapping[tuple[Any, ...], Mapping[str, Any]],
+        signal_history: Sequence[Mapping[str, Any]],
+        metrics_map: Mapping[str, Mapping[str, Any]],
+    ) -> dict[str, dict[str, Any]]:
+        scope_inputs = {
+            _ALL_SCOPE: set(all_scope_symbols),
+            _SCREENED_SCOPE: set(screened_scope_symbols),
+        }
+        worker_count = _resolved_parallel_workers(
+            len(scope_inputs),
+            cap=2,
+            env_var="INVEST_PROTO_SIGNAL_SCOPE_WORKERS",
+        )
+
+        def _scan(scope: str) -> tuple[dict[str, Any], float]:
+            started = time.perf_counter()
+            result = self._run_scope_scan(
+                scope=scope,
+                scope_symbols=scope_inputs[scope],
+                screened_symbol_scope=screened_scope_symbols,
+                source_registry=source_registry,
+                raw_peg_map=raw_peg_map,
+                peg_ready_map=peg_ready_map,
+                peg_event_history_map=peg_event_history_map,
+                active_cycles=active_cycles,
+                signal_history=signal_history,
+                metrics_map=metrics_map,
+            )
+            return result, time.perf_counter() - started
+
+        scopes = [_ALL_SCOPE, _SCREENED_SCOPE]
+        parallel_started = time.perf_counter()
+        if worker_count == 1:
+            scan_results = {scope: _scan(scope) for scope in scopes}
+        else:
+            with ThreadPoolExecutor(max_workers=worker_count) as executor:
+                future_map = {
+                    scope: executor.submit(_scan, scope)
+                    for scope in scopes
+                }
+                scan_results = {
+                    scope: future_map[scope].result()
+                    for scope in scopes
+                }
+
+        if self.runtime_context is not None:
+            all_elapsed = scan_results[_ALL_SCOPE][1]
+            screened_elapsed = scan_results[_SCREENED_SCOPE][1]
+            self.runtime_context.add_timing(
+                "signals.scope_scan_all_seconds",
+                all_elapsed,
+            )
+            self.runtime_context.add_timing(
+                "signals.scope_scan_screened_seconds",
+                screened_elapsed,
+            )
+            self.runtime_context.add_timing(
+                "signals.scope_scan_parallel_seconds",
+                time.perf_counter() - parallel_started,
+            )
+
+        return {
+            _ALL_SCOPE: scan_results[_ALL_SCOPE][0],
+            _SCREENED_SCOPE: scan_results[_SCREENED_SCOPE][0],
+        }
+
+    def run(self) -> dict[str, Any]:
+        ensure_market_dirs(self.market)
+
+        os.makedirs(self.results_dir, exist_ok=True)
+        if self.runtime_context is not None:
+            self.runtime_context.update_runtime_state(
+                current_stage="Multi-screener signal engine",
+                current_symbol="",
+                current_chunk="source_registry",
+                status="running",
+            )
+
+        phase_started = time.perf_counter()
+        source_registry = self._load_source_registry()
+        self._add_elapsed_timing("signals.source_registry_seconds", phase_started)
+
+        phase_started = time.perf_counter()
+        raw_peg_map, peg_ready_map, peg_financial_map = self._load_or_run_peg_screen()
+        self._add_elapsed_timing("signals.peg_screen_seconds", phase_started)
+
+        phase_started = time.perf_counter()
+        active_cycles = self._load_active_cycles()
+
+        signal_history = self._load_signal_history()
+        state_history = self._load_state_history()
+
+        peg_event_history_rows = self._load_peg_event_history()
+        self._add_elapsed_timing("signals.history_load_seconds", phase_started)
+
+        peg_event_history_map = self._latest_peg_event_map(peg_event_history_rows)
+
+        all_symbol_scope = set(self._load_all_symbol_universe())
+        screened_symbol_scope = (
+            set(source_registry.keys()) | set(peg_ready_map.keys())
+        ) & all_symbol_scope
+        active_cycle_symbols = {
+            _safe_text(key[-1]).upper()
+            for key in active_cycles.keys()
+            if len(key) >= 3
+        }
+
+        symbols_to_load = set(all_symbol_scope)
+        symbols_to_load.update(active_cycle_symbols)
+        symbols_to_load.update(peg_event_history_map.keys())
+
+        phase_started = time.perf_counter()
+        self.financial_map = dict(peg_financial_map)
+        missing_financial_symbols = sorted(symbols_to_load - set(self.financial_map))
+        if missing_financial_symbols:
+            self.financial_map.update(
+                _load_financial_map(self.market, symbols=missing_financial_symbols)
+            )
+        self._add_elapsed_timing("signals.financial_load_seconds", phase_started)
+        if self.runtime_context is not None:
+            self.runtime_context.financial_map = dict(self.financial_map)
+            self.runtime_context.update_runtime_state(
+                current_stage="Multi-screener signal engine",
+                current_symbol="",
+                current_chunk=f"metrics_inputs:{len(symbols_to_load)}",
+                status="running",
+            )
+
+        phase_started = time.perf_counter()
+        frames = self._load_frames(symbols_to_load)
+        self._add_elapsed_timing("signals.frame_load_seconds", phase_started)
+
+        phase_started = time.perf_counter()
+        feature_map = self._load_feature_map(frames)
+        self._add_elapsed_timing("signals.feature_map_seconds", phase_started)
+
+        phase_started = time.perf_counter()
+        metrics_map = _signal_metrics.build_metrics_map(
+            frames=frames,
+            market=self.market,
+            metadata_map=self.metadata_map,
+            financial_map=self.financial_map,
+            feature_map=feature_map,
+            source_registry=source_registry,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+            build_metrics_fn=_build_metrics,
+            max_workers=_resolved_parallel_workers(len(frames)),
+        )
+        self._add_elapsed_timing("signals.metrics_map_seconds", phase_started)
+
+        scope_results = self._run_scope_scans(
+            all_scope_symbols=all_symbol_scope,
+            screened_scope_symbols=screened_symbol_scope,
+            source_registry=source_registry,
+            raw_peg_map=raw_peg_map,
+            peg_ready_map=peg_ready_map,
+            peg_event_history_map=peg_event_history_map,
+            active_cycles=active_cycles,
+            signal_history=signal_history,
+            metrics_map=metrics_map,
+        )
+        if self.runtime_context is not None:
+            self.runtime_context.update_runtime_state(
+                current_stage="Multi-screener signal engine",
+                current_symbol="",
+                current_chunk="persist_outputs",
+                status="running",
+            )
+
+        trend_event_rows_v2 = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["trend_event_rows_v2"]
+            + scope_results[_SCREENED_SCOPE]["trend_event_rows_v2"]
+        )
+        trend_state_rows_v2 = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["trend_state_rows_v2"]
+            + scope_results[_SCREENED_SCOPE]["trend_state_rows_v2"]
+        )
+        ug_event_rows_v2 = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["ug_event_rows_v2"]
+            + scope_results[_SCREENED_SCOPE]["ug_event_rows_v2"]
+        )
+        ug_state_rows_v2 = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["ug_state_rows_v2"]
+            + scope_results[_SCREENED_SCOPE]["ug_state_rows_v2"]
+        )
+        ug_combo_rows_v2 = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["ug_combo_rows_v2"]
+            + scope_results[_SCREENED_SCOPE]["ug_combo_rows_v2"]
+        )
+        all_signal_rows_v2 = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["all_signal_rows_v2"]
+            + scope_results[_SCREENED_SCOPE]["all_signal_rows_v2"]
+        )
+        buy_signals_all_rows_v1 = scope_results[_ALL_SCOPE]["buy_rows_v1"]
+        sell_signals_all_rows_v1 = scope_results[_ALL_SCOPE]["sell_rows_v1"]
+        buy_signals_screened_rows_v1 = scope_results[_SCREENED_SCOPE]["buy_rows_v1"]
+        sell_signals_screened_rows_v1 = scope_results[_SCREENED_SCOPE]["sell_rows_v1"]
+        open_cycle_rows_v2 = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["open_cycle_rows"]
+            + scope_results[_SCREENED_SCOPE]["open_cycle_rows"]
+        )
+        diagnostics = sorted(
+            scope_results[_ALL_SCOPE]["diagnostics"]
+            + scope_results[_SCREENED_SCOPE]["diagnostics"],
+            key=lambda row: (
+                _safe_text(row.get("scope")),
+                _safe_text(row.get("screen_date")),
+                _safe_text(row.get("symbol")).upper(),
+            ),
+        )
+        signal_universe_rows = sorted(
+            scope_results[_ALL_SCOPE]["signal_universe_rows"]
+            + scope_results[_SCREENED_SCOPE]["signal_universe_rows"],
+            key=lambda row: (
+                _safe_text(row.get("scope")),
+                _safe_text(row.get("symbol")).upper(),
+            ),
+        )
+
+        all_state_rows = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["all_state_rows_raw"]
+            + scope_results[_SCREENED_SCOPE]["all_state_rows_raw"]
+        )
+        all_events = _sorted_signal_rows(
+            scope_results[_ALL_SCOPE]["all_event_rows_raw"]
+            + scope_results[_SCREENED_SCOPE]["all_event_rows_raw"]
+        )
+        phase_started = time.perf_counter()
+        state_history = self._persist_state_history(state_history, all_state_rows)
+        signal_history = self._persist_signal_history(signal_history, all_events)
+        peg_context_map: dict[str, dict[str, Any]] = {}
+        peg_context_map.update(scope_results[_ALL_SCOPE]["peg_context_map"])
+        peg_context_map.update(scope_results[_SCREENED_SCOPE]["peg_context_map"])
+        peg_event_history_rows = self._persist_peg_event_history(
+            peg_event_history_rows,
+            peg_context_map,
+        )
+        self._add_elapsed_timing("signals.history_persist_seconds", phase_started)
+        earnings_provider_diagnostics = (
+            self.earnings_collector.provider_diagnostics_rows()
+            if self.earnings_collector
+            else []
         )
         source_registry_summary = self._build_source_registry_summary(
             source_registry, signal_universe_rows
@@ -7197,6 +8657,18 @@ class MultiScreenerSignalEngine:
         summary = {
             "market": self.market.upper(),
             "as_of_date": self.as_of_date,
+            "market_truth_source": "local_standalone" if self.standalone else "market_intel_compat",
+            "core_overlay_applied": not self.standalone,
+            "market_truth_mode": (
+                str(self.runtime_context.runtime_state.get("market_truth_mode") or "").strip()
+                if self.runtime_context is not None and isinstance(self.runtime_context.runtime_state, dict)
+                else ""
+            ) or ("standalone_manual" if self.standalone else "compat"),
+            "fallback_reason": (
+                str(self.runtime_context.runtime_state.get("fallback_reason") or "").strip()
+                if self.runtime_context is not None and isinstance(self.runtime_context.runtime_state, dict)
+                else ""
+            ),
             "counts": {
                 "trend_events_v2": len(trend_event_rows_v2),
                 "trend_states_v2": len(trend_state_rows_v2),
@@ -7204,14 +8676,28 @@ class MultiScreenerSignalEngine:
                 "ug_states_v2": len(ug_state_rows_v2),
                 "ug_strategy_combos_v2": len(ug_combo_rows_v2),
                 "all_signals_v2": len(all_signal_rows_v2),
+                "buy_signals_all_symbols_v1": len(buy_signals_all_rows_v1),
+                "sell_signals_all_symbols_v1": len(sell_signals_all_rows_v1),
+                "buy_signals_screened_symbols_v1": len(
+                    buy_signals_screened_rows_v1
+                ),
+                "sell_signals_screened_symbols_v1": len(
+                    sell_signals_screened_rows_v1
+                ),
                 "open_cycles": len(open_cycle_rows_v2),
                 "diagnostics": len(diagnostics),
+                "earnings_provider_diagnostics": len(earnings_provider_diagnostics),
                 "signal_history": len(signal_history),
                 "signal_state_history": len(state_history),
                 "peg_event_history": len(peg_event_history_rows),
                 "signal_universe": len(signal_universe_rows),
             },
+            "buy_signal_segments": _build_buy_signal_segment_summary(
+                all_rows=buy_signals_all_rows_v1,
+                screened_rows=buy_signals_screened_rows_v1,
+            ),
         }
+        phase_started = time.perf_counter()
         _signal_writers.write_signal_outputs(
             self.results_dir,
             trend_event_rows=trend_event_rows_v2,
@@ -7220,13 +8706,21 @@ class MultiScreenerSignalEngine:
             ug_state_rows=ug_state_rows_v2,
             ug_combo_rows=ug_combo_rows_v2,
             all_signal_rows=all_signal_rows_v2,
+            buy_signals_all_rows=buy_signals_all_rows_v1,
+            sell_signals_all_rows=sell_signals_all_rows_v1,
+            buy_signals_screened_rows=buy_signals_screened_rows_v1,
+            sell_signals_screened_rows=sell_signals_screened_rows_v1,
             open_cycle_rows=open_cycle_rows_v2,
             diagnostics=diagnostics,
+            earnings_provider_diagnostics=earnings_provider_diagnostics,
             signal_universe_rows=signal_universe_rows,
             source_registry_summary=source_registry_summary,
             signal_summary=summary,
             write_records_fn=_write_records,
         )
+        self._add_elapsed_timing("signals.persist_outputs_seconds", phase_started)
+        if self.earnings_collector:
+            self.earnings_collector.log_provider_summary()
         return {
             "trend_following_events_v2": trend_event_rows_v2,
             "trend_following_states_v2": trend_state_rows_v2,
@@ -7234,8 +8728,13 @@ class MultiScreenerSignalEngine:
             "ultimate_growth_states_v2": ug_state_rows_v2,
             "ug_strategy_combos_v2": ug_combo_rows_v2,
             "all_signals_v2": all_signal_rows_v2,
+            "buy_signals_all_symbols_v1": buy_signals_all_rows_v1,
+            "sell_signals_all_symbols_v1": sell_signals_all_rows_v1,
+            "buy_signals_screened_symbols_v1": buy_signals_screened_rows_v1,
+            "sell_signals_screened_symbols_v1": sell_signals_screened_rows_v1,
             "open_family_cycles": open_cycle_rows_v2,
             "screen_signal_diagnostics": diagnostics,
+            "earnings_provider_diagnostics": earnings_provider_diagnostics,
             "signal_universe_snapshot": signal_universe_rows,
             "source_registry_summary": source_registry_summary,
             "signal_summary": summary,
@@ -7246,16 +8745,66 @@ def run_multi_screener_signal_scan(
     market: str = "us",
     as_of_date: str | None = None,
     *,
+    standalone: bool = False,
     upcoming_earnings_fetcher: (
         Callable[[str, str | None, int], pd.DataFrame] | None
     ) = None,
     earnings_collector: EarningsDataCollector | None = None,
+    runtime_context: RuntimeContext | None = None,
+    source_registry_snapshot: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
 
     engine = MultiScreenerSignalEngine(
         market=market,
         as_of_date=as_of_date,
+        standalone=standalone,
         upcoming_earnings_fetcher=upcoming_earnings_fetcher,
         earnings_collector=earnings_collector,
+        runtime_context=runtime_context,
+        source_registry_snapshot=source_registry_snapshot,
     )
     return engine.run()
+
+
+SignalEngine = MultiScreenerSignalEngine
+QullamaggieSignalEngine = MultiScreenerSignalEngine
+run_signal_scan = run_multi_screener_signal_scan
+
+
+def run_peg_imminent_screen(
+    market: str = "us",
+    as_of_date: str | None = None,
+    *,
+    upcoming_earnings_fetcher: (
+        Callable[[str, str | None, int], pd.DataFrame] | None
+    ) = None,
+) -> dict[str, list[dict[str, Any]]]:
+    screener = PEGImminentScreener(
+        market=market,
+        as_of_date=as_of_date,
+        upcoming_earnings_fetcher=upcoming_earnings_fetcher,
+    )
+    return screener.run()
+
+
+def run_qullamaggie_signal_scan(
+    market: str = "us",
+    as_of_date: str | None = None,
+    *,
+    standalone: bool = False,
+    upcoming_earnings_fetcher: (
+        Callable[[str, str | None, int], pd.DataFrame] | None
+    ) = None,
+    earnings_collector: EarningsDataCollector | None = None,
+    runtime_context: RuntimeContext | None = None,
+    source_registry_snapshot: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    return run_multi_screener_signal_scan(
+        market=market,
+        as_of_date=as_of_date,
+        standalone=standalone,
+        upcoming_earnings_fetcher=upcoming_earnings_fetcher,
+        earnings_collector=earnings_collector,
+        runtime_context=runtime_context,
+        source_registry_snapshot=source_registry_snapshot,
+    )

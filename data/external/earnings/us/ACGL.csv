@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-09,2.98,2.57,,,yfinance_earnings_dates:ACGL,ACGL
+2025-10-27,2.77,2.25,,,yfinance_earnings_dates:ACGL,ACGL
+2025-07-29,2.58,2.3,,,yfinance_earnings_dates:ACGL,ACGL
+2025-04-29,1.54,1.31,,,yfinance_earnings_dates:ACGL,ACGL

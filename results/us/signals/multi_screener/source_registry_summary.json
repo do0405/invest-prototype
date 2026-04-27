@@ -1,0 +1,51 @@
+{
+  "market": "US",
+  "as_of_date": "2026-04-22",
+  "market_truth_source": "local_standalone",
+  "core_overlay_applied": false,
+  "registry_symbols": 2658,
+  "signal_universe_symbols": 5316,
+  "buy_eligible_symbols": 5316,
+  "disposition_counts": {
+    "buy_eligible": 5316
+  },
+  "stage_counts": {
+    "ACTIONABLE": 208,
+    "INTEGRATED": 4594,
+    "TV_BREAKOUT_10M": 10,
+    "TV_BREAKOUT_RVOL": 46,
+    "TV_BREAKOUT_STRENGTH": 186,
+    "TV_HIGH_VOLATILITY": 106,
+    "TV_MARKET_LEADER": 166
+  },
+  "source_tag_counts": {
+    "MM_ACTIONABLE": 208,
+    "MM_INTEGRATED": 5048,
+    "TV_BREAKOUT_10M": 36,
+    "TV_BREAKOUT_RVOL": 46,
+    "TV_BREAKOUT_STRENGTH": 236,
+    "TV_HIGH_VOLATILITY": 276,
+    "TV_MARKET_LEADER": 202,
+    "TV_TREND_BREAKOUT": 36
+  },
+  "primary_source_tag_counts": {
+    "MM_ACTIONABLE": 208,
+    "MM_INTEGRATED": 4594,
+    "TV_BREAKOUT_10M": 10,
+    "TV_BREAKOUT_RVOL": 46,
+    "TV_BREAKOUT_STRENGTH": 186,
+    "TV_HIGH_VOLATILITY": 106,
+    "TV_MARKET_LEADER": 166
+  },
+  "primary_source_style_counts": {
+    "BREAKOUT": 450,
+    "LEADERSHIP": 4760,
+    "VOLATILITY": 106
+  },
+  "source_style_counts": {
+    "BREAKOUT": 450,
+    "LEADERSHIP": 5082,
+    "TREND": 36,
+    "VOLATILITY": 276
+  }
+}

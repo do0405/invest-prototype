@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+OGS,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:OGS:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:OGS:[Errno 22] Invalid argument""]",True,2026-04-18T22:25:59.426455+00:00

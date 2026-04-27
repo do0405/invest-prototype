@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,roe,debt_to_equity,cached_at
-NBTX,NBTX,[],False,-175.44324586614908,2.798626404389534,2026-03-14T04:59:37.569605+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,roe,debt_to_equity,cached_at
+NBTX,NBTX,complete,,yahooquery,,[],False,210.91144388981328,-3.209983361064892,2026-04-26T15:06:37.147326+00:00

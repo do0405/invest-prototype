@@ -30,6 +30,9 @@ wheels/
 PIPFILE.lock
 
 # Virtual environments
+.venv/
+.venv312/
+.venv312_ok/
 venv/
 env/
 ENV/
@@ -65,6 +68,10 @@ pids
 coverage/
 *.lcov
 .pytest_cache/
+.pytest_cache_local/
+.pytest_tmp_*/
+.tmp_py312*/
+.tmp_py312*.log
 .sixth/
 .vercel/
 

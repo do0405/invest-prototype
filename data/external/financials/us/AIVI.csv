@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+AIVI,AIVI,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-18T22:22:48.947020+00:00

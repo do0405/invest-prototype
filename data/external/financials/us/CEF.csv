@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-CEF,CEF,[],False,282.73809523809524,245.13888888888889,False,False,280.0069508168734,226.21089630931456,True,False,False,False,True,False,281.0273027412895,229.6127518344699,0,0,2026-03-13T01:32:14.147953+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+CEF,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:CEF:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:CEF:[Errno 22] Invalid argument""]",True,2026-04-18T22:13:28.691948+00:00

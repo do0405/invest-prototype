@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+DRIV,DRIV,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:14:31.445139+00:00

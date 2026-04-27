@@ -5,6 +5,8 @@ import inspect
 import logging
 import os
 import time
+import contextlib
+import io
 from typing import Any
 
 import pandas as pd
@@ -12,11 +14,17 @@ import yfinance as yf
 from yahooquery import Ticker
 
 from config import YAHOO_FINANCE_DELAY, YAHOO_FINANCE_MAX_RETRIES
+from utils.collector_diagnostics import CollectorDiagnostics, attach_collector_diagnostics
 from utils.external_data_cache import load_csv_if_fresh, write_csv_atomic
 from utils.io_utils import safe_filename
-from utils.market_runtime import get_financial_cache_dir, iter_provider_symbols, market_key
+from utils.market_runtime import (
+    get_financial_cache_dir,
+    iter_preferred_provider_symbols,
+    market_key,
+)
+from utils.security_profile import get_security_profile
 from utils.typing_utils import row_to_record
-from utils.yahoo_throttle import extend_yahoo_cooldown, wait_for_yahoo_request_slot
+from utils.yahoo_throttle import extend_yahoo_cooldown, record_yahoo_request_success, wait_for_yahoo_request_slot
 from .financial_calculators import (
     calculate_eps_metrics,
     calculate_financial_ratios,
@@ -303,11 +311,12 @@ def _has_financial_metrics(payload: dict[str, Any]) -> bool:
 
 def _collect_yfinance_metrics(provider_symbol: str, payload: dict[str, Any], delay: float) -> bool:
     wait_for_yahoo_request_slot("MarkMinervini financials", min_interval=max(float(delay), FINANCIAL_MIN_REQUEST_DELAY_SECONDS))
-    ticker = yf.Ticker(provider_symbol)
-
-    income_quarterly = ticker.quarterly_financials
-    income_annual = ticker.financials
-    balance_annual = ticker.balance_sheet
+    sink = io.StringIO()
+    with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+        ticker = yf.Ticker(provider_symbol)
+        income_quarterly = ticker.quarterly_financials
+        income_annual = ticker.financials
+        balance_annual = ticker.balance_sheet
 
     if (
         income_quarterly is None
@@ -326,15 +335,18 @@ def _collect_yfinance_metrics(provider_symbol: str, payload: dict[str, Any], del
     margin_metrics = calculate_margin_metrics(income_quarterly, income_annual)
     ratio_metrics = calculate_financial_ratios(income_annual, balance_annual)
     payload.update(merge_financial_metrics(eps_metrics, revenue_metrics, margin_metrics, ratio_metrics))
+    record_yahoo_request_success("MarkMinervini financials")
     return True
 
 
 def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any], delay: float) -> bool:
     wait_for_yahoo_request_slot("MarkMinervini financials", min_interval=max(float(delay), FINANCIAL_MIN_REQUEST_DELAY_SECONDS))
-    ticker = Ticker(provider_symbol)
-    income_stmt_q = ticker.income_statement(frequency="quarterly")
-    income_stmt_a = ticker.income_statement(frequency="annual")
-    balance_sheet = ticker.balance_sheet(frequency="annual")
+    sink = io.StringIO()
+    with contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
+        ticker = Ticker(provider_symbol)
+        income_stmt_q = ticker.income_statement(frequency="quarterly")
+        income_stmt_a = ticker.income_statement(frequency="annual")
+        balance_sheet = ticker.balance_sheet(frequency="annual")
     updated = False
 
     if isinstance(income_stmt_q, pd.DataFrame) and not income_stmt_q.empty:
@@ -387,6 +399,7 @@ def _collect_yahooquery_metrics(provider_symbol: str, payload: dict[str, Any], d
 
     if updated:
         _set_financial_status(payload, status="complete", source="yahooquery")
+        record_yahoo_request_success("MarkMinervini financials")
     return updated
 
 
@@ -398,8 +411,25 @@ def _collect_symbol_metrics(
     market: str = "us",
 ) -> dict[str, Any]:
     symbol_key = str(symbol or "").strip().upper()
+    profile = get_security_profile(symbol_key, market)
+    if not bool(profile.get("fundamentals_expected", True)):
+        skip_reason = str(profile.get("earnings_skip_reason") or "ineligible").strip() or "ineligible"
+        payload = _base_financial_payload(symbol_key)
+        payload["provider_symbol"] = str(profile.get("preferred_provider_symbol") or profile.get("provider_symbol") or symbol_key)
+        _set_financial_status(
+            payload,
+            status="soft_unavailable",
+            source="metadata_skip",
+            unavailable_reason=f"ineligible:{skip_reason}",
+        )
+        return _finalize_financial_payload(payload)
+
     retries = max(1, int(max_retries))
-    provider_symbols = iter_provider_symbols(symbol_key, market)
+    provider_symbols = iter_preferred_provider_symbols(
+        symbol_key,
+        market,
+        strict=market_key(market) == "kr",
+    )
     last_payload = _base_financial_payload(symbol_key)
 
     for attempt in range(retries):
@@ -509,6 +539,8 @@ def _collect_financial_data(
     use_cache: bool,
     cache_max_age_hours: int,
 ) -> pd.DataFrame:
+    diagnostics = CollectorDiagnostics()
+    diagnostics.increment("provider_fetch_symbols", 0)
     total = len(symbols)
     rows: list[dict[str, Any]] = []
     cache_max_age_seconds = max(0, int(cache_max_age_hours) * 3600)
@@ -522,30 +554,49 @@ def _collect_financial_data(
 
         stale_cached_payload = None
         if use_cache and mode == "hybrid":
+            if cache_max_age_seconds > 0:
+                fresh_cached_payload = _load_cached_hybrid_payload(
+                    symbol_key,
+                    normalized_market,
+                    cache_max_age_seconds,
+                )
+                if fresh_cached_payload is not None and _has_financial_metrics(fresh_cached_payload):
+                    diagnostics.increment("fresh_cache_hits")
+                    fresh_payload = dict(fresh_cached_payload)
+                    fresh_payload["cache_status"] = "fresh_hit"
+                    fresh_payload["source"] = _combine_source_labels(
+                        fresh_payload.get("source"),
+                        "cache",
+                    )
+                    rows.append(fresh_payload)
+                    continue
             stale_cached_payload = _load_cached_hybrid_payload_any_age(symbol_key, normalized_market)
 
         collect_params = inspect.signature(_collect_symbol_metrics).parameters
-        if "market" in collect_params:
-            payload = _collect_symbol_metrics(
-                symbol_key,
-                mode=mode,
-                max_retries=max_retries,
-                delay=delay,
-                market=normalized_market,
-            )
-        else:
-            payload = _collect_symbol_metrics(
-                symbol_key,
-                mode=mode,
-                max_retries=max_retries,
-                delay=delay,
-            )
+        diagnostics.increment("provider_fetch_symbols")
+        with diagnostics.time_block("provider_fetch_seconds"):
+            if "market" in collect_params:
+                payload = _collect_symbol_metrics(
+                    symbol_key,
+                    mode=mode,
+                    max_retries=max_retries,
+                    delay=delay,
+                    market=normalized_market,
+                )
+            else:
+                payload = _collect_symbol_metrics(
+                    symbol_key,
+                    mode=mode,
+                    max_retries=max_retries,
+                    delay=delay,
+                )
 
         if (
             stale_cached_payload is not None
             and not _has_financial_metrics(payload)
             and any(_is_financial_rate_limit_error(item) for item in _deserialize_error_details(payload.get("error_details")))
         ):
+            diagnostics.increment("stale_cache_reused_after_rate_limit")
             stale_payload = dict(stale_cached_payload)
             _append_error(stale_payload, "stale_cache_reused_after_rate_limit")
             stale_payload["cache_status"] = "stale_reused_after_rate_limit"
@@ -562,7 +613,7 @@ def _collect_financial_data(
 
         rows.append(payload)
 
-    return pd.DataFrame(rows)
+    return attach_collector_diagnostics(pd.DataFrame(rows), diagnostics)
 
 
 def collect_financial_data(

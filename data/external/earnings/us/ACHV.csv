@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-03-24,-0.28,-0.28,,,yfinance_earnings_dates:ACHV,ACHV
+2025-11-06,-0.28,-0.26,,,yfinance_earnings_dates:ACHV,ACHV
+2025-08-07,-0.37,-0.35,,,yfinance_earnings_dates:ACHV,ACHV
+2025-05-13,-0.37,-0.37,,,yfinance_earnings_dates:ACHV,ACHV

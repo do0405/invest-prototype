@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2013-11-07,-0.02,-0.11,,,yfinance_earnings_dates:AACG,AACG
+2013-08-08,0.08,0.01,,,yfinance_earnings_dates:AACG,AACG
+2013-05-29,-0.02,-0.13,,,yfinance_earnings_dates:AACG,AACG
+2013-02-04,0.26,0.3,,,yfinance_earnings_dates:AACG,AACG

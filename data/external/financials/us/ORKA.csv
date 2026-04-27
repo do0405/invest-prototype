@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,quarterly_net_income_growth,debt_to_equity,cached_at
-ORKA,ORKA,[],False,22.289766970618036,0.03609953403920768,2026-03-14T05:05:28.168907+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
+ORKA,ORKA,complete,,yfinance,,[],False,-19.56521739130435,0.0,False,False,0.0,0.0,False,False,False,False,False,False,2.292168973147934,0.0,0.0,0.0,2026-04-26T15:06:43.862186+00:00

@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,roe,debt_to_equity,cached_at
-AWP,AWP,[],False,-50.244691025359224,0.19133898916400519,2026-03-14T05:01:32.337603+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,roe,debt_to_equity,cached_at
+AWP,AWP,complete,,yahooquery,,[],False,-50.244691025359224,0.19133898916400519,2026-04-26T15:07:58.578568+00:00

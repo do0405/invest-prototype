@@ -1,0 +1,24 @@
+[
+  {
+    "as_of_ts": "2026-04-17",
+    "symbol": "000210",
+    "market": "KR",
+    "sector": "",
+    "setup_scope": "PATTERN_EXCLUDED_POOL",
+    "stock_grade": "A+",
+    "a_pp_score": 77.91,
+    "focus_seed_score": 66.58,
+    "compression_score": 53.0,
+    "high_52w_proximity": 0.9124,
+    "breakout_universe_pass": true,
+    "ep_universe_pass": true,
+    "pivot_price": 70870.79999999999,
+    "stop_price": 66010.79999999999,
+    "regime_state": "RISK_ON",
+    "market_alias": "RISK_ON",
+    "market_alignment_score": 100.0,
+    "breadth_support_score": 100.0,
+    "rotation_support_score": 100.0,
+    "leader_health_score": 100.0
+  }
+]

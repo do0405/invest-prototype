@@ -1,0 +1,30 @@
+{
+  "leader_count": 2,
+  "label_counts": {
+    "emerging_leader": 2
+  },
+  "leader_tier_counts": {
+    "emerging": 2
+  },
+  "entry_suitability_counts": {
+    "watch": 2
+  },
+  "confidence_bucket_counts": {
+    "high": 2
+  },
+  "component_null_share": {
+    "rs_rank_true": 0.0,
+    "rs_proxy_confidence": 0.0,
+    "hidden_rs_confidence": 0.0,
+    "structure_confidence": 0.0,
+    "liquidity_quality_score": 0.0,
+    "trend_integrity_score": 0.0,
+    "structure_readiness_score": 0.0,
+    "extension_risk_score": 0.0
+  },
+  "top_10_leader_score_spread": 22.78,
+  "threshold_near_count": 1,
+  "low_confidence_count": 0,
+  "reject_reason_counts": {},
+  "extended_reason_counts": {}
+}

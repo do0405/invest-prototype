@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-VMEO,,[],False,2026-03-13T01:31:28.692923+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+VMEO,VMEO,soft_unavailable,ineligible:metadata_not_found,metadata_skip,,[],True,2026-04-26T15:10:41.044312+00:00

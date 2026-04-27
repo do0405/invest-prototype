@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+AKRO,AKRO,soft_unavailable,ineligible:metadata_not_found,metadata_skip,,[],True,2026-04-26T15:15:18.655169+00:00

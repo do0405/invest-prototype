@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-04,2.71,2.65,,,yfinance_earnings_dates:ABBV,ABBV
+2025-10-31,1.86,1.78,,,yfinance_earnings_dates:ABBV,ABBV
+2025-07-31,2.97,2.91,,,yfinance_earnings_dates:ABBV,ABBV
+2025-04-25,2.46,2.4,,,yfinance_earnings_dates:ABBV,ABBV

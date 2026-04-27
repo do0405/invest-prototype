@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-03-04,-0.48,0.14,,,yfinance_earnings_dates:ACR,ACR
+2025-10-29,1.01,0.01,,,yfinance_earnings_dates:ACR,ACR
+2025-07-30,0.04,0.18,,,yfinance_earnings_dates:ACR,ACR
+2025-04-30,-0.86,0.45,,,yfinance_earnings_dates:ACR,ACR

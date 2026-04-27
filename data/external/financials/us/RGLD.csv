@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-RGLD,RGLD,[],False,-39.583333333333336,32.936507936507944,False,False,48.89751971690179,43.24133473265731,True,True,False,True,False,False,-26.188260896991107,40.43635531273436,0,0,2026-03-13T01:36:02.980081+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+RGLD,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:RGLD:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:RGLD:[Errno 22] Invalid argument""]",True,2026-04-18T22:14:00.474853+00:00

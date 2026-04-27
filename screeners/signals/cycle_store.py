@@ -4,7 +4,10 @@ import os
 from typing import Any, Callable, Iterable, Mapping
 
 
+DEFAULT_SCOPE = "screened"
+
 _HISTORY_KEY_FIELDS = (
+    "scope",
     "signal_date",
     "symbol",
     "engine",
@@ -12,6 +15,11 @@ _HISTORY_KEY_FIELDS = (
     "signal_code",
     "action_type",
 )
+
+
+def _normalize_scope(value: Any) -> str:
+    text = str(value or "").strip().lower()
+    return text or DEFAULT_SCOPE
 
 
 def _load_filtered_signal_history(
@@ -26,11 +34,14 @@ def _load_filtered_signal_history(
         safe_text(kind).upper() for kind in signal_kinds if safe_text(kind)
     }
     path = os.path.join(results_dir, f"{history_prefix}.csv")
-    return [
-        row
-        for row in safe_csv_rows(path)
-        if safe_text(row.get("signal_kind")).upper() in allowed_signal_kinds
-    ]
+    rows: list[dict[str, Any]] = []
+    for row in safe_csv_rows(path):
+        if safe_text(row.get("signal_kind")).upper() not in allowed_signal_kinds:
+            continue
+        normalized = dict(row)
+        normalized["scope"] = _normalize_scope(normalized.get("scope"))
+        rows.append(normalized)
+    return rows
 
 
 def _persist_filtered_signal_history(
@@ -73,14 +84,17 @@ def load_active_cycles(
     hydrate_loaded_cycle: Callable[[Mapping[str, Any]], dict[str, Any]],
 ) -> dict[tuple[str, str, str], dict[str, Any]]:
     path = os.path.join(results_dir, "open_family_cycles.csv")
-    cycles: dict[tuple[str, str, str], dict[str, Any]] = {}
+    cycles: dict[tuple[str, str, str, str], dict[str, Any]] = {}
     for row in safe_csv_rows(path):
         symbol = safe_text(row.get("symbol")).upper()
         engine = safe_text(row.get("engine"))
         family = safe_text(row.get("family"))
+        scope = _normalize_scope(row.get("scope"))
         if not symbol or not engine or not family:
             continue
-        cycles[(engine, family, symbol)] = hydrate_loaded_cycle(row)
+        hydrated = hydrate_loaded_cycle(row)
+        hydrated["scope"] = scope
+        cycles[(scope, engine, family, symbol)] = hydrated
     return cycles
 
 

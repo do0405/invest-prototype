@@ -1,0 +1,3 @@
+﻿as_of_ts,symbol,market,sector,setup_scope,stock_grade,a_pp_score,focus_seed_score,compression_score,high_52w_proximity,breakout_universe_pass,ep_universe_pass,pivot_price,stop_price,regime_state,market_alias,market_alignment_score,breadth_support_score,rotation_support_score,leader_health_score
+2026-04-17,AA,US,Basic Materials,PATTERN_EXCLUDED_POOL,B,63.55,57.04,56.24,0.8668,False,True,75.77569694519042,72.47020665208152,RISK_ON,RISK_ON,100.0,100.0,100.0,100.0
+2026-04-17,A,US,Healthcare,PATTERN_EXCLUDED_POOL,Discard,49.73,56.34,61.83,0.7604,False,True,122.05193030548094,118.9565767165758,RISK_ON,RISK_ON,100.0,100.0,100.0,100.0

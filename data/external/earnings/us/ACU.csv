@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-26,0.46,0.39,,,yfinance_earnings_dates:ACU,ACU
+2025-10-21,0.46,0.45,,,yfinance_earnings_dates:ACU,ACU
+2025-07-23,1.16,0.5,,,yfinance_earnings_dates:ACU,ACU
+2025-04-17,0.41,0.47,,,yfinance_earnings_dates:ACU,ACU

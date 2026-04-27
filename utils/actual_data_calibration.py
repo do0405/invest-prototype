@@ -52,6 +52,8 @@ def bounded_quantile_value(
 
 
 def percentile_rank_series(values: pd.Series | Sequence[Any] | None) -> pd.Series:
+    # Compatibility shim retained for external callers; current runtime paths
+    # use percentile logic local to each screener.
     numeric = numeric_series(values)
     if numeric.empty:
         return pd.Series(dtype=float)

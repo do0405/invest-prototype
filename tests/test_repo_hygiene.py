@@ -62,3 +62,28 @@ def test_collect_cleanup_candidates_ignores_virtualenv_and_git_paths():
         assert ".git/hooks/__pycache__" not in paths
     finally:
         shutil.rmtree(root, ignore_errors=True)
+
+
+def test_collect_cleanup_candidates_ignores_scratch_and_numbered_venvs():
+    root = runtime_root("_test_runtime_hygiene_scratch_excluded")
+    _reset_dir(root)
+    try:
+        (root / ".venv312_ok" / "pkg" / "__pycache__").mkdir(parents=True, exist_ok=True)
+        (root / ".runtime_eval" / "smoke" / "__pycache__").mkdir(parents=True, exist_ok=True)
+        (root / ".pytest_tmp_red_pkg" / "__pycache__").mkdir(parents=True, exist_ok=True)
+        (root / "utils" / "__pycache__").mkdir(parents=True, exist_ok=True)
+
+        (root / ".venv312_ok" / "pkg" / "__pycache__" / "a.pyc").write_text("x", encoding="utf-8")
+        (root / ".runtime_eval" / "smoke" / "__pycache__" / "b.pyc").write_text("y", encoding="utf-8")
+        (root / ".pytest_tmp_red_pkg" / "__pycache__" / "c.pyc").write_text("z", encoding="utf-8")
+        (root / "utils" / "__pycache__" / "d.pyc").write_text("w", encoding="utf-8")
+
+        report = collect_cleanup_candidates(root=root, patterns=("**/__pycache__", "**/*.pyc"))
+
+        paths = {row["path"] for row in report["candidates"]}
+        assert "utils/__pycache__" in paths
+        assert ".venv312_ok/pkg/__pycache__" not in paths
+        assert ".runtime_eval/smoke/__pycache__" not in paths
+        assert ".pytest_tmp_red_pkg/__pycache__" not in paths
+    finally:
+        shutil.rmtree(root, ignore_errors=True)

@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-WNS,,[],False,2026-03-13T22:38:06.111015+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+WNS,WNS,soft_unavailable,ineligible:metadata_not_found,metadata_skip,,[],True,2026-04-26T15:14:22.131794+00:00

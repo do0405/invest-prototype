@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import os
+import time
 from dataclasses import dataclass
 from typing import Callable, TypeAlias
 
 import pandas as pd
 
+from utils.io_utils import (
+    write_dataframe_csv_with_fallback,
+    write_dataframe_json_with_fallback,
+)
 from utils.indicator_helpers import (
     adr_percent as _helper_adr_percent,
     atr_percent as _helper_atr_percent,
@@ -15,16 +20,27 @@ from utils.indicator_helpers import (
     relative_volume as _helper_relative_volume,
     rolling_average_volume as _helper_rolling_average_volume,
 )
-from utils.market_data_contract import PricePolicy, load_local_ohlcv_frame
+from utils.market_data_contract import (
+    OhlcvFreshnessSummary,
+    PricePolicy,
+    SCREENING_OHLCV_READ_COLUMNS,
+    describe_ohlcv_freshness,
+    load_benchmark_data,
+    load_local_ohlcv_frames_ordered,
+    load_local_ohlcv_frame,
+)
 from utils.market_runtime import (
     ensure_market_dirs,
+    get_benchmark_candidates,
     get_market_data_dir,
     get_stock_metadata_path,
     get_tradingview_results_dir,
     is_index_symbol,
+    limit_runtime_symbols,
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
+from utils.runtime_context import RuntimeContext, runtime_context_has_explicit_as_of
 from utils.typing_utils import series_to_str_float_dict, series_to_str_text_dict, to_float_or_none
 
 
@@ -74,6 +90,15 @@ def _load_numeric_metadata_map(metadata_frame: pd.DataFrame, column: str) -> dic
     if metadata_frame.empty or column not in metadata_frame.columns:
         return {}
     return series_to_str_float_dict(metadata_frame.set_index("symbol")[column])
+
+
+def _frame_as_of_date(frame: pd.DataFrame) -> str | None:
+    if frame is None or frame.empty or "date" not in frame.columns:
+        return None
+    latest = pd.to_datetime(frame["date"].iloc[-1], errors="coerce")
+    if pd.isna(latest):
+        return None
+    return latest.strftime("%Y-%m-%d")
 
 
 def _metric_row_from_series(row: pd.Series) -> MetricRow:
@@ -406,11 +431,32 @@ def _preset_definitions_for_market(market: str) -> list[PresetDefinition]:
     return [item for item in _preset_definitions() if item.market == normalized_market]
 
 
-def run_tradingview_preset_screeners(*, market: str = "us") -> dict[str, pd.DataFrame]:
+def run_tradingview_preset_screeners(
+    *,
+    market: str = "us",
+    runtime_context: RuntimeContext | None = None,
+) -> dict[str, pd.DataFrame]:
     normalized_market = market_key(market)
     ensure_market_dirs(normalized_market)
     results_dir = get_tradingview_results_dir(normalized_market)
     os.makedirs(results_dir, exist_ok=True)
+    requested_as_of = (
+        str(runtime_context.as_of_date or "").strip()
+        if runtime_context is not None
+        else ""
+    )
+    _benchmark_symbol, benchmark_daily = load_benchmark_data(
+        normalized_market,
+        get_benchmark_candidates(normalized_market),
+        as_of=requested_as_of or None,
+        allow_yfinance_fallback=True,
+        price_policy=PricePolicy.SPLIT_ADJUSTED,
+    )
+    as_of_date = requested_as_of or _frame_as_of_date(benchmark_daily)
+    latest_completed_session = _frame_as_of_date(benchmark_daily) or as_of_date
+    explicit_replay = runtime_context_has_explicit_as_of(runtime_context)
+    if runtime_context is not None and as_of_date:
+        runtime_context.set_as_of_date(as_of_date)
 
     metadata_frame = _load_market_metadata_frame(normalized_market)
     market_cap_map = _load_market_cap_map(metadata_frame)
@@ -418,13 +464,20 @@ def run_tradingview_preset_screeners(*, market: str = "us") -> dict[str, pd.Data
     sector_map = _load_text_metadata_map(metadata_frame, "sector")
     industry_map = _load_text_metadata_map(metadata_frame, "industry")
     data_dir = get_market_data_dir(normalized_market)
-    symbols = sorted(
-        {
-            os.path.splitext(name)[0].upper()
-            for name in os.listdir(data_dir)
-            if name.endswith(".csv") and not is_index_symbol(normalized_market, os.path.splitext(name)[0].upper())
-        }
-    ) if os.path.isdir(data_dir) else []
+    symbols = (
+        limit_runtime_symbols(
+            sorted(
+                {
+                    os.path.splitext(name)[0].upper()
+                    for name in os.listdir(data_dir)
+                    if name.endswith(".csv")
+                    and not is_index_symbol(normalized_market, os.path.splitext(name)[0].upper())
+                }
+            )
+        )
+        if os.path.isdir(data_dir)
+        else []
+    )
     presets = _preset_definitions_for_market(normalized_market)
     print(
         f"[TradingView] Metric build started ({normalized_market}) - "
@@ -432,11 +485,45 @@ def run_tradingview_preset_screeners(*, market: str = "us") -> dict[str, pd.Data
     )
 
     metrics_rows: list[dict[str, float | str | bool | None]] = []
+    freshness_reports = []
     interval = progress_interval(len(symbols), target_updates=8, min_interval=50)
+    frame_load_started = time.perf_counter()
+    frame_map = load_local_ohlcv_frames_ordered(
+        normalized_market,
+        symbols,
+        as_of=as_of_date,
+        price_policy=PricePolicy.SPLIT_ADJUSTED,
+        runtime_context=runtime_context,
+        required_columns=SCREENING_OHLCV_READ_COLUMNS,
+        worker_scope="tradingview.frame_load",
+        load_frame_fn=load_local_ohlcv_frame,
+    )
+    if runtime_context is not None:
+        runtime_context.add_timing(
+            "tradingview.frame_load_seconds",
+            time.perf_counter() - frame_load_started,
+        )
     for index, symbol in enumerate(symbols, start=1):
-        frame = load_local_ohlcv_frame(normalized_market, symbol, price_policy=PricePolicy.SPLIT_ADJUSTED)
+        frame = frame_map.get(symbol, pd.DataFrame())
+        freshness_reports.append(
+            describe_ohlcv_freshness(
+                frame,
+                market=normalized_market,
+                symbol=symbol,
+                as_of=as_of_date,
+                latest_completed_session=latest_completed_session,
+                explicit_as_of=explicit_replay,
+            )
+        )
         if frame.empty or len(frame) < 120:
             if is_progress_tick(index, len(symbols), interval):
+                if runtime_context is not None:
+                    runtime_context.update_runtime_state(
+                        current_stage="TradingView presets",
+                        current_symbol=symbol,
+                        current_chunk=f"metric_build:{index}/{len(symbols)}",
+                        status="running",
+                    )
                 print(
                     f"[TradingView] Metric build progress ({normalized_market}) - "
                     f"processed={index}/{len(symbols)}, eligible={len(metrics_rows)}"
@@ -454,12 +541,24 @@ def run_tradingview_preset_screeners(*, market: str = "us") -> dict[str, pd.Data
             )
         )
         if is_progress_tick(index, len(symbols), interval):
+            if runtime_context is not None:
+                runtime_context.update_runtime_state(
+                    current_stage="TradingView presets",
+                    current_symbol=symbol,
+                    current_chunk=f"metric_build:{index}/{len(symbols)}",
+                    status="running",
+                )
             print(
                 f"[TradingView] Metric build progress ({normalized_market}) - "
                 f"processed={index}/{len(symbols)}, eligible={len(metrics_rows)}"
             )
 
     metrics_df = pd.DataFrame(metrics_rows)
+    if runtime_context is not None:
+        runtime_context.update_data_freshness(
+            "tradingview_presets",
+            OhlcvFreshnessSummary.from_reports(freshness_reports),
+        )
     output: dict[str, pd.DataFrame] = {}
     print(f"[TradingView] Metric build completed ({normalized_market}) - metrics={len(metrics_df)}")
     for preset_index, preset in enumerate(presets, start=1):
@@ -474,8 +573,22 @@ def run_tradingview_preset_screeners(*, market: str = "us") -> dict[str, pd.Data
 
         csv_path = os.path.join(results_dir, f"{preset.key}.csv")
         json_path = csv_path.replace(".csv", ".json")
-        preset_df.to_csv(csv_path, index=False)
-        preset_df.to_json(json_path, orient="records", indent=2, force_ascii=False)
+        write_dataframe_csv_with_fallback(
+            preset_df,
+            csv_path,
+            index=False,
+            runtime_context=runtime_context,
+            metric_label=f"tradingview.{preset.key}.csv",
+        )
+        write_dataframe_json_with_fallback(
+            preset_df,
+            json_path,
+            orient="records",
+            indent=2,
+            force_ascii=False,
+            runtime_context=runtime_context,
+            metric_label=f"tradingview.{preset.key}.json",
+        )
         output[preset.key] = preset_df
         print(
             f"[TradingView] Preset {preset_index}/{len(presets)} ({normalized_market}) - "

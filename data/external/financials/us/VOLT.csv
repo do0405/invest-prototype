@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-VOLT,,[],False,2026-03-13T22:39:23.320466+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+VOLT,VOLT,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:13:01.291292+00:00

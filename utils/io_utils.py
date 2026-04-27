@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 """File and data loading utilities."""
 
+import json
 import os
 import pandas as pd
 import concurrent.futures
 import re
+import time
 from datetime import datetime, timedelta
 
 from config import (
     DATA_DIR,
     DATA_KR_DIR,
     DATA_US_DIR,
+    EXTERNAL_DATA_DIR,
     RESULTS_DIR,
-    QULLAMAGGIE_RESULTS_DIR,
-    OPTION_RESULTS_DIR,
-    BACKUP_DIR,
-    MARKMINERVINI_DIR,
 )
 
 __all__ = [
@@ -25,6 +24,9 @@ __all__ = [
     "extract_ticker_from_filename",
     "process_stock_data",
     "safe_filename",
+    "write_dataframe_csv_with_fallback",
+    "write_dataframe_json_with_fallback",
+    "write_json_with_fallback",
 ]
 
 
@@ -43,10 +45,7 @@ def create_required_dirs(directories=None) -> None:
             DATA_US_DIR,
             DATA_KR_DIR,
             RESULTS_DIR,
-            QULLAMAGGIE_RESULTS_DIR,
-            OPTION_RESULTS_DIR,
-            BACKUP_DIR,
-            MARKMINERVINI_DIR,
+            EXTERNAL_DATA_DIR,
         ]
 
     for directory in directories:
@@ -134,3 +133,197 @@ def safe_filename(filename: str) -> str:
     if name_without_ext.upper() in reserved_names:
         safe_name = name_without_ext + '_file' + extension
     return safe_name
+
+
+def _timestamped_output_path(path: str) -> str:
+    directory = os.path.dirname(path)
+    stem, suffix = os.path.splitext(os.path.basename(path))
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+    return os.path.join(directory, f"{stem}_{timestamp}{suffix}")
+
+
+def _compact_json_enabled() -> bool:
+    raw = str(os.getenv("INVEST_PROTO_COMPACT_JSON", "")).strip().lower()
+    if not raw:
+        return False
+    return raw not in {"0", "false", "no", "off"}
+
+
+def _resolved_json_indent(indent: int | None) -> int | None:
+    return None if _compact_json_enabled() else indent
+
+
+def _record_output_metric(
+    runtime_context,
+    *,
+    path: str,
+    rows: int,
+    seconds: float,
+    kind: str,
+    label: str = "",
+) -> None:
+    if runtime_context is None or not hasattr(runtime_context, "record_output_write"):
+        return
+    try:
+        bytes_written = os.path.getsize(path) if os.path.exists(path) else 0
+    except OSError:
+        bytes_written = 0
+    runtime_context.record_output_write(
+        path=path,
+        rows=rows,
+        bytes_written=bytes_written,
+        seconds=seconds,
+        kind=kind,
+        label=label,
+    )
+
+
+def _payload_row_count(payload) -> int:
+    if isinstance(payload, list):
+        return len(payload)
+    if isinstance(payload, dict):
+        rows = payload.get("rows")
+        if isinstance(rows, list):
+            return len(rows)
+    return 1
+
+
+def write_dataframe_csv_with_fallback(
+    frame: pd.DataFrame,
+    path: str,
+    *,
+    index: bool = False,
+    runtime_context=None,
+    metric_label: str = "",
+) -> str:
+    ensure_dir(os.path.dirname(path))
+    started = time.perf_counter()
+    try:
+        frame.to_csv(path, index=index)
+        _record_output_metric(
+            runtime_context,
+            path=path,
+            rows=int(len(frame)),
+            seconds=time.perf_counter() - started,
+            kind="csv",
+            label=metric_label,
+        )
+        return path
+    except PermissionError:
+        fallback_path = _timestamped_output_path(path)
+        try:
+            frame.to_csv(fallback_path, index=index)
+        except PermissionError as fallback_exc:
+            raise PermissionError(
+                "Unable to write CSV output. "
+                f"Primary path permission denied: {path}; "
+                f"fallback path permission denied: {fallback_path}. "
+                "Set INVEST_PROTO_RESULTS_DIR to a writable output root or release the locked results directory."
+            ) from fallback_exc
+        print(f"[IO] Locked output fallback used - primary={path}, fallback={fallback_path}")
+        _record_output_metric(
+            runtime_context,
+            path=fallback_path,
+            rows=int(len(frame)),
+            seconds=time.perf_counter() - started,
+            kind="csv",
+            label=metric_label,
+        )
+        return fallback_path
+
+
+def write_dataframe_json_with_fallback(
+    frame: pd.DataFrame,
+    path: str,
+    *,
+    orient: str = "records",
+    indent: int = 2,
+    force_ascii: bool = False,
+    runtime_context=None,
+    metric_label: str = "",
+) -> str:
+    ensure_dir(os.path.dirname(path))
+    started = time.perf_counter()
+    json_indent = _resolved_json_indent(indent)
+    try:
+        frame.to_json(path, orient=orient, indent=json_indent, force_ascii=force_ascii)
+        _record_output_metric(
+            runtime_context,
+            path=path,
+            rows=int(len(frame)),
+            seconds=time.perf_counter() - started,
+            kind="json",
+            label=metric_label,
+        )
+        return path
+    except PermissionError:
+        fallback_path = _timestamped_output_path(path)
+        try:
+            frame.to_json(fallback_path, orient=orient, indent=json_indent, force_ascii=force_ascii)
+        except PermissionError as fallback_exc:
+            raise PermissionError(
+                "Unable to write JSON output. "
+                f"Primary path permission denied: {path}; "
+                f"fallback path permission denied: {fallback_path}. "
+                "Set INVEST_PROTO_RESULTS_DIR to a writable output root or release the locked results directory."
+            ) from fallback_exc
+        print(f"[IO] Locked output fallback used - primary={path}, fallback={fallback_path}")
+        _record_output_metric(
+            runtime_context,
+            path=fallback_path,
+            rows=int(len(frame)),
+            seconds=time.perf_counter() - started,
+            kind="json",
+            label=metric_label,
+        )
+        return fallback_path
+
+
+def write_json_with_fallback(
+    payload,
+    path: str,
+    *,
+    ensure_ascii: bool = False,
+    indent: int = 2,
+    runtime_context=None,
+    metric_label: str = "",
+) -> str:
+    ensure_dir(os.path.dirname(path))
+    started = time.perf_counter()
+    json_indent = _resolved_json_indent(indent)
+    separators = (",", ":") if _compact_json_enabled() else None
+    rows = _payload_row_count(payload)
+    try:
+        with open(path, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, ensure_ascii=ensure_ascii, indent=json_indent, separators=separators)
+        _record_output_metric(
+            runtime_context,
+            path=path,
+            rows=rows,
+            seconds=time.perf_counter() - started,
+            kind="json",
+            label=metric_label,
+        )
+        return path
+    except PermissionError:
+        fallback_path = _timestamped_output_path(path)
+        try:
+            with open(fallback_path, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, ensure_ascii=ensure_ascii, indent=json_indent, separators=separators)
+        except PermissionError as fallback_exc:
+            raise PermissionError(
+                "Unable to write JSON output. "
+                f"Primary path permission denied: {path}; "
+                f"fallback path permission denied: {fallback_path}. "
+                "Set INVEST_PROTO_RESULTS_DIR to a writable output root or release the locked results directory."
+            ) from fallback_exc
+        print(f"[IO] Locked output fallback used - primary={path}, fallback={fallback_path}")
+        _record_output_metric(
+            runtime_context,
+            path=fallback_path,
+            rows=rows,
+            seconds=time.perf_counter() - started,
+            kind="json",
+            label=metric_label,
+        )
+        return fallback_path

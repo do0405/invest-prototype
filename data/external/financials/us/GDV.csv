@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,roe,debt_to_equity,cached_at
+GDV,GDV,complete,,yahooquery,,[],False,-15.817546098016408,0.06619507253506762,2026-04-26T15:22:00.712382+00:00

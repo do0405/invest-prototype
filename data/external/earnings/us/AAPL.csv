@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-01-29,2.84,2.67,,,yfinance_earnings_dates:AAPL,AAPL
+2025-10-30,1.85,1.77,,,yfinance_earnings_dates:AAPL,AAPL
+2025-07-31,1.57,1.43,,,yfinance_earnings_dates:AAPL,AAPL
+2025-05-01,1.65,1.63,,,yfinance_earnings_dates:AAPL,AAPL

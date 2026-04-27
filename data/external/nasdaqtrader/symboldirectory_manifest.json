@@ -1,16 +1,16 @@
 {
   "outputs": {
-    "amex_symbols.csv": 278,
-    "bats_symbols.csv": 1219,
-    "broad_us_seed.csv": 11268,
+    "amex_symbols.csv": 279,
+    "bats_symbols.csv": 1246,
+    "broad_us_seed.csv": 11361,
     "iex_symbols.csv": 0,
-    "nasdaq_symbols.csv": 4733,
-    "nyse_arca_symbols.csv": 2594,
-    "nyse_symbols.csv": 2444
+    "nasdaq_symbols.csv": 4765,
+    "nyse_arca_symbols.csv": 2628,
+    "nyse_symbols.csv": 2443
   },
   "sources": {
     "nasdaqlisted": "https://www.nasdaqtrader.com/dynamic/SymDir/nasdaqlisted.txt",
     "otherlisted": "https://www.nasdaqtrader.com/dynamic/SymDir/otherlisted.txt"
   },
-  "synced_at": "2026-03-14T20:29:54Z"
+  "synced_at": "2026-04-26T03:53:27Z"
 }

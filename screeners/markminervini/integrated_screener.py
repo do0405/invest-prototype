@@ -11,7 +11,7 @@ import yfinance as yf
 
 from utils.actual_data_calibration import bounded_quantile_value
 from utils.indicator_helpers import normalize_indicator_frame
-from utils.io_utils import safe_filename
+from utils.io_utils import safe_filename, write_dataframe_csv_with_fallback, write_dataframe_json_with_fallback, write_json_with_fallback
 from utils.market_data_contract import PricePolicy, normalize_ohlcv_frame
 from utils.market_runtime import (
     ensure_market_dirs,
@@ -20,10 +20,12 @@ from utils.market_runtime import (
     get_markminervini_integrated_results_path,
     get_markminervini_results_dir,
     get_markminervini_with_rs_path,
-    iter_provider_symbols,
+    iter_preferred_provider_symbols,
     market_key,
 )
 from utils.progress_runtime import is_progress_tick, progress_interval
+from utils.runtime_context import RuntimeContext
+from utils.symbol_normalization import normalize_symbol_columns
 from .enhanced_pattern_analyzer import EnhancedPatternAnalyzer
 
 project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -85,8 +87,8 @@ class IntegratedScreener:
 
     @staticmethod
     def _write_frame(frame: pd.DataFrame, csv_path: str, json_path: str, *, include_snapshot: bool = True) -> None:
-        frame.to_csv(csv_path, index=False)
-        frame.to_json(json_path, orient="records", indent=2, force_ascii=False)
+        write_dataframe_csv_with_fallback(frame, csv_path, index=False)
+        write_dataframe_json_with_fallback(frame, json_path, orient="records", indent=2, force_ascii=False)
 
         if include_snapshot:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
@@ -373,7 +375,22 @@ class IntegratedScreener:
             os.path.join(data_dir, f"{safe_symbol}.csv"),
         ]
 
-    def _load_local_ohlcv(self, symbol: str) -> pd.DataFrame:
+    def _filter_frame_as_of(self, frame: pd.DataFrame, as_of_date: str | None) -> pd.DataFrame:
+        if frame.empty or not as_of_date:
+            return frame
+        as_of_ts = pd.to_datetime(as_of_date, errors="coerce")
+        if pd.isna(as_of_ts):
+            return frame
+        scoped = frame.copy()
+        scoped["date"] = pd.to_datetime(scoped["date"], errors="coerce")
+        scoped = scoped.dropna(subset=["date"])
+        scoped = scoped[scoped["date"] <= pd.Timestamp(as_of_ts)]
+        if scoped.empty:
+            return pd.DataFrame(columns=frame.columns)
+        scoped["date"] = scoped["date"].dt.strftime("%Y-%m-%d")
+        return scoped.reset_index(drop=True)
+
+    def _load_local_ohlcv(self, symbol: str, *, as_of_date: str | None = None) -> pd.DataFrame:
         symbol_key = str(symbol or "").strip().upper()
         for path in self._local_ohlcv_candidates(symbol_key):
             if not os.path.exists(path):
@@ -384,7 +401,7 @@ class IntegratedScreener:
                 continue
             normalized = normalize_ohlcv_frame(frame, symbol_key, price_policy=PricePolicy.SPLIT_ADJUSTED)
             if not normalized.empty:
-                return normalized
+                return self._filter_frame_as_of(normalized, as_of_date)
         return pd.DataFrame()
 
     def _write_local_ohlcv(self, symbol: str, frame: pd.DataFrame) -> None:
@@ -411,12 +428,22 @@ class IntegratedScreener:
                 "symbol": symbol_key,
             }
         )
-        cache_frame.to_csv(output_path, index=False)
+        write_dataframe_csv_with_fallback(cache_frame, output_path, index=False)
 
-    def _download_ohlcv(self, symbol: str, days: int) -> pd.DataFrame:
+    def _download_ohlcv(
+        self,
+        symbol: str,
+        days: int,
+        *,
+        as_of_date: str | None = None,
+    ) -> pd.DataFrame:
         symbol_key = str(symbol or "").strip().upper()
         period_days = max(int(days or 0), 30)
-        for provider_symbol in iter_provider_symbols(symbol_key, self.market):
+        for provider_symbol in iter_preferred_provider_symbols(
+            symbol_key,
+            self.market,
+            strict=self.market == "kr",
+        ):
             try:
                 frame = yf.download(
                     provider_symbol,
@@ -435,22 +462,50 @@ class IntegratedScreener:
             normalized = normalize_ohlcv_frame(frame, symbol_key, price_policy=PricePolicy.SPLIT_ADJUSTED)
             if normalized.empty:
                 continue
+            normalized = self._filter_frame_as_of(normalized, as_of_date)
+            if normalized.empty:
+                continue
             self._write_local_ohlcv(symbol_key, normalized)
             return normalized
         return pd.DataFrame()
 
-    def merge_technical_and_financial(self) -> pd.DataFrame:
-        if not os.path.exists(self.with_rs_path):
+    def merge_technical_and_financial(
+        self,
+        *,
+        technical_df: pd.DataFrame | None = None,
+        financial_df: pd.DataFrame | None = None,
+    ) -> pd.DataFrame:
+        if technical_df is None and not os.path.exists(self.with_rs_path):
             return pd.DataFrame()
 
-        technical_df = pd.read_csv(self.with_rs_path)
+        if technical_df is None:
+            technical_df = pd.read_csv(self.with_rs_path, dtype={"symbol": "string"})
+        else:
+            technical_df = technical_df.copy()
         if technical_df.empty:
             return technical_df
+        technical_df = normalize_symbol_columns(technical_df, self.market, columns=("symbol",))
 
-        if os.path.exists(self.advanced_path):
-            financial_df = pd.read_csv(self.advanced_path)
-        else:
+        if financial_df is None and os.path.exists(self.advanced_path):
+            financial_df = pd.read_csv(
+                self.advanced_path,
+                dtype={"symbol": "string", "provider_symbol": "string"},
+            )
+            financial_df = normalize_symbol_columns(
+                financial_df,
+                self.market,
+                columns=("symbol",),
+                provider_columns=("provider_symbol",),
+            )
+        elif financial_df is None:
             financial_df = pd.DataFrame(columns=["symbol", "fin_met_count", "has_error"])
+        else:
+            financial_df = normalize_symbol_columns(
+                financial_df.copy(),
+                self.market,
+                columns=("symbol",),
+                provider_columns=("provider_symbol",),
+            )
 
         merged = pd.merge(
             technical_df,
@@ -469,10 +524,16 @@ class IntegratedScreener:
         self._write_frame(merged, self.pre_pattern_quant_financial_csv, self.pre_pattern_quant_financial_json)
         return merged
 
-    def fetch_ohlcv_data(self, symbol: str, days: int = 365) -> pd.DataFrame:
-        frame = self._load_local_ohlcv(symbol)
+    def fetch_ohlcv_data(
+        self,
+        symbol: str,
+        days: int = 365,
+        *,
+        as_of_date: str | None = None,
+    ) -> pd.DataFrame:
+        frame = self._load_local_ohlcv(symbol, as_of_date=as_of_date)
         if frame.empty:
-            frame = self._download_ohlcv(symbol, days=days)
+            frame = self._download_ohlcv(symbol, days=days, as_of_date=as_of_date)
         if frame.empty:
             return pd.DataFrame()
 
@@ -505,8 +566,34 @@ class IntegratedScreener:
 
         return normalized.set_index("Date")
 
-    def run_integrated_screening(self, max_symbols: Optional[int] = None) -> pd.DataFrame:
-        merged = self.merge_technical_and_financial()
+    def run_integrated_screening(
+        self,
+        max_symbols: Optional[int] = None,
+        *,
+        technical_df: pd.DataFrame | None = None,
+        financial_df: pd.DataFrame | None = None,
+        runtime_context: RuntimeContext | None = None,
+        as_of_date: str | None = None,
+    ) -> pd.DataFrame:
+        active_as_of_date = str(
+            as_of_date
+            or (runtime_context.as_of_date if runtime_context is not None else "")
+            or ""
+        ).strip() or None
+        if runtime_context is not None and active_as_of_date:
+            runtime_context.set_as_of_date(active_as_of_date)
+        if technical_df is None and runtime_context is not None:
+            cached_technical = runtime_context.screening_frames.get("markminervini_with_rs")
+            if isinstance(cached_technical, pd.DataFrame):
+                technical_df = cached_technical.copy()
+        if financial_df is None and runtime_context is not None:
+            cached_financial = runtime_context.screening_frames.get("advanced_financial_df")
+            if isinstance(cached_financial, pd.DataFrame):
+                financial_df = cached_financial.copy()
+        merged = self.merge_technical_and_financial(
+            technical_df=technical_df,
+            financial_df=financial_df,
+        )
         print(f"[Integrated] Seed merge completed ({self.market}) - rows={len(merged)}")
         if merged.empty:
             empty = pd.DataFrame()
@@ -532,7 +619,10 @@ class IntegratedScreener:
                         f"processed={index}/{total_targets}, detected={len(pattern_rows)}"
                 )
                 continue
-            stock_df = self.fetch_ohlcv_data(symbol)
+            try:
+                stock_df = self.fetch_ohlcv_data(symbol, as_of_date=active_as_of_date)
+            except TypeError:
+                stock_df = self.fetch_ohlcv_data(symbol)
             if stock_df.empty:
                 if is_progress_tick(index, total_targets, interval):
                     print(
@@ -650,18 +740,33 @@ class IntegratedScreener:
         self._write_frame(pattern_df, self.pattern_results_csv, self.pattern_results_json)
         self._write_frame(pattern_df, self.pattern_enriched_csv, self.pattern_enriched_json)
         self._write_frame(actionable_df, self.pattern_actionable_csv, self.pattern_actionable_json)
-        with open(self.actual_data_calibration_json, "w", encoding="utf-8") as handle:
-            json.dump(actual_data_calibration, handle, ensure_ascii=False, indent=2)
+        write_json_with_fallback(actual_data_calibration, self.actual_data_calibration_json, ensure_ascii=False, indent=2)
         print(
             f"[Integrated] Pattern outputs saved ({self.market}) - "
             f"enriched={len(pattern_df)}, actionable={len(actionable_df)}"
         )
+        if runtime_context is not None:
+            runtime_context.screening_frames["integrated_pattern_df"] = pattern_df.copy()
         return pattern_df
 
 
-def run_integrated_screening(max_symbols: Optional[int] = None, *, market: str = "us") -> pd.DataFrame:
+def run_integrated_screening(
+    max_symbols: Optional[int] = None,
+    *,
+    market: str = "us",
+    technical_df: pd.DataFrame | None = None,
+    financial_df: pd.DataFrame | None = None,
+    runtime_context: RuntimeContext | None = None,
+    as_of_date: str | None = None,
+) -> pd.DataFrame:
     screener = IntegratedScreener(market=market)
-    return screener.run_integrated_screening(max_symbols=max_symbols)
+    return screener.run_integrated_screening(
+        max_symbols=max_symbols,
+        technical_df=technical_df,
+        financial_df=financial_df,
+        runtime_context=runtime_context,
+        as_of_date=as_of_date,
+    )
 
 
 if __name__ == "__main__":

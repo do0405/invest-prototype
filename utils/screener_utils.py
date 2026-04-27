@@ -54,6 +54,8 @@ def find_latest_file(directory: str, prefix: str, extension: str) -> str | None:
     Returns:
         최신 파일의 전체 경로 또는 None
     """
+    # Compatibility shim retained for external operators; current runtime paths
+    # do not depend on timestamped file discovery.
     if not os.path.exists(directory):
         return None
     
@@ -116,7 +118,7 @@ def read_csv_flexible(file_path: str, required_columns: list[str] | None = None)
         if required_columns:
             missing_cols = [col for col in required_columns if col not in df.columns]
             if missing_cols:
-                print(f"⚠️ 필수 컬럼 누락: {missing_cols} in {file_path}")
+                print(f"[Warn] Required columns missing: {missing_cols} in {file_path}")
                 return None
         
         # 날짜 컬럼 처리 (다양한 형식 지원)
@@ -130,12 +132,12 @@ def read_csv_flexible(file_path: str, required_columns: list[str] | None = None)
                         if col in ['processing_date', '청산일시']:  # 시간 정보 제거가 필요한 컬럼
                             df[col] = df[col].dt.strftime('%Y-%m-%d')
                 except Exception as e:
-                    print(f"⚠️ 날짜 컬럼 '{col}' 처리 실패: {e}")
+                    print(f"[Warn] Failed to parse date column '{col}': {e}")
         
         return df
         
     except Exception as e:
-        print(f"❌ CSV 파일 읽기 실패 ({file_path}): {e}")
+        print(f"[Error] Failed to read CSV ({file_path}): {e}")
         return None
 
 
@@ -174,16 +176,13 @@ def save_screening_results(
     output_dir: str,
     filename_prefix: str,
     include_timestamp: bool = False,
-    incremental_update: bool = True,
 ) -> dict[str, str]:
     """
     Save screening results as latest JSON/CSV, with optional per-run snapshots.
 
-    `incremental_update` is kept for backward compatibility; the latest files now
-    always reflect the current run, while timestamped snapshot files preserve
-    historical outputs when requested.
+    Latest files always reflect the current run; timestamped snapshot files
+    preserve historical outputs when requested.
     """
-    _ = incremental_update
     paths = _write_records_with_optional_snapshot(
         results,
         output_dir,
@@ -226,7 +225,7 @@ def track_new_tickers(
         if existing_df is not None:
             existing_symbols = set(existing_df[symbol_key].tolist()) if symbol_key in existing_df.columns else set()
         else:
-            print(f"⚠️  추적 파일 로드 실패: {tracker_file}")
+            print(f"[Warn] Failed to load tracker file: {tracker_file}")
             existing_symbols = set()
             existing_df = pd.DataFrame()
     else:
@@ -237,7 +236,7 @@ def track_new_tickers(
     new_symbols = current_symbols - existing_symbols
     
     if new_symbols:
-        print(f"🆕 새로운 티커 발견: {len(new_symbols)}개")
+        print(f"[Info] New tickers found: {len(new_symbols)}")
         
         # 새로운 티커 데이터 생성
         new_ticker_data = []
@@ -277,10 +276,10 @@ def track_new_tickers(
             data_dict = convert_numpy_types(combined_df.to_dict('records'))
             json.dump(data_dict, f, ensure_ascii=False, indent=2)
         
-        print(f"   📄 추적 파일 업데이트: {tracker_file}")
+        print(f"   Tracker file updated: {tracker_file}")
         return new_ticker_data
     else:
-        print("🔍 새로운 티커 없음")
+        print("[Info] No new tickers")
         return []
 
 

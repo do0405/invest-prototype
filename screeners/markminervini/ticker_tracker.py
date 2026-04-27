@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 import pandas as pd
 
+from utils.io_utils import write_dataframe_csv_with_fallback, write_dataframe_json_with_fallback
 from utils.market_runtime import (
     ensure_market_dirs,
     get_markminervini_integrated_results_path,
@@ -13,6 +14,9 @@ from utils.market_runtime import (
     get_markminervini_with_rs_path,
     market_key,
 )
+
+
+TRACKED_TICKER_COLUMNS = ["symbol", "fin_met_count", "rs_score", "met_count", "total_met_count", "added_date"]
 
 
 def track_new_tickers(advanced_financial_results_path: str, *, market: str = "us") -> pd.DataFrame:
@@ -52,7 +56,7 @@ def track_new_tickers(advanced_financial_results_path: str, *, market: str = "us
     if os.path.exists(new_tickers_path):
         tracked_df = pd.read_csv(new_tickers_path)
     else:
-        tracked_df = pd.DataFrame(columns=["symbol", "fin_met_count", "rs_score", "met_count", "total_met_count", "added_date"])
+        tracked_df = pd.DataFrame(columns=TRACKED_TICKER_COLUMNS)
 
     today = datetime.now().date()
     records: list[dict[str, object]] = []
@@ -74,14 +78,18 @@ def track_new_tickers(advanced_financial_results_path: str, *, market: str = "us
         )
 
     if records:
-        tracked_df = pd.concat([tracked_df, pd.DataFrame(records)], ignore_index=True)
+        records_df = pd.DataFrame.from_records(records, columns=TRACKED_TICKER_COLUMNS)
+        if tracked_df.empty:
+            tracked_df = records_df
+        else:
+            tracked_df = pd.concat([tracked_df, records_df], ignore_index=True)
 
     tracked_df["added_date"] = pd.to_datetime(tracked_df["added_date"], errors="coerce").dt.date
     cutoff = today - timedelta(days=14)
     tracked_df = tracked_df[tracked_df["added_date"] > cutoff].sort_values("added_date", ascending=False)
 
-    current_df.to_csv(previous_path, index=False)
-    current_df.to_json(previous_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
-    tracked_df.to_csv(new_tickers_path, index=False)
-    tracked_df.to_json(new_tickers_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
+    write_dataframe_csv_with_fallback(current_df, previous_path, index=False)
+    write_dataframe_json_with_fallback(current_df, previous_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
+    write_dataframe_csv_with_fallback(tracked_df, new_tickers_path, index=False)
+    write_dataframe_json_with_fallback(tracked_df, new_tickers_path.replace(".csv", ".json"), orient="records", indent=2, force_ascii=False)
     return tracked_df

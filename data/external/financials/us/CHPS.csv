@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-CHPS,,[],False,2026-03-13T01:36:09.777935+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+CHPS,CHPS,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:09:03.937079+00:00

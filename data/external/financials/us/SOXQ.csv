@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-SOXQ,,[],False,2026-03-13T22:35:55.760594+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+SOXQ,SOXQ,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:09:48.896021+00:00

@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+GMOM,GMOM,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:19:48.216091+00:00

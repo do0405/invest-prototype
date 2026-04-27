@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Iterable
 
+SOURCE_DISPOSITIONS = ("buy_eligible", "watch_only")
+
 
 @dataclass(frozen=True)
 class SourceSpec:
@@ -10,130 +12,135 @@ class SourceSpec:
     source_tag: str
     screen_stage: str
     buy_eligible: bool
+    source_disposition: str = "buy_eligible"
 
 
 CANONICAL_SOURCE_SPECS: tuple[SourceSpec, ...] = (
-    SourceSpec("leader_lagging/leaders.csv", "LL_LEADER", "LEADER", True),
-    SourceSpec("leader_lagging/followers.csv", "LL_FOLLOWER", "FOLLOWER", True),
+    SourceSpec(
+        "leader_lagging/leaders.csv",
+        "LL_LEADER",
+        "LEADER",
+        True,
+        "buy_eligible",
+    ),
+    SourceSpec(
+        "leader_lagging/followers.csv",
+        "LL_FOLLOWER",
+        "FOLLOWER",
+        True,
+        "buy_eligible",
+    ),
     SourceSpec(
         "markminervini/integrated_actionable_patterns.csv",
         "MM_ACTIONABLE",
         "ACTIONABLE",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "markminervini/integrated_results.csv",
         "MM_INTEGRATED",
         "INTEGRATED",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/us_breakout_rvol.csv",
         "TV_BREAKOUT_RVOL",
         "TV_BREAKOUT_RVOL",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/us_breakout_10m.csv",
         "TV_BREAKOUT_10M",
         "TV_BREAKOUT_10M",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/us_breakout_strength.csv",
         "TV_BREAKOUT_STRENGTH",
         "TV_BREAKOUT_STRENGTH",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/us_market_leader.csv",
         "TV_MARKET_LEADER",
         "TV_MARKET_LEADER",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/us_trend_breakout.csv",
         "TV_TREND_BREAKOUT",
         "TV_TREND_BREAKOUT",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/us_high_volatility.csv",
         "TV_HIGH_VOLATILITY",
         "TV_HIGH_VOLATILITY",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/kr_breakout_rvol.csv",
         "TV_BREAKOUT_RVOL",
         "TV_BREAKOUT_RVOL",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "tradingview/kr_market_leader.csv",
         "TV_MARKET_LEADER",
         "TV_MARKET_LEADER",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "weinstein_stage2/primary_candidates.csv",
         "WS_PRIMARY",
         "WS_PRIMARY",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "weinstein_stage2/breakout_week_candidates.csv",
         "WS_BREAKOUT_WEEK",
         "WS_BREAKOUT_WEEK",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "weinstein_stage2/fresh_stage2_candidates.csv",
         "WS_FRESH_STAGE2",
         "WS_FRESH_STAGE2",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "weinstein_stage2/retest_candidates.csv",
         "WS_RETEST",
         "WS_RETEST",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
         "weinstein_stage2/secondary_candidates.csv",
         "WS_SECONDARY",
         "WS_SECONDARY",
         True,
+        "buy_eligible",
     ),
     SourceSpec(
-        "weinstein_stage2/pre_stage2_candidates.csv",
-        "WS_PRE_STAGE2",
-        "WS_PRE_STAGE2",
-        False,
-    ),
-    SourceSpec(
-        "weinstein_stage2/pattern_included_candidates.csv",
-        "WS_PATTERN_INCLUDED",
-        "WS_PATTERN_INCLUDED",
-        False,
-    ),
-    SourceSpec(
-        "qullamaggie/daily_focus_list.csv",
-        "QMG_DAILY",
-        "DAILY_FOCUS",
+        "qullamaggie/pattern_included_candidates.csv",
+        "QMG_PATTERN_INCLUDED",
+        "PATTERN_INCLUDED",
         True,
-    ),
-    SourceSpec(
-        "qullamaggie/weekly_focus_list.csv",
-        "QMG_WEEKLY",
-        "WEEKLY_FOCUS",
-        True,
-    ),
-    SourceSpec(
-        "qullamaggie/universe_list.csv",
-        "QMG_UNIVERSE",
-        "UNIVERSE_WATCH",
-        False,
+        "buy_eligible",
     ),
 )
 
@@ -142,8 +149,7 @@ MIC_LEADER_CORE_STAGE = "LEADER_CORE"
 
 
 SOURCE_STAGE_PRIORITY = {
-    "DAILY_FOCUS": 100,
-    "WEEKLY_FOCUS": 90,
+    "PATTERN_INCLUDED": 95,
     MIC_LEADER_CORE_STAGE: 89,
     "WS_PRIMARY": 88,
     "WS_BREAKOUT_WEEK": 87,
@@ -160,14 +166,10 @@ SOURCE_STAGE_PRIORITY = {
     "LEADER": 70,
     "FOLLOWER": 60,
     "INTEGRATED": 50,
-    "WS_PRE_STAGE2": 25,
-    "WS_PATTERN_INCLUDED": 20,
-    "UNIVERSE_WATCH": 10,
 }
 
 SOURCE_TAG_PRIORITY = {
-    "QMG_DAILY": 10.0,
-    "QMG_WEEKLY": 8.5,
+    "QMG_PATTERN_INCLUDED": 9.0,
     MIC_LEADER_CORE_SOURCE_TAG: 8.8,
     "WS_PRIMARY": 8.0,
     "WS_BREAKOUT_WEEK": 7.8,
@@ -184,16 +186,11 @@ SOURCE_TAG_PRIORITY = {
     "TV_HIGH_VOLATILITY": 4.0,
     "MM_INTEGRATED": 3.8,
     "LL_FOLLOWER": 3.5,
-    "WS_PRE_STAGE2": 2.0,
-    "WS_PATTERN_INCLUDED": 1.5,
-    "QMG_UNIVERSE": 1.0,
     "PEG_READY": 4.5,
-    "PEG_ONLY": 2.5,
 }
 
 SOURCE_TAG_STYLE = {
-    "QMG_DAILY": "TREND",
-    "QMG_WEEKLY": "TREND",
+    "QMG_PATTERN_INCLUDED": "TREND",
     MIC_LEADER_CORE_SOURCE_TAG: "LEADERSHIP",
     "WS_PRIMARY": "STRUCTURE",
     "WS_BREAKOUT_WEEK": "BREAKOUT",
@@ -210,11 +207,7 @@ SOURCE_TAG_STYLE = {
     "TV_HIGH_VOLATILITY": "VOLATILITY",
     "LL_LEADER": "LEADERSHIP",
     "LL_FOLLOWER": "LEADERSHIP",
-    "WS_PRE_STAGE2": "WATCH",
-    "WS_PATTERN_INCLUDED": "WATCH",
-    "QMG_UNIVERSE": "WATCH",
     "PEG_READY": "PEG",
-    "PEG_ONLY": "PEG",
 }
 
 TREND_STYLE_BONUS = {
@@ -315,3 +308,17 @@ def source_style_tags(tags: Iterable[str]) -> list[str]:
 def primary_source_style(tags: Iterable[str]) -> str:
     styles = source_style_tags(tags)
     return styles[0] if styles else ""
+
+
+def normalize_source_disposition(
+    value: object,
+    *,
+    default: str = "",
+) -> str:
+    text = str(value or "").strip().lower()
+    if text in SOURCE_DISPOSITIONS:
+        return text
+    fallback = str(default or "").strip().lower()
+    if fallback in SOURCE_DISPOSITIONS:
+        return fallback
+    return ""

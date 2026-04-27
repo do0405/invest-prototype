@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2023-03-31,-1.5,-1.5,,,yfinance_earnings_dates:ABVC,ABVC
+2022-11-14,-1.1,-2.0,,,yfinance_earnings_dates:ABVC,ABVC
+2022-08-15,-0.6,-1.25,,,yfinance_earnings_dates:ABVC,ABVC
+2022-03-31,-3.1,-0.4,,,yfinance_earnings_dates:ABVC,ABVC

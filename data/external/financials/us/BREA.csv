@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-BREA,,[],False,2026-03-14T04:57:54.920535+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+BREA,BREA,soft_unavailable,ineligible:metadata_not_found,metadata_skip,,[],True,2026-04-26T15:06:00.975018+00:00

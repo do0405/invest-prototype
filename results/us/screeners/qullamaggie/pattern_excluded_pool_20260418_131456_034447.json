@@ -1,0 +1,24 @@
+[
+  {
+    "as_of_ts": "2026-04-16",
+    "symbol": "AA",
+    "market": "US",
+    "sector": "Basic Materials",
+    "setup_scope": "PATTERN_EXCLUDED_POOL",
+    "stock_grade": "B",
+    "a_pp_score": 73.18,
+    "focus_seed_score": 68.52,
+    "compression_score": 73.71,
+    "high_52w_proximity": 0.9301,
+    "breakout_universe_pass": true,
+    "ep_universe_pass": false,
+    "pivot_price": 75.77569694519042,
+    "stop_price": 72.46710721083647,
+    "regime_state": "RISK_OFF",
+    "market_alias": "RISK_OFF",
+    "market_alignment_score": 1.64,
+    "breadth_support_score": 1.64,
+    "rotation_support_score": 1.64,
+    "leader_health_score": 1.64
+  }
+]

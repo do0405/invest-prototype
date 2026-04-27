@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-MGRM,,[],False,2026-03-14T05:03:29.180673+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+MGRM,,soft_unavailable,financial data unavailable,,,[],True,2026-04-26T15:07:46.766356+00:00

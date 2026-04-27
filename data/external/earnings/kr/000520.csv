@@ -1,0 +1,4 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2005-07-28,195.21,146.56,,,yfinance_earnings_dates:000520.KS,000520.KS
+2005-05-16,9.06,278.35,,,yfinance_earnings_dates:000520.KS,000520.KS
+2005-03-02,65.59,140.1,,,yfinance_earnings_dates:000520.KS,000520.KS

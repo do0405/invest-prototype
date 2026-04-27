@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-SIL,,[],False,2026-03-13T01:24:43.843542+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+SIL,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:SIL:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:SIL:[Errno 22] Invalid argument""]",True,2026-04-18T22:06:09.115765+00:00

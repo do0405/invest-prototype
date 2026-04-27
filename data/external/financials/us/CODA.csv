@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-CODA,CODA,[],False,0,0,False,False,2.920990630301375,30.748747265785102,True,False,True,True,False,False,-20.091973016052407,13.273026081213473,0,0,2026-03-13T01:23:37.674194+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+CODA,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:CODA:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:CODA:[Errno 22] Invalid argument""]",True,2026-04-18T22:08:05.157270+00:00

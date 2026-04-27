@@ -7,7 +7,15 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "data")
-RESULTS_DIR = os.path.join(BASE_DIR, "results")
+_RESULTS_DIR_OVERRIDE = str(os.environ.get("INVEST_PROTO_RESULTS_DIR") or "").strip()
+if _RESULTS_DIR_OVERRIDE:
+    RESULTS_DIR = (
+        os.path.abspath(_RESULTS_DIR_OVERRIDE)
+        if os.path.isabs(_RESULTS_DIR_OVERRIDE)
+        else os.path.abspath(os.path.join(BASE_DIR, _RESULTS_DIR_OVERRIDE))
+    )
+else:
+    RESULTS_DIR = os.path.join(BASE_DIR, "results")
 SCREENER_RESULTS_DIR = os.path.join(RESULTS_DIR, "screeners")
 OPTION_RESULTS_DIR = os.path.join(RESULTS_DIR, "option")
 
@@ -19,7 +27,6 @@ DATA_US_DIR = os.path.join(DATA_DIR, "us")
 DATA_KR_DIR = os.path.join(DATA_DIR, "kr")
 OPTION_DATA_DIR = os.path.join(DATA_DIR, "options")
 EXTERNAL_DATA_DIR = os.path.join(DATA_DIR, "external")
-BACKUP_DIR = os.path.join(BASE_DIR, "backup")
 
 SCREENERS_DIR = os.path.join(BASE_DIR, "screeners")
 MARKMINERVINI_DIR = os.path.join(SCREENERS_DIR, "markminervini")

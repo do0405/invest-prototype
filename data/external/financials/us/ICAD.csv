@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-ICAD,,[],False,2026-03-14T05:06:07.378635+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+ICAD,ICAD,soft_unavailable,ineligible:metadata_not_found,metadata_skip,,[],True,2026-04-26T15:08:24.714485+00:00

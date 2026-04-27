@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2015-03-19,-5314.0,-373.93,,,yfinance_earnings_dates:000140.KS,000140.KS
+2014-11-14,206.0,97.85,,,yfinance_earnings_dates:000140.KS,000140.KS
+2014-08-14,-79.0,177.85,,,yfinance_earnings_dates:000140.KS,000140.KS
+2014-05-15,-307.0,-16.95,,,yfinance_earnings_dates:000140.KS,000140.KS

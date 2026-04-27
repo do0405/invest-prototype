@@ -1,0 +1,22 @@
+{
+  "market": "us",
+  "benchmark_symbol": "SPY",
+  "market_truth_source": "local_standalone",
+  "core_overlay_applied": false,
+  "market_state": "MARKET_STAGE2_FAVORABLE",
+  "market_alias": "RISK_ON",
+  "market_alignment_score": 100.0,
+  "breadth_support_score": 75.0,
+  "rotation_support_score": 100.0,
+  "leader_health_score": 100.0,
+  "benchmark_close": 710.1400146484375,
+  "benchmark_ma30w": 676.4023356119792,
+  "benchmark_ma30w_slope_4w": 0.0008172683773459699,
+  "assumption_flags": [],
+  "actual_data_calibration": {},
+  "symbol_count": 4,
+  "state_counts": {
+    "BASE": 2,
+    "EXCLUDE": 2
+  }
+}

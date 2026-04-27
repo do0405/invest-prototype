@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-RDUS,,[],False,2026-03-13T01:33:05.138123+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+RDUS,RDUS,soft_unavailable,ineligible:metadata_not_found,metadata_skip,,[],True,2026-04-26T15:11:02.941616+00:00

@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+TEVA,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:TEVA:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:TEVA:[Errno 22] Invalid argument""]",True,2026-04-18T22:04:50.612237+00:00

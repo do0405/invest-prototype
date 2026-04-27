@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,quarterly_eps_growth,annual_eps_growth,eps_growth_acceleration,eps_3q_accel,quarterly_revenue_growth,annual_revenue_growth,revenue_growth_acceleration,sales_3q_accel,quarterly_op_margin_improved,annual_op_margin_improved,net_margin_improved,margin_3q_accel,quarterly_net_income_growth,annual_net_income_growth,roe,debt_to_equity,cached_at
-ARTV,ARTV,[],False,-1.1494252873563229,-312.8238286745584,False,False,0,-99.25056729965365,False,False,False,False,False,False,-1.2891690975816317,-111.16706341939815,0,0,2026-03-14T05:03:18.049441+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+ARTV,,failed,,yfinance+yahooquery,,"[""yfinance_fetch_failed:ARTV:[Errno 22] Invalid argument"", ""yahooquery_fetch_failed:ARTV:[Errno 22] Invalid argument""]",True,2026-04-18T21:57:47.841152+00:00

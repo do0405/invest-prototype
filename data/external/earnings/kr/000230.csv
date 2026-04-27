@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2008-01-30,81.63,233.47,,,yfinance_earnings_dates:000230.KS,000230.KS
+2007-10-29,238.37,235.46,,,yfinance_earnings_dates:000230.KS,000230.KS
+2007-07-30,161.37,227.66,,,yfinance_earnings_dates:000230.KS,000230.KS
+2007-05-02,290.25,223.49,,,yfinance_earnings_dates:000230.KS,000230.KS

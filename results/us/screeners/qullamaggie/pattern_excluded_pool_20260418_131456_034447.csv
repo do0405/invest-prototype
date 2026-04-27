@@ -1,0 +1,2 @@
+﻿as_of_ts,symbol,market,sector,setup_scope,stock_grade,a_pp_score,focus_seed_score,compression_score,high_52w_proximity,breakout_universe_pass,ep_universe_pass,pivot_price,stop_price,regime_state,market_alias,market_alignment_score,breadth_support_score,rotation_support_score,leader_health_score
+2026-04-16,AA,US,Basic Materials,PATTERN_EXCLUDED_POOL,B,73.18,68.52,73.71,0.9301,True,False,75.77569694519042,72.46710721083647,RISK_OFF,RISK_OFF,1.64,1.64,1.64,1.64

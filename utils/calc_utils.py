@@ -23,7 +23,16 @@ __all__ = [
 
 
 def get_us_market_today():
-    """Return today's date in US/Eastern time zone."""
+    """Return the latest completed US session date in US/Eastern time zone."""
+    try:
+        from .exchange_calendar import resolve_latest_completed_session
+
+        return datetime.strptime(
+            resolve_latest_completed_session("us"),
+            "%Y-%m-%d",
+        ).date()
+    except Exception:
+        pass
     et_now = datetime.now(timezone('US/Eastern'))
     return et_now.date()
 

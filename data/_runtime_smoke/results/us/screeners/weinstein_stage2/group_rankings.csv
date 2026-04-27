@@ -1,0 +1,145 @@
+industry_key,group_name,group_state,group_strength_score,member_count
+basic_materials__aluminum,Aluminum,WEAK,0.0,4
+unknown__unknown,unknown__unknown,WEAK,0.0,6150
+healthcare__diagnostics_&_research,Diagnostics & Research,WEAK,0.0,50
+basic_materials__agricultural_inputs,Agricultural Inputs,WEAK,0.0,17
+basic_materials__building_materials,Building Materials,WEAK,0.0,18
+basic_materials__chemicals,Chemicals,WEAK,0.0,19
+basic_materials__coking_coal,Coking Coal,WEAK,0.0,6
+basic_materials__copper,Copper,WEAK,0.0,6
+basic_materials__gold,Gold,WEAK,0.0,54
+basic_materials__lumber_&_wood_production,Lumber & Wood Production,WEAK,0.0,6
+basic_materials__other_industrial_metals_&_mining,Other Industrial Metals & Mining,WEAK,0.0,55
+basic_materials__other_precious_metals_&_mining,Other Precious Metals & Mining,WEAK,0.0,18
+basic_materials__paper_&_paper_products,Paper & Paper Products,WEAK,0.0,5
+basic_materials__silver,Silver,WEAK,0.0,7
+basic_materials__specialty_chemicals,Specialty Chemicals,WEAK,0.0,59
+basic_materials__steel,Steel,WEAK,0.0,22
+communication_services__advertising_agencies,Advertising Agencies,WEAK,0.0,43
+communication_services__broadcasting,Broadcasting,WEAK,0.0,16
+communication_services__electronic_gaming_&_multimedia,Electronic Gaming & Multimedia,WEAK,0.0,25
+communication_services__entertainment,Entertainment,WEAK,0.0,52
+communication_services__internet_content_&_information,Internet Content & Information,WEAK,0.0,75
+communication_services__publishing,Publishing,WEAK,0.0,9
+communication_services__telecom_services,Telecom Services,WEAK,0.0,60
+consumer_cyclical__apparel_manufacturing,Apparel Manufacturing,WEAK,0.0,24
+consumer_cyclical__apparel_retail,Apparel Retail,WEAK,0.0,32
+consumer_cyclical__auto_&_truck_dealerships,Auto & Truck Dealerships,WEAK,0.0,28
+consumer_cyclical__auto_manufacturers,Auto Manufacturers,WEAK,0.0,32
+consumer_cyclical__auto_parts,Auto Parts,WEAK,0.0,55
+consumer_cyclical__department_stores,Department Stores,WEAK,0.0,4
+consumer_cyclical__footwear_&_accessories,Footwear & Accessories,WEAK,0.0,15
+"consumer_cyclical__furnishings,_fixtures_&_appliances","Furnishings, Fixtures & Appliances",WEAK,0.0,33
+consumer_cyclical__gambling,Gambling,WEAK,0.0,13
+consumer_cyclical__home_improvement_retail,Home Improvement Retail,WEAK,0.0,7
+consumer_cyclical__internet_retail,Internet Retail,WEAK,0.0,43
+consumer_cyclical__leisure,Leisure,WEAK,0.0,33
+consumer_cyclical__lodging,Lodging,WEAK,0.0,12
+consumer_cyclical__luxury_goods,Luxury Goods,WEAK,0.0,11
+consumer_cyclical__packaging_&_containers,Packaging & Containers,WEAK,0.0,23
+consumer_cyclical__personal_services,Personal Services,WEAK,0.0,15
+consumer_cyclical__recreational_vehicles,Recreational Vehicles,WEAK,0.0,16
+consumer_cyclical__residential_construction,Residential Construction,WEAK,0.0,21
+consumer_cyclical__resorts_&_casinos,Resorts & Casinos,WEAK,0.0,18
+consumer_cyclical__restaurants,Restaurants,WEAK,0.0,53
+consumer_cyclical__specialty_retail,Specialty Retail,WEAK,0.0,49
+consumer_cyclical__textile_manufacturing,Textile Manufacturing,WEAK,0.0,5
+consumer_cyclical__travel_services,Travel Services,WEAK,0.0,20
+consumer_defensive__beverages_-_brewers,Beverages - Brewers,WEAK,0.0,7
+consumer_defensive__beverages_-_non-alcoholic,Beverages - Non-Alcoholic,WEAK,0.0,16
+consumer_defensive__beverages_-_wineries_&_distilleries,Beverages - Wineries & Distilleries,WEAK,0.0,11
+consumer_defensive__confectioners,Confectioners,WEAK,0.0,5
+consumer_defensive__discount_stores,Discount Stores,WEAK,0.0,9
+consumer_defensive__education_&_training_services,Education & Training Services,WEAK,0.0,45
+consumer_defensive__farm_products,Farm Products,WEAK,0.0,26
+consumer_defensive__food_distribution,Food Distribution,WEAK,0.0,13
+consumer_defensive__grocery_stores,Grocery Stores,WEAK,0.0,12
+consumer_defensive__household_&_personal_products,Household & Personal Products,WEAK,0.0,33
+consumer_defensive__packaged_foods,Packaged Foods,WEAK,0.0,66
+consumer_defensive__tobacco,Tobacco,WEAK,0.0,11
+energy__oil_&_gas_drilling,Oil & Gas Drilling,WEAK,0.0,9
+energy__oil_&_gas_e&p,Oil & Gas E&P,WEAK,0.0,79
+energy__oil_&_gas_equipment_&_services,Oil & Gas Equipment & Services,WEAK,0.0,51
+energy__oil_&_gas_integrated,Oil & Gas Integrated,WEAK,0.0,19
+energy__oil_&_gas_midstream,Oil & Gas Midstream,WEAK,0.0,57
+energy__oil_&_gas_refining_&_marketing,Oil & Gas Refining & Marketing,WEAK,0.0,19
+energy__thermal_coal,Thermal Coal,WEAK,0.0,6
+energy__uranium,Uranium,WEAK,0.0,13
+financial_services__asset_management,Asset Management,WEAK,0.0,509
+financial_services__banks_-_diversified,Banks - Diversified,WEAK,0.0,19
+financial_services__banks_-_regional,Banks - Regional,WEAK,0.0,375
+financial_services__capital_markets,Capital Markets,WEAK,0.0,93
+financial_services__credit_services,Credit Services,WEAK,0.0,53
+financial_services__financial_conglomerates,Financial Conglomerates,WEAK,0.0,8
+financial_services__financial_data_&_stock_exchanges,Financial Data & Stock Exchanges,WEAK,0.0,15
+financial_services__insurance_-_diversified,Insurance - Diversified,WEAK,0.0,13
+financial_services__insurance_-_life,Insurance - Life,WEAK,0.0,22
+financial_services__insurance_-_property_&_casualty,Insurance - Property & Casualty,WEAK,0.0,48
+financial_services__insurance_-_reinsurance,Insurance - Reinsurance,WEAK,0.0,8
+financial_services__insurance_-_specialty,Insurance - Specialty,WEAK,0.0,17
+financial_services__insurance_brokers,Insurance Brokers,WEAK,0.0,23
+financial_services__mortgage_finance,Mortgage Finance,WEAK,0.0,13
+financial_services__shell_companies,Shell Companies,WEAK,0.0,250
+healthcare__biotechnology,Biotechnology,WEAK,0.0,625
+healthcare__drug_manufacturers_-_general,Drug Manufacturers - General,WEAK,0.0,21
+healthcare__drug_manufacturers_-_specialty_&_generic,Drug Manufacturers - Specialty & Generic,WEAK,0.0,83
+healthcare__health_information_services,Health Information Services,WEAK,0.0,56
+healthcare__healthcare_plans,Healthcare Plans,WEAK,0.0,11
+healthcare__medical_care_facilities,Medical Care Facilities,WEAK,0.0,51
+healthcare__medical_devices,Medical Devices,WEAK,0.0,148
+healthcare__medical_distribution,Medical Distribution,WEAK,0.0,12
+healthcare__medical_instruments_&_supplies,Medical Instruments & Supplies,WEAK,0.0,58
+healthcare__pharmaceutical_retailers,Pharmaceutical Retailers,WEAK,0.0,7
+industrials__aerospace_&_defense,Aerospace & Defense,WEAK,0.0,82
+industrials__airlines,Airlines,WEAK,0.0,18
+industrials__airports_&_air_services,Airports & Air Services,WEAK,0.0,8
+industrials__building_products_&_equipment,Building Products & Equipment,WEAK,0.0,37
+industrials__business_equipment_&_supplies,Business Equipment & Supplies,WEAK,0.0,5
+industrials__conglomerates,Conglomerates,WEAK,0.0,29
+industrials__consulting_services,Consulting Services,WEAK,0.0,25
+industrials__electrical_equipment_&_parts,Electrical Equipment & Parts,WEAK,0.0,48
+industrials__engineering_&_construction,Engineering & Construction,WEAK,0.0,54
+industrials__farm_&_heavy_construction_machinery,Farm & Heavy Construction Machinery,WEAK,0.0,26
+industrials__industrial_distribution,Industrial Distribution,WEAK,0.0,22
+industrials__integrated_freight_&_logistics,Integrated Freight & Logistics,WEAK,0.0,31
+industrials__marine_shipping,Marine Shipping,WEAK,0.0,39
+industrials__metal_fabrication,Metal Fabrication,WEAK,0.0,19
+industrials__pollution_&_treatment_controls,Pollution & Treatment Controls,WEAK,0.0,18
+industrials__railroads,Railroads,WEAK,0.0,12
+industrials__rental_&_leasing_services,Rental & Leasing Services,WEAK,0.0,23
+industrials__security_&_protection_services,Security & Protection Services,WEAK,0.0,22
+industrials__specialty_business_services,Specialty Business Services,WEAK,0.0,46
+industrials__specialty_industrial_machinery,Specialty Industrial Machinery,WEAK,0.0,75
+industrials__staffing_&_employment_services,Staffing & Employment Services,WEAK,0.0,18
+industrials__tools_&_accessories,Tools & Accessories,WEAK,0.0,10
+industrials__trucking,Trucking,WEAK,0.0,16
+industrials__waste_management,Waste Management,WEAK,0.0,19
+real_estate__real_estate_-_development,Real Estate - Development,WEAK,0.0,15
+real_estate__real_estate_services,Real Estate Services,WEAK,0.0,49
+real_estate__reit_-_diversified,REIT - Diversified,WEAK,0.0,19
+real_estate__reit_-_healthcare_facilities,REIT - Healthcare Facilities,WEAK,0.0,20
+real_estate__reit_-_hotel_&_motel,REIT - Hotel & Motel,WEAK,0.0,18
+real_estate__reit_-_industrial,REIT - Industrial,WEAK,0.0,17
+real_estate__reit_-_mortgage,REIT - Mortgage,WEAK,0.0,49
+real_estate__reit_-_office,REIT - Office,WEAK,0.0,23
+real_estate__reit_-_residential,REIT - Residential,WEAK,0.0,22
+real_estate__reit_-_retail,REIT - Retail,WEAK,0.0,32
+real_estate__reit_-_specialty,REIT - Specialty,WEAK,0.0,20
+technology__communication_equipment,Communication Equipment,WEAK,0.0,46
+technology__computer_hardware,Computer Hardware,WEAK,0.0,40
+technology__consumer_electronics,Consumer Electronics,WEAK,0.0,19
+technology__electronic_components,Electronic Components,WEAK,0.0,47
+technology__electronics_&_computer_distribution,Electronics & Computer Distribution,WEAK,0.0,9
+technology__information_technology_services,Information Technology Services,WEAK,0.0,72
+technology__scientific_&_technical_instruments,Scientific & Technical Instruments,WEAK,0.0,34
+technology__semiconductor_equipment_&_materials,Semiconductor Equipment & Materials,WEAK,0.0,30
+technology__semiconductors,Semiconductors,WEAK,0.0,70
+technology__software_-_application,Software - Application,WEAK,0.0,235
+technology__software_-_infrastructure,Software - Infrastructure,WEAK,0.0,174
+technology__solar,Solar,WEAK,0.0,22
+utilities__utilities_-_diversified,Utilities - Diversified,WEAK,0.0,7
+utilities__utilities_-_independent_power_producers,Utilities - Independent Power Producers,WEAK,0.0,8
+utilities__utilities_-_regulated_electric,Utilities - Regulated Electric,WEAK,0.0,44
+utilities__utilities_-_regulated_gas,Utilities - Regulated Gas,WEAK,0.0,16
+utilities__utilities_-_regulated_water,Utilities - Regulated Water,WEAK,0.0,14
+utilities__utilities_-_renewable,Utilities - Renewable,WEAK,0.0,23

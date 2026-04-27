@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-03-23,-0.81,-0.83,,,yfinance_earnings_dates:AARD,AARD
+2025-11-13,-0.75,-0.82,,,yfinance_earnings_dates:AARD,AARD
+2025-08-13,-0.66,-0.6,,,yfinance_earnings_dates:AARD,AARD
+2025-05-14,-0.71,-0.61,,,yfinance_earnings_dates:AARD,AARD

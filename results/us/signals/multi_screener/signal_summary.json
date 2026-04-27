@@ -1,0 +1,25 @@
+{
+  "market": "US",
+  "as_of_date": "2026-04-22",
+  "market_truth_source": "local_standalone",
+  "core_overlay_applied": false,
+  "counts": {
+    "trend_events_v2": 166,
+    "trend_states_v2": 10250,
+    "ug_events_v2": 29,
+    "ug_states_v2": 29121,
+    "ug_strategy_combos_v2": 266,
+    "all_signals_v2": 39832,
+    "buy_signals_all_symbols_v1": 109,
+    "sell_signals_all_symbols_v1": 0,
+    "buy_signals_screened_symbols_v1": 77,
+    "sell_signals_screened_symbols_v1": 0,
+    "open_cycles": 190,
+    "diagnostics": 14891,
+    "earnings_provider_diagnostics": 0,
+    "signal_history": 195,
+    "signal_state_history": 39973,
+    "peg_event_history": 0,
+    "signal_universe": 5316
+  }
+}

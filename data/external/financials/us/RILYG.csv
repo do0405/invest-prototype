@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-RILYG,,[],False,2026-03-13T01:36:40.005520+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+RILYG,,soft_unavailable,financial data unavailable,,,[],True,2026-04-26T15:12:25.732229+00:00

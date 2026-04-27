@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,roe,debt_to_equity,cached_at
-TOYO,TOYO,[],False,-2.3806490068216584,0.3920076073126223,2026-03-13T01:24:06.665148+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,roe,debt_to_equity,cached_at
+TOYO,TOYO,complete,,yahooquery,,[],False,-2.3806490068216584,0.3920076073126223,2026-04-26T15:07:24.630615+00:00

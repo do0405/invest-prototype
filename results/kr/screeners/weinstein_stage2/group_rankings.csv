@@ -1,0 +1,79 @@
+industry_key,group_name,group_state,group_strength_score,member_count
+basic_materials__agricultural_inputs,Agricultural Inputs,WEAK,0.0,6
+basic_materials__aluminum,Aluminum,WEAK,0.0,7
+basic_materials__building_materials,Building Materials,WEAK,0.0,17
+basic_materials__chemicals,Chemicals,WEAK,0.0,40
+basic_materials__lumber_&_wood_production,Lumber & Wood Production,WEAK,0.0,3
+basic_materials__paper_&_paper_products,Paper & Paper Products,WEAK,0.0,12
+basic_materials__specialty_chemicals,Specialty Chemicals,WEAK,0.0,37
+basic_materials__steel,Steel,WEAK,0.0,47
+communication_services__advertising_agencies,Advertising Agencies,WEAK,0.0,5
+communication_services__broadcasting,Broadcasting,WEAK,0.0,4
+communication_services__electronic_gaming_&_multimedia,Electronic Gaming & Multimedia,WEAK,0.0,8
+communication_services__entertainment,Entertainment,WEAK,0.0,20
+communication_services__internet_content_&_information,Internet Content & Information,WEAK,0.0,9
+communication_services__publishing,Publishing,WEAK,0.0,6
+communication_services__telecom_services,Telecom Services,WEAK,0.0,9
+consumer_cyclical__apparel_manufacturing,Apparel Manufacturing,WEAK,0.0,27
+consumer_cyclical__auto_manufacturers,Auto Manufacturers,WEAK,0.0,7
+consumer_cyclical__auto_parts,Auto Parts,WEAK,0.0,89
+consumer_cyclical__department_stores,Department Stores,WEAK,0.0,7
+consumer_cyclical__footwear_&_accessories,Footwear & Accessories,WEAK,0.0,6
+"consumer_cyclical__furnishings,_fixtures_&_appliances","Furnishings, Fixtures & Appliances",WEAK,0.0,15
+consumer_cyclical__internet_retail,Internet Retail,WEAK,0.0,3
+consumer_cyclical__leisure,Leisure,WEAK,0.0,7
+consumer_cyclical__packaging_&_containers,Packaging & Containers,WEAK,0.0,19
+consumer_cyclical__resorts_&_casinos,Resorts & Casinos,WEAK,0.0,5
+consumer_cyclical__specialty_retail,Specialty Retail,WEAK,0.0,5
+consumer_cyclical__textile_manufacturing,Textile Manufacturing,WEAK,0.0,16
+consumer_defensive__beverages_-_wineries_&_distilleries,Beverages - Wineries & Distilleries,WEAK,0.0,4
+consumer_defensive__confectioners,Confectioners,WEAK,0.0,6
+consumer_defensive__education_&_training_services,Education & Training Services,WEAK,0.0,5
+consumer_defensive__food_distribution,Food Distribution,WEAK,0.0,6
+consumer_defensive__household_&_personal_products,Household & Personal Products,WEAK,0.0,20
+consumer_defensive__packaged_foods,Packaged Foods,WEAK,0.0,50
+energy__oil_&_gas_refining_&_marketing,Oil & Gas Refining & Marketing,WEAK,0.0,12
+financial_services__asset_management,Asset Management,WEAK,0.0,6
+financial_services__banks_-_regional,Banks - Regional,WEAK,0.0,7
+financial_services__capital_markets,Capital Markets,WEAK,0.0,31
+financial_services__financial_data_&_stock_exchanges,Financial Data & Stock Exchanges,WEAK,0.0,3
+financial_services__insurance_-_life,Insurance - Life,WEAK,0.0,4
+financial_services__insurance_-_property_&_casualty,Insurance - Property & Casualty,WEAK,0.0,6
+healthcare__biotechnology,Biotechnology,WEAK,0.0,29
+healthcare__diagnostics_&_research,Diagnostics & Research,WEAK,0.0,5
+healthcare__drug_manufacturers_-_general,Drug Manufacturers - General,WEAK,0.0,3
+healthcare__drug_manufacturers_-_specialty_&_generic,Drug Manufacturers - Specialty & Generic,WEAK,0.0,53
+healthcare__medical_devices,Medical Devices,WEAK,0.0,9
+healthcare__medical_instruments_&_supplies,Medical Instruments & Supplies,WEAK,0.0,6
+industrials__aerospace_&_defense,Aerospace & Defense,WEAK,0.0,14
+industrials__airlines,Airlines,WEAK,0.0,5
+industrials__building_products_&_equipment,Building Products & Equipment,WEAK,0.0,12
+industrials__business_equipment_&_supplies,Business Equipment & Supplies,WEAK,0.0,4
+industrials__conglomerates,Conglomerates,WEAK,0.0,26
+industrials__electrical_equipment_&_parts,Electrical Equipment & Parts,WEAK,0.0,33
+industrials__engineering_&_construction,Engineering & Construction,WEAK,0.0,52
+industrials__farm_&_heavy_construction_machinery,Farm & Heavy Construction Machinery,WEAK,0.0,6
+industrials__industrial_distribution,Industrial Distribution,WEAK,0.0,6
+industrials__integrated_freight_&_logistics,Integrated Freight & Logistics,WEAK,0.0,12
+industrials__marine_shipping,Marine Shipping,WEAK,0.0,7
+industrials__metal_fabrication,Metal Fabrication,WEAK,0.0,18
+industrials__railroads,Railroads,WEAK,0.0,4
+industrials__security_&_protection_services,Security & Protection Services,WEAK,0.0,6
+industrials__specialty_business_services,Specialty Business Services,WEAK,0.0,8
+industrials__specialty_industrial_machinery,Specialty Industrial Machinery,WEAK,0.0,45
+industrials__tools_&_accessories,Tools & Accessories,WEAK,0.0,11
+industrials__waste_management,Waste Management,WEAK,0.0,3
+real_estate__reit_-_diversified,REIT - Diversified,WEAK,0.0,4
+technology__communication_equipment,Communication Equipment,WEAK,0.0,28
+technology__computer_hardware,Computer Hardware,WEAK,0.0,8
+technology__consumer_electronics,Consumer Electronics,WEAK,0.0,12
+technology__electronic_components,Electronic Components,WEAK,0.0,63
+technology__electronics_&_computer_distribution,Electronics & Computer Distribution,WEAK,0.0,6
+technology__information_technology_services,Information Technology Services,WEAK,0.0,21
+technology__scientific_&_technical_instruments,Scientific & Technical Instruments,WEAK,0.0,10
+technology__semiconductor_equipment_&_materials,Semiconductor Equipment & Materials,WEAK,0.0,35
+technology__semiconductors,Semiconductors,WEAK,0.0,27
+technology__software_-_application,Software - Application,WEAK,0.0,14
+technology__software_-_infrastructure,Software - Infrastructure,WEAK,0.0,11
+unknown__unknown,unknown__unknown,WEAK,0.0,1227
+utilities__utilities_-_regulated_gas,Utilities - Regulated Gas,WEAK,0.0,10

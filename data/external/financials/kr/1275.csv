@@ -1,0 +1,2 @@
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+1275,,soft_unavailable,financial data unavailable,,,[],True,2026-04-16T17:48:15.866938+00:00

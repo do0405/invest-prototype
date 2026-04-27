@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-03-23,-0.01,-0.05,,,yfinance_earnings_dates:ABUS,ABUS
+2025-11-13,-0.06,-0.05,,,yfinance_earnings_dates:ABUS,ABUS
+2025-08-06,0.01,-0.09,,,yfinance_earnings_dates:ABUS,ABUS
+2025-05-14,-0.18,-0.15,,,yfinance_earnings_dates:ABUS,ABUS

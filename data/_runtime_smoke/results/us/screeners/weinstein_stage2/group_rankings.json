@@ -1,0 +1,1010 @@
+[
+  {
+    "industry_key":"basic_materials__aluminum",
+    "group_name":"Aluminum",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":4
+  },
+  {
+    "industry_key":"unknown__unknown",
+    "group_name":"unknown__unknown",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":6150
+  },
+  {
+    "industry_key":"healthcare__diagnostics_&_research",
+    "group_name":"Diagnostics & Research",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":50
+  },
+  {
+    "industry_key":"basic_materials__agricultural_inputs",
+    "group_name":"Agricultural Inputs",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":17
+  },
+  {
+    "industry_key":"basic_materials__building_materials",
+    "group_name":"Building Materials",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":18
+  },
+  {
+    "industry_key":"basic_materials__chemicals",
+    "group_name":"Chemicals",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"basic_materials__coking_coal",
+    "group_name":"Coking Coal",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":6
+  },
+  {
+    "industry_key":"basic_materials__copper",
+    "group_name":"Copper",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":6
+  },
+  {
+    "industry_key":"basic_materials__gold",
+    "group_name":"Gold",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":54
+  },
+  {
+    "industry_key":"basic_materials__lumber_&_wood_production",
+    "group_name":"Lumber & Wood Production",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":6
+  },
+  {
+    "industry_key":"basic_materials__other_industrial_metals_&_mining",
+    "group_name":"Other Industrial Metals & Mining",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":55
+  },
+  {
+    "industry_key":"basic_materials__other_precious_metals_&_mining",
+    "group_name":"Other Precious Metals & Mining",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":18
+  },
+  {
+    "industry_key":"basic_materials__paper_&_paper_products",
+    "group_name":"Paper & Paper Products",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":5
+  },
+  {
+    "industry_key":"basic_materials__silver",
+    "group_name":"Silver",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":7
+  },
+  {
+    "industry_key":"basic_materials__specialty_chemicals",
+    "group_name":"Specialty Chemicals",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":59
+  },
+  {
+    "industry_key":"basic_materials__steel",
+    "group_name":"Steel",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":22
+  },
+  {
+    "industry_key":"communication_services__advertising_agencies",
+    "group_name":"Advertising Agencies",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":43
+  },
+  {
+    "industry_key":"communication_services__broadcasting",
+    "group_name":"Broadcasting",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":16
+  },
+  {
+    "industry_key":"communication_services__electronic_gaming_&_multimedia",
+    "group_name":"Electronic Gaming & Multimedia",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":25
+  },
+  {
+    "industry_key":"communication_services__entertainment",
+    "group_name":"Entertainment",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":52
+  },
+  {
+    "industry_key":"communication_services__internet_content_&_information",
+    "group_name":"Internet Content & Information",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":75
+  },
+  {
+    "industry_key":"communication_services__publishing",
+    "group_name":"Publishing",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":9
+  },
+  {
+    "industry_key":"communication_services__telecom_services",
+    "group_name":"Telecom Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":60
+  },
+  {
+    "industry_key":"consumer_cyclical__apparel_manufacturing",
+    "group_name":"Apparel Manufacturing",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":24
+  },
+  {
+    "industry_key":"consumer_cyclical__apparel_retail",
+    "group_name":"Apparel Retail",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":32
+  },
+  {
+    "industry_key":"consumer_cyclical__auto_&_truck_dealerships",
+    "group_name":"Auto & Truck Dealerships",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":28
+  },
+  {
+    "industry_key":"consumer_cyclical__auto_manufacturers",
+    "group_name":"Auto Manufacturers",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":32
+  },
+  {
+    "industry_key":"consumer_cyclical__auto_parts",
+    "group_name":"Auto Parts",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":55
+  },
+  {
+    "industry_key":"consumer_cyclical__department_stores",
+    "group_name":"Department Stores",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":4
+  },
+  {
+    "industry_key":"consumer_cyclical__footwear_&_accessories",
+    "group_name":"Footwear & Accessories",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":15
+  },
+  {
+    "industry_key":"consumer_cyclical__furnishings,_fixtures_&_appliances",
+    "group_name":"Furnishings, Fixtures & Appliances",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":33
+  },
+  {
+    "industry_key":"consumer_cyclical__gambling",
+    "group_name":"Gambling",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":13
+  },
+  {
+    "industry_key":"consumer_cyclical__home_improvement_retail",
+    "group_name":"Home Improvement Retail",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":7
+  },
+  {
+    "industry_key":"consumer_cyclical__internet_retail",
+    "group_name":"Internet Retail",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":43
+  },
+  {
+    "industry_key":"consumer_cyclical__leisure",
+    "group_name":"Leisure",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":33
+  },
+  {
+    "industry_key":"consumer_cyclical__lodging",
+    "group_name":"Lodging",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":12
+  },
+  {
+    "industry_key":"consumer_cyclical__luxury_goods",
+    "group_name":"Luxury Goods",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":11
+  },
+  {
+    "industry_key":"consumer_cyclical__packaging_&_containers",
+    "group_name":"Packaging & Containers",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":23
+  },
+  {
+    "industry_key":"consumer_cyclical__personal_services",
+    "group_name":"Personal Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":15
+  },
+  {
+    "industry_key":"consumer_cyclical__recreational_vehicles",
+    "group_name":"Recreational Vehicles",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":16
+  },
+  {
+    "industry_key":"consumer_cyclical__residential_construction",
+    "group_name":"Residential Construction",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":21
+  },
+  {
+    "industry_key":"consumer_cyclical__resorts_&_casinos",
+    "group_name":"Resorts & Casinos",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":18
+  },
+  {
+    "industry_key":"consumer_cyclical__restaurants",
+    "group_name":"Restaurants",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":53
+  },
+  {
+    "industry_key":"consumer_cyclical__specialty_retail",
+    "group_name":"Specialty Retail",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":49
+  },
+  {
+    "industry_key":"consumer_cyclical__textile_manufacturing",
+    "group_name":"Textile Manufacturing",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":5
+  },
+  {
+    "industry_key":"consumer_cyclical__travel_services",
+    "group_name":"Travel Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":20
+  },
+  {
+    "industry_key":"consumer_defensive__beverages_-_brewers",
+    "group_name":"Beverages - Brewers",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":7
+  },
+  {
+    "industry_key":"consumer_defensive__beverages_-_non-alcoholic",
+    "group_name":"Beverages - Non-Alcoholic",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":16
+  },
+  {
+    "industry_key":"consumer_defensive__beverages_-_wineries_&_distilleries",
+    "group_name":"Beverages - Wineries & Distilleries",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":11
+  },
+  {
+    "industry_key":"consumer_defensive__confectioners",
+    "group_name":"Confectioners",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":5
+  },
+  {
+    "industry_key":"consumer_defensive__discount_stores",
+    "group_name":"Discount Stores",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":9
+  },
+  {
+    "industry_key":"consumer_defensive__education_&_training_services",
+    "group_name":"Education & Training Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":45
+  },
+  {
+    "industry_key":"consumer_defensive__farm_products",
+    "group_name":"Farm Products",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":26
+  },
+  {
+    "industry_key":"consumer_defensive__food_distribution",
+    "group_name":"Food Distribution",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":13
+  },
+  {
+    "industry_key":"consumer_defensive__grocery_stores",
+    "group_name":"Grocery Stores",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":12
+  },
+  {
+    "industry_key":"consumer_defensive__household_&_personal_products",
+    "group_name":"Household & Personal Products",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":33
+  },
+  {
+    "industry_key":"consumer_defensive__packaged_foods",
+    "group_name":"Packaged Foods",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":66
+  },
+  {
+    "industry_key":"consumer_defensive__tobacco",
+    "group_name":"Tobacco",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":11
+  },
+  {
+    "industry_key":"energy__oil_&_gas_drilling",
+    "group_name":"Oil & Gas Drilling",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":9
+  },
+  {
+    "industry_key":"energy__oil_&_gas_e&p",
+    "group_name":"Oil & Gas E&P",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":79
+  },
+  {
+    "industry_key":"energy__oil_&_gas_equipment_&_services",
+    "group_name":"Oil & Gas Equipment & Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":51
+  },
+  {
+    "industry_key":"energy__oil_&_gas_integrated",
+    "group_name":"Oil & Gas Integrated",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"energy__oil_&_gas_midstream",
+    "group_name":"Oil & Gas Midstream",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":57
+  },
+  {
+    "industry_key":"energy__oil_&_gas_refining_&_marketing",
+    "group_name":"Oil & Gas Refining & Marketing",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"energy__thermal_coal",
+    "group_name":"Thermal Coal",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":6
+  },
+  {
+    "industry_key":"energy__uranium",
+    "group_name":"Uranium",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":13
+  },
+  {
+    "industry_key":"financial_services__asset_management",
+    "group_name":"Asset Management",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":509
+  },
+  {
+    "industry_key":"financial_services__banks_-_diversified",
+    "group_name":"Banks - Diversified",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"financial_services__banks_-_regional",
+    "group_name":"Banks - Regional",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":375
+  },
+  {
+    "industry_key":"financial_services__capital_markets",
+    "group_name":"Capital Markets",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":93
+  },
+  {
+    "industry_key":"financial_services__credit_services",
+    "group_name":"Credit Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":53
+  },
+  {
+    "industry_key":"financial_services__financial_conglomerates",
+    "group_name":"Financial Conglomerates",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":8
+  },
+  {
+    "industry_key":"financial_services__financial_data_&_stock_exchanges",
+    "group_name":"Financial Data & Stock Exchanges",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":15
+  },
+  {
+    "industry_key":"financial_services__insurance_-_diversified",
+    "group_name":"Insurance - Diversified",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":13
+  },
+  {
+    "industry_key":"financial_services__insurance_-_life",
+    "group_name":"Insurance - Life",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":22
+  },
+  {
+    "industry_key":"financial_services__insurance_-_property_&_casualty",
+    "group_name":"Insurance - Property & Casualty",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":48
+  },
+  {
+    "industry_key":"financial_services__insurance_-_reinsurance",
+    "group_name":"Insurance - Reinsurance",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":8
+  },
+  {
+    "industry_key":"financial_services__insurance_-_specialty",
+    "group_name":"Insurance - Specialty",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":17
+  },
+  {
+    "industry_key":"financial_services__insurance_brokers",
+    "group_name":"Insurance Brokers",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":23
+  },
+  {
+    "industry_key":"financial_services__mortgage_finance",
+    "group_name":"Mortgage Finance",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":13
+  },
+  {
+    "industry_key":"financial_services__shell_companies",
+    "group_name":"Shell Companies",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":250
+  },
+  {
+    "industry_key":"healthcare__biotechnology",
+    "group_name":"Biotechnology",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":625
+  },
+  {
+    "industry_key":"healthcare__drug_manufacturers_-_general",
+    "group_name":"Drug Manufacturers - General",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":21
+  },
+  {
+    "industry_key":"healthcare__drug_manufacturers_-_specialty_&_generic",
+    "group_name":"Drug Manufacturers - Specialty & Generic",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":83
+  },
+  {
+    "industry_key":"healthcare__health_information_services",
+    "group_name":"Health Information Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":56
+  },
+  {
+    "industry_key":"healthcare__healthcare_plans",
+    "group_name":"Healthcare Plans",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":11
+  },
+  {
+    "industry_key":"healthcare__medical_care_facilities",
+    "group_name":"Medical Care Facilities",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":51
+  },
+  {
+    "industry_key":"healthcare__medical_devices",
+    "group_name":"Medical Devices",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":148
+  },
+  {
+    "industry_key":"healthcare__medical_distribution",
+    "group_name":"Medical Distribution",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":12
+  },
+  {
+    "industry_key":"healthcare__medical_instruments_&_supplies",
+    "group_name":"Medical Instruments & Supplies",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":58
+  },
+  {
+    "industry_key":"healthcare__pharmaceutical_retailers",
+    "group_name":"Pharmaceutical Retailers",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":7
+  },
+  {
+    "industry_key":"industrials__aerospace_&_defense",
+    "group_name":"Aerospace & Defense",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":82
+  },
+  {
+    "industry_key":"industrials__airlines",
+    "group_name":"Airlines",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":18
+  },
+  {
+    "industry_key":"industrials__airports_&_air_services",
+    "group_name":"Airports & Air Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":8
+  },
+  {
+    "industry_key":"industrials__building_products_&_equipment",
+    "group_name":"Building Products & Equipment",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":37
+  },
+  {
+    "industry_key":"industrials__business_equipment_&_supplies",
+    "group_name":"Business Equipment & Supplies",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":5
+  },
+  {
+    "industry_key":"industrials__conglomerates",
+    "group_name":"Conglomerates",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":29
+  },
+  {
+    "industry_key":"industrials__consulting_services",
+    "group_name":"Consulting Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":25
+  },
+  {
+    "industry_key":"industrials__electrical_equipment_&_parts",
+    "group_name":"Electrical Equipment & Parts",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":48
+  },
+  {
+    "industry_key":"industrials__engineering_&_construction",
+    "group_name":"Engineering & Construction",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":54
+  },
+  {
+    "industry_key":"industrials__farm_&_heavy_construction_machinery",
+    "group_name":"Farm & Heavy Construction Machinery",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":26
+  },
+  {
+    "industry_key":"industrials__industrial_distribution",
+    "group_name":"Industrial Distribution",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":22
+  },
+  {
+    "industry_key":"industrials__integrated_freight_&_logistics",
+    "group_name":"Integrated Freight & Logistics",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":31
+  },
+  {
+    "industry_key":"industrials__marine_shipping",
+    "group_name":"Marine Shipping",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":39
+  },
+  {
+    "industry_key":"industrials__metal_fabrication",
+    "group_name":"Metal Fabrication",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"industrials__pollution_&_treatment_controls",
+    "group_name":"Pollution & Treatment Controls",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":18
+  },
+  {
+    "industry_key":"industrials__railroads",
+    "group_name":"Railroads",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":12
+  },
+  {
+    "industry_key":"industrials__rental_&_leasing_services",
+    "group_name":"Rental & Leasing Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":23
+  },
+  {
+    "industry_key":"industrials__security_&_protection_services",
+    "group_name":"Security & Protection Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":22
+  },
+  {
+    "industry_key":"industrials__specialty_business_services",
+    "group_name":"Specialty Business Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":46
+  },
+  {
+    "industry_key":"industrials__specialty_industrial_machinery",
+    "group_name":"Specialty Industrial Machinery",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":75
+  },
+  {
+    "industry_key":"industrials__staffing_&_employment_services",
+    "group_name":"Staffing & Employment Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":18
+  },
+  {
+    "industry_key":"industrials__tools_&_accessories",
+    "group_name":"Tools & Accessories",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":10
+  },
+  {
+    "industry_key":"industrials__trucking",
+    "group_name":"Trucking",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":16
+  },
+  {
+    "industry_key":"industrials__waste_management",
+    "group_name":"Waste Management",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"real_estate__real_estate_-_development",
+    "group_name":"Real Estate - Development",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":15
+  },
+  {
+    "industry_key":"real_estate__real_estate_services",
+    "group_name":"Real Estate Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":49
+  },
+  {
+    "industry_key":"real_estate__reit_-_diversified",
+    "group_name":"REIT - Diversified",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"real_estate__reit_-_healthcare_facilities",
+    "group_name":"REIT - Healthcare Facilities",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":20
+  },
+  {
+    "industry_key":"real_estate__reit_-_hotel_&_motel",
+    "group_name":"REIT - Hotel & Motel",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":18
+  },
+  {
+    "industry_key":"real_estate__reit_-_industrial",
+    "group_name":"REIT - Industrial",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":17
+  },
+  {
+    "industry_key":"real_estate__reit_-_mortgage",
+    "group_name":"REIT - Mortgage",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":49
+  },
+  {
+    "industry_key":"real_estate__reit_-_office",
+    "group_name":"REIT - Office",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":23
+  },
+  {
+    "industry_key":"real_estate__reit_-_residential",
+    "group_name":"REIT - Residential",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":22
+  },
+  {
+    "industry_key":"real_estate__reit_-_retail",
+    "group_name":"REIT - Retail",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":32
+  },
+  {
+    "industry_key":"real_estate__reit_-_specialty",
+    "group_name":"REIT - Specialty",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":20
+  },
+  {
+    "industry_key":"technology__communication_equipment",
+    "group_name":"Communication Equipment",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":46
+  },
+  {
+    "industry_key":"technology__computer_hardware",
+    "group_name":"Computer Hardware",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":40
+  },
+  {
+    "industry_key":"technology__consumer_electronics",
+    "group_name":"Consumer Electronics",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":19
+  },
+  {
+    "industry_key":"technology__electronic_components",
+    "group_name":"Electronic Components",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":47
+  },
+  {
+    "industry_key":"technology__electronics_&_computer_distribution",
+    "group_name":"Electronics & Computer Distribution",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":9
+  },
+  {
+    "industry_key":"technology__information_technology_services",
+    "group_name":"Information Technology Services",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":72
+  },
+  {
+    "industry_key":"technology__scientific_&_technical_instruments",
+    "group_name":"Scientific & Technical Instruments",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":34
+  },
+  {
+    "industry_key":"technology__semiconductor_equipment_&_materials",
+    "group_name":"Semiconductor Equipment & Materials",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":30
+  },
+  {
+    "industry_key":"technology__semiconductors",
+    "group_name":"Semiconductors",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":70
+  },
+  {
+    "industry_key":"technology__software_-_application",
+    "group_name":"Software - Application",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":235
+  },
+  {
+    "industry_key":"technology__software_-_infrastructure",
+    "group_name":"Software - Infrastructure",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":174
+  },
+  {
+    "industry_key":"technology__solar",
+    "group_name":"Solar",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":22
+  },
+  {
+    "industry_key":"utilities__utilities_-_diversified",
+    "group_name":"Utilities - Diversified",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":7
+  },
+  {
+    "industry_key":"utilities__utilities_-_independent_power_producers",
+    "group_name":"Utilities - Independent Power Producers",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":8
+  },
+  {
+    "industry_key":"utilities__utilities_-_regulated_electric",
+    "group_name":"Utilities - Regulated Electric",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":44
+  },
+  {
+    "industry_key":"utilities__utilities_-_regulated_gas",
+    "group_name":"Utilities - Regulated Gas",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":16
+  },
+  {
+    "industry_key":"utilities__utilities_-_regulated_water",
+    "group_name":"Utilities - Regulated Water",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":14
+  },
+  {
+    "industry_key":"utilities__utilities_-_renewable",
+    "group_name":"Utilities - Renewable",
+    "group_state":"WEAK",
+    "group_strength_score":0.0,
+    "member_count":23
+  }
+]

@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-02-05,6.67,6.66,,,yfinance_earnings_dates:ABG,ABG
+2025-10-28,7.17,6.84,,,yfinance_earnings_dates:ABG,ABG
+2025-07-29,7.43,6.86,,,yfinance_earnings_dates:ABG,ABG
+2025-04-29,6.71,6.58,,,yfinance_earnings_dates:ABG,ABG

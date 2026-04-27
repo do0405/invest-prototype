@@ -1,0 +1,13 @@
+{
+  "leader_count": 0,
+  "label_counts": {},
+  "leader_tier_counts": {},
+  "entry_suitability_counts": {},
+  "confidence_bucket_counts": {},
+  "component_null_share": {},
+  "top_10_leader_score_spread": null,
+  "threshold_near_count": 0,
+  "low_confidence_count": 0,
+  "reject_reason_counts": {},
+  "extended_reason_counts": {}
+}

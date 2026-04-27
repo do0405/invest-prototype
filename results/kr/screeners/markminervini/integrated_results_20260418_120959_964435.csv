@@ -1,0 +1,3 @@
+symbol,met_count,rs_score,provider_symbol,fin_met_count,fetch_status,unavailable_reason,has_error,rs_percentile,fin_percentile,total_percentile
+000150,7,100.0,000150.KS,3,complete,,False,100.0,75.0,175.0
+000155,7,95.0,000155.KS,3,complete,,False,50.0,75.0,125.0

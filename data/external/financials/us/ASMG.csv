@@ -1,2 +1,2 @@
-symbol,provider_symbol,error_details,has_error,cached_at
-ASMG,,[],False,2026-03-14T05:05:41.749596+00:00
+symbol,provider_symbol,fetch_status,unavailable_reason,source,cache_status,error_details,has_error,cached_at
+ASMG,ASMG,soft_unavailable,ineligible:etf,metadata_skip,,[],True,2026-04-26T15:08:27.141467+00:00

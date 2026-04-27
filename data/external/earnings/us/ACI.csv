@@ -1,0 +1,5 @@
+date,eps_actual,eps_estimate,revenue_actual,revenue_estimate,data_source,provider_symbol
+2026-04-14,0.48,0.44,,,yfinance_earnings_dates:ACI,ACI
+2026-01-07,0.72,0.68,,,yfinance_earnings_dates:ACI,ACI
+2025-10-14,0.44,0.4,,,yfinance_earnings_dates:ACI,ACI
+2025-07-15,0.55,0.54,,,yfinance_earnings_dates:ACI,ACI
